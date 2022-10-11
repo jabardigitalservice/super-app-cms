@@ -1,5 +1,7 @@
 <template>
-  <Tutorial/>
+  <div class="p-8">
+    Under Development
+  </div>
 </template>
 
 <script>
