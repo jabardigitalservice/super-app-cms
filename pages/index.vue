@@ -1,11 +1,10 @@
 <template>
-  <div class="p-8">
-    Under Development
-  </div>
+  <Maintenance />
 </template>
 
 <script>
 export default {
-  name: 'IndexPage'
+  name: 'IndexPage',
+  layout: 'Dashboard'
 }
 </script>
