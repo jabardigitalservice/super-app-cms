@@ -1,7 +1,5 @@
 <template>
-  <div>
-    Under Development
-  </div>
+  <Maintenance />
 </template>
 
 <script>
