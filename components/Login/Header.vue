@@ -9,7 +9,7 @@
       Selamat Datang!
     </h1>
     <p class="font-lato text-center text-gray-700">
-      Silahkan login ke akun admin Anda.
+      Silakan login ke akun admin Anda.
     </p>
   </div>
 </template>

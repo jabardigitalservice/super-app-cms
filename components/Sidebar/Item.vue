@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import ChevronRight from '~/assets/icon/arrow-right.svg?inline'
+import ChevronRight from '~/assets/icon/chevron-right.svg?inline'
 import IconAdmin from '~/assets/icon/icon-admin.svg?inline'
 
 export default {
