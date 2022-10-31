@@ -41,9 +41,3 @@ export default {
   }
 }
 </script>
-
-<style>
-a.nuxt-link-exact-active {
-  @apply bg-gray-50 text-gray-800;
-}
-</style>
