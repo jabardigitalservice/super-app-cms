@@ -4,10 +4,10 @@
 
 <script>
 export default {
-  name: 'IndexPage',
+  name: 'PageManagementRelease',
   layout: 'Dashboard',
   mounted () {
-    this.$store.commit('setActivePage', 'Klaim Akun RW')
+    this.$store.commit('setActivePage', 'Master Data - Manajemen Rilis')
   }
 }
 </script>
