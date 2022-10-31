@@ -3,7 +3,7 @@
     <template #activator>
       <div
         class="w-full h-full min-w-[200px] flex justify-between items-center cursor-pointer hover:text-gray-800 hover:font-bold"
-        @click="toggleUserDropdown"
+        @click="toggleShowPopup"
       >
         <div class="flex gap-2 items-center">
           <div class="rounded-full bg-gray-100 p-1">
@@ -59,7 +59,7 @@ export default {
     }
   },
   methods: {
-    toggleUserDropdown () {
+    toggleShowPopup () {
       this.isPopupOpen = !this.isPopupOpen
     }
   }
