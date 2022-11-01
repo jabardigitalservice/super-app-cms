@@ -52,6 +52,9 @@ module.exports = {
           900: '#001B3D'
         }
       }
+    },
+    container: {
+      padding: '2rem'
     }
   },
   plugins: []
