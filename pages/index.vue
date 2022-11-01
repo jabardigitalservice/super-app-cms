@@ -1,5 +1,5 @@
 <template>
-  <Maintenance />
+  <KlaimRW />
 </template>
 
 <script>
