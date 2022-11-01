@@ -44,8 +44,42 @@ export default {
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     // https://go.nuxtjs.dev/axios
-    '@nuxtjs/axios'
+    '@nuxtjs/axios',
+    // auth
+    '@nuxtjs/auth-next'
   ],
+
+  auth: {
+    redirect: {
+      callback: '/callback'
+    },
+    strategies: {
+      keyclock: {
+        scheme: 'openIDConnect',
+        clientId: process.env.KEYCLOCK_CLIENT_ID,
+        endpoints: {
+          configuration: process.env.KEYCLOCK_ENDPOINT
+        },
+        token: {
+          property: 'access_token',
+          type: 'Bearer',
+          maxAge: 600
+        },
+        refreshToken: {
+          property: 'refresh_token',
+          maxAge: 2592000
+        },
+        responseType: 'code',
+        grantType: 'authorization_code',
+        scope: ['openid', 'profile', 'offline_access'],
+        codeChallengeMethod: 'S256'
+      }
+    }
+  },
+
+  router: {
+    middleware: ['auth']
+  },
 
   googleFonts: {
     display: 'swap',

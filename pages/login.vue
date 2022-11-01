@@ -5,7 +5,7 @@
         <div class="container mx-auto">
           <HeaderLogin />
           <div class="mt-[44px]">
-            <PrimaryButton variant="w-full h-fit">
+            <PrimaryButton variant="w-full h-fit" @click="loginKeyclock">
               <template #icon-right>
                 <div class="flex justify-between items-center text-[14px] font-lato font-bold">
                   Login Akun
@@ -29,9 +29,9 @@ export default {
     HeaderLogin,
     PrimaryButton
   },
-  data () {
-    return {
-      email: ''
+  methods: {
+    loginKeyclock () {
+      this.$auth.loginWith('keyclock')
     }
   }
 }

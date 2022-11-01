@@ -1,5 +1,5 @@
 <template>
-  <jds-button variant="primary" :class="variant">
+  <jds-button variant="primary" :class="variant" v-on="$listeners">
     <slot name="icon-right" />
   </jds-button>
 </template>
