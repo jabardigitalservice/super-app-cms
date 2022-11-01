@@ -19,13 +19,13 @@
     <div class="w-full bg-white rounded-lg shadow-xl p-2">
       <ul class="flex flex-col gap-2">
         <li class="cursor-pointer p-2 rounded-md hover:bg-green-50">
-          <div class="flex gap-2 items-center font-medium text-sm text-gray-800">
+          <button class="flex gap-2 items-center font-medium text-sm text-gray-800" @click="logout">
             <jds-icon
               name="door-exit"
               size="16px"
             />
             Keluar
-          </div>
+          </button>
         </li>
       </ul>
     </div>
@@ -61,6 +61,9 @@ export default {
   methods: {
     toggleShowPopup () {
       this.isPopupOpen = !this.isPopupOpen
+    },
+    logout () {
+      this.$auth.logout()
     }
   }
 }
