@@ -58,7 +58,7 @@ export default {
         scheme: 'openIDConnect',
         clientId: process.env.KEYCLOCK_CLIENT_ID,
         endpoints: {
-          configuration: 'https://keycloak.digitalservice.id/auth/realms/superapps/.well-known/openid-configuration'
+          configuration: process.env.KEYCLOCK_ENDPOINT
         },
         token: {
           property: 'access_token',
