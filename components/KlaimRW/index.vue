@@ -32,6 +32,8 @@
 
 <script>
 import { headerTableKlaimRW } from '~/constant/klaim-rw'
+import { generateItemsPerPageOptions } from '~/utils'
+
 export default {
   name: 'ComponentKlaimRW',
   data () {
@@ -51,6 +53,9 @@ export default {
       },
       headerTableKlaimRW
     }
+  },
+  mounted () {
+    this.pagination.itemsPerPageOptions = generateItemsPerPageOptions(this.pagination.itemsPerPage)
   },
   methods: {
     nextPage (value) {
