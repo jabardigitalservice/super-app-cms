@@ -24,7 +24,7 @@
         />
       </div>
     </div>
-    <SidebarFooter class="p-6 border-t hover:bg-gray-50" name-user="Superadmin" />
+    <SidebarFooter class="p-6 border-t hover:bg-gray-50" :name-user="profileName" />
   </div>
 </template>
 
@@ -36,8 +36,12 @@ export default {
   data () {
     return {
       mainMenu,
-      masterDataMenu
+      masterDataMenu,
+      profileName: ''
     }
+  },
+  mounted () {
+    this.profileName = this.$auth?.user?.name
   }
 }
 </script>
