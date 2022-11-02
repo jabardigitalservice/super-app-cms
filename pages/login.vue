@@ -5,14 +5,14 @@
         <div class="container mx-auto">
           <HeaderLogin />
           <div class="mt-[44px]">
-            <PrimaryButton variant="w-full h-fit" @click="loginKeyclock">
+            <BaseButton class="bg-green-600 text-white hover:bg-green-700" @click="loginKeyclock">
               <template #icon-right>
                 <div class="flex justify-between items-center text-[14px] font-lato font-bold">
                   Login Akun
                   <jds-icon name="arrow-right" class="w-[15px] h-[12px]" fill="#FFFFFF" />
                 </div>
               </template>
-            </PrimaryButton>
+            </BaseButton>
           </div>
         </div>
       </div>
@@ -22,12 +22,12 @@
 
 <script>
 import HeaderLogin from '~/components/Login/Header.vue'
-import PrimaryButton from '~/components/Base/Button/PrimaryButton.vue'
+import BaseButton from '~/components/Base/Button/BaseButton.vue'
 
 export default {
   components: {
     HeaderLogin,
-    PrimaryButton
+    BaseButton
   },
   methods: {
     loginKeyclock () {
