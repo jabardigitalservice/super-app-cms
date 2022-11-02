@@ -40,17 +40,17 @@ export default {
 }
 </script>
 
-<style>
-  .jds-simple-table {
+<style scoped>
+  .jds-simple-table::v-deep {
     border-spacing: 1px !important;
     @apply !bg-[#EDEFF3];
   }
 
-  .jds-simple-table tr th {
+  .jds-simple-table::v-deep tr th {
     @apply min-w-[189px] border-r border-white;
   }
 
-  .jds-simple-table tr td {
+  .jds-simple-table::v-deep tr td {
     @apply min-w-[189px] border-r border-gray-200;
   }
 
