@@ -22,12 +22,10 @@
 
 <script>
 import HeaderLogin from '~/components/Login/Header.vue'
-import BaseButton from '~/components/Base/Button/BaseButton.vue'
 
 export default {
   components: {
-    HeaderLogin,
-    BaseButton
+    HeaderLogin
   },
   methods: {
     loginKeyclock () {

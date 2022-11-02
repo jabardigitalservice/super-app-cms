@@ -8,6 +8,7 @@
 
 <script>
 export default {
+  name: 'BaseButton',
   props: {
     title: {
       type: String,

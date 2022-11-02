@@ -60,11 +60,8 @@
 </template>
 
 <script>
-import BaseButton from '~/components/Base/Button/BaseButton.vue'
-
 export default {
   name: 'BaseDialog',
-  components: { BaseButton },
   props: {
     showPopup: {
       type: Boolean,
@@ -98,12 +95,3 @@ export default {
   }
 }
 </script>
-
-<style>
-.modal-layout {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-}
-</style>
