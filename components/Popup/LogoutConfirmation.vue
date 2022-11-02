@@ -1,7 +1,7 @@
 <template>
   <BaseDialog
     title="Keluar Web Admin"
-    :is-logout="true"
+    :is-logout-dialog="true"
     :show-popup="showPopup"
     label-button="Ya, saya yakin"
     @submit="$emit('logout')"

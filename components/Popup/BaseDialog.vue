@@ -27,7 +27,7 @@
           <div class="h-[50px] bg-white py-[8px] px-[24px] rounded-t-lg">
             <h1
               class="font-roboto text-[21px] font-bold text-green-800"
-              :class="`${isLogout? 'text-center' : 'text-left'}` "
+              :class="{'text-center' : isLogoutDialog} "
             >
               {{ title }}
             </h1>
@@ -39,9 +39,9 @@
             <slot name="reject-content" />
           </div>
           <!-- FOOTER -->
-          <div class="h-fit px-[24px] flex justify-end bg-gray-50 py-[16px]" :class="{'justify-center' : isLogout}">
+          <div class="h-fit px-[24px] flex justify-end bg-gray-50 py-[16px]" :class="{'justify-center' : isLogoutDialog}">
             <div class="mr-[16px]">
-              <BaseButton class="border border-green-700 text-green-700 hover:bg-green-50" :class="{'w-[117px]':isLogout}" @click="closeHandle">
+              <BaseButton class="border border-green-700 text-green-700 hover:bg-green-50" :class="{'w-[117px]':isLogoutDialog}" @click="closeHandle">
                 Batal
               </BaseButton>
             </div>
@@ -78,7 +78,7 @@ export default {
       type: String,
       default: ''
     },
-    isLogout: {
+    isLogoutDialog: {
       type: Boolean,
       default: false
     }
