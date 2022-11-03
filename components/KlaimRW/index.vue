@@ -27,6 +27,12 @@
         @per-page-change="perPageChange"
       />
     </div>
+    <KlaimRWDetailAddress
+      title="Alamat RW"
+      :data="detailData"
+      :show="showDetailAddress"
+      @close="showDetailAddress = false"
+    />
   </div>
 </template>
 
@@ -40,6 +46,7 @@ export default {
     return {
       search: '',
       data: [],
+      detailData: {},
       pagination: {
         currentPage: 1,
         totalRows: 0,
@@ -51,7 +58,8 @@ export default {
         per_page: 5,
         current_page: 1
       },
-      headerTableKlaimRW
+      headerTableKlaimRW,
+      showDetailAddress: false
     }
   },
   mounted () {
