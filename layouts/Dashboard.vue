@@ -6,7 +6,6 @@
         <Nuxt />
       </div>
     </div>
-    <LogoutConfirmation :show-popup="true" />
   </div>
 </template>
 

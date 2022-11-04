@@ -17,6 +17,7 @@
 import BaseDialog from '~/components/Popup/BaseDialog.vue'
 
 export default {
+  name: 'LogoutConfirmation',
   components: {
     BaseDialog
   },
