@@ -10,10 +10,10 @@
         </template>
       </BaseButton>
       <div class="flex">
-        <BaseButton class="w-fit border border-red-400 text-red-400 mr-[12px] hover:bg-red-50">
+        <BaseButton class="w-fit border border-red-400 text-red-400 mr-[12px] hover:bg-red-50" @click="isShowRejectConfirmationDialog=true">
           Tolak Akun RW Ini
         </BaseButton>
-        <BaseButton class="w-fit bg-green-700 text-white hover:bg-green-600">
+        <BaseButton class="w-fit bg-green-700 text-white hover:bg-green-600" @click="isShowVerifyConfirmationDialog=true">
           Verifikasi Akun RW Ini
         </BaseButton>
       </div>
@@ -127,21 +127,75 @@
         </div>
       </div>
     </div>
+    <RejectConfirmation
+      :show-popup="isShowRejectConfirmationDialog"
+      dialog-type="confirmation"
+      account-name="Asep Kumaha"
+      account-email="asep.kumaha@gmail.com"
+      @submit="showInformationRejectDialogHandle"
+      @close="isShowRejectConfirmationDialog=false"
+    />
+    <VerifyConfirmation
+      :show-popup="isShowVerifyConfirmationDialog"
+      dialog-type="confirmation"
+      account-name="Asep Kumaha"
+      @submit="showInformationVerifyDialogHandle"
+      @close="isShowVerifyConfirmationDialog=false"
+    />
+    <InformationPopup
+      :show-popup="isShowVerifyInformationDialog"
+      account-name="Asep Kumaha"
+      title="Verifikasi Akun RW"
+      description-text="Verifikasi akun RW telah berhasil dilakukan."
+      message="Email terkait informasi verifikasi telah dikirimkan ke email akun RW bersangkutan."
+      @close="closeInformationDialogHandle"
+    />
+    <InformationPopup
+      :show-popup="isShowRejectInformationDialog"
+      account-name="Asep Kumaha"
+      title="Penolakan Akun RW"
+      description-text="Penolakan akun RW telah berhasil dilakukan."
+      message="Email terkait informasi penolakan telah dikirimkan ke email akun RW bersangkutan."
+      @close="closeInformationDialogHandle"
+    />
   </div>
 </template>
 
 <script>
+import RejectConfirmation from '~/components/KlaimRW/Popup/RejectConfirmation.vue'
+import VerifyConfirmation from '~/components/KlaimRW/Popup/VerifyConfirmation.vue'
+import InformationPopup from '~/components/KlaimRW/Popup/Information.vue'
 import ArrowLeft from '~/assets/icon/arrow-left.svg?inline'
 import DetailTableComponent from '~/components/KlaimRW/KlaimRwDetail/DetailTableComponent'
 
 export default {
   name: 'KlaimRwDetail',
   components: {
-    ArrowLeft, DetailTableComponent
+    ArrowLeft, DetailTableComponent, RejectConfirmation, VerifyConfirmation, InformationPopup
+  },
+  data () {
+    return {
+      isShowVerifyConfirmationDialog: false,
+      isShowRejectConfirmationDialog: false,
+      isShowVerifyInformationDialog: false,
+      isShowRejectInformationDialog: false
+    }
   },
   methods: {
     goBackHandle () {
       this.$router.push('/')
+    },
+    showInformationVerifyDialogHandle () {
+      this.isShowVerifyConfirmationDialog = !this.isShowVerifyConfirmationDialog
+      this.isShowVerifyInformationDialog = true
+    },
+    showInformationRejectDialogHandle () {
+      this.isShowRejectConfirmationDialog = !this.isShowRejectConfirmationDialog
+      this.isShowRejectInformationDialog = true
+    },
+    closeInformationDialogHandle () {
+      this.isShowRejectInformationDialog = false
+      this.isShowVerifyInformationDialog = false
     }
   }
 }

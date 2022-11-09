@@ -1,7 +1,8 @@
 <template>
   <BaseDialog
     title="Keluar Web Admin"
-    :is-logout-dialog="true"
+    confirmation-type="logout"
+    dialog-type="confirmation"
     :show-popup="showPopup"
     label-button="Ya, saya yakin"
     @submit="$emit('logout')"
@@ -14,13 +15,9 @@
 </template>
 
 <script>
-import BaseDialog from '~/components/Popup/BaseDialog.vue'
 
 export default {
   name: 'LogoutConfirmation',
-  components: {
-    BaseDialog
-  },
   props: {
     showPopup: {
       type: Boolean,

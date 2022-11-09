@@ -37,7 +37,7 @@
 
 <script>
 
-import LogoutConfirmation from '~/components/Popup/LogoutConfirmation.vue'
+import LogoutConfirmation from '~/components/Logout/LogoutConfirmation.vue'
 import optionsPopover from '@/constant/optionsPopover'
 import ChevronRight from '~/assets/icon/chevron-right.svg?inline'
 import IconUser from '~/assets/icon/user.svg?inline'
