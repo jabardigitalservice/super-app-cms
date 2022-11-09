@@ -88,7 +88,6 @@ export default {
     dialogType: {
       type: String,
       required: true,
-      default: '',
       validator (value) {
         return ['information', 'confirmation'].includes(value)
       }
