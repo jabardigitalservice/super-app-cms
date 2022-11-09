@@ -87,7 +87,11 @@ export default {
      */
     dialogType: {
       type: String,
-      default: ''
+      required: true,
+      default: '',
+      validator (value) {
+        return ['information', 'confirmation'].includes(value)
+      }
     },
     /**
      * to select the type of confirmation to display : 'logout' or 'reject'
@@ -95,11 +99,6 @@ export default {
     confirmationType: {
       type: String,
       default: ''
-    }
-  },
-  data () {
-    return {
-      dataFilter: {}
     }
   },
   methods: {
