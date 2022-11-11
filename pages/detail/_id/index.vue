@@ -7,6 +7,9 @@ import KlaimRwDetail from '~/components/KlaimRW/KlaimRwDetail'
 
 export default {
   components: { KlaimRwDetail },
-  layout: 'Dashboard'
+  layout: 'Dashboard',
+  mounted () {
+    this.$store.commit('setActivePage', 'Klaim Akun RW')
+  }
 }
 </script>

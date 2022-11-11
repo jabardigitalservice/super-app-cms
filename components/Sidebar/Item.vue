@@ -1,5 +1,9 @@
 <template>
-  <nuxt-link :to="{name: link}" class="flex justify-between items-center min-w-[200px] w-full p-3 rounded-lg hover:bg-gray-50 hover:text-gray-800 hover:font-bold">
+  <nuxt-link
+    :to="{name: link}"
+    class="flex justify-between items-center min-w-[200px] w-full p-3 rounded-lg hover:bg-gray-50 hover:text-gray-800 hover:font-bold"
+    :class="{'nuxt-link-exact-active':getActivePage==label}"
+  >
     <div class="flex items-center">
       <component :is="icon" class="flex-shrink-0 mr-3" />
       <div class="font-lato text-gray-600 text-sm">
@@ -36,11 +40,16 @@ export default {
       type: Boolean,
       default: true
     }
+  },
+  computed: {
+    getActivePage () {
+      return this.$store.state.page
+    }
   }
 }
 </script>
 
-<style>
+<style scoped>
 a.nuxt-link-exact-active {
   @apply bg-gray-50 text-gray-800 font-bold !important;
 }

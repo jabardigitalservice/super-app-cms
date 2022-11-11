@@ -1,6 +1,7 @@
 <template>
   <div class="container mx-auto">
-    <div class="flex justify-between pt-[8px] pb-[32px]">
+    <BaseHeader :navigations="navigations" description-page="Berisi semua daftar terkait klaim yang dilakukan oleh RW di aplikasi Sapawarga." />
+    <div class="flex justify-between pt-[16px] pb-[32px]">
       <BaseButton class="w-[126px] border border-green-700 text-green-700 hover:bg-green-50" @click="goBackHandle">
         <template #icon-left>
           <div class="flex items-center">
@@ -18,8 +19,8 @@
         </BaseButton>
       </div>
     </div>
-    <div class="h-[calc(100vh-130px)] bg-white container mx-auto py-[16px] px-[5px] rounded-lg text-gray-800 font-lato relative">
-      <div class="h-[calc(100vh-160px)] px-[19px] layout-content overflow-y-auto">
+    <div class="h-[calc(100vh-220px)] bg-white container mx-auto py-[16px] px-[5px] rounded-lg text-gray-800 font-lato relative">
+      <div class="h-[calc(100vh-250px)] px-[19px] layout-content overflow-y-auto">
         <h1 class="text-[16px] text-blue-gray-800 font-lato font-bold mb-[16px]">
           Detail Akun RW
         </h1>
@@ -178,7 +179,17 @@ export default {
       isShowVerifyConfirmationDialog: false,
       isShowRejectConfirmationDialog: false,
       isShowVerifyInformationDialog: false,
-      isShowRejectInformationDialog: false
+      isShowRejectInformationDialog: false,
+      navigations: [
+        {
+          label: 'Klaim Akun RW',
+          link: '/'
+        },
+        {
+          label: 'Detail Akun RW',
+          link: '/detail/1'
+        }
+      ]
     }
   },
   methods: {
