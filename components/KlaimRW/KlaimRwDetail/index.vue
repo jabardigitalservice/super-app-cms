@@ -21,7 +21,7 @@
     </div>
     <div class="h-[calc(100vh-220px)] bg-white container mx-auto py-[16px] px-[5px] rounded-lg text-gray-800 font-lato relative">
       <div class="h-[calc(100vh-250px)] px-[19px] layout-content overflow-y-auto">
-        <h1 class="text-[16px] text-blue-gray-800 font-lato font-bold mb-[16px]">
+        <h1 class="text-[16px] text-blue-gray-800 font-roboto font-bold mb-[16px]">
           Detail Akun RW
         </h1>
         <div class="table-content">

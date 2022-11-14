@@ -34,6 +34,5 @@ export default {
 <style scoped>
   .breadcrumb__item+.breadcrumb__item::before{
     content: '/';
-    padding-left: 5px;
   }
 </style>
