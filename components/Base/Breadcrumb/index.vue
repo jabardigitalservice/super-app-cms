@@ -6,7 +6,6 @@
         :key="index"
         :to="item.link"
         class="font-roboto text-[28px] font-medium text-blue-gray-300 breadcrumb__item"
-        :class="{'text-[#022B55]':isActiveLink(item.link)}"
       >
         {{ item.label }}
       </NuxtLink>
@@ -22,11 +21,6 @@ export default {
       type: Array,
       default: () => []
     }
-  },
-  methods: {
-    isActiveLink (link) {
-      return link === this.$route.path
-    }
   }
 }
 </script>
@@ -34,5 +28,8 @@ export default {
 <style scoped>
   .breadcrumb__item+.breadcrumb__item::before{
     content: '/';
+  }
+  a.nuxt-link-exact-active{
+    color: #022B55
   }
 </style>
