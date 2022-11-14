@@ -29,7 +29,7 @@ export default {
   .breadcrumb__item+.breadcrumb__item::before{
     content: '/';
   }
-  a.nuxt-link-exact-active{
+  .breadcrumb__item.nuxt-link-exact-active{
     color: #022B55
   }
 </style>
