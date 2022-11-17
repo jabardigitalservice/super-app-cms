@@ -64,7 +64,7 @@ export default {
   },
   async fetch () {
     try {
-      const response = await this.$axios.get('/user/rw', { params: this.query })
+      const response = await this.$api.get('/user/rw', { params: this.query })
       console.log(response.data)
       const { data } = response.data
       this.data = data || []
