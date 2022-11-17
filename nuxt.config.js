@@ -25,7 +25,9 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
-    { src: '~/plugins/jds-design-system.js' }
+    { src: '~/plugins/jds-design-system.js' },
+    // plugin axios
+    '~/plugins/axios'
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -109,6 +111,7 @@ export default {
 
   // Public runtime config
   publicRuntimeConfig: {
+    apiKey: process.env.API_KEY,
     axios: {
       browserBaseURL: process.env.BROWSER_BASE_URL + '/' + process.env.VERSION_ENDPOINT
     }

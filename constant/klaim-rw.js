@@ -16,7 +16,7 @@ export const headerTableKlaimRW = [
     text: 'Tanggal Registrasi'
   },
   {
-    key: 'status',
+    key: 'customStatus',
     text: 'Status'
   },
   {
@@ -24,3 +24,9 @@ export const headerTableKlaimRW = [
     text: 'Aksi'
   }
 ]
+
+export const userStatus = {
+  waiting: 'Menunggu Verifikasi',
+  verified: 'Terverifikasi',
+  rejected: 'Ditolak'
+}
