@@ -29,7 +29,7 @@
         @per-page-change="perPageChange"
       >
         <!-- eslint-disable-next-line vue/valid-v-slot -->
-        <template #item.address="{}">
+        <template #item.address>
           <button
             class="border border-green-700 text-green-700 hover:bg-green-50 rounded-lg px-4 py-1"
             @click="openModalDetailAddress"
@@ -38,7 +38,7 @@
           </button>
         </template>
         <!-- eslint-disable-next-line vue/valid-v-slot -->
-        <template #item.document="{}">
+        <template #item.document>
           <button
             class="border border-green-700 text-green-700 hover:bg-green-50 rounded-lg px-4 py-1"
           >
@@ -173,17 +173,29 @@ export default {
 </script>
 
 <style scoped>
-  .jds-data-table::v-deep {
+  .jds-data-table:deep {
     border-spacing: 1px !important;
     @apply !bg-[#EDEFF3];
   }
 
-  .jds-data-table::v-deep tr th {
-    @apply w-min border-r border-white;
+  .jds-data-table:deep tr th {
+    @apply min-w-[170px] border-r border-white;
   }
 
-  .jds-data-table::v-deep tr td {
-    @apply w-min border-r border-gray-200;
+  .jds-data-table:deep tr td {
+    @apply min-w-[170px] border-r border-gray-200;
+  }
+
+  .table-content::-webkit-scrollbar{
+    @apply w-5 h-5;
+  }
+
+  .table-content::-webkit-scrollbar-track {
+    @apply bg-gray-50 rounded-b-lg border-none;
+  }
+
+  .table-content::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 rounded-xl border-solid border-[6px] border-transparent bg-clip-content;
   }
 
 </style>
