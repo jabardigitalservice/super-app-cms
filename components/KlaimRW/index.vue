@@ -55,11 +55,25 @@ export default {
         disabled: true
       },
       query: {
-        per_page: 5,
-        current_page: 1
+        pageSize: 5,
+        page: 1
       },
       headerTableKlaimRW,
       showDetailAddress: false
+    }
+  },
+  async fetch () {
+    try {
+      const response = await this.$axios.get('/user/rw', { params: this.query })
+      console.log(response.data)
+      const { data } = response.data
+      this.data = data || []
+      this.pagination.disabled = false
+      this.pagination.currentPage = data?.page || 1
+      this.pagination.totalRows = data?.totalData || 0
+      this.pagination.itemsPerPage = data?.pageSize || this.query.pageSize
+    } catch (error) {
+      this.pagination.disabled = true
     }
   },
   mounted () {
@@ -67,19 +81,19 @@ export default {
   },
   methods: {
     nextPage (value) {
-      this.query.current_page = value
+      this.query.page = value
     },
     previousPage (value) {
-      this.query.current_page = value
+      this.query.page = value
     },
     pageChange (value) {
-      this.query.current_page = value
+      this.query.page = value
     },
     perPageChange (value) {
       if (value) {
-        this.query.per_page = value
+        this.query.pageSize = value
       }
-      this.query.current_page = 1
+      this.query.page = 1
     }
   }
 }
