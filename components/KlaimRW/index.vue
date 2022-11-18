@@ -75,16 +75,36 @@
       :show="showDetailAddress"
       @close="showDetailAddress = false"
     />
+    <PopupVerifyRW
+      :show-popup="showVerifyRW"
+      :account-name="dataUser.name"
+      @submit="actionVerifyUser"
+      @close="showVerifyRW=false"
+    />
+    <PopupInformation
+      :show-popup="dataInfo.show"
+      title="Verifikasi Akun RW"
+      :description-text="dataInfo.info"
+      :account-name="dataUser.name"
+      :message="dataInfo.message"
+      @close="onClosePopupInfo"
+    />
   </div>
 </template>
 
 <script>
 import debounce from 'lodash.debounce'
+import PopupVerifyRW from './Popup/VerifyConfirmation.vue'
+import PopupInformation from './Popup/Information.vue'
 import { headerTableKlaimRW, userStatus } from '~/constant/klaim-rw'
 import { generateItemsPerPageOptions, formatDate } from '~/utils'
 
 export default {
   name: 'ComponentKlaimRW',
+  components: {
+    PopupVerifyRW,
+    PopupInformation
+  },
   data () {
     return {
       search: '',
@@ -104,7 +124,17 @@ export default {
       },
       headerTableKlaimRW,
       userStatus,
-      showDetailAddress: false
+      showDetailAddress: false,
+      showVerifyRW: false,
+      dataUser: {
+        id: null,
+        name: ''
+      },
+      dataInfo: {
+        show: false,
+        info: '',
+        message: ''
+      }
     }
   },
   async fetch () {
@@ -132,6 +162,14 @@ export default {
           date: formatDate(item.createdAt)
         }
       })
+    }
+  },
+  watch: {
+    query: {
+      deep: true,
+      handler () {
+        this.$fetch()
+      }
     }
   },
   mounted () {
@@ -167,6 +205,30 @@ export default {
     },
     openModalDetailAddress () {
       this.showDetailAddress = true
+    },
+    verifyUser (data) {
+      const { id, name } = data
+      this.showVerifyRW = true
+      this.dataUser.id = id || null
+      this.dataUser.name = name || '-'
+    },
+    async actionVerifyUser () {
+      const { id } = this.dataUser
+      try {
+        await this.$api.post('/user/role/verify-rw', { userId: id })
+        this.showVerifyRW = false
+        this.dataInfo.show = true
+        this.dataInfo.info = 'Verifikasi akun RW telah berhasil dilakukan.'
+        this.dataInfo.message = 'Email terkait informasi verifikasi telah dikirimkan ke email akun RW bersangkutan.'
+      } catch (error) {
+        this.showVerifyRW = false
+        this.dataInfo.info = 'Verifikasi akun RW gagal dilakukan.'
+        this.dataInfo.message = ''
+      }
+    },
+    onClosePopupInfo () {
+      this.dataInfo.show = false
+      this.$fetch()
     }
   }
 }
