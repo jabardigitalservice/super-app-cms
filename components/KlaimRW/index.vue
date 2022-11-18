@@ -75,23 +75,16 @@
       :show="showDetailAddress"
       @close="showDetailAddress = false"
     />
-    <PopupConfirmationRejectKlaimRw :show-popup="isShowPopupRejectConfirmationDialog" :account="dataUser" @close="isShowPopupRejectConfirmationDialog=false" />
-    <PopupInformation
-      :show-popup="isShowRejectInformationDialog"
-      :account-name="dataUser?.name"
-      title="Penolakan Akun RW"
-      :description-text="dataInfo.info"
-      message="Email terkait informasi penolakan telah dikirimkan ke email akun RW bersangkutan."
-      <PopupVerifyRW
+    <PopupRejectRw :show-popup="showRejectRw" :account-name="dataUser.name" :account-email="dataUser.email" @close="showRejectRw=false" @submit="actionRejectUser" />
+    <PopupVerifyRW
       :show-popup="showVerifyRW"
       :account-name="dataUser.name"
-      @close="isShowRejectInformationDialog=false"
       @submit="actionVerifyUser"
       @close="showVerifyRW=false"
     />
     <PopupInformation
       :show-popup="dataInfo.show"
-      title="Verifikasi Akun RW"
+      :title="dataInfo.title"
       :description-text="dataInfo.info"
       :account-name="dataUser.name"
       :message="dataInfo.message"
@@ -103,15 +96,15 @@
 <script>
 import debounce from 'lodash.debounce'
 import PopupVerifyRW from './Popup/VerifyConfirmation.vue'
+import PopupRejectRw from './Popup/RejectConfirmation.vue'
 import PopupInformation from './Popup/Information.vue'
 import { headerTableKlaimRW, userStatus } from '~/constant/klaim-rw'
 import { generateItemsPerPageOptions, formatDate } from '~/utils'
-import PopupConfirmationRejectKlaimRw from '~/components/KlaimRW/Popup/RejectConfirmation.vue'
 
 export default {
   name: 'ComponentKlaimRW',
   components: {
-    PopupConfirmationRejectKlaimRw, PopupVerifyRW, PopupInformation
+    PopupRejectRw, PopupVerifyRW, PopupInformation
   },
   data () {
     return {
@@ -134,11 +127,14 @@ export default {
       userStatus,
       showDetailAddress: false,
       showVerifyRW: false,
+      showRejectRw: false,
       dataUser: {
         id: null,
-        name: ''
+        name: '',
+        email: ''
       },
       dataInfo: {
+        title: '',
         show: false,
         info: '',
         message: ''
@@ -214,21 +210,25 @@ export default {
     openModalDetailAddress () {
       this.showDetailAddress = true
     },
-    rejectUser (user) {
-      const { id, name } = user
+    rejectUser (data) {
+      const { id, name, email } = data
       this.dataUser.id = id || ''
       this.dataUser.name = name || ''
-      this.isShowPopupRejectConfirmationDialog = true
+      this.dataUser.email = email || ''
+      this.showRejectRw = true
     },
     async actionRejectUser () {
+      this.showRejectRw = false
+      this.dataInfo.title = 'Penolakan Akun RW'
       try {
         await this.$api.post('/user/role/reject-rw', { userId: this.dataUser.id })
-        this.isShowPopupRejectConfirmationDialog = false
         this.dataInfo.show = true
         this.dataInfo.info = 'Penolakan akun RW telah berhasil dilakukan.'
         this.dataInfo.message = 'Email terkait informasi penolakan telah dikirimkan ke email akun RW bersangkutan.'
       } catch (error) {
-        console.log(error)
+        this.dataInfo.show = true
+        this.dataInfo.info = 'Penolakan akun RW gagal dilakukan'
+        this.dataInfo.message = ''
       }
     },
     verifyUser (data) {
@@ -239,6 +239,7 @@ export default {
     },
     async actionVerifyUser () {
       const { id } = this.dataUser
+      this.dataInfo.title = 'Verifikasi Akun RW'
       try {
         await this.$api.post('/user/role/verify-rw', { userId: id })
         this.showVerifyRW = false
@@ -247,6 +248,7 @@ export default {
         this.dataInfo.message = 'Email terkait informasi verifikasi telah dikirimkan ke email akun RW bersangkutan.'
       } catch (error) {
         this.showVerifyRW = false
+        this.dataInfo.show = true
         this.dataInfo.info = 'Verifikasi akun RW gagal dilakukan.'
         this.dataInfo.message = ''
       }
