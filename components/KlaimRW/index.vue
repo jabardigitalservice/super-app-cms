@@ -75,6 +75,15 @@
       :show="showDetailAddress"
       @close="showDetailAddress = false"
     />
+    <PopupConfirmationRejectKlaimRw :show-popup="isShowPopupRejectConfirmationDialog" :account="dataUser" @close="isShowPopupRejectConfirmationDialog=false" />
+    <PopupInformation
+      :show-popup="isShowRejectInformationDialog"
+      :account-name="dataUser?.name"
+      title="Penolakan Akun RW"
+      :description-text="dataInfo.info"
+      message="Email terkait informasi penolakan telah dikirimkan ke email akun RW bersangkutan."
+      @close="isShowRejectInformationDialog=false"
+    />
   </div>
 </template>
 
@@ -82,9 +91,14 @@
 import debounce from 'lodash.debounce'
 import { headerTableKlaimRW, userStatus } from '~/constant/klaim-rw'
 import { generateItemsPerPageOptions, formatDate } from '~/utils'
+import PopupConfirmationRejectKlaimRw from '~/components/KlaimRW/Popup/RejectConfirmation.vue'
+import PopupInformation from '~/components/KlaimRW/Popup/Information.vue'
 
 export default {
   name: 'ComponentKlaimRW',
+  components: {
+    PopupConfirmationRejectKlaimRw, PopupInformation
+  },
   data () {
     return {
       search: '',
@@ -104,7 +118,19 @@ export default {
       },
       headerTableKlaimRW,
       userStatus,
-      showDetailAddress: false
+      showDetailAddress: false,
+      isShowPopupRejectConfirmationDialog: false,
+      isShowRejectInformationDialog: false,
+      dataUser: {
+        id: '',
+        name: '',
+        email: ''
+      },
+      dataInfo: {
+        show: false,
+        info: '',
+        message: ''
+      }
     }
   },
   async fetch () {
@@ -167,6 +193,23 @@ export default {
     },
     openModalDetailAddress () {
       this.showDetailAddress = true
+    },
+    rejectUser (user) {
+      const { id, name } = user
+      this.dataUser.id = id || ''
+      this.dataUser.name = name || ''
+      this.isShowPopupRejectConfirmationDialog = true
+    },
+    async actionRejectUser () {
+      try {
+        await this.$api.post('/user/role/reject-rw', { userId: this.dataUser.id })
+        this.isShowPopupRejectConfirmationDialog = false
+        this.dataInfo.show = true
+        this.dataInfo.info = 'Penolakan akun RW telah berhasil dilakukan.'
+        this.dataInfo.message = 'Email terkait informasi penolakan telah dikirimkan ke email akun RW bersangkutan.'
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 }
