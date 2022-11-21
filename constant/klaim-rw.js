@@ -1,27 +1,33 @@
 export const headerTableKlaimRW = [
   {
     key: 'name',
-    text: 'Nama Akun'
+    text: 'Nama Akun',
+    sortable: true
   },
   {
     key: 'address',
-    text: 'Alamat RW'
+    text: 'Alamat RW',
+    sortable: false
   },
   {
     key: 'document',
-    text: 'Dokumen SK RW'
+    text: 'Dokumen SK RW',
+    sortable: false
   },
   {
     key: 'date',
-    text: 'Tanggal Registrasi'
+    text: 'Tanggal Registrasi',
+    sortable: true
   },
   {
-    key: 'customStatus',
-    text: 'Status'
+    key: 'status',
+    text: 'Status',
+    sortable: true
   },
   {
     key: 'action',
-    text: 'Aksi'
+    text: 'Aksi',
+    sortable: false
   }
 ]
 
