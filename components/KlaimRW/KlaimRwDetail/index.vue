@@ -11,10 +11,10 @@
         </template>
       </BaseButton>
       <div class="flex">
-        <BaseButton class="w-fit border border-red-400 text-red-400 mr-[12px] hover:bg-red-50" @click="isShowRejectConfirmationDialog=true">
+        <BaseButton class="w-fit border border-red-400 text-red-400 mr-[12px] hover:bg-red-50" @click="rejectConfirmationHandle">
           Tolak Akun RW Ini
         </BaseButton>
-        <BaseButton class="w-fit bg-green-700 text-white hover:bg-green-600" @click="isShowVerifyConfirmationDialog=true">
+        <BaseButton class="w-fit bg-green-700 text-white hover:bg-green-600" @click="verifyConfirmationHandle">
           Verifikasi Akun RW Ini
         </BaseButton>
       </div>
@@ -31,25 +31,37 @@
                 <td class="w-[164px]">
                   <strong>Nama</strong>
                 </td>
-                <td>-</td>
+                <td>{{ detail?.name || '-' }}</td>
               </tr>
               <tr>
                 <td><strong>Email</strong></td>
-                <td>-</td>
+                <td>{{ detail?.email || '-' }}</td>
               </tr>
               <tr>
                 <td><strong>No.Tlp</strong></td>
-                <td>-</td>
+                <td>{{ detail?.phone||'-' }}</td>
               </tr>
               <tr>
                 <td><strong>Tanggal Registrasi</strong></td>
-                <td>-</td>
+                <td>{{ detail?.date||'-' }}</td>
               </tr>
               <tr>
                 <td>
                   <strong>Status</strong>
                 </td>
-                <td>-</td>
+                <td>
+                  <div class="flex items-center">
+                    <div
+                      v-show="detail?.rwStatus"
+                      :class="{
+                        'rounded-full h-2 w-2 mr-2':true,
+                        'bg-green-600':detail.rwStatus==userStatus.verified,
+                        'bg-yellow-600':detail.rwStatus==userStatus.waiting,
+                        'bg-red-600':detail.rwStatus==userStatus.rejected
+                      }"
+                    />{{ detail.rwStatus || '-' }}
+                  </div>
+                </td>
               </tr>
             </DetailTableComponent>
           </div>
@@ -71,27 +83,27 @@
                 <td class="w-[164px]">
                   <strong>Kota/kabupaten</strong>
                 </td>
-                <td>-</td>
+                <td>{{ detail?.dataKtp?.city || '-' }}</td>
               </tr>
               <tr>
                 <td><strong>Kecamatan</strong></td>
-                <td>-</td>
+                <td>{{ detail?.dataKtp?.district || '-' }}</td>
               </tr>
               <tr>
                 <td><strong>Kelurahan/Desa</strong></td>
-                <td>-</td>
+                <td>{{ detail?.dataKtp?.village || '-' }}</td>
               </tr>
               <tr>
                 <td><strong>Dusun</strong></td>
-                <td>-</td>
+                <td>{{ detail?.dataKtp?.subVillage || '-' }}</td>
               </tr>
               <tr>
                 <td><strong>RT/RW</strong></td>
-                <td>-</td>
+                <td>{{ detail?.dataKtp?.rtRw||'-' }}</td>
               </tr>
               <tr>
                 <td><strong>Alamat Lengkap</strong></td>
-                <td>-</td>
+                <td>{{ detail?.dataKtp?.address||'-' }}</td>
               </tr>
             </DetailTableComponent>
           </div>
@@ -101,27 +113,27 @@
                 <td class="w-[164px]">
                   <strong>Kota/kabupaten</strong>
                 </td>
-                <td>-</td>
+                <td>{{ detail?.cty?.name || '-' }}</td>
               </tr>
               <tr>
                 <td><strong>Kecamatan</strong></td>
-                <td>-</td>
+                <td>{{ detail?.district?.name || '-' }}</td>
               </tr>
               <tr>
                 <td><strong>Kelurahan/Desa</strong></td>
-                <td>-</td>
+                <td>{{ detail?.village?.name || '-' }}</td>
               </tr>
               <tr>
                 <td><strong>Dusun</strong></td>
-                <td>-</td>
+                <td>{{ detail?.subVillage || '-' }}</td>
               </tr>
               <tr>
                 <td><strong>RT/RW</strong></td>
-                <td>-</td>
+                <td>{{ detail?.rtRw || '-' }}</td>
               </tr>
               <tr>
                 <td><strong>Alamat Lengkap</strong></td>
-                <td>-</td>
+                <td>{{ detail?.address || '-' }}</td>
               </tr>
             </DetailTableComponent>
           </div>
@@ -129,34 +141,26 @@
       </div>
     </div>
     <RejectConfirmation
-      :show-popup="isShowRejectConfirmationDialog"
+      :show-popup="confirmationDialog.showReject"
       dialog-type="confirmation"
-      account-name="Asep Kumaha"
-      account-email="asep.kumaha@gmail.com"
-      @submit="showInformationRejectDialogHandle"
-      @close="isShowRejectConfirmationDialog=false"
+      :account-name="detail?.name || '-'"
+      :account-email="detail?.email || '-'"
+      @submit="actionRejectUser"
+      @close="confirmationDialog.showReject=false"
     />
     <VerifyConfirmation
-      :show-popup="isShowVerifyConfirmationDialog"
+      :show-popup="confirmationDialog.showVerify"
       dialog-type="confirmation"
-      account-name="Asep Kumaha"
-      @submit="showInformationVerifyDialogHandle"
-      @close="isShowVerifyConfirmationDialog=false"
+      :account-name="detail?.name || '-'"
+      @submit="actionVerifyUser"
+      @close="confirmationDialog.showVerify=false"
     />
     <InformationPopup
-      :show-popup="isShowVerifyInformationDialog"
-      account-name="Asep Kumaha"
-      title="Verifikasi Akun RW"
-      description-text="Verifikasi akun RW telah berhasil dilakukan."
-      message="Email terkait informasi verifikasi telah dikirimkan ke email akun RW bersangkutan."
-      @close="closeInformationDialogHandle"
-    />
-    <InformationPopup
-      :show-popup="isShowRejectInformationDialog"
-      account-name="Asep Kumaha"
-      title="Penolakan Akun RW"
-      description-text="Penolakan akun RW telah berhasil dilakukan."
-      message="Email terkait informasi penolakan telah dikirimkan ke email akun RW bersangkutan."
+      :show-popup="informationDialog.showDialog"
+      :account-name="detail?.name || '-'"
+      :title="informationDialog.title"
+      :description-text="informationDialog.info"
+      :message="informationDialog.message"
       @close="closeInformationDialogHandle"
     />
   </div>
@@ -168,6 +172,8 @@ import VerifyConfirmation from '~/components/KlaimRW/Popup/VerifyConfirmation.vu
 import InformationPopup from '~/components/KlaimRW/Popup/Information.vue'
 import ArrowLeft from '~/assets/icon/arrow-left.svg?inline'
 import DetailTableComponent from '~/components/KlaimRW/KlaimRwDetail/DetailTableComponent'
+import { formatDate } from '~/utils'
+import { userStatus } from '~/constant/klaim-rw'
 
 export default {
   name: 'KlaimRwDetail',
@@ -176,10 +182,16 @@ export default {
   },
   data () {
     return {
-      isShowVerifyConfirmationDialog: false,
-      isShowRejectConfirmationDialog: false,
-      isShowVerifyInformationDialog: false,
-      isShowRejectInformationDialog: false,
+      confirmationDialog: {
+        showReject: false,
+        showVerify: false
+      },
+      informationDialog: {
+        title: '',
+        showDialog: false,
+        info: '',
+        message: ''
+      },
       navigations: [
         {
           label: 'Klaim Akun RW',
@@ -187,26 +199,25 @@ export default {
         },
         {
           label: 'Detail Akun RW',
-          link: '/detail/1'
+          link: `/detail/${this.$route.params.id}`
         }
-      ]
+      ],
+      detail: {},
+      userStatus
+    }
+  },
+  async fetch () {
+    try {
+      const detailAccount = await this.$api.get(`/user/rw/${this.$route.params.id}`)
+      this.detail = detailAccount.data.data
+      this.detail.date = detailAccount.data.data ? formatDate(detailAccount.data.data.createdAt) : ''
+    } catch {
+      this.detail = {}
     }
   },
   methods: {
     goBackHandle () {
       this.$router.push('/')
-    },
-    showInformationVerifyDialogHandle () {
-      this.isShowVerifyConfirmationDialog = !this.isShowVerifyConfirmationDialog
-      this.isShowVerifyInformationDialog = true
-    },
-    showInformationRejectDialogHandle () {
-      this.isShowRejectConfirmationDialog = !this.isShowRejectConfirmationDialog
-      this.isShowRejectInformationDialog = true
-    },
-    closeInformationDialogHandle () {
-      this.isShowRejectInformationDialog = false
-      this.isShowVerifyInformationDialog = false
     }
   }
 }
