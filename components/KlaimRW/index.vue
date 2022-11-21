@@ -63,6 +63,7 @@
         <!-- eslint-disable-next-line vue/valid-v-slot -->
         <template #item.action="{item}">
           <KlaimRWTableAction
+            :status="item.rwStatus"
             @detail="$router.push(`/detail/${item.id}`)"
             @verify="verifyUser(item)"
             @reject="rejectUser(item)"
