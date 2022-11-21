@@ -218,6 +218,50 @@ export default {
   methods: {
     goBackHandle () {
       this.$router.push('/')
+    },
+    rejectConfirmationHandle () {
+      this.confirmationDialog.showReject = true
+      this.confirmationDialog.name = this.detail?.name || ''
+      this.confirmationDialog.email = this.detail?.email || ''
+      this.confirmationDialog.id = this.detail?.id || ''
+    },
+    verifyConfirmationHandle () {
+      this.confirmationDialog.showVerify = true
+      this.confirmationDialog.name = this.detail?.name || ''
+      this.confirmationDialog.id = this.detail?.id || ''
+    },
+    async actionRejectUser () {
+      this.confirmationDialog.showReject = false
+      this.informationDialog.title = 'Penolakan Akun RW'
+      try {
+        await this.$api.post('/user/role/reject-rw', { userId: this.detail?.id })
+        this.informationDialog.showDialog = true
+        this.informationDialog.info = 'Penolakan akun RW telah berhasil dilakukan.'
+        this.informationDialog.message = 'Email terkait informasi penolakan telah dikirimkan ke email akun RW bersangkutan.'
+      } catch (error) {
+        this.informationDialog.showDialog = true
+        this.informationDialog.info = 'Penolakan akun RW gagal dilakukan'
+        this.informationDialog.message = ''
+      }
+    },
+    async actionVerifyUser () {
+      this.informationDialog.title = 'Verifikasi Akun RW'
+      try {
+        await this.$api.post('/user/role/verify-rw', { userId: this.detail?.id })
+        this.confirmationDialog.showVerify = false
+        this.informationDialog.showDialog = true
+        this.informationDialog.info = 'Verifikasi akun RW telah berhasil dilakukan.'
+        this.informationDialog.message = 'Email terkait informasi verifikasi telah dikirimkan ke email akun RW bersangkutan.'
+      } catch (error) {
+        this.informationDialog.showDialog = true
+        this.confirmationDialog.showVerify = false
+        this.informationDialog.info = 'Verifikasi akun RW gagal dilakukan.'
+        this.informationDialog.message = ''
+      }
+    },
+    closeInformationDialogHandle () {
+      this.informationDialog.showDialog = false
+      this.$fetch()
     }
   }
 }
