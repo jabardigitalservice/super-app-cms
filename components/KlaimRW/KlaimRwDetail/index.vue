@@ -11,10 +11,18 @@
         </template>
       </BaseButton>
       <div class="flex">
-        <BaseButton class="w-fit border border-red-400 text-red-400 mr-[12px] hover:bg-red-50" @click="rejectConfirmationHandle">
+        <BaseButton
+          class="w-fit border border-red-400 text-red-400 mr-[12px] hover:bg-red-50 disabled:opacity-50"
+          :disabled="detail.rwStatus==userStatus.verified || detail.rwStatus==userStatus.rejected"
+          @click="rejectConfirmationHandle"
+        >
           Tolak Akun RW Ini
         </BaseButton>
-        <BaseButton class="w-fit bg-green-700 text-white hover:bg-green-600" @click="verifyConfirmationHandle">
+        <BaseButton
+          class="w-fit bg-green-700 text-white hover:bg-green-600 disabled:opacity-50"
+          :disabled="detail.rwStatus==userStatus.verified || detail.rwStatus==userStatus.rejected"
+          @click="verifyConfirmationHandle"
+        >
           Verifikasi Akun RW Ini
         </BaseButton>
       </div>
