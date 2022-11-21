@@ -27,6 +27,7 @@
         @previous-page="previousPage"
         @page-change="pageChange"
         @per-page-change="perPageChange"
+        @change:sort="sortChange"
       >
         <!-- eslint-disable-next-line vue/valid-v-slot -->
         <template #item.address="{item}">
@@ -46,7 +47,7 @@
           </button>
         </template>
         <!-- eslint-disable-next-line vue/valid-v-slot -->
-        <template #item.customStatus="{item}">
+        <template #item.status="{item}">
           <div class="flex items-center">
             <span
               :class="{
@@ -122,7 +123,9 @@ export default {
       query: {
         pageSize: 5,
         page: 1,
-        nameFilter: ''
+        nameFilter: '',
+        sortType: 0,
+        sortBy: 'name'
       },
       headerTableKlaimRW,
       userStatus,
@@ -207,6 +210,16 @@ export default {
         this.query.pageSize = value
       }
       this.query.page = 1
+    },
+    sortChange (value) {
+      const key = Object.keys(value)[0]
+      if (key && value[key] !== 'no-sort') {
+        this.query.sortType = value[key] === 'asc' ? 0 : 1
+        this.query.sortBy = key === 'status' ? 'rwStatus' : key
+      } else {
+        this.query.sortType = 0
+        this.query.sortBy = 'name'
+      }
     },
     async openModalDetailAddress (item) {
       const { name, email } = item
