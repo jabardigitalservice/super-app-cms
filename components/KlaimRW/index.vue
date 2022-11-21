@@ -165,20 +165,6 @@ export default {
         }
       })
     }
-    // mappingData (data) {
-    //   if (this.errors.company && this.errors.email) {
-    //     return {
-    //       address: data?.address,
-    //       city: data?.city?.name,
-    //       district: data?.district?.name,
-    //       village: data?.village?.name,
-    //       subVillage: data?.subVillage?.name,
-    //       rtRw: data?.rtRw?.name
-
-    //     }
-    //   }
-    //   return {}
-    // }
   },
   watch: {
     query: {
