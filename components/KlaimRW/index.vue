@@ -29,10 +29,10 @@
         @per-page-change="perPageChange"
       >
         <!-- eslint-disable-next-line vue/valid-v-slot -->
-        <template #item.address>
+        <template #item.address="{item}">
           <button
             class="border border-green-700 text-green-700 hover:bg-green-50 rounded-lg px-4 py-1"
-            @click="openModalDetailAddress"
+            @click="openModalDetailAddress(item)"
           >
             Lihat Alamat
           </button>
@@ -71,7 +71,8 @@
     </div>
     <KlaimRWDetailAddress
       title="Alamat RW"
-      :data="detailData"
+      :detail-data="detailData"
+      :data-user="dataUser"
       :show="showDetailAddress"
       @close="showDetailAddress = false"
     />
@@ -207,8 +208,31 @@ export default {
       }
       this.query.page = 1
     },
-    openModalDetailAddress () {
+    async openModalDetailAddress (item) {
+      const { name, email } = item
+      this.dataUser.name = name || '-'
+      this.dataUser.email = email || '-'
       this.showDetailAddress = true
+      try {
+        const response = await this.$api.get(`/user/rw/${item.id}`)
+        const { data } = response?.data
+        this.detailData = {
+          dataKtp: data?.dataKtp,
+          dataDomicile: {
+            address: data?.address,
+            city: data?.city?.name,
+            district: data?.district?.name,
+            village: data?.village?.name,
+            subVillage: data?.subVillage?.name,
+            rtRw: data?.rtRw?.name
+          }
+        }
+      } catch (error) {
+        this.detailData = {
+          dataKtp: {},
+          dataDomicile: {}
+        }
+      }
     },
     rejectUser (data) {
       const { id, name, email } = data
