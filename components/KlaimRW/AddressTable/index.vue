@@ -1,27 +1,32 @@
 <template>
-  <div class="rounded-lg overflow-x-scroll font-roboto table-content">
-    <jds-simple-table>
-      <thead class="border">
-        <tr>
-          <th>Kota/Kabupaten</th>
-          <th>Kecamatan</th>
-          <th>Kelurahan/Desa</th>
-          <th>Dusun</th>
-          <th>RT/RW</th>
-          <th>Alamat Lengkap</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="text-gray-800">
-          <td>Data</td>
-          <td>Data</td>
-          <td>Data</td>
-          <td>Data</td>
-          <td>Data</td>
-          <td>Data</td>
-        </tr>
-      </tbody>
-    </jds-simple-table>
+  <div>
+    <div v-if="isDataAvailable" class="rounded-lg overflow-x-scroll font-roboto table-content">
+      <jds-simple-table>
+        <thead class="border">
+          <tr>
+            <th>Kota/Kabupaten</th>
+            <th>Kecamatan</th>
+            <th>Kelurahan/Desa</th>
+            <th>Dusun</th>
+            <th>RT/RW</th>
+            <th>Alamat Lengkap</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="text-gray-800">
+            <td>{{ dataTable.city || '-' }}</td>
+            <td>{{ dataTable.district || '-' }}</td>
+            <td>{{ dataTable.village || '-' }}</td>
+            <td>{{ dataTable.subVillage || '-' }}</td>
+            <td>{{ dataTable.rtRw || '-' }}</td>
+            <td>{{ dataTable.address || '-' }}</td>
+          </tr>
+        </tbody>
+      </jds-simple-table>
+    </div>
+    <div v-else>
+      Tidak ada data
+    </div>
   </div>
 </template>
 
@@ -35,6 +40,18 @@ export default {
     dataTable: {
       type: Object,
       default: () => ({})
+    }
+  },
+  computed: {
+    isDataAvailable () {
+      return !!((
+        this.dataTable.address ||
+        this.dataTable.city ||
+        this.dataTable.district ||
+        this.dataTable.village ||
+        this.dataTable.subVillage ||
+        this.dataTable.rtRw
+      ))
     }
   }
 }

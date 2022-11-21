@@ -13,8 +13,8 @@
                 <td><span class="ml-4">Email</span></td>
               </tr>
               <tr class="text-gray-800">
-                <td>Asep Kumaha</td>
-                <td><span class="ml-4">asepkumaha@gmail.com</span></td>
+                <td>{{ dataUser.name }}</td>
+                <td><span class="ml-4">{{ dataUser.email }}</span></td>
               </tr>
             </table>
           </div>
@@ -22,13 +22,25 @@
             <div class="mb-2 text-gray-800 font-bold">
               Alamat Sesuai KTP
             </div>
-            <KlaimRWAddressTable />
+            <KlaimRWAddressTable
+              v-if="detailData.dataKtp"
+              :data-table="detailData.dataKtp"
+            />
+            <div v-else>
+              Tidak ada data
+            </div>
           </div>
           <div>
             <div class="mb-2 text-gray-800 font-bold">
               Alamat Sesuai Domisili
             </div>
-            <KlaimRWAddressTable />
+            <KlaimRWAddressTable
+              v-if="detailData.dataDomicile"
+              :data-table="detailData.dataDomicile"
+            />
+            <div v-else>
+              Tidak ada data
+            </div>
           </div>
         </div>
         <div class="flex justify-center p-4 bg-gray-50 px-6 rounded-lg">
@@ -60,9 +72,19 @@ export default {
     /**
      * data rw
      */
-    data: {
+    detailData: {
       type: Object,
-      default: () => ({})
+      default: () => ({
+        dataKtp: {},
+        dataDomicile: {}
+      })
+    },
+    dataUser: {
+      type: Object,
+      default: () => ({
+        name: '',
+        email: ''
+      })
     }
   },
   methods: {

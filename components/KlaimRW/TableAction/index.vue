@@ -26,10 +26,18 @@
         <button class="text-sm leading-4 text-gray-800 hover:text-green-700" @click="$emit('detail')">
           Lihat Detail
         </button>
-        <button class="text-sm leading-4 text-gray-800 hover:text-green-700" @click="$emit('verify')">
+        <button
+          v-if="status === userStatus.waiting"
+          class="text-sm leading-4 text-gray-800 hover:text-green-700"
+          @click="$emit('verify')"
+        >
           Verifikasi
         </button>
-        <button class="text-sm leading-4 text-gray-800 hover:text-green-700" @click="$emit('reject')">
+        <button
+          v-if="status === userStatus.waiting"
+          class="text-sm leading-4 text-gray-800 hover:text-green-700"
+          @click="$emit('reject')"
+        >
           Tolak
         </button>
       </div>
@@ -39,6 +47,7 @@
 
 <script>
 import { directive as onClickaway } from 'vue-clickaway'
+import { userStatus } from '~/constant/klaim-rw'
 
 export default {
   name: 'KlaimRWTableAction',
@@ -61,7 +70,8 @@ export default {
             options: { offset: [0, 8] }
           }
         ]
-      }
+      },
+      userStatus
     }
   },
   methods: {
