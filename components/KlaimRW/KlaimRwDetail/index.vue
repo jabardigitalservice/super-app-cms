@@ -265,7 +265,7 @@ export default {
         this.informationDialog.showDialog = true
         this.informationDialog.info = 'Verifikasi akun RW telah berhasil dilakukan.'
         this.informationDialog.message = 'Email terkait informasi verifikasi telah dikirimkan ke email akun RW bersangkutan.'
-      } catch (error) {
+      } catch {
         this.informationDialog.showDialog = true
         this.confirmationDialog.showVerify = false
         this.informationDialog.info = 'Verifikasi akun RW gagal dilakukan.'
