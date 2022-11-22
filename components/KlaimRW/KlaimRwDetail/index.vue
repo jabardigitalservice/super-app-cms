@@ -2,7 +2,10 @@
   <div class="container mx-auto">
     <BaseHeader :navigations="navigations" description-page="Berisi semua daftar terkait klaim yang dilakukan oleh RW di aplikasi Sapawarga." />
     <div class="flex justify-between pt-[16px] pb-[32px]">
-      <BaseButton class="w-[126px] border border-green-700 text-green-700 hover:bg-green-50" @click="goBackHandle">
+      <BaseButton
+        class="w-[126px] border border-green-700 text-green-700 hover:bg-green-50"
+        @click="goBackHandle"
+      >
         <template #icon-left>
           <div class="flex items-center">
             <ArrowLeft class="w-[14px] h-[12px] mr-[10px]" />
@@ -12,14 +15,16 @@
       </BaseButton>
       <div class="flex">
         <BaseButton
-          class="w-fit border border-red-400 text-red-400 mr-[12px] hover:bg-red-50 disabled:opacity-50"
+          class="w-fit border border-red-400 text-red-400 mr-[12px] disabled:opacity-50 disabled:cursor-not-allowed"
+          :class="{'hover:bg-red-50':detail.rwStatus==userStatus.waiting}"
           :disabled="detail.rwStatus==userStatus.verified || detail.rwStatus==userStatus.rejected"
           @click="rejectConfirmationHandle"
         >
           Tolak Akun RW Ini
         </BaseButton>
         <BaseButton
-          class="w-fit bg-green-700 text-white hover:bg-green-600 disabled:opacity-50"
+          class="w-fit bg-green-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+          :class="{'hover:bg-green-600':detail.rwStatus==userStatus.waiting}"
           :disabled="detail.rwStatus==userStatus.verified || detail.rwStatus==userStatus.rejected"
           @click="verifyConfirmationHandle"
         >
