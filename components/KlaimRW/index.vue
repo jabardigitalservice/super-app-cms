@@ -39,9 +39,10 @@
           </button>
         </template>
         <!-- eslint-disable-next-line vue/valid-v-slot -->
-        <template #item.document>
+        <template #item.document="{item}">
           <button
             class="border border-green-700 text-green-700 hover:bg-green-50 rounded-lg px-4 py-1"
+            @click="onClickDocument(item?.rwDecree)"
           >
             Lihat Dokumen
           </button>
@@ -77,6 +78,12 @@
       :data-user="dataUser"
       :show="showDetailAddress"
       @close="showDetailAddress = false"
+    />
+    <KlaimRWViewDocument
+      title="Dokumen SK RW"
+      :file="dataInfo.file"
+      :show="showDocument"
+      @close="showDocument = false"
     />
     <PopupRejectRw :show-popup="showRejectRw" :account-name="dataUser.name" :account-email="dataUser.email" @close="showRejectRw=false" @submit="actionRejectUser" />
     <PopupVerifyRW
@@ -131,6 +138,7 @@ export default {
       headerTableKlaimRW,
       userStatus,
       showDetailAddress: false,
+      showDocument: false,
       showVerifyRW: false,
       showRejectRw: false,
       dataUser: {
@@ -142,7 +150,8 @@ export default {
         title: '',
         show: false,
         info: '',
-        message: ''
+        message: '',
+        file: ''
       }
     }
   },
@@ -246,6 +255,18 @@ export default {
           dataKtp: {},
           dataDomicile: {}
         }
+      }
+    },
+    async onClickDocument (fileId) {
+      this.showDocument = true
+      try {
+        const response = await this.$api.get(`/file/view/${fileId}`, {
+          headers: { 'x-file-id': fileId }
+        })
+        const { data } = response.data
+        this.dataInfo.file = data || ''
+      } catch {
+        this.dataInfo.file = ''
       }
     },
     rejectUser (data) {
