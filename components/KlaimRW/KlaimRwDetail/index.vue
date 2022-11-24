@@ -13,19 +13,15 @@
           </div>
         </template>
       </BaseButton>
-      <div class="flex">
+      <div v-show="detail.rwStatus==userStatus.waiting" class="flex">
         <BaseButton
-          class="w-fit border border-red-400 text-red-400 mr-[12px] disabled:opacity-50 disabled:cursor-not-allowed"
-          :class="{'hover:bg-red-50':detail.rwStatus==userStatus.waiting}"
-          :disabled="detail.rwStatus==userStatus.verified || detail.rwStatus==userStatus.rejected"
+          class="w-fit border border-red-400 text-red-400 mr-[12px] hover:bg-red-50"
           @click="rejectConfirmationHandle"
         >
           Tolak Akun RW Ini
         </BaseButton>
         <BaseButton
-          class="w-fit bg-green-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
-          :class="{'hover:bg-green-600':detail.rwStatus==userStatus.waiting}"
-          :disabled="detail.rwStatus==userStatus.verified || detail.rwStatus==userStatus.rejected"
+          class="w-fit bg-green-700 text-white hover:bg-green-600"
           @click="verifyConfirmationHandle"
         >
           Verifikasi Akun RW Ini
@@ -81,9 +77,11 @@
           <div class="mb-[16px]">
             <DetailTableComponent header="Dokumen SK RW">
               <tr>
-                <td><strong>dokumen_sk_rw_asep.pdf</strong></td>
+                <td class="w-1/2">
+                  <strong>{{ detail.fileName || '-' }}</strong>
+                </td>
                 <td>
-                  <BaseButton class="w-fit border border-green-600 text-green-600 font-medium py-[6px]">
+                  <BaseButton class="w-fit border border-green-600 text-green-600 font-medium py-[6px]" @click="documentHandle">
                     Lihat Dokumen
                   </BaseButton>
                 </td>
@@ -153,6 +151,7 @@
         </div>
       </div>
     </div>
+    <ViewDocument :show="documentDialog.showDialog" :file="documentDialog.fileId" @close="documentDialog.showDialog=false" />
     <RejectConfirmation
       :show-popup="confirmationDialog.showReject"
       dialog-type="confirmation"
@@ -187,11 +186,12 @@ import ArrowLeft from '~/assets/icon/arrow-left.svg?inline'
 import DetailTableComponent from '~/components/KlaimRW/KlaimRwDetail/DetailTableComponent'
 import { formatDate } from '~/utils'
 import { userStatus } from '~/constant/klaim-rw'
+import ViewDocument from '~/components/KlaimRW/ViewDocument'
 
 export default {
   name: 'KlaimRwDetail',
   components: {
-    ArrowLeft, DetailTableComponent, RejectConfirmation, VerifyConfirmation, InformationPopup
+    ArrowLeft, DetailTableComponent, RejectConfirmation, VerifyConfirmation, InformationPopup, ViewDocument
   },
   data () {
     return {
@@ -204,6 +204,10 @@ export default {
         showDialog: false,
         info: '',
         message: ''
+      },
+      documentDialog: {
+        showDialog: false,
+        fileId: ''
       },
       navigations: [
         {
@@ -234,14 +238,9 @@ export default {
     },
     rejectConfirmationHandle () {
       this.confirmationDialog.showReject = true
-      this.confirmationDialog.name = this.detail?.name || ''
-      this.confirmationDialog.email = this.detail?.email || ''
-      this.confirmationDialog.id = this.detail?.id || ''
     },
     verifyConfirmationHandle () {
       this.confirmationDialog.showVerify = true
-      this.confirmationDialog.name = this.detail?.name || ''
-      this.confirmationDialog.id = this.detail?.id || ''
     },
     async actionRejectUser () {
       this.confirmationDialog.showReject = false
@@ -251,7 +250,7 @@ export default {
         this.informationDialog.showDialog = true
         this.informationDialog.info = 'Penolakan akun RW telah berhasil dilakukan.'
         this.informationDialog.message = 'Email terkait informasi penolakan telah dikirimkan ke email akun RW bersangkutan.'
-      } catch (error) {
+      } catch {
         this.informationDialog.showDialog = true
         this.informationDialog.info = 'Penolakan akun RW gagal dilakukan'
         this.informationDialog.message = ''
@@ -270,6 +269,15 @@ export default {
         this.confirmationDialog.showVerify = false
         this.informationDialog.info = 'Verifikasi akun RW gagal dilakukan.'
         this.informationDialog.message = ''
+      }
+    },
+    async documentHandle () {
+      try {
+        const dataFile = await this.$api.get(`/file/view/${this.detail?.rwDecree}`, { headers: { 'x-file-id': this.detail.rwDecree } })
+        this.documentDialog.showDialog = true
+        this.documentDialog.fileId = dataFile.data.data
+      } catch {
+        this.documentDialog.fileId = ''
       }
     },
     closeInformationDialogHandle () {
