@@ -2,7 +2,7 @@ name: Jabar Super Apps Web Admin
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   docker:
