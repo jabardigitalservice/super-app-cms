@@ -272,10 +272,10 @@ export default {
       }
     },
     async documentHandle () {
+      this.documentDialog.showDialog = true
       this.documentDialog.fileId = 'loading'
       try {
         const dataFile = await this.$api.get(`/file/view/${this.detail?.rwDecree}`, { headers: { 'x-file-id': this.detail.rwDecree } })
-        this.documentDialog.showDialog = true
         this.documentDialog.fileId = dataFile.data.data
       } catch {
         this.documentDialog.fileId = ''
