@@ -259,6 +259,7 @@ export default {
     },
     async onClickDocument (fileId) {
       this.showDocument = true
+      this.dataInfo.file = 'loading'
       try {
         const response = await this.$api.get(`/file/view/${fileId}`, {
           headers: { 'x-file-id': fileId }
