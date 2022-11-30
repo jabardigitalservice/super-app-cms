@@ -132,8 +132,8 @@ export default {
         pageSize: 5,
         page: 1,
         nameFilter: '',
-        sortType: 0,
-        sortBy: 'name'
+        sortType: 'desc',
+        sortBy: 'date'
       },
       headerTableKlaimRW,
       userStatus,
@@ -224,11 +224,11 @@ export default {
     sortChange (value) {
       const key = Object.keys(value)[0]
       if (key && value[key] !== 'no-sort') {
-        this.query.sortType = value[key] === 'asc' ? 0 : 1
+        this.query.sortType = value[key]
         this.query.sortBy = key === 'status' ? 'rwStatus' : key
       } else {
-        this.query.sortType = 0
-        this.query.sortBy = 'name'
+        this.query.sortType = 'desc'
+        this.query.sortBy = 'date'
       }
     },
     async openModalDetailAddress (item) {
