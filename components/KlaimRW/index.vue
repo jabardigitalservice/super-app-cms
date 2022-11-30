@@ -74,6 +74,7 @@
     </div>
     <KlaimRWDetailAddress
       title="Alamat RW"
+      :loading="isLoadingDetailData"
       :detail-data="detailData"
       :data-user="dataUser"
       :show="showDetailAddress"
@@ -121,6 +122,7 @@ export default {
       search: '',
       data: [],
       detailData: {},
+      isLoadingDetailData: false,
       pagination: {
         currentPage: 1,
         totalRows: 0,
@@ -132,8 +134,8 @@ export default {
         pageSize: 5,
         page: 1,
         nameFilter: '',
-        sortType: 0,
-        sortBy: 'name'
+        sortType: 'desc',
+        sortBy: 'date'
       },
       headerTableKlaimRW,
       userStatus,
@@ -224,11 +226,11 @@ export default {
     sortChange (value) {
       const key = Object.keys(value)[0]
       if (key && value[key] !== 'no-sort') {
-        this.query.sortType = value[key] === 'asc' ? 0 : 1
+        this.query.sortType = value[key]
         this.query.sortBy = key === 'status' ? 'rwStatus' : key
       } else {
-        this.query.sortType = 0
-        this.query.sortBy = 'name'
+        this.query.sortType = 'desc'
+        this.query.sortBy = 'date'
       }
     },
     async openModalDetailAddress (item) {
@@ -236,6 +238,7 @@ export default {
       this.dataUser.name = name || '-'
       this.dataUser.email = email || '-'
       this.showDetailAddress = true
+      this.isLoadingDetailData = true
       try {
         const response = await this.$api.get(`/user/rw/${item.id}`)
         const { data } = response?.data
@@ -250,15 +253,18 @@ export default {
             rtRw: data?.rtRw?.name
           }
         }
+        this.isLoadingDetailData = false
       } catch (error) {
         this.detailData = {
           dataKtp: {},
           dataDomicile: {}
         }
+        this.isLoadingDetailData = false
       }
     },
     async onClickDocument (fileId) {
       this.showDocument = true
+      this.dataInfo.file = 'loading'
       try {
         const response = await this.$api.get(`/file/view/${fileId}`, {
           headers: { 'x-file-id': fileId }

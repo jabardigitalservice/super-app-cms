@@ -1,0 +1,61 @@
+name: Jabar Super Apps Web Admin Production
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+        # Configure Docker with Credentials
+      - name: Configure Docker
+        run: |
+          docker login ${{ secrets.REGISTRY_URL }} -u ${{ secrets.REGISTRY_USERNAME }} -p '${{ secrets.REGISTRY_PASSWORD }}'
+        # Set version tag using SHA Hash (short)
+      - name: Set version tag
+        id: vars
+        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+
+        # Build the Docker image
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          tags: ${{ secrets.SERVICE_IMAGENAME }}:${{ steps.vars.outputs.sha_short }}
+          build-args: |
+            KEYCLOCK_CLIENT_ID=${{ secrets.KEYCLOCK_CLIENT_ID_PROD }}
+            KEYCLOCK_ENDPOINT=${{ secrets.KEYCLOCK_ENDPOINT_PROD }}
+      # GitOps
+      - name: GitOps ArgoCD Setup
+        run: |
+          echo "${{ secrets.GITLAB_ARGOCD_KEY }}" > /tmp/gitlab-deploy-ssh-key
+          chmod 600 /tmp/gitlab-deploy-ssh-key
+          export GIT_SSH_COMMAND="ssh -i /tmp/gitlab-deploy-ssh-key -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+          git clone ${{ secrets.GITLAB_ARGOCD_REPOSITORY }}
+      - name: GitOps ArgoCD Update Image Tag
+        uses: mikefarah/yq@master
+        with:
+          cmd: yq -i '.spec.template.spec.containers[0].image = "${{ secrets.SERVICE_IMAGENAME }}:${{ steps.vars.outputs.sha_short }}"' 'jds-terraform-gke/k8s/superapp/development/web-admin/deployment.yaml'
+
+      - name: GitOps ArgoCD Create Branch, Commit, Push
+        run: |
+          export GIT_SSH_COMMAND="ssh -i /tmp/gitlab-deploy-ssh-key -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+          cd jds-terraform-gke/k8s/superapp/production/web-admin
+          git config user.email "github-action@github.com"
+          git config user.name "Github Action"
+          git checkout -b superapp-web-admin-release-${{ steps.vars.outputs.sha_short }}-production
+          git add deployment.yaml
+          git commit -m "[release]: Superapp Web Admin ${{ steps.vars.outputs.sha_short }} to production"
+          git push origin superapp-web-admin-release-${{ steps.vars.outputs.sha_short }}-production -o merge_request.description="# Overview \n\n - Superapp Web Admin Release ${{ steps.vars.outputs.sha_short }} to production \n\n ## Evidence \n\n - title: Release Web Admin ${{ steps.vars.outputs.sha_short }} to production \n - project: Jabar Super Apps \n - participants:  " -o merge_request.create

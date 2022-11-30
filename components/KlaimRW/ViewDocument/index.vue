@@ -5,7 +5,10 @@
         <h1 class="text-green-700 font-roboto font-medium text-[21px] px-4 pt-4">
           Dokumen SK RW
         </h1>
-        <div v-if="file" class="max-h-[calc(100vh-64px-120px)] overflow-scroll">
+        <div v-if="file === 'loading'" class="p-4 flex justify-center items-center">
+          <jds-spinner size="72px" />
+        </div>
+        <div v-else-if="file !== 'loading'" class="max-h-[calc(100vh-64px-120px)] overflow-scroll">
           <embed
             :src="'data:application/pdf;base64,' + file"
             type="application/pdf"
