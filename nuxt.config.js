@@ -25,6 +25,9 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
+    { src: '~/plugins/jds-design-system.js' },
+    // plugin axios
+    '~/plugins/axios'
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -43,8 +46,42 @@ export default {
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     // https://go.nuxtjs.dev/axios
-    '@nuxtjs/axios'
+    '@nuxtjs/axios',
+    // auth
+    '@nuxtjs/auth-next'
   ],
+
+  auth: {
+    redirect: {
+      callback: '/callback'
+    },
+    strategies: {
+      keyclock: {
+        scheme: 'openIDConnect',
+        clientId: process.env.KEYCLOCK_CLIENT_ID,
+        endpoints: {
+          configuration: process.env.KEYCLOCK_ENDPOINT
+        },
+        token: {
+          property: 'access_token',
+          type: 'Bearer',
+          maxAge: 600
+        },
+        refreshToken: {
+          property: 'refresh_token',
+          maxAge: 2592000
+        },
+        responseType: 'code',
+        grantType: 'authorization_code',
+        scope: ['openid', 'profile', 'offline_access'],
+        codeChallengeMethod: 'S256'
+      }
+    }
+  },
+
+  router: {
+    middleware: ['auth']
+  },
 
   googleFonts: {
     display: 'swap',
@@ -65,6 +102,21 @@ export default {
     overwriting: true
   },
 
+  // Private runtime config
+  privateRuntimeConfig: {
+    axios: {
+      baseURL: process.env.BASE_URL + '/' + process.env.VERSION_ENDPOINT
+    }
+  },
+
+  // Public runtime config
+  publicRuntimeConfig: {
+    apiKey: process.env.API_KEY,
+    axios: {
+      browserBaseURL: process.env.BROWSER_BASE_URL + '/' + process.env.VERSION_ENDPOINT
+    }
+  },
+
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
@@ -73,5 +125,8 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
+    transpile: [
+      '@jabardigitalservice/jds-design-system'
+    ]
   }
 }
