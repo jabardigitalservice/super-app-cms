@@ -74,6 +74,7 @@
     </div>
     <KlaimRWDetailAddress
       title="Alamat RW"
+      :loading="isLoadingDetailData"
       :detail-data="detailData"
       :data-user="dataUser"
       :show="showDetailAddress"
@@ -121,6 +122,7 @@ export default {
       search: '',
       data: [],
       detailData: {},
+      isLoadingDetailData: false,
       pagination: {
         currentPage: 1,
         totalRows: 0,
@@ -236,6 +238,7 @@ export default {
       this.dataUser.name = name || '-'
       this.dataUser.email = email || '-'
       this.showDetailAddress = true
+      this.isLoadingDetailData = true
       try {
         const response = await this.$api.get(`/user/rw/${item.id}`)
         const { data } = response?.data
@@ -250,11 +253,13 @@ export default {
             rtRw: data?.rtRw?.name
           }
         }
+        this.isLoadingDetailData = false
       } catch (error) {
         this.detailData = {
           dataKtp: {},
           dataDomicile: {}
         }
+        this.isLoadingDetailData = false
       }
     },
     async onClickDocument (fileId) {
