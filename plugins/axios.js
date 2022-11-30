@@ -11,7 +11,6 @@ export default function ({ $axios, $config, app, store }, inject) {
     if (app.$auth.loggedIn) {
       const token = app.$auth.strategy.token.get().split(' ')[1]
       api.setToken(token, 'Bearer')
-      console.log(app.$auth.strategy.refreshToken.status(), app.$auth.strategy.refreshToken.status().expired())
       // HANDLE ACCESS TOKEN EXPIRED
       if (app.$auth.strategy.token.status().expired()) {
         const { token, refreshToken } = app.$auth.strategy
