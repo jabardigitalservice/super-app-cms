@@ -1,4 +1,4 @@
-export default function ({ $axios, $config, app, store }, inject) {
+export default function ({ $axios, $config, app }, inject) {
   const api = $axios.create({
     headers: {
       common: {
