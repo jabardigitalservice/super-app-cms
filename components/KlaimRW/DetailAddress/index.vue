@@ -22,8 +22,11 @@
             <div class="mb-2 text-gray-800 font-bold">
               Alamat Sesuai KTP
             </div>
+            <div v-if="loading" class="p-4 flex justify-center items-center">
+              <jds-spinner size="24px" />
+            </div>
             <KlaimRWAddressTable
-              v-if="detailData.dataKtp"
+              v-else-if="detailData.dataKtp"
               :data-table="detailData.dataKtp"
             />
             <div v-else>
@@ -34,8 +37,11 @@
             <div class="mb-2 text-gray-800 font-bold">
               Alamat Sesuai Domisili
             </div>
+            <div v-if="loading" class="p-4 flex justify-center items-center">
+              <jds-spinner size="24px" />
+            </div>
             <KlaimRWAddressTable
-              v-if="detailData.dataDomicile"
+              v-else-if="detailData.dataDomicile"
               :data-table="detailData.dataDomicile"
             />
             <div v-else>
@@ -68,6 +74,13 @@ export default {
     title: {
       type: String,
       default: ''
+    },
+    /**
+     * loading data
+     */
+    loading: {
+      type: Boolean,
+      default: false
     },
     /**
      * data rw
