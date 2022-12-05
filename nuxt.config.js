@@ -112,6 +112,7 @@ export default {
   // Public runtime config
   publicRuntimeConfig: {
     apiKey: process.env.API_KEY,
+    keyclockBaseUrl: process.env.KEYCLOCK_BASE_URL,
     axios: {
       browserBaseURL: process.env.BROWSER_BASE_URL + '/' + process.env.VERSION_ENDPOINT
     }
