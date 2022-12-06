@@ -159,7 +159,7 @@ export default {
   },
   async fetch () {
     try {
-      const response = await this.$api.get('/user/rw', { params: this.query })
+      const response = await this.$axios.get('/user/rw', { params: this.query })
       const { data } = response.data
       this.data = data?.data || []
       if (this.data.length) {
@@ -240,7 +240,7 @@ export default {
       this.showDetailAddress = true
       this.isLoadingDetailData = true
       try {
-        const response = await this.$api.get(`/user/rw/${item.id}`)
+        const response = await this.$axios.get(`/user/rw/${item.id}`)
         const { data } = response?.data
         this.detailData = {
           dataKtp: data?.dataKtp,
@@ -266,7 +266,7 @@ export default {
       this.showDocument = true
       this.dataInfo.file = 'loading'
       try {
-        const response = await this.$api.get(`/file/view/${fileId}`, {
+        const response = await this.$axios.get(`/file/view/${fileId}`, {
           headers: { 'x-file-id': fileId }
         })
         const { data } = response.data
@@ -286,7 +286,7 @@ export default {
       this.showRejectRw = false
       this.dataInfo.title = 'Penolakan Akun RW'
       try {
-        await this.$api.post('/user/role/reject-rw', { userId: this.dataUser.id })
+        await this.$axios.post('/user/role/reject-rw', { userId: this.dataUser.id })
         this.dataInfo.show = true
         this.dataInfo.info = 'Penolakan akun RW telah berhasil dilakukan.'
         this.dataInfo.message = 'Email terkait informasi penolakan telah dikirimkan ke email akun RW bersangkutan.'
@@ -306,7 +306,7 @@ export default {
       const { id } = this.dataUser
       this.dataInfo.title = 'Verifikasi Akun RW'
       try {
-        await this.$api.post('/user/role/verify-rw', { userId: id })
+        await this.$axios.post('/user/role/verify-rw', { userId: id })
         this.showVerifyRW = false
         this.dataInfo.show = true
         this.dataInfo.info = 'Verifikasi akun RW telah berhasil dilakukan.'

@@ -225,7 +225,7 @@ export default {
   },
   async fetch () {
     try {
-      const detailAccount = await this.$api.get(`/user/rw/${this.$route.params.id}`)
+      const detailAccount = await this.$axios.get(`/user/rw/${this.$route.params.id}`)
       this.detail = detailAccount.data.data
       this.detail.date = detailAccount.data.data ? formatDate(detailAccount.data.data.createdAt) : ''
     } catch {
@@ -246,7 +246,7 @@ export default {
       this.confirmationDialog.showReject = false
       this.informationDialog.title = 'Penolakan Akun RW'
       try {
-        await this.$api.post('/user/role/reject-rw', { userId: this.detail?.id })
+        await this.$axios.post('/user/role/reject-rw', { userId: this.detail?.id })
         this.informationDialog.showDialog = true
         this.informationDialog.info = 'Penolakan akun RW telah berhasil dilakukan.'
         this.informationDialog.message = 'Email terkait informasi penolakan telah dikirimkan ke email akun RW bersangkutan.'
@@ -259,7 +259,7 @@ export default {
     async actionVerifyUser () {
       this.informationDialog.title = 'Verifikasi Akun RW'
       try {
-        await this.$api.post('/user/role/verify-rw', { userId: this.detail?.id })
+        await this.$axios.post('/user/role/verify-rw', { userId: this.detail?.id })
         this.confirmationDialog.showVerify = false
         this.informationDialog.showDialog = true
         this.informationDialog.info = 'Verifikasi akun RW telah berhasil dilakukan.'
@@ -275,7 +275,7 @@ export default {
       this.documentDialog.showDialog = true
       this.documentDialog.fileId = 'loading'
       try {
-        const dataFile = await this.$api.get(`/file/view/${this.detail?.rwDecree}`, { headers: { 'x-file-id': this.detail.rwDecree } })
+        const dataFile = await this.$axios.get(`/file/view/${this.detail?.rwDecree}`, { headers: { 'x-file-id': this.detail.rwDecree } })
         this.documentDialog.fileId = dataFile.data.data
       } catch {
         this.documentDialog.fileId = ''
