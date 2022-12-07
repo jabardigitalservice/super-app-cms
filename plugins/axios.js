@@ -42,9 +42,7 @@ export default function ({ $axios, $config, app }) {
   $axios.onRequest(async (config) => {
     const { url, method, params, data: payload } = config
     const { clientId, secretId } = app.$auth.strategy.options
-    console.log(url)
-    console.log($config.keyclockBaseUrl)
-    console.log(!url.includes($config.keyclockBaseUrl))
+
     if (!url.includes($config.keyclockBaseUrl)) {
       const accessTokenApiKeyHashed = await getHashedAccessToken()
       console.log('1. ', { accessTokenApiKeyHashed })
