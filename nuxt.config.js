@@ -59,6 +59,7 @@ export default {
       keyclock: {
         scheme: 'openIDConnect',
         clientId: process.env.KEYCLOCK_CLIENT_ID,
+        secretId: process.env.KEYCLOCK_CLIENT_SECRET,
         endpoints: {
           configuration: process.env.KEYCLOCK_ENDPOINT
         },
