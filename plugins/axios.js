@@ -8,7 +8,7 @@ export default function ({ $axios, $config }) {
         'Api-Key': $config.apiKey,
         'X-Timestamp': formatInTimeZone(new Date(), 'Asia/Jakarta', "yyyy-MM-dd'T'HH:mm:ssXXX")
       }
-      // TODO : custom header using setHeader from nuxt/axios
+      // TODO : add header using setHeader nuxt axios
       // $axios.setHeader('Api-Key', $config.apiKey)
       // $axios.setHeader('X-Timestamp', formatInTimeZone(new Date(), 'Asia/Jakarta', "yyyy-MM-dd'T'HH:mm:ssXXX"))
     } else {
