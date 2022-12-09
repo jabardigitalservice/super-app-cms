@@ -56,8 +56,13 @@ export default function ({ $axios, $config, app }) {
       // strToSign = HTTPMethod + ":" + EndpointURL + ":" + accessTokenApiKeyHashed + ":" + dataHased + ":" + TimeStamp(RFC3339) + ":" + Localization
       // signature = base64(signature)
 
-      $axios.setHeader('Api-Key', $config.apiKey)
-      $axios.setHeader('X-Timestamp', formatInTimeZone(new Date(), 'Asia/Jakarta', "yyyy-MM-dd'T'HH:mm:ssXXX"))
+      config.headers = {
+        'Api-Key': $config.apiKey,
+        'X-Timestamp': formatInTimeZone(new Date(), 'Asia/Jakarta', "yyyy-MM-dd'T'HH:mm:ssXXX")
+      }
+    } else {
+      delete config.headers['Api-Key']
+      delete config.headers['X-Timestamp']
     }
 
     return config
