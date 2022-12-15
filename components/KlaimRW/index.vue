@@ -198,6 +198,7 @@ export default {
   methods: {
     searchTitle: debounce(function (value) {
       if (value.length > 2) {
+        this.query.page = 1
         this.query.nameFilter = value
         this.$fetch()
       } else if (value.length === 0) {
