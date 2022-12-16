@@ -9,11 +9,7 @@
           <jds-spinner size="72px" />
         </div>
         <div v-else-if="file !== 'loading'" class="max-h-[calc(100vh-64px-120px)] overflow-scroll">
-          <embed
-            :src="'data:application/pdf;base64,' + file"
-            type="application/pdf"
-            class="min-h-[600px] w-full"
-          >
+          <iframe :src="fileDocument" class="min-h-[600px] w-full" />
         </div>
         <div v-else class="px-4">
           Tidak ada data
@@ -27,6 +23,7 @@
 </template>
 
 <script>
+import { base64PDFToBlobUrl } from '~/utils'
 export default {
   name: 'ViewDocument',
   props: {
@@ -50,6 +47,11 @@ export default {
     file: {
       type: String,
       default: ''
+    }
+  },
+  computed: {
+    fileDocument () {
+      return this.file ? base64PDFToBlobUrl(this.file) : ''
     }
   },
   methods: {
