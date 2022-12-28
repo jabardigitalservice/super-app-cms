@@ -47,8 +47,7 @@ export default {
   ],
 
   googleAnalytics: {
-    id: process.env.GOOGLE_ANALYTICS_ID,
-    pageTracking: true
+    id: process.env.GOOGLE_ANALYTICS_ID
   },
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
