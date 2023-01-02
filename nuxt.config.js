@@ -27,7 +27,8 @@ export default {
   plugins: [
     { src: '~/plugins/jds-design-system.js' },
     // plugin axios
-    '~/plugins/axios'
+    '~/plugins/axios',
+    '~/plugins/vue-gtag.js'
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -40,9 +41,14 @@ export default {
     // https://go.nuxtjs.dev/tailwindcss
     '@nuxtjs/tailwindcss',
     '@nuxtjs/google-fonts',
-    '@nuxtjs/svg'
+    '@nuxtjs/svg',
+    // https://google-analytics.nuxtjs.org
+    '@nuxtjs/google-analytics'
   ],
 
+  googleAnalytics: {
+    id: process.env.GOOGLE_ANALYTICS_ID
+  },
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     // https://go.nuxtjs.dev/axios
@@ -115,7 +121,11 @@ export default {
     keyclockBaseUrl: process.env.KEYCLOCK_BASE_URL,
     axios: {
       browserBaseURL: process.env.BROWSER_BASE_URL + '/' + process.env.VERSION_ENDPOINT
+    },
+    googleAnalytics: {
+      id: process.env.GOOGLE_ANALYTICS_ID
     }
+
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
