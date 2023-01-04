@@ -38,6 +38,7 @@ jobs:
             KEYCLOCK_CLIENT_ID=${{ secrets.KEYCLOCK_CLIENT_ID_STAGING }}
             KEYCLOCK_ENDPOINT=${{ secrets.KEYCLOCK_ENDPOINT_STAGING }}
             KEYCLOCK_BASE_URL=${{ secrets.KEYCLOCK_BASE_URL_STAGING}}
+            GOOGLE_ANALYTICS_ID=${{secrets.GOOGLE_ANALYTICS_ID_STAGING}}
       # GitOps
       - name: GitOps ArgoCD Setup
         run: |

@@ -41,14 +41,8 @@ export default {
     // https://go.nuxtjs.dev/tailwindcss
     '@nuxtjs/tailwindcss',
     '@nuxtjs/google-fonts',
-    '@nuxtjs/svg',
-    // https://google-analytics.nuxtjs.org
-    '@nuxtjs/google-analytics'
+    '@nuxtjs/svg'
   ],
-
-  googleAnalytics: {
-    id: process.env.GOOGLE_ANALYTICS_ID
-  },
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     // https://go.nuxtjs.dev/axios
@@ -122,10 +116,7 @@ export default {
     axios: {
       browserBaseURL: process.env.BROWSER_BASE_URL + '/' + process.env.VERSION_ENDPOINT
     },
-    googleAnalytics: {
-      id: process.env.GOOGLE_ANALYTICS_ID
-    }
-
+    googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
