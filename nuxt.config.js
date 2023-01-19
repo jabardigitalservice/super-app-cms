@@ -51,8 +51,6 @@ export default {
     '@nuxtjs/auth-next'
   ],
 
-  devModules: ['@nuxtjs/eslint-module'],
-
   auth: {
     redirect: {
       callback: '/callback'
