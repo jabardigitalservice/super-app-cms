@@ -64,7 +64,7 @@ export default {
       scriptId: 'newrelic',
       accountId: process.env.ACCOUNT_ID_NEW_RELIC,
       agentId: process.env.APPLICATION_ID_NEW_RELIC,
-      licenseKey: process.env.LICENSE_KEY_NEW_RELIC,
+      licenseKey: process.env.LICENSE_KEY_NEW_RELIC_ACCOUNT,
       applicationId: process.env.APPLICATION_ID_NEW_RELIC
     }
   },
