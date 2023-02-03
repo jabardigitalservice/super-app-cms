@@ -48,8 +48,26 @@ export default {
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
     // auth
-    '@nuxtjs/auth-next'
+    '@nuxtjs/auth-next',
+    '@jaketig/nuxt-newrelic'
   ],
+
+  newrelic: {
+    apm: {
+      enabled: true,
+      appName: process.env.NEW_RELIC_APP_NAME,
+      licenseKey: process.env.NEW_RELIC_LICENSE_KEY
+      // additional agent config can be added here
+    },
+    browser: {
+      enabled: true,
+      scriptId: 'newrelic',
+      accountId: process.env.ACCOUNT_ID_NEW_RELIC,
+      agentId: process.env.APPLICATION_ID_NEW_RELIC,
+      licenseKey: process.env.LICENSE_KEY_NEW_RELIC,
+      applicationId: process.env.APPLICATION_ID_NEW_RELIC
+    }
+  },
 
   auth: {
     redirect: {
