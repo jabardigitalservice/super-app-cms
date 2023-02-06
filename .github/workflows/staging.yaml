@@ -39,6 +39,11 @@ jobs:
             KEYCLOCK_ENDPOINT=${{ secrets.KEYCLOCK_ENDPOINT_STAGING }}
             KEYCLOCK_BASE_URL=${{ secrets.KEYCLOCK_BASE_URL_STAGING}}
             GOOGLE_ANALYTICS_ID=${{secrets.GOOGLE_ANALYTICS_ID_STAGING}}
+            APPLICATION_ID_NEW_RELIC=${{secrets.APPLICATION_ID_NEW_RELIC}}
+            LICENSE_KEY_NEW_RELIC_ACCOUNT=${{secrets.LICENSE_KEY_NEW_RELIC_ACCOUNT}}
+            ACCOUNT_ID_NEW_RELIC=${{secrets.ACCOUNT_ID_NEW_RELIC}}
+            NEW_RELIC_APP_NAME=${{secrets.NEW_RELIC_APP_NAME}}
+            NEW_RELIC_LICENSE_KEY=${{secrets.NEW_RELIC_LICENSE_KEY}}
       # GitOps
       - name: GitOps ArgoCD Setup
         run: |
