@@ -55,8 +55,8 @@ export default {
   newrelic: {
     apm: {
       enabled: true,
-      appName: process.env.NEW_RELIC_APP_NAME,
-      licenseKey: process.env.NEW_RELIC_LICENSE_KEY
+      app_name: process.env.NEW_RELIC_APP_NAME,
+      license_key: process.env.NEW_RELIC_LICENSE_KEY
       // additional agent config can be added here
     },
     browser: {
