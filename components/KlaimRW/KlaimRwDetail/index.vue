@@ -234,6 +234,8 @@ export default {
   },
   methods: {
     goBackHandle () {
+      console.log('error newrelic')
+      testerror
       this.$router.push('/')
     },
     rejectConfirmationHandle () {
