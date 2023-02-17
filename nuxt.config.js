@@ -48,8 +48,7 @@ export default {
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
     // auth
-    '@nuxtjs/auth-next',
-    '@jaketig/nuxt-newrelic'
+    '@nuxtjs/auth-next'
   ],
 
   newrelic: {
