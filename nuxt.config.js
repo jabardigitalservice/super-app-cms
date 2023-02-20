@@ -124,13 +124,7 @@ export default {
     axios: {
       browserBaseURL: process.env.BROWSER_BASE_URL + '/' + process.env.VERSION_ENDPOINT
     },
-    googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID,
-    newrelicData: {
-      accountId: process.env.ACCOUNT_ID_NEW_RELIC,
-      agentId: process.env.APPLICATION_ID_NEW_RELIC,
-      licenseKey: process.env.LICENSE_KEY_NEW_RELIC_ACCOUNT,
-      applicationId: process.env.APPLICATION_ID_NEW_RELIC
-    }
+    googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
