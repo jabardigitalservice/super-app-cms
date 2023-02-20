@@ -16,6 +16,14 @@ export default {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.png' }
+    ],
+    script: [
+      {
+        src: '/newrelic-browser-script.js',
+        'data-account-id': `${process.env.NEW_RELIC_ACCOUNT_ID}`,
+        'data-browser-license-key': `${process.env.NEW_RELIC_BROWSER_LICENSE_KEY}`,
+        'data-application-id': `${process.env.NEW_RELIC_APPLICATION_ID}`
+      }
     ]
   },
 
@@ -48,26 +56,8 @@ export default {
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
     // auth
-    '@nuxtjs/auth-next',
-    '@jaketig/nuxt-newrelic'
+    '@nuxtjs/auth-next'
   ],
-
-  newrelic: {
-    apm: {
-      enabled: true,
-      app_name: process.env.NEW_RELIC_APP_NAME,
-      license_key: process.env.NEW_RELIC_LICENSE_KEY
-      // additional agent config can be added here
-    },
-    browser: {
-      enabled: true,
-      scriptId: 'newrelic',
-      accountId: process.env.ACCOUNT_ID_NEW_RELIC,
-      agentId: process.env.APPLICATION_ID_NEW_RELIC,
-      licenseKey: process.env.LICENSE_KEY_NEW_RELIC_ACCOUNT,
-      applicationId: process.env.APPLICATION_ID_NEW_RELIC
-    }
-  },
 
   auth: {
     redirect: {
