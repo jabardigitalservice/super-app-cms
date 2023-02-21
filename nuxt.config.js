@@ -20,9 +20,9 @@ export default {
     script: [
       {
         src: '/newrelic-browser-script.js',
-        'data-account-id': `${process.env.NEW_RELIC_ACCOUNT_ID}`,
-        'data-browser-license-key': `${process.env.NEW_RELIC_BROWSER_LICENSE_KEY}`,
-        'data-application-id': `${process.env.NEW_RELIC_APPLICATION_ID}`
+        'data-account-id': `${process.env.ACCOUNT_ID_NEW_RELIC}`,
+        'data-browser-license-key': `${process.env.LICENSE_KEY_NEW_RELIC_ACCOUNT}`,
+        'data-application-id': `${process.env.APPLICATION_ID_NEW_RELIC}`
       }
     ]
   },
