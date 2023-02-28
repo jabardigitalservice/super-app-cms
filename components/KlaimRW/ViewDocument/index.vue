@@ -3,7 +3,7 @@
     <div v-if="show" class="fixed h-screen w-screen bg-black bg-opacity-75 z-50 inset-0 flex justify-center items-center">
       <div class="w-[700px] min-h-min rounded-lg bg-white flex flex-col gap-4">
         <h1 class="text-green-700 font-roboto font-medium text-[21px] px-4 pt-4">
-          Dokumen SK RW
+          Dokumen SK RW {{ file.meta }}
         </h1>
         <div v-if="file === 'loading'" class="p-4 flex justify-center items-center">
           <jds-spinner size="72px" />
@@ -47,11 +47,15 @@ export default {
     file: {
       type: String,
       default: ''
+    },
+    fileFrom: {
+      type: String,
+      default: ''
     }
   },
   computed: {
     fileDocument () {
-      return this.file ? base64PDFToBlobUrl(this.file) : ''
+      return this.file && this.fileFrom === 'API' ? base64PDFToBlobUrl(this.file) : this.file
     }
   },
   methods: {
