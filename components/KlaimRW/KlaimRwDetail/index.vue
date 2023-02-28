@@ -1,6 +1,9 @@
 <template>
   <div class="container mx-auto">
-    <BaseHeader :navigations="navigations" description-page="Berisi semua daftar terkait klaim yang dilakukan oleh RW di aplikasi Sapawarga." />
+    <BaseHeader
+      :navigations="navigations"
+      description-page="Berisi semua daftar terkait klaim yang dilakukan oleh RW di aplikasi Sapawarga."
+    />
     <div class="flex justify-between pt-[16px] pb-[32px]">
       <BaseButton
         class="w-[126px] border border-green-700 text-green-700 hover:bg-green-50"
@@ -8,14 +11,14 @@
       >
         <template #icon-left>
           <div class="flex items-center">
-            <ArrowLeft class="w-[14px] h-[12px] mr-[10px]" />
+            <ArrowLeft class="mr-[10px] h-[12px] w-[14px]" />
             Kembali
           </div>
         </template>
       </BaseButton>
-      <div v-show="detail.rwStatus==userStatus.waiting" class="flex">
+      <div v-show="detail.rwStatus == userStatus.waiting" class="flex">
         <BaseButton
-          class="w-fit border border-red-400 text-red-400 mr-[12px] hover:bg-red-50"
+          class="mr-[12px] w-fit border border-red-400 text-red-400 hover:bg-red-50"
           @click="rejectConfirmationHandle"
         >
           Tolak Akun RW Ini
@@ -28,9 +31,15 @@
         </BaseButton>
       </div>
     </div>
-    <div class="h-[calc(100vh-220px)] bg-white container mx-auto py-[16px] px-[5px] rounded-lg text-gray-800 font-lato relative">
-      <div class="h-[calc(100vh-250px)] px-[19px] layout-content overflow-y-auto">
-        <h1 class="text-[16px] text-blue-gray-800 font-roboto font-bold mb-[16px]">
+    <div
+      class="container relative mx-auto h-[calc(100vh-220px)] rounded-lg bg-white py-[16px] px-[5px] font-lato text-gray-800"
+    >
+      <div
+        class="layout-content h-[calc(100vh-250px)] overflow-y-auto px-[19px]"
+      >
+        <h1
+          class="mb-[16px] font-roboto text-[16px] font-bold text-blue-gray-800"
+        >
           Detail Akun RW
         </h1>
         <div class="table-content">
@@ -40,19 +49,19 @@
                 <td class="w-[164px]">
                   <strong>Nama</strong>
                 </td>
-                <td>{{ detail?.name || '-' }}</td>
+                <td>{{ detail?.name || "-" }}</td>
               </tr>
               <tr>
                 <td><strong>Email</strong></td>
-                <td>{{ detail?.email || '-' }}</td>
+                <td>{{ detail?.email || "-" }}</td>
               </tr>
               <tr>
                 <td><strong>No.Tlp</strong></td>
-                <td>{{ detail?.phone||'-' }}</td>
+                <td>{{ detail?.phone || "-" }}</td>
               </tr>
               <tr>
                 <td><strong>Tanggal Registrasi</strong></td>
-                <td>{{ detail?.date||'-' }}</td>
+                <td>{{ detail?.date || "-" }}</td>
               </tr>
               <tr>
                 <td>
@@ -63,12 +72,13 @@
                     <div
                       v-show="detail?.rwStatus"
                       :class="{
-                        'rounded-full h-2 w-2 mr-2':true,
-                        'bg-green-600':detail.rwStatus==userStatus.verified,
-                        'bg-yellow-600':detail.rwStatus==userStatus.waiting,
-                        'bg-red-600':detail.rwStatus==userStatus.rejected
+                        'mr-2 h-2 w-2 rounded-full': true,
+                        'bg-green-600': detail.rwStatus == userStatus.verified,
+                        'bg-yellow-600': detail.rwStatus == userStatus.waiting,
+                        'bg-red-600': detail.rwStatus == userStatus.rejected,
                       }"
-                    />{{ detail.rwStatus || '-' }}
+                    />
+                    {{ detail.rwStatus || "-" }}
                   </div>
                 </td>
               </tr>
@@ -77,11 +87,20 @@
           <div class="mb-[16px]">
             <DetailTableComponent header="Dokumen SK RW">
               <tr>
-                <td class="w-1/2">
-                  <strong>{{ detail.fileName || '-' }}</strong>
+                <td class="w-1/4">
+                  <strong>{{ detail.fileName || "-" }}</strong>
                 </td>
                 <td>
-                  <BaseButton class="w-fit border border-green-600 text-green-600 font-medium py-[6px]" @click="documentHandle">
+                  <BaseButton
+                    class="mx-2 w-fit border border-green-600 py-[6px] font-medium text-green-600"
+                    @click="editDocumentHandle"
+                  >
+                    Edit Dokumen
+                  </BaseButton>
+                  <BaseButton
+                    class="mx-2 w-fit border border-green-600 bg-green-600 py-[6px] font-medium text-white"
+                    @click="documentHandle"
+                  >
                     Lihat Dokumen
                   </BaseButton>
                 </td>
@@ -94,27 +113,27 @@
                 <td class="w-[164px]">
                   <strong>Kota/kabupaten</strong>
                 </td>
-                <td>{{ detail?.dataKtp?.city || '-' }}</td>
+                <td>{{ detail?.dataKtp?.city || "-" }}</td>
               </tr>
               <tr>
                 <td><strong>Kecamatan</strong></td>
-                <td>{{ detail?.dataKtp?.district || '-' }}</td>
+                <td>{{ detail?.dataKtp?.district || "-" }}</td>
               </tr>
               <tr>
                 <td><strong>Kelurahan/Desa</strong></td>
-                <td>{{ detail?.dataKtp?.village || '-' }}</td>
+                <td>{{ detail?.dataKtp?.village || "-" }}</td>
               </tr>
               <tr>
                 <td><strong>Dusun</strong></td>
-                <td>{{ detail?.dataKtp?.subVillage || '-' }}</td>
+                <td>{{ detail?.dataKtp?.subVillage || "-" }}</td>
               </tr>
               <tr>
                 <td><strong>RT/RW</strong></td>
-                <td>{{ detail?.dataKtp?.rtRw||'-' }}</td>
+                <td>{{ detail?.dataKtp?.rtRw || "-" }}</td>
               </tr>
               <tr>
                 <td><strong>Alamat Lengkap</strong></td>
-                <td>{{ detail?.dataKtp?.address||'-' }}</td>
+                <td>{{ detail?.dataKtp?.address || "-" }}</td>
               </tr>
             </DetailTableComponent>
           </div>
@@ -124,48 +143,53 @@
                 <td class="w-[164px]">
                   <strong>Kota/kabupaten</strong>
                 </td>
-                <td>{{ detail?.cty?.name || '-' }}</td>
+                <td>{{ detail?.cty?.name || "-" }}</td>
               </tr>
               <tr>
                 <td><strong>Kecamatan</strong></td>
-                <td>{{ detail?.district?.name || '-' }}</td>
+                <td>{{ detail?.district?.name || "-" }}</td>
               </tr>
               <tr>
                 <td><strong>Kelurahan/Desa</strong></td>
-                <td>{{ detail?.village?.name || '-' }}</td>
+                <td>{{ detail?.village?.name || "-" }}</td>
               </tr>
               <tr>
                 <td><strong>Dusun</strong></td>
-                <td>{{ detail?.subVillage || '-' }}</td>
+                <td>{{ detail?.subVillage || "-" }}</td>
               </tr>
               <tr>
                 <td><strong>RT/RW</strong></td>
-                <td>{{ detail?.rtRw || '-' }}</td>
+                <td>{{ detail?.rtRw || "-" }}</td>
               </tr>
               <tr>
                 <td><strong>Alamat Lengkap</strong></td>
-                <td>{{ detail?.address || '-' }}</td>
+                <td>{{ detail?.address || "-" }}</td>
               </tr>
             </DetailTableComponent>
           </div>
         </div>
       </div>
     </div>
-    <ViewDocument :show="documentDialog.showDialog" :file="documentDialog.fileId" @close="documentDialog.showDialog=false" />
+    <ViewDocument
+      :show="documentDialog.showDialog"
+      :file="documentDialog.fileId"
+      :file-from="documentDialog.from"
+      @close="documentDialog.showDialog = false"
+    />
     <RejectConfirmation
       :show-popup="confirmationDialog.showReject"
       dialog-type="confirmation"
       :account-name="detail?.name || '-'"
       :account-email="detail?.email || '-'"
       @submit="actionRejectUser"
-      @close="confirmationDialog.showReject=false"
+      @close="confirmationDialog.showReject = false"
     />
     <VerifyConfirmation
       :show-popup="confirmationDialog.showVerify"
       dialog-type="confirmation"
       :account-name="detail?.name || '-'"
       @submit="actionVerifyUser"
-      @close="confirmationDialog.showVerify=false"
+      @close="confirmationDialog.showVerify = false"
     />
     <InformationPopup
       :show-popup="informationDialog.showDialog"
@@ -174,6 +198,13 @@
       :description-text="informationDialog.info"
       :message="informationDialog.message"
       @close="closeInformationDialogHandle"
+    />
+
+    <EditDocument
+      :show-popup="documentEdit.showEditSK"
+      :account-name="detail?.name || '-'"
+      @preview-file="previewFile"
+      @close="documentEdit.showEditSK = false"
     />
   </div>
 </template>
@@ -187,11 +218,18 @@ import DetailTableComponent from '~/components/KlaimRW/KlaimRwDetail/DetailTable
 import { formatDate } from '~/utils'
 import { userStatus } from '~/constant/klaim-rw'
 import ViewDocument from '~/components/KlaimRW/ViewDocument'
+import EditDocument from '~/components/KlaimRW/EditDocument'
 
 export default {
   name: 'KlaimRwDetail',
   components: {
-    ArrowLeft, DetailTableComponent, RejectConfirmation, VerifyConfirmation, InformationPopup, ViewDocument
+    ArrowLeft,
+    DetailTableComponent,
+    RejectConfirmation,
+    VerifyConfirmation,
+    InformationPopup,
+    ViewDocument,
+    EditDocument
   },
   data () {
     return {
@@ -207,7 +245,11 @@ export default {
       },
       documentDialog: {
         showDialog: false,
-        fileId: ''
+        fileId: '',
+        from: ''
+      },
+      documentEdit: {
+        showEditSK: false
       },
       navigations: [
         {
@@ -225,9 +267,13 @@ export default {
   },
   async fetch () {
     try {
-      const detailAccount = await this.$axios.get(`/user/rw/${this.$route.params.id}`)
+      const detailAccount = await this.$axios.get(
+        `/user/rw/${this.$route.params.id}`
+      )
       this.detail = detailAccount.data.data
-      this.detail.date = detailAccount.data.data ? formatDate(detailAccount.data.data.createdAt) : ''
+      this.detail.date = detailAccount.data.data
+        ? formatDate(detailAccount.data.data.createdAt)
+        : ''
     } catch {
       this.detail = {}
     }
@@ -246,10 +292,14 @@ export default {
       this.confirmationDialog.showReject = false
       this.informationDialog.title = 'Penolakan Akun RW'
       try {
-        await this.$axios.post('/user/role/reject-rw', { userId: this.detail?.id })
+        await this.$axios.post('/user/role/reject-rw', {
+          userId: this.detail?.id
+        })
         this.informationDialog.showDialog = true
-        this.informationDialog.info = 'Penolakan akun RW telah berhasil dilakukan.'
-        this.informationDialog.message = 'Email terkait informasi penolakan telah dikirimkan ke email akun RW bersangkutan.'
+        this.informationDialog.info =
+          'Penolakan akun RW telah berhasil dilakukan.'
+        this.informationDialog.message =
+          'Email terkait informasi penolakan telah dikirimkan ke email akun RW bersangkutan.'
       } catch {
         this.informationDialog.showDialog = true
         this.informationDialog.info = 'Penolakan akun RW gagal dilakukan'
@@ -259,11 +309,15 @@ export default {
     async actionVerifyUser () {
       this.informationDialog.title = 'Verifikasi Akun RW'
       try {
-        await this.$axios.post('/user/role/verify-rw', { userId: this.detail?.id })
+        await this.$axios.post('/user/role/verify-rw', {
+          userId: this.detail?.id
+        })
         this.confirmationDialog.showVerify = false
         this.informationDialog.showDialog = true
-        this.informationDialog.info = 'Verifikasi akun RW telah berhasil dilakukan.'
-        this.informationDialog.message = 'Email terkait informasi verifikasi telah dikirimkan ke email akun RW bersangkutan.'
+        this.informationDialog.info =
+          'Verifikasi akun RW telah berhasil dilakukan.'
+        this.informationDialog.message =
+          'Email terkait informasi verifikasi telah dikirimkan ke email akun RW bersangkutan.'
       } catch {
         this.informationDialog.showDialog = true
         this.confirmationDialog.showVerify = false
@@ -275,38 +329,53 @@ export default {
       this.documentDialog.showDialog = true
       this.documentDialog.fileId = 'loading'
       try {
-        const dataFile = await this.$axios.get(`/file/view/${this.detail?.rwDecree}`, { headers: { 'x-file-id': this.detail.rwDecree } })
+        const dataFile = await this.$axios.get(
+          `/file/view/${this.detail?.rwDecree}`,
+          { headers: { 'x-file-id': this.detail.rwDecree } }
+        )
         this.documentDialog.fileId = dataFile.data.data
+        this.documentDialog.from = 'API'
       } catch {
         this.documentDialog.fileId = ''
       }
     },
     closeInformationDialogHandle () {
       this.informationDialog.showDialog = false
+      this.documentDialog.fileId = ''
+      this.documentDialog.from = ''
       this.$fetch()
+    },
+    editDocumentHandle () {
+      this.documentEdit.showEditSK = true
+    },
+    previewFile (file) {
+      this.documentDialog.showDialog = true
+      this.documentDialog.fileId = 'loading'
+      this.documentDialog.fileId = file.url
+      this.documentDialog.from = 'local'
     }
   }
 }
 </script>
 
 <style scoped>
-  .layout-content{
-    scrollbar-color: #e0e0e0 white;
-    scrollbar-width: thin;
-    scroll-margin-right: 10px;
-  }
-  .layout-content::-webkit-scrollbar{
-    @apply w-5 h-5;
-  }
+.layout-content {
+  scrollbar-color: #e0e0e0 white;
+  scrollbar-width: thin;
+  scroll-margin-right: 10px;
+}
+.layout-content::-webkit-scrollbar {
+  @apply h-5 w-5;
+}
 
-  .layout-content::-webkit-scrollbar-track {
-    @apply bg-transparent;
-  }
+.layout-content::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
 
-  .layout-content::-webkit-scrollbar-thumb {
-    @apply bg-gray-300 rounded-xl border-solid border-[6px] border-transparent bg-clip-content;
-  }
-  .table-content tr td{
-    @apply pt-[10px] pb-[9px] px-[8px] !important;
-  }
+.layout-content::-webkit-scrollbar-thumb {
+  @apply rounded-xl border-[6px] border-solid border-transparent bg-gray-300 bg-clip-content;
+}
+.table-content tr td {
+  @apply px-[8px] pt-[10px] pb-[9px] !important;
+}
 </style>
