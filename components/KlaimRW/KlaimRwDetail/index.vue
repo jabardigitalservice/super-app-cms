@@ -201,10 +201,10 @@
     />
 
     <EditDocument
-      :show-popup="documentEdit.showEditSK"
+      :show-popup="documentEdit.showDialog"
       :account-name="detail?.name || '-'"
       @preview-file="previewFile"
-      @close="documentEdit.showEditSK = false"
+      @close="closeEditDIalogHandle"
     />
   </div>
 </template>
@@ -249,7 +249,7 @@ export default {
         mimeType: ''
       },
       documentEdit: {
-        showEditSK: false
+        showDialog: false
       },
       navigations: [
         {
@@ -347,13 +347,16 @@ export default {
       this.$fetch()
     },
     editDocumentHandle () {
-      this.documentEdit.showEditSK = true
+      this.documentEdit.showDialog = true
     },
     previewFile (file) {
       this.documentDialog.showDialog = true
       this.documentDialog.fileId = 'loading'
       this.documentDialog.fileId = file.data
       this.documentDialog.mimeType = file.mimeType
+    },
+    closeEditDIalogHandle () {
+      this.documentEdit.showDialog = false
     }
   }
 }

@@ -6,7 +6,7 @@
     confirmation-type="verify"
     dialog-type="confirmation"
     @submit="$emit('submit')"
-    @close="$emit('close')"
+    @close="closeEdit"
   >
     <div class="py-[16px] font-lato text-gray-800">
       <p class="font-lato text-[14px] text-gray-800">
@@ -128,11 +128,11 @@ export default {
       files: '',
       dataFiles: {
         name: '',
-        fileSize: 0,
-        mimeType: '',
         isConfidental: true,
+        mimeType: '',
         roles: ['admin', 'rw'],
-        data: ''
+        data: '',
+        fileSize: 0
       },
       isChange: false,
       proggresBarIsSuccess: false,
@@ -221,6 +221,10 @@ export default {
         this.dataFiles.data = reader.result.split(',')[1]
       }
       reader.readAsDataURL(FileObject)
+    },
+    closeEdit () {
+      this.$emit('close')
+      this.cancelEditSK()
     }
   }
 }
