@@ -3,7 +3,7 @@
     <jds-simple-table>
       <thead class="h-[42px] px-[50px]">
         <tr>
-          <th colspan="2" class="rounded-t-lg">
+          <th colspan="3" class="rounded-t-lg">
             <h1 class="text-white text-[10px] font-roboto font-bold">
               {{ header }}
             </h1>
