@@ -39,7 +39,7 @@
               <p
                 class="mb-2 truncate font-lato text-[14px] font-normal text-black"
               >
-                {{ dataFiles.fileName }}
+                {{ dataFiles.name }}
               </p>
               <template v-if="proggresBarIsSuccess">
                 <div class="mb-1 h-1.5 w-full rounded-full bg-gray-200">
@@ -126,23 +126,33 @@ export default {
   data () {
     return {
       files: '',
-      dataFiles: { fileName: '', fileSize: 0, url: '', mimeType: '' },
+      dataFiles: {
+        name: '',
+        fileSize: 0,
+        mimeType: '',
+        isConfidental: true,
+        roles: ['admin', 'rw'],
+        data: ''
+      },
       isChange: false,
       proggresBarIsSuccess: false,
       percentageProggres: 0,
       intervalPercentage: '',
       formatSizeFile: ['Bytes', 'KB', 'MB', 'GB', 'TB']
-
     }
   },
   methods: {
     onChangeUpload () {
-      this.files = this.$refs.file.files[0]
-      this.dataFiles.fileName = this.files.name
-      this.dataFiles.mimeType = this.files.type
-      this.dataFiles.fileSize = this.convertSize(this.files.size)
-      this.isChange = true
-      this.runProgressBar()
+      if (this.$refs.file.files[0]) {
+        this.files = this.$refs.file.files[0]
+        this.dataFiles.name = this.files.name
+        this.dataFiles.mimeType = this.files.type
+
+        this.dataFiles.fileSize = this.convertSize(this.files.size)
+        this.isChange = true
+        this.convertFileToBase64(this.files)
+        this.runProgressBar()
+      }
     },
     dragover (e) {
       // add style drag and drop
@@ -202,8 +212,15 @@ export default {
       this.files = ''
     },
     previewFileSK () {
-      this.dataFiles.url = URL.createObjectURL(this.files)
       this.$emit('preview-file', this.dataFiles)
+    },
+    convertFileToBase64 (FileObject) {
+      const reader = new FileReader()
+
+      reader.onload = () => {
+        this.dataFiles.data = reader.result.split(',')[1]
+      }
+      reader.readAsDataURL(FileObject)
     }
   }
 }

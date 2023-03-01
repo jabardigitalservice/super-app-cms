@@ -173,7 +173,7 @@
     <ViewDocument
       :show="documentDialog.showDialog"
       :file="documentDialog.fileId"
-      :file-from="documentDialog.from"
+      :mime-type="documentDialog.mimeType"
       @close="documentDialog.showDialog = false"
     />
     <RejectConfirmation
@@ -246,7 +246,7 @@ export default {
       documentDialog: {
         showDialog: false,
         fileId: '',
-        from: ''
+        mimeType: ''
       },
       documentEdit: {
         showEditSK: false
@@ -333,8 +333,9 @@ export default {
           `/file/view/${this.detail?.rwDecree}`,
           { headers: { 'x-file-id': this.detail.rwDecree } }
         )
+
         this.documentDialog.fileId = dataFile.data.data
-        this.documentDialog.from = 'API'
+        this.documentDialog.mimeType = dataFile.data.meta.mimeType
       } catch {
         this.documentDialog.fileId = ''
       }
@@ -342,7 +343,7 @@ export default {
     closeInformationDialogHandle () {
       this.informationDialog.showDialog = false
       this.documentDialog.fileId = ''
-      this.documentDialog.from = ''
+      this.documentDialog.mimeType = ''
       this.$fetch()
     },
     editDocumentHandle () {
@@ -351,8 +352,8 @@ export default {
     previewFile (file) {
       this.documentDialog.showDialog = true
       this.documentDialog.fileId = 'loading'
-      this.documentDialog.fileId = file.url
-      this.documentDialog.from = 'local'
+      this.documentDialog.fileId = file.data
+      this.documentDialog.mimeType = file.mimeType
     }
   }
 }

@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import { base64PDFToBlobUrl } from '~/utils'
+import { base64ToBlobUrl } from '~/utils'
 export default {
   name: 'ViewDocument',
   props: {
@@ -48,14 +48,14 @@ export default {
       type: String,
       default: ''
     },
-    fileFrom: {
+    mimeType: {
       type: String,
       default: ''
     }
   },
   computed: {
     fileDocument () {
-      return this.file && this.fileFrom === 'API' ? base64PDFToBlobUrl(this.file) : this.file
+      return this.file ? base64ToBlobUrl(this.file, this.mimeType) : ''
     }
   },
   methods: {
