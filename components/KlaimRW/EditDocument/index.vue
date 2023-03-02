@@ -28,7 +28,8 @@
       <div class="mt-2 flex w-full items-center justify-center">
         <div
           v-if="isChange"
-          class="flex h-36 w-full flex-col justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 px-4"
+          class="flex h-36 w-full flex-col justify-center rounded-lg border-2 border-dashed  px-4"
+          :class="compatibleFiles ? 'border-green-300 bg-green-50': 'border-red-300 bg-red-50' "
         >
           <div class="mb-3 flex items-center justify-center">
             <DokumenIcon class="h-9 w-9" />
@@ -156,13 +157,19 @@ export default {
         message: 'Silahkan cek kembali Dokumen SK yang diganti.'
       },
       informationFailedFile: {
-        info: 'Periksa Kembali Format file dan ukuran file. (Tipe File harus PDF/JPG/JPEG/PNG dengan maksimal ukuran file 2 MB)',
+        info: 'Periksa Kembali Format file dan ukuran file.',
         message: ''
       },
       informationError: {
         info: 'Gagal Edit Dokumen SK',
         message: ''
-      }
+      },
+      InformationFileExist: {
+        info: 'Masukan File jika ingin mengubah Dokumen SK.',
+        message: ''
+      },
+      compatibleFiles: false,
+      filesExist: false
     }
   },
   methods: {
@@ -176,6 +183,8 @@ export default {
         this.isChange = true
         this.convertFileToBase64(this.files)
         this.runProgressBar()
+
+        this.checkFileValidation()
       }
     },
     dragover (e) {
@@ -235,6 +244,7 @@ export default {
       this.isChange = false
       this.files = ''
       this.decreeFile = ''
+      this.compatibleFiles = false
     },
     previewFileSK () {
       this.$emit('preview-file-sk', this.dataFiles)
@@ -252,22 +262,26 @@ export default {
       this.resetDataEditSK()
     },
     async submitEditFileSK () {
-      const checkFileValidation = this.checkValidationSubmit()
-      if (checkFileValidation) {
-        try {
-          const response = await this.$axios.post(
-            '/file/upload',
-            this.dataFiles
-          )
-          if (response.data.status) {
-            this.decreeFile = response.data.data.id
-            this.updateFileDecreeSK()
+      this.checkFileValidation()
+      if (this.filesExist) {
+        if (this.compatibleFiles) {
+          try {
+            const response = await this.$axios.post(
+              '/file/upload',
+              this.dataFiles
+            )
+            if (response.data.status) {
+              this.decreeFile = response.data.data.id
+              this.updateFileDecreeSK()
+            }
+          } catch {
+            this.$emit('submit-edit-file-sk', this.informationError)
           }
-        } catch {
-          this.$emit('submit-edit-file-sk', this.informationError)
+        } else {
+          this.$emit('submit-edit-file-sk', this.informationFailedFile)
         }
       } else {
-        this.$emit('submit-edit-file-sk', this.informationFailedFile)
+        this.$emit('submit-edit-file-sk', this.InformationFileExist)
       }
     },
     async updateFileDecreeSK () {
@@ -284,19 +298,20 @@ export default {
         this.$emit('submit-edit-file-sk', this.informationError)
       }
     },
-    checkValidationSubmit () {
+    checkFileValidation () {
       if (this.files) {
         /* return true */
+        this.filesExist = true
         if (
           this.files.size <= this.maxSizeFile &&
           this.formatTypeFile.includes(this.files.type)
         ) {
-          return true
+          this.compatibleFiles = true
         } else {
-          return false
+          this.compatibleFiles = false
         }
       } else {
-        return false
+        this.filesExist = false
       }
     }
   }
