@@ -16,14 +16,16 @@
           </div>
         </template>
       </BaseButton>
-      <div v-show="detail.rwStatus == userStatus.waiting" class="flex">
+      <div class="flex">
         <BaseButton
-          class="mr-[12px] w-fit border border-red-400 text-red-400 hover:bg-red-50"
+          v-show="detail.rwStatus==userStatus.waiting"
+          class="w-fit border border-red-400 text-red-400 mr-[12px] hover:bg-red-50"
           @click="rejectConfirmationHandle"
         >
           Tolak Akun RW Ini
         </BaseButton>
         <BaseButton
+          v-show="detail.rwStatus==userStatus.waiting || detail.rwStatus==userStatus.rejected"
           class="w-fit bg-green-700 text-white hover:bg-green-600"
           @click="verifyConfirmationHandle"
         >
@@ -49,25 +51,33 @@
                 <td class="w-[164px]">
                   <strong>Nama</strong>
                 </td>
-                <td>{{ detail?.name || "-" }}</td>
+                <td colspan="2">
+                  {{ detail?.name || '-' }}
+                </td>
               </tr>
               <tr>
                 <td><strong>Email</strong></td>
-                <td>{{ detail?.email || "-" }}</td>
+                <td colspan="2">
+                  {{ detail?.email || '-' }}
+                </td>
               </tr>
               <tr>
                 <td><strong>No.Tlp</strong></td>
-                <td>{{ detail?.phone || "-" }}</td>
+                <td colspan="2">
+                  {{ detail?.phone||'-' }}
+                </td>
               </tr>
               <tr>
                 <td><strong>Tanggal Registrasi</strong></td>
-                <td>{{ detail?.date || "-" }}</td>
+                <td colspan="2">
+                  {{ detail?.date||'-' }}
+                </td>
               </tr>
               <tr>
                 <td>
                   <strong>Status</strong>
                 </td>
-                <td>
+                <td class="w-1/4">
                   <div class="flex items-center">
                     <div
                       v-show="detail?.rwStatus"
@@ -80,6 +90,11 @@
                     />
                     {{ detail.rwStatus || "-" }}
                   </div>
+                </td>
+                <td>
+                  <BaseButton v-show="detail.rwStatus!==userStatus.verified" class="w-fit border border-green-600 text-green-600 font-medium py-[6px]" @click="confirmationDialog.showEditStatus=true">
+                    Edit Status
+                  </BaseButton>
                 </td>
               </tr>
             </DetailTableComponent>
@@ -176,6 +191,14 @@
       :mime-type="documentDialog.mimeType"
       @close="documentDialog.showDialog = false"
     />
+    <EditStatusPopup
+      :show-popup="confirmationDialog.showEditStatus"
+      dialog-type="confirmation"
+      :account-name="detail?.name || '-'"
+      :account-status="detail?.rwStatus || '-'"
+      @close="confirmationDialog.showEditStatus=false"
+      @submit="actionEditStatusHandle"
+    />
     <RejectConfirmation
       :show-popup="confirmationDialog.showReject"
       dialog-type="confirmation"
@@ -215,6 +238,7 @@
 import RejectConfirmation from '~/components/KlaimRW/Popup/RejectConfirmation.vue'
 import VerifyConfirmation from '~/components/KlaimRW/Popup/VerifyConfirmation.vue'
 import InformationPopup from '~/components/KlaimRW/Popup/Information.vue'
+import EditStatusPopup from '~/components/KlaimRW/Popup/EditStatus.vue'
 import ArrowLeft from '~/assets/icon/arrow-left.svg?inline'
 import DetailTableComponent from '~/components/KlaimRW/KlaimRwDetail/DetailTableComponent'
 import { formatDate } from '~/utils'
@@ -231,13 +255,15 @@ export default {
     VerifyConfirmation,
     InformationPopup,
     ViewDocument,
-    EditDocument
+    EditDocument,
+    EditStatusPopup
   },
   data () {
     return {
       confirmationDialog: {
         showReject: false,
-        showVerify: false
+        showVerify: false,
+        showEditStatus: false
       },
       informationDialog: {
         title: '',
@@ -325,6 +351,14 @@ export default {
         this.informationDialog.showDialog = true
         this.informationDialog.info = 'Verifikasi akun RW gagal dilakukan.'
         this.informationDialog.message = ''
+      }
+    },
+    actionEditStatusHandle (value) {
+      this.confirmationDialog.showEditStatus = false
+      if (value === userStatus.rejected) {
+        this.actionRejectUser()
+      } else if (value === userStatus.verified) {
+        this.actionVerifyUser()
       }
     },
     async documentHandle () {
