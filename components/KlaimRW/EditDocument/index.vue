@@ -5,7 +5,7 @@
     label-button="Simpan"
     confirmation-type="verify"
     dialog-type="confirmation"
-    @submit="$emit('submit')"
+    @submit="submitEditFileSK"
     @close="closeEdit"
   >
     <div class="py-[16px] font-lato text-gray-800">
@@ -61,7 +61,7 @@
             </div>
 
             <div class="flex flex-row">
-              <BaseButton class="w-4" @click="cancelEditSK">
+              <BaseButton class="w-4" @click="resetDataEditSK">
                 <TrashIcon class="h-4 w-4" />
               </BaseButton>
               <BaseButton class="w-4" @click="previewFileSK">
@@ -121,6 +121,10 @@ export default {
     accountName: {
       type: String,
       default: ''
+    },
+    accountId: {
+      type: String,
+      default: ''
     }
   },
   data () {
@@ -138,7 +142,27 @@ export default {
       proggresBarIsSuccess: false,
       percentageProggres: 0,
       intervalPercentage: '',
-      formatSizeFile: ['Bytes', 'KB', 'MB', 'GB', 'TB']
+      formatSizeFile: ['Bytes', 'KB', 'MB', 'GB', 'TB'],
+      formatTypeFile: [
+        'image/jpeg',
+        'image/png',
+        'image/jpg',
+        'application/pdf'
+      ],
+      maxSizeFile: 2097152,
+      decreeFile: '',
+      infromationSuccess: {
+        info: 'Edit Dokumen SK RW telah berhasil dilakukan.',
+        message: 'Silahkan cek kembali Dokumen SK yang diganti.'
+      },
+      informationFailedFile: {
+        info: 'Periksa Kembali Format file dan ukuran file. (Tipe File harus PDF/JPG/JPEG/PNG dengan maksimal ukuran file 2 MB)',
+        message: ''
+      },
+      informationError: {
+        info: 'Gagal Edit Dokumen SK',
+        message: ''
+      }
     }
   },
   methods: {
@@ -205,14 +229,15 @@ export default {
         this.percentageProggres++
       }
     },
-    cancelEditSK () {
+    resetDataEditSK () {
       this.percentageProggres = 0
       this.proggresBarIsSuccess = false
       this.isChange = false
       this.files = ''
+      this.decreeFile = ''
     },
     previewFileSK () {
-      this.$emit('preview-file', this.dataFiles)
+      this.$emit('preview-file-sk', this.dataFiles)
     },
     convertFileToBase64 (FileObject) {
       const reader = new FileReader()
@@ -224,7 +249,55 @@ export default {
     },
     closeEdit () {
       this.$emit('close')
-      this.cancelEditSK()
+      this.resetDataEditSK()
+    },
+    async submitEditFileSK () {
+      const checkFileValidation = this.checkValidationSubmit()
+      if (checkFileValidation) {
+        try {
+          const response = await this.$axios.post(
+            '/file/upload',
+            this.dataFiles
+          )
+          if (response.data.status) {
+            this.decreeFile = response.data.data.id
+            this.updateFileDecreeSK()
+          }
+        } catch {
+          this.$emit('submit-edit-file-sk', this.informationError)
+        }
+      } else {
+        this.$emit('submit-edit-file-sk', this.informationFailedFile)
+      }
+    },
+    async updateFileDecreeSK () {
+      try {
+        const response = await this.$axios.patch(`/user/rw/${this.accountId}`, {
+          decree: this.decreeFile
+        })
+
+        if (response.data.status) {
+          this.resetDataEditSK()
+          this.$emit('submit-edit-file-sk', this.infromationSuccess)
+        }
+      } catch {
+        this.$emit('submit-edit-file-sk', this.informationError)
+      }
+    },
+    checkValidationSubmit () {
+      if (this.files) {
+        /* return true */
+        if (
+          this.files.size <= this.maxSizeFile &&
+          this.formatTypeFile.includes(this.files.type)
+        ) {
+          return true
+        } else {
+          return false
+        }
+      } else {
+        return false
+      }
     }
   }
 }

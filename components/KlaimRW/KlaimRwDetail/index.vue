@@ -203,7 +203,9 @@
     <EditDocument
       :show-popup="documentEdit.showDialog"
       :account-name="detail?.name || '-'"
-      @preview-file="previewFile"
+      :account-id="detail?.id || '-'"
+      @preview-file-sk="previewFile"
+      @submit-edit-file-sk="informationEditSk"
       @close="closeEditDIalogHandle"
     />
   </div>
@@ -319,8 +321,8 @@ export default {
         this.informationDialog.message =
           'Email terkait informasi verifikasi telah dikirimkan ke email akun RW bersangkutan.'
       } catch {
-        this.informationDialog.showDialog = true
         this.confirmationDialog.showVerify = false
+        this.informationDialog.showDialog = true
         this.informationDialog.info = 'Verifikasi akun RW gagal dilakukan.'
         this.informationDialog.message = ''
       }
@@ -339,6 +341,14 @@ export default {
       } catch {
         this.documentDialog.fileId = ''
       }
+    },
+    informationEditSk (information) {
+      this.documentEdit.showDialog = false
+      this.informationDialog.title = 'Edit Dokumen SK RW'
+      this.informationDialog.showDialog = true
+
+      this.informationDialog.info = information.info
+      this.informationDialog.message = information.message
     },
     closeInformationDialogHandle () {
       this.informationDialog.showDialog = false
