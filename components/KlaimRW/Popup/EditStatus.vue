@@ -5,7 +5,7 @@
     label-button="Simpan"
     dialog-type="confirmation"
     @submit="$emit('submit',statusRw)"
-    @close="$emit('close')"
+    @close="closeHandle"
   >
     <div class="mt-6">
       <p class="text-[14px] font-lato text-gray-800">
@@ -15,7 +15,7 @@
         <strong>{{ accountName }}</strong>
       </p>
       <form class="py-4 select__form">
-        <jds-select placeholder="Pilih status" label="Status Akun RW" :options="statusOptions" :value="accountStatus" @change="getStatusFromSelect" />
+        <jds-select placeholder="Pilih status" label="Status Akun RW" :options="statusOptions" :value="getValueStatusRw" @change="getStatusFromSelect" />
       </form>
     </div>
   </BaseDialog>
@@ -50,15 +50,30 @@ export default {
         }
       ],
       statusRw: '',
-      userStatus
+      userStatus,
+      // isChangeStatus is used for check if status claim rw change from select form
+      isChangeStatus: false
+    }
+  },
+  computed: {
+    getValueStatusRw () {
+      let result = this.accountStatus
+      if (this.isChangeStatus) {
+        result = this.statusRw
+      }
+      return result
     }
   },
   methods: {
     getStatusFromSelect (value) {
       this.statusRw = value
+      this.isChangeStatus = true
+    },
+    closeHandle () {
+      this.$emit('close')
+      this.statusRw = this.accountStatus
     }
   }
-
 }
 </script>
 
