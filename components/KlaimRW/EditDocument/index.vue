@@ -214,12 +214,12 @@ export default {
       if (sizeFile === 0) {
         return 'n/a'
       }
-      const i = parseInt(Math.floor(Math.log(sizeFile) / Math.log(1024)))
-      if (i === 0) {
-        return sizeFile + ' ' + this.formatSizeFile[i]
+      const indexFileSize = parseInt(Math.floor(Math.log(sizeFile) / Math.log(1024)))
+      if (indexFileSize === 0) {
+        return sizeFile + ' ' + this.formatSizeFile[indexFileSize]
       }
       return (
-        (sizeFile / Math.pow(1024, i)).toFixed(1) + ' ' + this.formatSizeFile[i]
+        (sizeFile / Math.pow(1024, indexFileSize)).toFixed(1) + ' ' + this.formatSizeFile[indexFileSize]
       )
     },
     runProgressBar () {
