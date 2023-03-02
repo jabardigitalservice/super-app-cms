@@ -27,7 +27,7 @@
 
       <div class="mt-2 flex w-full items-center justify-center">
         <div
-          v-if="isChange"
+          v-if="fileInputIsChange"
           class="flex h-36 w-full flex-col justify-center rounded-lg border-2 border-dashed  px-4"
           :class="compatibleFiles ? 'border-green-300 bg-green-50': 'border-red-300 bg-red-50' "
         >
@@ -139,7 +139,7 @@ export default {
         data: '',
         fileSize: 0
       },
-      isChange: false,
+      fileInputIsChange: false,
       proggresBarIsSuccess: false,
       percentageProggres: 0,
       intervalPercentage: '',
@@ -180,7 +180,7 @@ export default {
         this.dataFiles.mimeType = this.files.type
 
         this.dataFiles.fileSize = this.convertSize(this.files.size)
-        this.isChange = true
+        this.fileInputIsChange = true
         this.convertFileToBase64(this.files)
         this.runProgressBar()
 
@@ -241,7 +241,7 @@ export default {
     resetDataEditSK () {
       this.percentageProggres = 0
       this.proggresBarIsSuccess = false
-      this.isChange = false
+      this.fileInputIsChange = false
       this.files = ''
       this.decreeFile = ''
       this.compatibleFiles = false
