@@ -83,6 +83,7 @@
     <KlaimRWViewDocument
       title="Dokumen SK RW"
       :file="dataInfo.file"
+      :mime-type="dataInfo.mimeType"
       :show="showDocument"
       @close="showDocument = false"
     />
@@ -153,7 +154,8 @@ export default {
         show: false,
         info: '',
         message: '',
-        file: ''
+        file: '',
+        mimeType: ''
       }
     }
   },
@@ -270,8 +272,9 @@ export default {
         const response = await this.$axios.get(`/file/view/${fileId}`, {
           headers: { 'x-file-id': fileId }
         })
-        const { data } = response.data
-        this.dataInfo.file = data || ''
+
+        this.dataInfo.file = response.data.data || ''
+        this.dataInfo.mimeType = response.data.meta.mimeType || ''
       } catch {
         this.dataInfo.file = ''
       }
