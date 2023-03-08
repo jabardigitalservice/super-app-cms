@@ -5,6 +5,7 @@
     label-button="Simpan"
     confirmation-type="verify"
     dialog-type="confirmation"
+    :disabled-button="disabledButton"
     @submit="submitEditFileSK"
     @close="closeEdit"
   >
@@ -28,8 +29,12 @@
       <div class="mt-2 flex w-full items-center justify-center">
         <div
           v-if="fileInputIsChange"
-          class="flex h-36 w-full flex-col justify-center rounded-lg border-2 border-dashed  px-4"
-          :class="compatibleFiles ? 'border-green-300 bg-green-50': 'border-red-300 bg-red-50' "
+          class="flex h-40 w-full flex-col justify-center rounded-lg border-2 border-dashed px-4"
+          :class="
+            fileIsCorrect
+              ? 'border-green-300 bg-green-50'
+              : 'border-red-300 bg-red-50'
+          "
         >
           <div class="mb-3 flex items-center justify-center">
             <DokumenIcon class="h-9 w-9" />
@@ -59,6 +64,20 @@
                   Ukuran {{ dataFiles.fileSize }}
                 </p>
               </template>
+
+              <p
+                v-if="!FileSizeIsCompatible()"
+                class="font-lato text-[11px] font-bold text-red-600"
+              >
+                Ukuran file dokumen SK tidak boleh melebihi 2 MB.
+              </p>
+
+              <p
+                v-if="!FormatFileIsCompatible()"
+                class="font-lato text-[11px] font-bold text-red-600"
+              >
+                Hanya file yang berformat PDF/JPG/JPEG/PNG yang dapat diupload.
+              </p>
             </div>
 
             <div class="flex flex-row">
@@ -74,7 +93,7 @@
         <label
           v-else
           for="drag-and-drop-file"
-          class="flex h-36 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 px-4 hover:bg-gray-200"
+          class="flex h-40 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 px-4 hover:bg-gray-200"
           @dragover="dragover"
           @dragleave="dragleave"
           @drop="drop"
@@ -156,20 +175,12 @@ export default {
         info: 'Edit Dokumen SK RW telah berhasil dilakukan.',
         message: 'Silahkan cek kembali Dokumen SK yang diganti.'
       },
-      informationFailedFile: {
-        info: 'Periksa Kembali Format file dan ukuran file.',
-        message: ''
-      },
       informationError: {
         info: 'Gagal Edit Dokumen SK',
         message: ''
       },
-      InformationFileExist: {
-        info: 'Masukan File jika ingin mengubah Dokumen SK.',
-        message: ''
-      },
-      compatibleFiles: false,
-      filesExist: false
+      fileIsCorrect: false,
+      disabledButton: true
     }
   },
   methods: {
@@ -183,7 +194,6 @@ export default {
         this.fileInputIsChange = true
         this.convertFileToBase64(this.files)
         this.runProgressBar()
-
         this.checkFileValidation()
       }
     },
@@ -214,12 +224,16 @@ export default {
       if (sizeFile === 0) {
         return 'n/a'
       }
-      const indexFileSize = parseInt(Math.floor(Math.log(sizeFile) / Math.log(1024)))
+      const indexFileSize = parseInt(
+        Math.floor(Math.log(sizeFile) / Math.log(1024))
+      )
       if (indexFileSize === 0) {
         return sizeFile + ' ' + this.formatSizeFile[indexFileSize]
       }
       return (
-        (sizeFile / Math.pow(1024, indexFileSize)).toFixed(1) + ' ' + this.formatSizeFile[indexFileSize]
+        (sizeFile / Math.pow(1024, indexFileSize)).toFixed(1) +
+        ' ' +
+        this.formatSizeFile[indexFileSize]
       )
     },
     runProgressBar () {
@@ -244,7 +258,8 @@ export default {
       this.fileInputIsChange = false
       this.files = ''
       this.decreeFile = ''
-      this.compatibleFiles = false
+      this.fileIsCorrect = false
+      this.disabledButton = true
     },
     previewFileSK () {
       this.$emit('preview-file-sk', this.dataFiles)
@@ -263,25 +278,20 @@ export default {
     },
     async submitEditFileSK () {
       this.checkFileValidation()
-      if (this.filesExist) {
-        if (this.compatibleFiles) {
-          try {
-            const response = await this.$axios.post(
-              '/file/upload',
-              this.dataFiles
-            )
-            if (response.data.status) {
-              this.decreeFile = response.data.data.id
-              this.updateFileDecreeSK()
-            }
-          } catch {
-            this.$emit('submit-edit-file-sk', this.informationError)
+
+      if (this.fileIsCorrect) {
+        try {
+          const response = await this.$axios.post(
+            '/file/upload',
+            this.dataFiles
+          )
+          if (response.data.status) {
+            this.decreeFile = response.data.data.id
+            this.updateFileDecreeSK()
           }
-        } else {
-          this.$emit('submit-edit-file-sk', this.informationFailedFile)
+        } catch {
+          this.$emit('submit-edit-file-sk', this.informationError)
         }
-      } else {
-        this.$emit('submit-edit-file-sk', this.InformationFileExist)
       }
     },
     async updateFileDecreeSK () {
@@ -300,18 +310,28 @@ export default {
     },
     checkFileValidation () {
       if (this.files) {
-        /* return true */
-        this.filesExist = true
-        if (
-          this.files.size <= this.maxSizeFile &&
-          this.formatTypeFile.includes(this.files.type)
-        ) {
-          this.compatibleFiles = true
+        if (this.FileSizeIsCompatible() && this.FormatFileIsCompatible()) {
+          this.fileIsCorrect = true
+          this.disabledButton = false
         } else {
-          this.compatibleFiles = false
+          this.fileIsCorrect = false
         }
       } else {
-        this.filesExist = false
+        this.fileIsCorrect = false
+      }
+    },
+    FileSizeIsCompatible () {
+      if (this.files.size <= this.maxSizeFile) {
+        return true
+      } else {
+        return false
+      }
+    },
+    FormatFileIsCompatible () {
+      if (this.formatTypeFile.includes(this.files.type)) {
+        return true
+      } else {
+        return false
       }
     }
   }

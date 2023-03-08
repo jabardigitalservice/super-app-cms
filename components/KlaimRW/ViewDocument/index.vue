@@ -1,20 +1,40 @@
 <template>
   <transition name="fade">
-    <div v-if="show" class="fixed h-screen w-screen bg-black bg-opacity-75 z-50 inset-0 flex justify-center items-center">
-      <div class="w-[700px] min-h-min rounded-lg bg-white flex flex-col gap-4">
-        <h1 class="text-green-700 font-roboto font-medium text-[21px] px-4 pt-4">
+    <div
+      v-if="show"
+      class="fixed inset-0 z-50 flex h-screen w-screen items-center justify-center bg-black bg-opacity-75"
+    >
+      <div class="flex min-h-min w-[800px] flex-col gap-4 rounded-lg bg-white">
+        <h1
+          class="px-4 pt-4 font-roboto text-[21px] font-medium text-green-700"
+        >
           Dokumen SK RW {{ file.meta }}
         </h1>
-        <div v-if="file === 'loading'" class="p-4 flex justify-center items-center">
+        <div
+          v-if="file === 'loading'"
+          class="flex items-center justify-center p-4"
+        >
           <jds-spinner size="72px" />
         </div>
-        <div v-else-if="file !== 'loading'" class="max-h-[calc(100vh-64px-120px)] overflow-scroll">
-          <iframe :src="fileDocument" class="min-h-[600px] w-full" />
+        <div
+          v-else-if="file !== 'loading'"
+          class="max-h-[calc(100vh-64px-120px)]"
+          :class="
+            mimeType === 'application/pdf' ? 'overflow-scroll' : 'overflow-auto'
+          "
+        >
+          <iframe
+            v-if="mimeType === 'application/pdf'"
+            :src="fileDocument"
+            class="min-h-[600px] w-full"
+          />
+
+          <img v-else :src="fileDocument" class="min-h-[600px] w-full">
         </div>
         <div v-else class="px-4">
           Tidak ada data
         </div>
-        <div class="flex justify-center p-4 bg-gray-50 px-6 rounded-lg">
+        <div class="flex justify-center rounded-lg bg-gray-50 p-4 px-6">
           <jds-button label="Oke" variant="primary" @click="onClose" />
         </div>
       </div>
