@@ -76,7 +76,7 @@
                 v-if="!FormatFileIsCompatible()"
                 class="font-lato text-[11px] font-bold text-red-600"
               >
-                Format file salah, hanya file yang berformat PDF/JPG/JPEG/PNG yang dapat diupload.
+                Hanya file yang berformat PDF/JPG/JPEG/PNG yang dapat diupload.
               </p>
             </div>
 
