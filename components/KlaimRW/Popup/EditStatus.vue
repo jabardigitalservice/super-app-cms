@@ -76,25 +76,31 @@ export default {
     getStatusFromSelect (value) {
       this.statusRw = value
       this.isChangeStatus = true
+      this.errorMessage = ''
     },
     validateSelectFormHandle () {
       let result = ''
       if (this.statusRw === '' || this.statusRw === userStatus.waiting) {
-        result = 'Status Akun RW wajib diisi.'
+        result = 'Status Akun RW wajib dipilih.'
+      } else if (this.statusRw === this.accountStatus) {
+        result = 'Status Akun RW sudah ditolak.'
       }
       return result
     },
     editStatusHandle () {
-      if (this.validateSelectFormHandle() === '') {
+      this.statusRw = (this.accountStatus === userStatus.rejected && !this.isChangeStatus ? this.accountStatus : this.statusRw)
+      const validate = this.validateSelectFormHandle()
+      if (validate === '') {
         this.$emit('submit', this.statusRw)
       } else {
-        this.errorMessage = this.validateSelectFormHandle()
+        this.errorMessage = validate
       }
     },
     closeHandle () {
       this.$emit('close')
       this.errorMessage = ''
       this.statusRw = this.accountStatus
+      this.isChangeStatus = false
     }
   }
 }
@@ -104,5 +110,9 @@ export default {
   .select__form .jds-select,
   .select__form .jds-input-text{
     width:462px !important;
+  }
+
+  .select__form .jds-options__option-list-item--selected{
+    display: none !important;
   }
 </style>

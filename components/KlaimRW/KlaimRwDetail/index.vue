@@ -77,7 +77,7 @@
                 <td>
                   <strong>Status</strong>
                 </td>
-                <td class="w-1/4">
+                <td class="w-[200px]">
                   <div class="flex items-center">
                     <div
                       v-show="detail?.rwStatus"
