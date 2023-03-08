@@ -79,19 +79,20 @@ export default {
       this.errorMessage = ''
     },
     validateSelectFormHandle () {
-      let result = ''
       if (this.statusRw === '' || this.statusRw === userStatus.waiting) {
-        result = 'Status Akun RW wajib dipilih.'
-      } else if (this.statusRw === this.accountStatus) {
-        result = 'Status Akun RW sudah ditolak.'
+        return 'Status Akun RW wajib dipilih.'
+      } else if (this.statusRw === this.accountStatus && this.accountStatus === userStatus.rejected) {
+        return 'Status Akun RW sudah ditolak.'
+      } else {
+        return ''
       }
-      return result
     },
     editStatusHandle () {
       this.statusRw = (this.accountStatus === userStatus.rejected && !this.isChangeStatus ? this.accountStatus : this.statusRw)
       const validate = this.validateSelectFormHandle()
       if (validate === '') {
         this.$emit('submit', this.statusRw)
+        this.isChangeStatus = false
       } else {
         this.errorMessage = validate
       }
