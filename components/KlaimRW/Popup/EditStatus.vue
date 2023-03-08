@@ -82,7 +82,7 @@ export default {
       let result = ''
       if (this.statusRw === '' || this.statusRw === userStatus.waiting) {
         result = 'Status Akun RW wajib dipilih.'
-      } else if (this.statusRw === this.accountStatus) {
+      } else if (this.statusRw === this.accountStatus && this.accountStatus === userStatus.rejected) {
         result = 'Status Akun RW sudah ditolak.'
       }
       return result
@@ -92,6 +92,7 @@ export default {
       const validate = this.validateSelectFormHandle()
       if (validate === '') {
         this.$emit('submit', this.statusRw)
+        this.isChangeStatus = false
       } else {
         this.errorMessage = validate
       }
