@@ -45,7 +45,7 @@
               Batal
             </BaseButton>
           </div>
-          <BaseButton v-show="(dialogType=='confirmation' && confirmationType!='reject') || dialogType== 'information'" class="bg-green-700 w-fit text-white hover:bg-green-600" @click="submitHandle">
+          <BaseButton v-show="(dialogType=='confirmation' && confirmationType!='reject') || dialogType== 'information'" class="bg-green-700 w-fit text-white hover:bg-green-600" :class="disabledButton ? 'disabled:opacity-25' : ''" :disabled="disabledButton" @click="submitHandle">
             <template #default>
               <div class="text-[14px] font-bold font-lato">
                 {{ labelButton }}
@@ -71,6 +71,10 @@ export default {
   name: 'BaseDialog',
   props: {
     showPopup: {
+      type: Boolean,
+      default: false
+    },
+    disabledButton: {
       type: Boolean,
       default: false
     },
