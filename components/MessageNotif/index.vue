@@ -24,8 +24,22 @@
         :loading="false"
       >
         <!-- eslint-disable-next-line vue/valid-v-slot -->
+        <template #item.status="{item}">
+          <div class="flex items-center">
+            <div
+              v-show="item?.messageStatus"
+              :class="{
+                'mr-2 h-2 w-2 rounded-full':true,
+                'bg-green-600': item.messageStatus.id == messageStatus.published.id,
+                'bg-yellow-600': item.messageStatus.id == messageStatus.waiting.id,
+              }"
+            />
+            {{ item.messageStatus.status || "-" }}
+          </div>
+        </template>
+        <!-- eslint-disable-next-line vue/valid-v-slot -->
         <template #item.action="{ item }">
-          <MessageNotifTableAction @detail="$router.push(`/message-notif/detail/${item.id}`)" />
+          <BaseTableAction :list-menu-pop-over="filterTableAction(item.messageStatus)" @detail="$router.push(`/message-notif/detail/${item.id}`)" />
         </template>
       </JdsDataTable>
     </div>
@@ -33,7 +47,7 @@
 </template>
 
 <script>
-import { messageNotifHeader } from '~/constant/message-notif'
+import { messageNotifHeader, messageStatus } from '~/constant/message-notif'
 export default {
   name: 'ListMessageNotif',
   data () {
@@ -49,16 +63,37 @@ export default {
           title: 'Mitigasi Bencana Gerakan Tanah',
           createdDate: '22/10/2022 10:54',
           publishDate: '22/10/2022 10:54',
-          status: 'Menunggu Verifikasi'
+          messageStatus: {
+            id: 1,
+            status: 'Menunggu Publikasi'
+          }
         },
         {
-          title: 'Mitigasi Bencana Gerakan Tanah',
+          title: 'Informasi Vaksin Booster 2',
           createdDate: '22/10/2022 10:54',
           publishDate: '22/10/2022 10:54',
-          status: 'Menunggu Verifikasi'
+          messageStatus: {
+            id: 2,
+            status: 'Dipublikasikan'
+          }
         }
       ],
-      messageNotifHeader
+      messageNotifHeader,
+      messageStatus,
+      menuTableAction: [
+        { menu: 'Lihat Detail', emit: 'detail' },
+        { menu: 'Publikasikan', emit: 'publish' },
+        { menu: 'Hapus', emit: 'delete' }
+      ]
+    }
+  },
+  methods: {
+    filterTableAction (currentUserStatus) {
+      if (currentUserStatus.id === messageStatus.published.id) {
+        return this.menuTableAction.filter(item => item.menu !== 'Publikasikan')
+      } else {
+        return this.menuTableAction
+      }
     }
   }
 }
