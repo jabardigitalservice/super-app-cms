@@ -81,9 +81,9 @@ export default {
       messageNotifHeader,
       messageStatus,
       menuTableAction: [
-        { menu: 'Lihat Detail', emit: 'detail' },
-        { menu: 'Publikasikan', emit: 'publish' },
-        { menu: 'Hapus', emit: 'delete' }
+        { menu: 'Lihat Detail', value: 'detail' },
+        { menu: 'Publikasikan', value: 'publish' },
+        { menu: 'Hapus', value: 'delete' }
       ]
     }
   },
