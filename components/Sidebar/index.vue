@@ -2,6 +2,7 @@
   <div>
     <SidebarHeader class="px-6 py-7 border-b" />
     <div class="h-[calc(100%-170px)] overflow-y-scroll sidebar-content p-6">
+      <SidebarTitleMenu title="RW" />
       <div class="flex flex-col gap-2">
         <SidebarItem
           v-for="menu in mainMenu"
@@ -11,9 +12,17 @@
           :link="menu.path"
         />
       </div>
-      <div class="mt-6 mb-4 py-3 font-roboto text-gray-600 uppercase font-bold border-b">
-        Master Data
+      <SidebarTitleMenu title="Pesan" />
+      <div class="flex flex-col gap-2">
+        <SidebarItem
+          v-for="menu in messageNotifMenu"
+          :key="menu.path"
+          :label="menu.name"
+          :is-show-arrow="menu.arrow"
+          :link="menu.path"
+        />
       </div>
+      <SidebarTitleMenu title="Master Data" />
       <div class="flex flex-col gap-2">
         <SidebarItem
           v-for="menu in masterDataMenu"
@@ -29,13 +38,14 @@
 </template>
 
 <script>
-import { mainMenu, masterDataMenu } from '@/constant/menu'
+import { mainMenu, messageNotifMenu, masterDataMenu } from '@/constant/menu'
 
 export default {
   name: 'ComponentSidebar',
   data () {
     return {
       mainMenu,
+      messageNotifMenu,
       masterDataMenu,
       profileName: ''
     }

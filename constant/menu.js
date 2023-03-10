@@ -11,6 +11,14 @@ const mainMenu = [
   }
 ]
 
+const messageNotifMenu = [
+  {
+    name: 'Pesan',
+    path: 'message-notif',
+    arrow: false
+  }
+]
+
 const masterDataMenu = [
   {
     name: 'Kelola Pengguna',
@@ -31,5 +39,6 @@ const masterDataMenu = [
 
 export {
   mainMenu,
+  messageNotifMenu,
   masterDataMenu
 }
