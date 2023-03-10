@@ -39,7 +39,7 @@
         </template>
         <!-- eslint-disable-next-line vue/valid-v-slot -->
         <template #item.action="{ item }">
-          <BaseTableAction :list-menu-pop-over="filterTableAction(item.messageStatus)" @detail="$router.push(`/message-notif/detail/${item.id}`)" />
+          <BaseTableAction :list-menu-pop-over="filterTableAction(item.messageStatus)" />
         </template>
       </JdsDataTable>
     </div>
