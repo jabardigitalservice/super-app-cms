@@ -7,11 +7,11 @@
     <div class="mt-8">
       <div class="flex justify-between mb-4">
         <jds-search
-          value=""
           placeholder="Masukkan judul pesan"
           icon
           :button="false"
           small
+          value=""
           class="w-[275px] h-[38px] text-gray-500"
         />
         <BaseButton class="bg-green-600 w-[102px] text-white font-semibold">
@@ -23,6 +23,11 @@
         :items="getListMessageNotif"
         :loading="$fetchState.pending"
         :pagination="pagination"
+        @next-page="pageChangeHandle"
+        @previous-page="pageChangeHandle"
+        @page-change="pageChangeHandle"
+        @per-page-change="perPageChangeHandle"
+        @change:sort="sortHandle"
       >
         <!-- eslint-disable-next-line vue/valid-v-slot -->
         <template #item.status="{item}">
@@ -49,7 +54,7 @@
 
 <script>
 import { messageNotifHeader, messageStatus } from '~/constant/message-notif'
-import { formatDate } from '~/utils'
+import { formatDate, generateItemsPerPageOptions } from '~/utils'
 
 export default {
   name: 'ListMessageNotif',
@@ -72,16 +77,21 @@ export default {
       pagination: {
         currentPage: 1,
         totalRows: 5,
-        itemsPerPage: 10
-      }
+        itemsPerPage: 5,
+        itemsPerPageOptions: []
+      },
+      sortBy: '',
+      sortOrder: ''
     }
   },
   async fetch () {
     try {
-      const response = await this.$axios.get(`messages?page=${this.pagination.currentPage}&limit=${this.pagination.itemsPerPage}`)
+      const response = await this.$axios.get(`/messages?page=${this.pagination.currentPage}&limit=${this.pagination.itemsPerPage}&sortBy=${this.sortBy}&sortOrder=${this.sortOrder}`)
       const dataMessageNotif = response.data
       this.messageNotifList = dataMessageNotif.data
-      this.pagination = { ...this.pagination, currentPage: dataMessageNotif.meta.page, totalRows: dataMessageNotif.meta.totalCount, itemsPerPage: 10 }
+      this.pagination.currentPage = dataMessageNotif.meta.page
+      this.pagination.totalRows = dataMessageNotif.meta.totalCount
+      this.pagination.itemsPerPage = dataMessageNotif.meta.limit
     } catch {
       this.messageNotifList = []
     }
@@ -93,6 +103,9 @@ export default {
       })
     }
   },
+  mounted () {
+    this.pagination.itemsPerPageOptions = generateItemsPerPageOptions(this.pagination.itemsPerPage)
+  },
   methods: {
     filterTableAction (currentUserStatus) {
       if (currentUserStatus === messageStatus.published.id) {
@@ -103,6 +116,20 @@ export default {
     },
     getStatusName (currentStatus) {
       return Object.values(this.messageStatus).find(item => item.id === currentStatus).status
+    },
+    pageChangeHandle (value) {
+      this.pagination.currentPage = value
+      this.$fetch()
+    },
+    perPageChangeHandle (value) {
+      this.pagination.itemsPerPage = value
+      this.$fetch()
+    },
+    sortHandle (value) {
+      // replace createdAt & publishedAt to created_at & published_at, because in firebase is using snake case & json using camel case
+      this.sortBy = Object.keys(value)[0].replace('At', '_at')
+      this.sortOrder = Object.values(value)[0]
+      this.$fetch()
     }
   }
 }
