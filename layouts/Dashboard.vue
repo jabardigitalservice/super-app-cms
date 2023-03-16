@@ -1,9 +1,9 @@
 <template>
   <div>
-    <div class="bg-[#EDEFF3] flex">
-      <Sidebar class="bg-white  fixed left-0 top-0 h-screen z-10" />
-      <div class=" p-6 h-screen">
-        <div class="container">
+    <div class="flex bg-[#EDEFF3]">
+      <Sidebar class="fixed left-0 top-0 z-10 h-screen bg-white" />
+      <div class="h-screen w-full p-6">
+        <div class="mx-11">
           <BaseHeader
             :navigations="$store.state.header.navigations"
             :description-page="$store.state.header.descriptionPage"
