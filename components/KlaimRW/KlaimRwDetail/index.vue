@@ -1,9 +1,5 @@
 <template>
-  <div class="container mx-auto">
-    <BaseHeader
-      :navigations="navigations"
-      description-page="Berisi semua daftar terkait klaim yang dilakukan oleh RW di aplikasi Sapawarga."
-    />
+  <div>
     <div class="flex justify-between pt-[16px] pb-[32px]">
       <BaseButton
         class="w-[126px] border border-green-700 text-green-700 hover:bg-green-50"
@@ -279,16 +275,7 @@ export default {
       documentEdit: {
         showDialog: false
       },
-      navigations: [
-        {
-          label: 'Klaim Akun RW',
-          link: '/'
-        },
-        {
-          label: 'Detail Akun RW',
-          link: `/detail/${this.$route.params.id}`
-        }
-      ],
+
       detail: {},
       userStatus
     }

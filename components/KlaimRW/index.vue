@@ -1,11 +1,5 @@
 <template>
   <div>
-    <h1 class="font-roboto text-[38px] text-blue-gray-800 mb-4">
-      Klaim Akun RW
-    </h1>
-    <p class="font-roboto text-blue-gray-400 mb-8">
-      Berisi semua daftar terkait klaim yang dilakukan oleh RW di aplikasi Sapawarga.
-    </p>
     <div class="flex justify-between mb-6">
       <jds-search
         v-model="search"
