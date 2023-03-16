@@ -13,6 +13,7 @@
           small
           value=""
           class="w-[275px] h-[38px] text-gray-500"
+          @input="searchHandle"
         />
         <BaseButton class="bg-green-600 w-[102px] text-white font-semibold">
           Buat Pesan
@@ -45,15 +46,58 @@
         </template>
         <!-- eslint-disable-next-line vue/valid-v-slot -->
         <template #item.action="{ item }">
-          <BaseTableAction :list-menu-pop-over="filterTableAction(item.messageStatus)" />
+          <BaseTableAction :list-menu-pop-over="filterTableAction(item.messageStatus)" @detail="goToDetailPageHandle(item)" @delete="showDeletePopupHandle(item)" @publish="showPublishedPopupHandle(item)" />
         </template>
       </JdsDataTable>
     </div>
+    <BasePopupConfirmation
+      :show-popup="confirmationDialog.showPublished"
+      :title="publishedConfirmationPopup.title"
+      :description-text="publishedConfirmationPopup.descriptionText"
+      :data-popup="dataMessageNotif.title"
+      :label-button="publishedConfirmationPopup.labelButton"
+      :confirmation-type="publishedConfirmationPopup.confirmationType"
+      @close="confirmationDialog.showPublished=false"
+      @submit="publishedMessageNotifHandle"
+    />
+    <BasePopupConfirmation
+      :show-popup="confirmationDialog.showDelete"
+      :title="deleteConfirmationPopup.title"
+      :description-text="deleteConfirmationPopup.descriptionText"
+      :data-popup="dataMessageNotif.title"
+      :label-button="deleteConfirmationPopup.labelButton"
+      :confirmation-type="deleteConfirmationPopup.confirmationType"
+      @close="confirmationDialog.showDelete=false"
+      @submit="deleteMessageNotifHandle(dataMessageNotif.id)"
+    />
+    <BasePopupInformation
+      :show-popup="showInformationDialog"
+      :is-error="getIsError"
+      :title="publishedInformationPopup.title"
+      :description-text="!getIsError ? publishedInformationPopup.descriptionSuccessText : publishedInformationPopup.descriptionFailedText"
+      :data-popup="dataMessageNotif.title"
+      :label-button="!getIsError ? publishedInformationPopup.labelSuccessButton : publishedInformationPopup.labelFailedButton"
+      :information-type="!getIsError ? 'success' : 'failed'"
+      @submit="publishedMessageNotifHandle(dataMessageNotif.id)"
+      @close="closeInformationPopupHandle"
+    />
+    <BasePopupInformation
+      :show-popup="showInformationDialog"
+      :is-error="getIsError"
+      :title="deleteInformationPopup.title"
+      :description-text="!getIsError ? deleteInformationPopup.descriptionSuccessText : deleteInformationPopup.descriptionFailedText"
+      :data-popup="dataMessageNotif.title"
+      :label-button="!getIsError ? deleteInformationPopup.labelSuccessButton : deleteInformationPopup.labelFailedButton"
+      :information-type="!getIsError ? 'success' : 'failed'"
+      @submit="deleteMessageNotifHandle(dataMessageNotif.id)"
+      @close="closeInformationPopupHandle"
+    />
   </div>
 </template>
 
 <script>
-import { messageNotifHeader, messageStatus } from '~/constant/message-notif'
+import debounce from 'lodash.debounce'
+import { messageNotifHeader, messageStatus, deleteConfirmationPopup, deleteInformationPopup, publishedConfirmationPopup, publishedInformationPopup } from '~/constant/message-notif'
 import { formatDate, generateItemsPerPageOptions } from '~/utils'
 
 export default {
@@ -81,12 +125,34 @@ export default {
         itemsPerPageOptions: []
       },
       sortBy: '',
-      sortOrder: ''
+      sortOrder: '',
+      deleteConfirmationPopup,
+      deleteInformationPopup,
+      publishedInformationPopup,
+      publishedConfirmationPopup,
+      confirmationDialog: {
+        showPublished: false,
+        showDelete: false
+      },
+      showInformationDialog: false,
+      dataMessageNotif: {
+        id: '',
+        title: ''
+      },
+      search: '',
+      isError: false
     }
   },
   async fetch () {
     try {
-      const response = await this.$axios.get(`/messages?page=${this.pagination.currentPage}&limit=${this.pagination.itemsPerPage}&sortBy=${this.sortBy}&sortOrder=${this.sortOrder}`)
+      const queryParams = {
+        q: this.search, // query params search from backend
+        page: this.pagination.currentPage,
+        limit: this.pagination.itemsPerPage,
+        sortBy: this.sortBy,
+        sortOrder: this.pagination.sortOrder
+      }
+      const response = await this.$axios.get('/messages', { params: queryParams })
       const dataMessageNotif = response.data
       this.messageNotifList = dataMessageNotif.data
       this.pagination.currentPage = dataMessageNotif.meta.page
@@ -101,6 +167,9 @@ export default {
       return this.messageNotifList.map((item) => {
         return { ...item, createdAt: formatDate('', item.createdAt), publishedAt: formatDate('', item.publishedAt) }
       })
+    },
+    getIsError () {
+      return this.$store.state.isError
     }
   },
   mounted () {
@@ -123,12 +192,56 @@ export default {
     },
     perPageChangeHandle (value) {
       this.pagination.itemsPerPage = value
+      this.pagination.currentPage = 1
       this.$fetch()
     },
     sortHandle (value) {
       // replace createdAt & publishedAt to created_at & published_at, because in firebase is using snake case & json using camel case
       this.sortBy = Object.keys(value)[0].replace('At', '_at')
       this.sortOrder = Object.values(value)[0]
+      this.$fetch()
+    },
+    searchDebounce: debounce(function (value) {
+      if (value.length > 2) {
+        this.search = value
+      } else if (value.length === 0) {
+        this.search = ''
+      }
+      this.pagination.currentPage = 1
+      this.$fetch()
+    }, 500),
+    searchHandle (value) {
+      this.searchDebounce(value)
+    },
+    goToDetailPageHandle (item) {
+      this.$router.push(`/message-notif/detail/${item.id}`)
+    },
+    showPublishedPopupHandle (item) {
+      this.dataMessageNotif.id = item.id
+      this.dataMessageNotif.title = item.title
+      this.confirmationDialog.showPublished = true
+    },
+    async publishedMessageNotifHandle (id) {
+      this.confirmationDialog.showPublished = false
+      try {
+        await this.$axios.post(`/messages/${id}/send`)
+      } catch {
+        this.isError = true
+      }
+      this.showInformationDialog = true
+    },
+    showDeletePopupHandle (item) {
+      this.dataMessageNotif.id = item.id
+      this.dataMessageNotif.title = item.title
+      this.confirmationDialog.showDelete = true
+    },
+    deleteMessageNotifHandle (id) {
+      this.confirmationDialog.showDelete = false
+      this.$store.dispatch('deleteMessageNotifHandle', id)
+      this.showInformationDialog = true
+    },
+    closeInformationPopupHandle () {
+      this.showInformationDialog = false
       this.$fetch()
     }
   }
