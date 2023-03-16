@@ -39,9 +39,9 @@
           <slot name="reject-content" />
         </div>
         <!-- FOOTER -->
-        <div class="h-fit px-[24px] flex justify-end bg-gray-50 py-[16px]" :class="{'justify-center' : dialogType=='information' || confirmationType=='logout'}">
+        <div class="h-fit px-[24px] flex justify-end bg-gray-50 py-[16px]" :class="{'justify-center' : (dialogType=='information' && informationType=='success' ) || confirmationType=='logout'}">
           <div class="mr-[16px]">
-            <BaseButton v-show="dialogType=='confirmation'" class="border border-green-700 text-green-700 hover:bg-green-50" :class="{'w-[117px]':confirmationType=='logout'}" @click="closeHandle">
+            <BaseButton v-show="dialogType=='confirmation' || (dialogType=='information' && informationType=='failed') " class="border border-green-700 text-green-700 hover:bg-green-50" :class="{'w-[117px]':confirmationType=='logout'}" @click="closeHandle">
               Batal
             </BaseButton>
           </div>
@@ -100,6 +100,13 @@ export default {
      * to select the type of confirmation to display : 'logout' or 'reject'
      */
     confirmationType: {
+      type: String,
+      default: ''
+    },
+    /**
+     * to select the type of information to display : 'success' or 'failed'
+     */
+    informationType: {
       type: String,
       default: ''
     }
