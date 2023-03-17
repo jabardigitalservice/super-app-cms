@@ -22,6 +22,16 @@
           :link="menu.path"
         />
       </div>
+      <SidebarTitleMenu title="Tiket Museum" />
+      <div class="flex flex-col gap-2">
+        <SidebarItem
+          v-for="menu in tiketMuseumMenu"
+          :key="menu.path"
+          :label="menu.name"
+          :is-show-arrow="menu.arrow"
+          :link="menu.path"
+        />
+      </div>
       <SidebarTitleMenu title="Master Data" />
       <div class="flex flex-col gap-2">
         <SidebarItem
@@ -41,7 +51,7 @@
 </template>
 
 <script>
-import { mainMenu, messageNotifMenu, masterDataMenu } from '@/constant/menu'
+import { mainMenu, messageNotifMenu, masterDataMenu, tiketMuseumMenu } from '@/constant/menu'
 
 export default {
   name: 'ComponentSidebar',
@@ -50,6 +60,7 @@ export default {
       mainMenu,
       messageNotifMenu,
       masterDataMenu,
+      tiketMuseumMenu,
       profileName: ''
     }
   },

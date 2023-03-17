@@ -19,6 +19,14 @@ const messageNotifMenu = [
   }
 ]
 
+const tiketMuseumMenu = [
+  {
+    name: 'Tiket Museum',
+    path: 'ticket-museum',
+    arrow: false
+  }
+]
+
 const masterDataMenu = [
   {
     name: 'Kelola Pengguna',
@@ -40,5 +48,6 @@ const masterDataMenu = [
 export {
   mainMenu,
   messageNotifMenu,
-  masterDataMenu
+  masterDataMenu,
+  tiketMuseumMenu
 }
