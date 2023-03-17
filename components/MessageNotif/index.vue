@@ -48,44 +48,48 @@
         </JdsDataTable>
       </div>
     </div>
-    <BasePopupConfirmation
+    <BasePopupConfirmationInformation
       :show-popup="confirmationDialog.showPublished"
       :title="publishedConfirmationPopup.title"
       :description-text="publishedConfirmationPopup.descriptionText"
       :data-popup="dataMessageNotif.title"
       :label-button="publishedConfirmationPopup.labelButton"
+      dialog-type="confirmation"
       :confirmation-type="publishedConfirmationPopup.confirmationType"
       @close="confirmationDialog.showPublished=false"
-      @submit="publishedMessageNotifHandle"
+      @submit="publishedMessageNotifHandle(dataMessageNotif.id)"
     />
-    <BasePopupConfirmation
+    <BasePopupConfirmationInformation
       :show-popup="confirmationDialog.showDelete"
       :title="deleteConfirmationPopup.title"
       :description-text="deleteConfirmationPopup.descriptionText"
       :data-popup="dataMessageNotif.title"
       :label-button="deleteConfirmationPopup.labelButton"
+      dialog-type="confirmation"
       :confirmation-type="deleteConfirmationPopup.confirmationType"
       @close="confirmationDialog.showDelete=false"
       @submit="deleteMessageNotifHandle(dataMessageNotif.id)"
     />
-    <BasePopupInformation
+    <BasePopupConfirmationInformation
       :show-popup="showInformationDialog"
-      :is-error="getIsError"
       :title="publishedInformationPopup.title"
       :description-text="!getIsError ? publishedInformationPopup.descriptionSuccessText : publishedInformationPopup.descriptionFailedText"
       :data-popup="dataMessageNotif.title"
       :label-button="!getIsError ? publishedInformationPopup.labelSuccessButton : publishedInformationPopup.labelFailedButton"
+      :dialog-type="!getIsError ? 'information' : 'confirmation'"
+      confirmation-type="verify"
       :information-type="!getIsError ? 'success' : 'failed'"
       @submit="publishedMessageNotifHandle(dataMessageNotif.id)"
       @close="closeInformationPopupHandle"
     />
-    <BasePopupInformation
+    <BasePopupConfirmationInformation
       :show-popup="showInformationDialog"
-      :is-error="getIsError"
       :title="deleteInformationPopup.title"
       :description-text="!getIsError ? deleteInformationPopup.descriptionSuccessText : deleteInformationPopup.descriptionFailedText"
       :data-popup="dataMessageNotif.title"
       :label-button="!getIsError ? deleteInformationPopup.labelSuccessButton : deleteInformationPopup.labelFailedButton"
+      :dialog-type="!getIsError ? 'information' : 'confirmation'"
+      confirmation-type="verify"
       :information-type="!getIsError ? 'success' : 'failed'"
       @submit="deleteMessageNotifHandle(dataMessageNotif.id)"
       @close="closeInformationPopupHandle"
