@@ -8,6 +8,10 @@ export default {
   layout: 'Dashboard',
   mounted () {
     this.$store.commit('setActivePage', 'Kegiatan RW')
+    this.$store.commit('setHeader', {
+      navigations: '',
+      descriptionPage: ''
+    })
   }
 }
 </script>

@@ -1,9 +1,5 @@
 <template>
-  <div class="container mx-auto">
-    <BaseHeader
-      :navigations="navigations"
-      description-page="Berisi semua daftar terkait klaim yang dilakukan oleh RW di aplikasi Sapawarga."
-    />
+  <div>
     <div class="flex justify-between pt-[16px] pb-[32px]">
       <BaseButton
         class="w-[126px] border border-green-700 text-green-700 hover:bg-green-50"
@@ -18,14 +14,17 @@
       </BaseButton>
       <div class="flex">
         <BaseButton
-          v-show="detail.rwStatus==userStatus.waiting"
-          class="w-fit border border-red-400 text-red-400 mr-[12px] hover:bg-red-50"
+          v-show="detail.rwStatus == userStatus.waiting"
+          class="mr-[12px] w-fit border border-red-400 text-red-400 hover:bg-red-50"
           @click="rejectConfirmationHandle"
         >
           Tolak Akun RW Ini
         </BaseButton>
         <BaseButton
-          v-show="detail.rwStatus==userStatus.waiting || detail.rwStatus==userStatus.rejected"
+          v-show="
+            detail.rwStatus == userStatus.waiting ||
+              detail.rwStatus == userStatus.rejected
+          "
           class="w-fit bg-green-700 text-white hover:bg-green-600"
           @click="verifyConfirmationHandle"
         >
@@ -52,32 +51,32 @@
                   <strong>Nama</strong>
                 </td>
                 <td colspan="2">
-                  {{ detail?.name || '-' }}
+                  {{ detail?.name || "-" }}
                 </td>
               </tr>
               <tr>
                 <td><strong>Email</strong></td>
                 <td colspan="2">
-                  {{ detail?.email || '-' }}
+                  {{ detail?.email || "-" }}
                 </td>
               </tr>
               <tr>
                 <td><strong>No.Tlp</strong></td>
                 <td colspan="2">
-                  {{ detail?.phone||'-' }}
+                  {{ detail?.phone || "-" }}
                 </td>
               </tr>
               <tr>
                 <td><strong>Tanggal Registrasi</strong></td>
                 <td colspan="2">
-                  {{ detail?.date||'-' }}
+                  {{ detail?.date || "-" }}
                 </td>
               </tr>
               <tr>
-                <td>
+                <td class="w-[164px]">
                   <strong>Status</strong>
                 </td>
-                <td class="w-[200px]">
+                <td class="w-[214px]">
                   <div class="flex items-center">
                     <div
                       v-show="detail?.rwStatus"
@@ -92,7 +91,11 @@
                   </div>
                 </td>
                 <td>
-                  <BaseButton v-show="detail.rwStatus!==userStatus.verified" class="w-fit border border-green-600 text-green-600 font-medium py-[6px]" @click="confirmationDialog.showEditStatus=true">
+                  <BaseButton
+                    v-show="detail.rwStatus !== userStatus.verified"
+                    class="w-fit border border-green-600 py-[6px] font-medium text-green-600"
+                    @click="confirmationDialog.showEditStatus = true"
+                  >
                     Edit Status
                   </BaseButton>
                 </td>
@@ -102,18 +105,18 @@
           <div class="mb-[16px]">
             <DetailTableComponent header="Dokumen SK RW">
               <tr>
-                <td class="w-1/4">
+                <td class="w-[376px]">
                   <strong>{{ detail.fileName || "-" }}</strong>
                 </td>
                 <td>
                   <BaseButton
-                    class="mx-2 w-fit border border-green-600 py-[6px] font-medium text-green-600"
+                    class="w-fit border border-green-600 py-[6px] font-medium text-green-600 mr-2"
                     @click="editDocumentHandle"
                   >
                     Edit Dokumen
                   </BaseButton>
                   <BaseButton
-                    class="mx-2 w-fit border border-green-600 bg-green-600 py-[6px] font-medium text-white"
+                    class="w-fit border border-green-600 bg-green-600 py-[6px] font-medium text-white"
                     @click="documentHandle"
                   >
                     Lihat Dokumen
@@ -196,7 +199,7 @@
       dialog-type="confirmation"
       :account-name="detail?.name || '-'"
       :account-status="detail?.rwStatus || '-'"
-      @close="confirmationDialog.showEditStatus=false"
+      @close="confirmationDialog.showEditStatus = false"
       @submit="actionEditStatusHandle"
     />
     <RejectConfirmation
@@ -279,16 +282,7 @@ export default {
       documentEdit: {
         showDialog: false
       },
-      navigations: [
-        {
-          label: 'Klaim Akun RW',
-          link: '/'
-        },
-        {
-          label: 'Detail Akun RW',
-          link: `/detail/${this.$route.params.id}`
-        }
-      ],
+
       detail: {},
       userStatus
     }
