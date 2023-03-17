@@ -8,11 +8,9 @@ export function generateItemsPerPageOptions (itemsPerPage) {
   return options
 }
 
-export function formatDate (date, dateTime) {
+export function formatDate (date, format = 'dd/MM/yyyy') {
   if (date) {
-    return formatInTimeZone(date, 'Asia/Bangkok', 'dd/MM/yyyy')
-  } else if (dateTime) {
-    return formatInTimeZone(dateTime, 'Asia/Bangkok', 'dd/MM/yyyy HH:mm')
+    return formatInTimeZone(date, 'Asia/Bangkok', format)
   } else {
     return '-'
   }

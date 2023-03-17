@@ -1,10 +1,6 @@
 <template>
   <div>
-    <BaseHeader
-      :navigations="navigations"
-      description-page="Berisi semua daftar pesan yang dikirimkan ke aplikasi Sapawarga."
-    />
-    <div class="mt-8">
+    <div class="mt-2">
       <div class="flex justify-between mb-4">
         <jds-search
           placeholder="Masukkan judul pesan"
@@ -106,12 +102,6 @@ export default {
   name: 'ListMessageNotif',
   data () {
     return {
-      navigations: [
-        {
-          label: 'Pesan Broadcast',
-          link: '/message-notif'
-        }
-      ],
       messageNotifList: [],
       messageNotifHeader,
       messageStatus,
@@ -167,7 +157,7 @@ export default {
   computed: {
     getListMessageNotif () {
       return this.messageNotifList.map((item) => {
-        return { ...item, createdAt: formatDate('', item.createdAt), publishedAt: formatDate('', item.publishedAt) }
+        return { ...item, createdAt: formatDate(item.createdAt, 'dd/MM/yyyy HH:mm'), publishedAt: formatDate(item.publishedAt, 'dd/MM/yyyy HH:mm') }
       })
     },
     getIsError () {
