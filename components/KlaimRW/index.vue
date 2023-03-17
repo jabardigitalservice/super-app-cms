@@ -354,15 +354,4 @@ export default {
   @apply min-w-[170px] border-r border-gray-200;
 }
 
-.table-content::-webkit-scrollbar {
-  @apply h-5 w-5;
-}
-
-.table-content::-webkit-scrollbar-track {
-  @apply rounded-b-lg border-none bg-gray-50;
-}
-
-.table-content::-webkit-scrollbar-thumb {
-  @apply rounded-xl border-[6px] border-solid border-transparent bg-gray-300 bg-clip-content;
-}
 </style>
