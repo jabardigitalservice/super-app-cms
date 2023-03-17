@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <SidebarHeader class="px-6 py-7 border-b" />
-    <div class="h-[calc(100%-170px)] overflow-y-scroll sidebar-content p-6">
+  <div class="sticky top-0 h-screen flex flex-col">
+    <SidebarHeader class="border-b px-6 py-7" />
+    <div class="sidebar-content overflow-y-auto p-4">
       <SidebarTitleMenu title="RW" />
       <div class="flex flex-col gap-2">
         <SidebarItem
@@ -33,7 +33,10 @@
         />
       </div>
     </div>
-    <SidebarFooter class="p-6 border-t hover:bg-gray-50" :name-user="profileName" />
+    <SidebarFooter
+      class="border-t p-6 hover:bg-gray-50 mt-auto"
+      :name-user="profileName"
+    />
   </div>
 </template>
 
@@ -57,21 +60,20 @@ export default {
 </script>
 
 <style>
-  .sidebar-content{
-    scrollbar-color: #e0e0e0 transparent;
-    scrollbar-width: thin;
-  }
+.sidebar-content {
+  scrollbar-color: #e0e0e0 transparent;
+  scrollbar-width: thin;
+}
 
-  .sidebar-content::-webkit-scrollbar{
-    @apply w-5 h-5;
-  }
+.sidebar-content::-webkit-scrollbar {
+  @apply h-5 w-5;
+}
 
-  .sidebar-content::-webkit-scrollbar-track {
-    @apply bg-transparent;
-  }
+.sidebar-content::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
 
-  .sidebar-content::-webkit-scrollbar-thumb {
-    @apply bg-gray-300 rounded-xl border-solid border-[6px] border-transparent bg-clip-content;
-  }
-
+.sidebar-content::-webkit-scrollbar-thumb {
+  @apply rounded-xl border-[6px] border-solid border-transparent bg-gray-300 bg-clip-content;
+}
 </style>

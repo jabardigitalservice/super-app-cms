@@ -1,7 +1,11 @@
 export const state = () => ({
   page: 'Klaim Akun RW',
   isError: false,
-  errorMessage: false
+  errorMessage: false,
+  header: {
+    navigations: [],
+    descriptionPage: ''
+  }
 })
 
 export const actions = {
@@ -20,5 +24,9 @@ export const mutations = {
   },
   setError (state, error) {
     state.isError = error
+  },
+  setHeader (state, header) {
+    state.header.navigations = header.navigations
+    state.header.descriptionPage = header.descriptionPage
   }
 }
