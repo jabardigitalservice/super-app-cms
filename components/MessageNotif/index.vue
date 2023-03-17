@@ -157,7 +157,7 @@ export default {
   computed: {
     getListMessageNotif () {
       return this.messageNotifList.map((item) => {
-        return { ...item, createdAt: formatDate(item.createdAt, 'dd/MM/yyyy HH:mm'), publishedAt: formatDate(item.publishedAt, 'dd/MM/yyyy HH:mm') }
+        return { ...item, createdAt: formatDate(item.createdAt || '', 'dd/MM/yyyy HH:mm'), publishedAt: formatDate(item.publishedAt || '', 'dd/MM/yyyy HH:mm') }
       })
     },
     getIsError () {
