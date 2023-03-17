@@ -1,5 +1,5 @@
 <template>
-  <div class="sticky top-0 h-screen flex flex-col">
+  <div class="sticky top-0 flex h-screen flex-col">
     <SidebarHeader class="border-b px-6 py-7" />
     <div class="sidebar-content overflow-y-auto p-4">
       <SidebarTitleMenu title="RW" />
@@ -10,6 +10,7 @@
           :label="menu.name"
           :is-show-arrow="menu.arrow"
           :link="menu.path"
+          :role="menu.role"
         />
       </div>
       <SidebarTitleMenu title="Pesan" />
@@ -20,6 +21,7 @@
           :label="menu.name"
           :is-show-arrow="menu.arrow"
           :link="menu.path"
+          :role="menu.role"
         />
       </div>
       <SidebarTitleMenu title="Tiket Museum" />
@@ -30,6 +32,7 @@
           :label="menu.name"
           :is-show-arrow="menu.arrow"
           :link="menu.path"
+          :role="menu.role"
         />
       </div>
       <SidebarTitleMenu title="Master Data" />
@@ -40,18 +43,24 @@
           :label="menu.name"
           :is-show-arrow="menu.arrow"
           :link="menu.path"
+          :role="menu.role"
         />
       </div>
     </div>
     <SidebarFooter
-      class="border-t p-6 hover:bg-gray-50 mt-auto"
+      class="mt-auto border-t p-6 hover:bg-gray-50"
       :name-user="profileName"
     />
   </div>
 </template>
 
 <script>
-import { mainMenu, messageNotifMenu, masterDataMenu, tiketMuseumMenu } from '@/constant/menu'
+import {
+  mainMenu,
+  messageNotifMenu,
+  masterDataMenu,
+  tiketMuseumMenu
+} from '@/constant/menu'
 
 export default {
   name: 'ComponentSidebar',
