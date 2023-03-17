@@ -15,40 +15,42 @@
           class="w-[275px] h-[38px] text-gray-500"
           @input="searchHandle"
         />
-        <BaseButton class="bg-green-600 w-[102px] text-white font-semibold">
+        <jds-button class="!bg-green-600 !w-[102px] !h-[38px] !text-sm !hidden">
           Buat Pesan
-        </BaseButton>
+        </jds-button>
       </div>
-      <JdsDataTable
-        :headers="messageNotifHeader"
-        :items="getListMessageNotif"
-        :loading="$fetchState.pending"
-        :pagination="pagination"
-        @next-page="pageChangeHandle"
-        @previous-page="pageChangeHandle"
-        @page-change="pageChangeHandle"
-        @per-page-change="perPageChangeHandle"
-        @change:sort="sortHandle"
-      >
-        <!-- eslint-disable-next-line vue/valid-v-slot -->
-        <template #item.status="{item}">
-          <div class="flex items-center">
-            <div
-              v-show="item?.status"
-              :class="{
-                'mr-2 h-2 w-2 rounded-full':true,
-                'bg-green-600': item.status == messageStatus.published.id,
-                'bg-yellow-600': item.status == messageStatus.waiting.id,
-              }"
-            />
-            {{ getStatusName(item.status) || "-" }}
-          </div>
-        </template>
-        <!-- eslint-disable-next-line vue/valid-v-slot -->
-        <template #item.action="{ item }">
-          <BaseTableAction :list-menu-pop-over="filterTableAction(item.messageStatus)" @detail="goToDetailPageHandle(item)" @delete="showDeletePopupHandle(item)" @publish="showPublishedPopupHandle(item)" />
-        </template>
-      </JdsDataTable>
+      <div class=" overflow-x-auto">
+        <JdsDataTable
+          :headers="messageNotifHeader"
+          :items="getListMessageNotif"
+          :loading="$fetchState.pending"
+          :pagination="pagination"
+          @next-page="pageChangeHandle"
+          @previous-page="pageChangeHandle"
+          @page-change="pageChangeHandle"
+          @per-page-change="perPageChangeHandle"
+          @change:sort="sortHandle"
+        >
+          <!-- eslint-disable-next-line vue/valid-v-slot -->
+          <template #item.status="{item}">
+            <div class="flex items-center">
+              <div
+                v-show="item?.status"
+                :class="{
+                  'mr-2 h-2 w-2 rounded-full':true,
+                  'bg-green-600': item.status == messageStatus.published.id,
+                  'bg-yellow-600': item.status == messageStatus.waiting.id,
+                }"
+              />
+              {{ getStatusName(item.status) || "-" }}
+            </div>
+          </template>
+          <!-- eslint-disable-next-line vue/valid-v-slot -->
+          <template #item.action="{ item }">
+            <BaseTableAction :list-menu-pop-over="filterTableAction(item.messageStatus)" @detail="goToDetailPageHandle(item)" @delete="showDeletePopupHandle(item)" @publish="showPublishedPopupHandle(item)" />
+          </template>
+        </JdsDataTable>
+      </div>
     </div>
     <BasePopupConfirmation
       :show-popup="confirmationDialog.showPublished"
@@ -255,14 +257,14 @@ export default {
   }
 
   .jds-data-table:deep tr th:first-child{
-    @apply min-w-[435px] rounded-tl-lg;
+    @apply rounded-tl-lg;
   }
 
   .jds-data-table:deep tr th:last-child{
     @apply rounded-tr-lg;
   }
   .jds-data-table:deep tr th {
-    @apply min-w-[191px] h-[42px] border-r border-white bg-green-600;
+    @apply h-[42px] border-r border-white bg-green-600;
   }
 
   .jds-data-table:deep tr td {
