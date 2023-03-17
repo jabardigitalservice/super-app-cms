@@ -108,7 +108,10 @@ export default {
      */
     informationType: {
       type: String,
-      default: ''
+      validator (value) {
+        return ['success', 'failed'].includes(value)
+      },
+      default: 'success'
     }
   },
   methods: {
