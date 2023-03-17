@@ -1,4 +1,5 @@
 import { formatInTimeZone } from 'date-fns-tz'
+import { isValid } from 'date-fns'
 
 export function generateItemsPerPageOptions (itemsPerPage) {
   const options = []
@@ -9,11 +10,11 @@ export function generateItemsPerPageOptions (itemsPerPage) {
 }
 
 export function formatDate (date, format = 'dd/MM/yyyy') {
-  if (date) {
+  // check if valid date
+  if (isValid(new Date(date))) {
     return formatInTimeZone(date, 'Asia/Bangkok', format)
-  } else {
-    return '-'
   }
+  return '-'
 }
 
 export function base64ToBlobUrl (base64, type) {
