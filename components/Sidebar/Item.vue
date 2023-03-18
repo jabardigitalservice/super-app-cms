@@ -1,6 +1,6 @@
 <template>
   <nuxt-link
-    v-if="roleUser === role"
+    v-if="$role === role"
     :to="{ name: link }"
     class="flex w-full min-w-[200px] items-center justify-between rounded-lg p-3 hover:bg-gray-50 hover:font-bold hover:text-gray-800"
     :class="{ 'nuxt-link-exact-active': getActivePage == label }"
@@ -18,7 +18,6 @@
 <script>
 import ChevronRight from '~/assets/icon/chevron-right.svg?inline'
 import IconItem from '~/assets/icon/item.svg?inline'
-import { isAdmin } from '~/utils'
 
 export default {
   name: 'ItemSidebar',
@@ -48,18 +47,10 @@ export default {
       default: ''
     }
   },
-  data () {
-    return {
-      roleUser: isAdmin(this.$auth)
-    }
-  },
   computed: {
     getActivePage () {
       return this.$store.state.page
     }
-  },
-  mounted () {
-    console.log(this.$role)
   }
 }
 </script>
