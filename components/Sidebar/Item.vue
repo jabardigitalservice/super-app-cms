@@ -57,6 +57,9 @@ export default {
     getActivePage () {
       return this.$store.state.page
     }
+  },
+  mounted () {
+    console.log(this.$role)
   }
 }
 </script>

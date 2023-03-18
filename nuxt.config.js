@@ -36,8 +36,7 @@ export default {
     { src: '~/plugins/jds-design-system.js' },
     // plugin axios
     '~/plugins/axios',
-    '~/plugins/vue-gtag.js',
-    '~/plugins/roles.js'
+    '~/plugins/vue-gtag.js'
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -85,7 +84,8 @@ export default {
         scope: ['openid', 'profile', 'offline_access'],
         codeChallengeMethod: 'S256'
       }
-    }
+    },
+    plugins: ['~/plugins/roles.js']
   },
 
   router: {
