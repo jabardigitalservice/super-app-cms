@@ -85,11 +85,11 @@ export default {
         codeChallengeMethod: 'S256'
       }
     },
-    plugins: ['~/plugins/roles.js']
+    plugins: ['~/plugins/get-roles.js']
   },
 
   router: {
-    middleware: ['auth']
+    middleware: ['auth', 'authRole']
   },
 
   googleFonts: {

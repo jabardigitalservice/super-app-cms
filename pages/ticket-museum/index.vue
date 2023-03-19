@@ -5,6 +5,7 @@
 <script>
 export default {
   layout: 'Dashboard',
+  // middleware: 'adminRW',
   data () {
     return {
       navigations: [
