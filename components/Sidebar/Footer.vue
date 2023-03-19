@@ -70,8 +70,8 @@ export default {
     toggleShowPopup () {
       this.isPopupOpen = !this.isPopupOpen
     },
-    logout () {
-      this.$auth.logout()
+    async logout () {
+      await this.$auth.logout()
     }
   }
 }
