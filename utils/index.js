@@ -1,4 +1,5 @@
 import { formatInTimeZone } from 'date-fns-tz'
+import { isValid } from 'date-fns'
 
 import VueJwtDecode from 'vue-jwt-decode'
 
@@ -10,12 +11,12 @@ export function generateItemsPerPageOptions (itemsPerPage) {
   return options
 }
 
-export function formatDate (date) {
-  if (date) {
-    return formatInTimeZone(date, 'Asia/Bangkok', 'dd/MM/yyyy')
-  } else {
-    return '-'
+export function formatDate (date, format = 'dd/MM/yyyy') {
+  // check if valid date
+  if (isValid(new Date(date))) {
+    return formatInTimeZone(date, 'Asia/Bangkok', format)
   }
+  return '-'
 }
 
 export function base64ToBlobUrl (base64, type) {
