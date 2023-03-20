@@ -1,6 +1,6 @@
 import VueJwtDecode from 'vue-jwt-decode'
 
-export default ({ $auth, route }, inject) => {
+export default ({ $auth }, inject) => {
   if ($auth.strategy.token.get()) {
     const tokenBearer = $auth.strategy.token.get()
     const token = tokenBearer.split(' ')
