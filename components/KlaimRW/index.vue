@@ -74,7 +74,7 @@
       :show="showDetailAddress"
       @close="showDetailAddress = false"
     />
-    <KlaimRWViewDocument
+    <BaseViewFile
       title="Dokumen SK RW"
       :file="dataInfo.file"
       :mime-type="dataInfo.mimeType"

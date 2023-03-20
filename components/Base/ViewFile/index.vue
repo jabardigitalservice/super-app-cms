@@ -45,25 +45,25 @@
 <script>
 import { base64ToBlobUrl } from '~/utils'
 export default {
-  name: 'ViewDocument',
+  name: 'BaseViewFile',
   props: {
     /**
-     * make modal visible or not
-     */
+       * make modal visible or not
+       */
     show: {
       type: Boolean,
       default: false
     },
     /**
-     * title modal
-     */
+       * title modal
+       */
     title: {
       type: String,
       default: ''
     },
     /**
-     * data base64 encoded pdf
-     */
+       * data base64 encoded pdf
+       */
     file: {
       type: String,
       default: ''
