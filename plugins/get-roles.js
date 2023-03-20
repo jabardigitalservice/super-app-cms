@@ -7,9 +7,9 @@ export default ({ $auth }, inject) => {
     const tokenDecode = VueJwtDecode.decode(token[1])
 
     if (tokenDecode.realm_access.roles.includes('admin')) {
-      inject('role', 'rw')
+      inject('role', 'adminRW')
     } else {
-      inject('role', 'tiket')
+      inject('role', 'adminTicket')
     }
   }
 }

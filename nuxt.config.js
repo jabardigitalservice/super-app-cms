@@ -89,7 +89,7 @@ export default {
   },
 
   router: {
-    middleware: ['auth', 'redirect-by-role']
+    middleware: ['auth', 'guardRoutes']
   },
 
   googleFonts: {

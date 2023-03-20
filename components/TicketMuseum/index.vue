@@ -75,7 +75,7 @@ export default {
       // todo: if API ready, i wil delete array items
       items: [
         {
-          fileId: '70ec60c2-9f81-4e2e-8b8a-06978fab4030',
+          fileId: 'e1f975e6-c4a7-4c7c-8414-900113ffd0b9',
           invoice: 'MRAJ-23032324001',
           amount: 50000,
           sessionName: 'Sesi 2',
@@ -86,7 +86,7 @@ export default {
           orderedAt: '2023-03-20 02:24:56.961784'
         },
         {
-          fileId: '70ec60c2-9f81-4e2e-8b8a-06978fab4030',
+          fileId: 'e1f975e6-c4a7-4c7c-8414-900113ffd0b9',
           invoice: 'MRAJ-23032324001',
           amount: 50000,
           sessionName: 'Sesi 2',
@@ -97,7 +97,7 @@ export default {
           orderedAt: '2023-03-20 02:24:56.961784'
         },
         {
-          fileId: '70ec60c2-9f81-4e2e-8b8a-06978fab4030',
+          fileId: 'e1f975e6-c4a7-4c7c-8414-900113ffd0b9',
           invoice: 'MRAJ-23032324001',
           amount: 50000,
           sessionName: 'Sesi 2',
@@ -108,7 +108,7 @@ export default {
           orderedAt: '2023-03-20 02:24:56.961784'
         },
         {
-          fileId: '70ec60c2-9f81-4e2e-8b8a-06978fab4030',
+          fileId: 'e1f975e6-c4a7-4c7c-8414-900113ffd0b9',
           invoice: 'MRAJ-23032324001',
           amount: 50000,
           sessionName: 'Sesi 2',
@@ -119,7 +119,7 @@ export default {
           orderedAt: '2023-03-20 02:24:56.961784'
         },
         {
-          fileId: '70ec60c2-9f81-4e2e-8b8a-06978fab4030',
+          fileId: 'e1f975e6-c4a7-4c7c-8414-900113ffd0b9',
           invoice: 'MRAJ-23032324001',
           amount: 50000,
           sessionName: 'Sesi 2',
@@ -130,7 +130,7 @@ export default {
           orderedAt: '2023-03-20 02:24:56.961784'
         },
         {
-          fileId: '70ec60c2-9f81-4e2e-8b8a-06978fab4030',
+          fileId: 'e1f975e6-c4a7-4c7c-8414-900113ffd0b9',
           invoice: 'MRAJ-23032324001',
           amount: 50000,
           sessionName: 'Sesi 2',
@@ -141,7 +141,7 @@ export default {
           orderedAt: '2023-03-20 02:24:56.961784'
         },
         {
-          fileId: '70ec60c2-9f81-4e2e-8b8a-06978fab4030',
+          fileId: 'e1f975e6-c4a7-4c7c-8414-900113ffd0b9',
           invoice: 'MRAJ-23032324001',
           amount: 50000,
           sessionName: 'Sesi 2',
@@ -152,7 +152,7 @@ export default {
           orderedAt: '2023-03-20 02:24:56.961784'
         },
         {
-          fileId: '70ec60c2-9f81-4e2e-8b8a-06978fab4030',
+          fileId: 'e1f975e6-c4a7-4c7c-8414-900113ffd0b9',
           invoice: 'MRAJ-23032324001',
           amount: 50000,
           sessionName: 'Sesi 2',
@@ -163,7 +163,7 @@ export default {
           orderedAt: '2023-03-20 02:24:56.961784'
         },
         {
-          fileId: '70ec60c2-9f81-4e2e-8b8a-06978fab4030',
+          fileId: 'e1f975e6-c4a7-4c7c-8414-900113ffd0b9',
           invoice: 'MRAJ-23032324001',
           amount: 50000,
           sessionName: 'Sesi 2',
@@ -174,7 +174,7 @@ export default {
           orderedAt: '2023-03-20 02:24:56.961784'
         },
         {
-          fileId: '70ec60c2-9f81-4e2e-8b8a-06978fab4030',
+          fileId: 'e1f975e6-c4a7-4c7c-8414-900113ffd0b9',
           invoice: 'MRAJ-23032324001',
           amount: 50000,
           sessionName: 'Sesi 2',
@@ -199,6 +199,7 @@ export default {
       sortOrder: '',
       showPopup: false,
       search: '',
+
       buktiPembayaranInfo: {
         show: false,
         file: '',
@@ -262,6 +263,20 @@ export default {
     )
   },
   methods: {
+    async onClickDocument (fileId) {
+      this.showFile = true
+      this.buktiPembayaranInfo.file = 'loading'
+      try {
+        const response = await this.$axios.get(`/file/view/${fileId}`, {
+          headers: { 'x-file-id': fileId }
+        })
+
+        this.buktiPembayaranInfo.file = response.data.data || ''
+        this.buktiPembayaranInfo.mimeType = response.data.meta.mimeType || ''
+      } catch {
+        this.buktiPembayaranInfo.file = ''
+      }
+    },
     filterTableAction (status) {
       if (status === ticketStatus.confirmed) {
         return this.menuTableAction
@@ -314,20 +329,6 @@ export default {
   }, 500),
   searchHandle (value) {
     this.searchDebounce(value)
-  },
-  async onClickDocument (fileId) {
-    this.showDocument = true
-    this.buktiPembayaranInfo.file = 'loading'
-    try {
-      const response = await this.$axios.get(`/file/view/${fileId}`, {
-        headers: { 'x-file-id': fileId }
-      })
-
-      this.buktiPembayaranInfo.file = response.data.data || ''
-      this.buktiPembayaranInfo.mimeType = response.data.meta.mimeType || ''
-    } catch {
-      this.buktiPembayaranInfo.file = ''
-    }
   }
 }
 </script>
