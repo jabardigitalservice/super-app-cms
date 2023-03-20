@@ -1,4 +1,5 @@
 <template>
+  <!-- This page is temporarily not deleted, because the RW feature claim is still using it. This component will be deleted in parallel -->
   <transition
     name="fade"
     enter-active-class="transition ease-out duration-75"

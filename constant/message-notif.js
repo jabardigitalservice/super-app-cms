@@ -9,31 +9,77 @@ export const messageNotifHeader = [
 export const deleteConfirmationPopup = {
   title: 'Konfirmasi Hapus',
   descriptionText: 'Apakah Anda yakin ingin menghapus pesan ini?',
-  labelButton: 'Hapus Pesan',
-  confirmationType: 'reject'
+  dialogType: 'confirmation',
+  buttonLeft: {
+    label: 'Batal',
+    variant: 'secondary'
+  },
+  buttonRight: {
+    label: 'Hapus Pesan',
+    variant: 'danger'
+  }
 }
 
 export const publishedConfirmationPopup = {
   title: 'Konfirmasi Publikasi',
   descriptionText: 'Apakah Anda yakin ingin mempublikasi pesan ini?',
-  labelButton: 'Ya Publikasikan',
-  confirmationType: 'verify'
+  dialogType: 'confirmation',
+  buttonLeft: {
+    label: 'Batal',
+    variant: 'secondary'
+  },
+  buttonRight: {
+    label: 'Ya Publikasikan',
+    variant: 'primary'
+  }
 }
 
 export const publishedInformationPopup = {
   title: 'Publikasi Pesan',
-  descriptionSuccessText: 'Pesan berhasil dipublikasikan',
-  descriptionFailedText: 'Pesan gagal dipublikasikan',
-  labelSuccessButton: 'Saya mengerti',
-  labelFailedButton: 'Coba Lagi'
+  successInformation: {
+    descriptionText: 'Pesan berhasil dipublikasikan',
+    dialogType: 'information',
+    buttonRight: {
+      label: 'Saya mengerti',
+      variant: 'primary'
+    }
+  },
+  failedInformation: {
+    descriptionText: 'Pesan gagal dipublikasikan',
+    dialogType: 'confirmation',
+    buttonRight: {
+      label: 'Coba Lagi',
+      variant: 'primary'
+    }
+  },
+  buttonLeft: {
+    label: 'Batal',
+    variant: 'secondary'
+  }
 }
 
 export const deleteInformationPopup = {
   title: 'Hapus Pesan',
-  descriptionSuccessText: 'Pesan berhasil dihapus',
-  descriptionFailedText: 'Pesan gagal dihapus',
-  labelSuccessButton: 'Saya mengerti',
-  labelFailedButton: 'Coba Lagi'
+  successInformation: {
+    descriptionText: 'Pesan berhasil dihapus',
+    dialogType: 'information',
+    buttonRight: {
+      label: 'Saya mengerti',
+      variant: 'primary'
+    }
+  },
+  failedInformation: {
+    descriptionText: 'Pesan gagal dihapus',
+    dialogType: 'confirmation',
+    buttonRight: {
+      label: 'Coba Lagi',
+      variant: 'primary'
+    }
+  },
+  buttonLeft: {
+    label: 'Batal',
+    variant: 'secondary'
+  }
 }
 
 export const messageStatus = {
