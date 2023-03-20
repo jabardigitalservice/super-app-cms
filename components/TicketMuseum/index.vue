@@ -10,24 +10,24 @@
         class="h-[38px] w-[275px] text-gray-500"
       />
     </div>
-    <div class="overflow-x-auto rounded-lg font-roboto table-content">
-      <JdsDataTable :headers="headerTicketMuseum" :items="items" :loading="false" class="w-full">
+    <div class="table-content overflow-x-auto rounded-lg font-roboto">
+      <JdsDataTable
+        :headers="headerTicketMuseum"
+        :items="items"
+        :loading="false"
+        class="w-full"
+      >
         <!-- eslint-disable-next-line vue/valid-v-slot -->
-        <!-- <template #item.status="{ item }">
+        <template #item.status="{ item }">
           <div class="flex items-center">
             <div
-              v-show="item?.messageStatus"
-              :class="{
-                'mr-2 h-2 w-2 rounded-full': true,
-                'bg-green-600':
-                  item.messageStatus.id == messageStatus.published.id,
-                'bg-yellow-600':
-                  item.messageStatus.id == messageStatus.waiting.id,
-              }"
+              v-show="item?.status"
+              class="mr-2 h-2 w-2 rounded-full"
+              :class="getColorIconStatus(ticketStatus[`${item.status}`])"
             />
-            {{ item.messageStatus.status || "-" }}
+            {{ ticketStatus[`${item.status}`] }}
           </div>
-        </template> -->
+        </template>
         <!-- eslint-disable-next-line vue/valid-v-slot -->
         <!-- <template #item.action="{ item }">
           <BaseTableAction
@@ -45,34 +45,91 @@ export default {
   name: 'ListTicketMuseum',
   data () {
     return {
-
       items: [
         {
-          title: 'Mitigasi Bencana Gerakan Tanah',
-          createdDate: '22/10/2022 10:54',
-          publishDate: '22/10/2022 10:54',
-          messageStatus: {
-            id: 1,
-            status: 'Menunggu Publikasi'
-          }
+          fileId: 'asdf',
+          invoice: '1',
+          amount: '2',
+          sessionName: 'Sesi 2',
+          reservationDate: 'Rabu, 08 Feb 2023',
+          ticketCount: '1',
+          status: 'confirmed',
+          orderedAt: '7'
         },
         {
-          title: 'Informasi Vaksin Booster 2',
-          createdDate: '22/10/2022 10:54',
-          publishDate: '22/10/2022 10:54',
-          messageStatus: {
-            id: 2,
-            status: 'Dipublikasikan'
-          }
+          fileId: '1321',
+          invoice: '1123',
+          amount: '212321',
+          sessionName: 'Sesi 2',
+          reservationDate: 'Rabu, 08 Feb 2023',
+          ticketCount: '2',
+          status: 'verified',
+          orderedAt: '7213312'
+        },
+        {
+          fileId: '1321',
+          invoice: '1123',
+          amount: '212321',
+          sessionName: 'Sesi 2',
+          reservationDate: 'Rabu, 08 Feb 2023',
+          ticketCount: '3',
+          status: 'rejected',
+          orderedAt: '7213312'
+        },
+        {
+          fileId: '1321',
+          invoice: '1123',
+          amount: '212321',
+          sessionName: 'Sesi 2',
+          reservationDate: 'Rabu, 08 Feb 2023',
+          ticketCount: '4',
+          status: 'canceled',
+          orderedAt: '7213312'
+        },
+        {
+          fileId: '1321',
+          invoice: '1123',
+          amount: '212321',
+          sessionName: 'Sesi 2',
+          reservationDate: 'Rabu, 08 Feb 2023',
+          ticketCount: '5',
+          status: 'expired',
+          orderedAt: '7213312'
+        },
+        {
+          fileId: '1321',
+          invoice: '1123',
+          amount: '212321',
+          sessionName: 'Sesi 2',
+          reservationDate: 'Rabu, 08 Feb 2023',
+          ticketCount: '6',
+          status: 'ordered',
+          orderedAt: '7213312'
         }
       ],
       headerTicketMuseum,
       ticketStatus
-
     }
   },
   methods: {
-
+    getColorIconStatus (status) {
+      if (status === ticketStatus.verified) {
+        return 'bg-green-600'
+      } else if (
+        status === ticketStatus.rejected ||
+        status === ticketStatus.canceled ||
+        status === ticketStatus.expired
+      ) {
+        return 'bg-red-600'
+      } else if (
+        status === ticketStatus.ordered ||
+        status === ticketStatus.confirmed
+      ) {
+        return 'bg-yellow-600'
+      } else {
+        return 'bg-black'
+      }
+    }
   }
 }
 </script>

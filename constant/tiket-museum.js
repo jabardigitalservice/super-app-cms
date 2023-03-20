@@ -12,32 +12,32 @@ export const headerTicketMuseum = [
   {
     key: 'amount',
     text: 'Total Pembayaran',
-    sortable: false
+    sortable: true
   },
   {
     key: 'sessionName',
     text: 'sesi',
-    sortable: false
+    sortable: true
   },
   {
-    key: 'reservation_date',
+    key: 'reservationDate',
     text: 'Tanggal Reservasi',
-    sortable: false
+    sortable: true
   },
   {
     key: 'ticketCount',
     text: 'Jumlah Tiket',
-    sortable: false
+    sortable: true
   },
   {
     key: 'status',
     text: 'Status',
-    sortable: false
+    sortable: true
   },
   {
     key: 'orderedAt',
     text: 'Tanggal Pemesanan',
-    sortable: false
+    sortable: true
   },
 
   {
