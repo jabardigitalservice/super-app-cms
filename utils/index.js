@@ -41,3 +41,10 @@ export function isAdmin (auth) {
     return 'tiket'
   }
 }
+
+export function convertToRupiah (value) {
+  let rupiah = ''
+  const valueRev = value.toString().split('').reverse().join('')
+  for (let i = 0; i < valueRev.length; i++) { if (i % 3 === 0) { rupiah += valueRev.substr(i, 3) + '.' } }
+  return 'Rp. ' + rupiah.split('', rupiah.length - 1).reverse().join('')
+}

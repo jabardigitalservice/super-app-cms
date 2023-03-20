@@ -8,7 +8,7 @@
         <h1
           class="px-4 pt-4 font-roboto text-[21px] font-medium text-green-700"
         >
-          Dokumen SK RW {{ file.meta }}
+          {{ title }} {{ file.meta }}
         </h1>
         <div
           v-if="file === 'loading'"
