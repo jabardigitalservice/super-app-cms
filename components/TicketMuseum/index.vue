@@ -44,11 +44,9 @@
           </div>
         </template>
         <!-- eslint-disable-next-line vue/valid-v-slot -->
-        <!-- <template #item.action="{ item }">
-          <BaseTableAction
-            :list-menu-pop-over="filterTableAction(item.messageStatus)"
-          />
-        </template> -->
+        <template #item.action="{ item }">
+          <BaseTableAction :list-menu-pop-over="filterTableAction(ticketStatus[`${item?.status}`])" @detail="goToDetailPageHandle(item)" @delete="showDeletePopupHandle(item)" @publish="showPublishedPopupHandle(item)" />
+        </template>
       </JdsDataTable>
     </div>
 
@@ -194,7 +192,8 @@ export default {
         currentPage: 1,
         totalRows: 5,
         itemsPerPage: 5,
-        itemsPerPageOptions: []
+        itemsPerPageOptions: [],
+        disabled: true
       },
       sortBy: '',
       sortOrder: '',
@@ -205,7 +204,12 @@ export default {
         file: '',
         mimeType: ''
       },
-      showFile: false
+      showFile: false,
+      menuTableAction: [
+        { menu: 'Lihat Detail', value: 'detail' },
+        { menu: 'Verification', value: 'verification' },
+        { menu: 'Reject', value: 'reject' }
+      ]
     }
   },
   async fetch () {
@@ -222,11 +226,17 @@ export default {
         params: queryParams
       })
 
-      const dataResponseTicket = response.data
-      this.ticketList = dataResponseTicket.data
-      this.pagination.currentPage = dataResponseTicket.meta.page
-      this.pagination.totalRows = dataResponseTicket.meta.totalCount
-      this.pagination.itemsPerPage = dataResponseTicket.meta.limit
+      const { data } = response.data
+      this.data = data?.data || []
+      if (this.data.length) {
+        this.pagination.disabled = false
+      } else {
+        this.pagination.disabled = true
+      }
+      this.ticketList = data?.data
+      this.pagination.currentPage = data?.meta.page
+      this.pagination.totalRows = data?.meta.totalCount
+      this.pagination.itemsPerPage = data?.meta.limit
     } catch {
       // todo : api not ready and me make dummy data , if API ready i fix it on this code
       // this.ticketList = []
@@ -252,6 +262,13 @@ export default {
     )
   },
   methods: {
+    filterTableAction (status) {
+      if (status === ticketStatus.confirmed) {
+        return this.menuTableAction
+      } else {
+        return this.menuTableAction.filter(item => item.menu !== 'Verification' && item.menu !== 'Reject')
+      }
+    },
     getColorIconStatus (status) {
       if (status === ticketStatus.verified) {
         return 'bg-green-600'
