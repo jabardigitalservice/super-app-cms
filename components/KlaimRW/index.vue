@@ -185,7 +185,7 @@ export default {
       return this.data.map((item) => {
         return {
           ...item,
-          date: formatDate(item.createdAt)
+          date: formatDate(item.createdAt || '')
         }
       })
     }

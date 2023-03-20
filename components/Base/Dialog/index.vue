@@ -1,4 +1,5 @@
 <template>
+  <!-- This page is temporarily not deleted, because the RW feature claim is still using it. This component will be deleted in parallel -->
   <transition
     name="fade"
     enter-active-class="transition ease-out duration-75"
@@ -39,20 +40,20 @@
           <slot name="reject-content" />
         </div>
         <!-- FOOTER -->
-        <div class="h-fit px-[24px] flex justify-end bg-gray-50 py-[16px]" :class="{'justify-center' : dialogType=='information' || confirmationType=='logout'}">
+        <div class="h-fit px-[24px] flex justify-end bg-gray-50 py-[16px]" :class="{'justify-center' : dialogType==='information' || confirmationType==='logout'}">
           <div class="mr-[16px]">
-            <BaseButton v-show="dialogType=='confirmation'" class="border border-green-700 text-green-700 hover:bg-green-50" :class="{'w-[117px]':confirmationType=='logout'}" @click="closeHandle">
+            <BaseButton v-show="dialogType=='confirmation'" class="border border-green-700 text-green-700 hover:bg-green-50" :class="{'w-[117px]':confirmationType==='logout'}" @click="closeHandle">
               Batal
             </BaseButton>
           </div>
-          <BaseButton v-show="(dialogType=='confirmation' && confirmationType!='reject') || dialogType== 'information'" class="bg-green-700 w-fit text-white hover:bg-green-600" :class="disabledButton ? 'disabled:opacity-25' : ''" :disabled="disabledButton" @click="submitHandle">
+          <BaseButton v-show="(dialogType==='confirmation' && confirmationType!=='reject') || dialogType== 'information'" class="bg-green-700 w-fit text-white hover:bg-green-600" :class="disabledButton ? 'disabled:opacity-25' : ''" :disabled="disabledButton" @click="submitHandle">
             <template #default>
               <div class="text-[14px] font-bold font-lato">
                 {{ labelButton }}
               </div>
             </template>
           </BaseButton>
-          <BaseButton v-show="dialogType=='confirmation' && confirmationType=='reject'" class="bg-[#EF5350] w-fit text-white hover:bg-red-500" @click="submitHandle">
+          <BaseButton v-show="dialogType=='confirmation' && confirmationType==='reject'" class="bg-[#EF5350] w-fit text-white hover:bg-red-500" @click="submitHandle">
             <template #default>
               <div class="text-[14px] font-bold font-lato">
                 {{ labelButton }}
@@ -97,11 +98,14 @@ export default {
       }
     },
     /**
-     * to select the type of confirmation to display : 'logout' or 'reject'
+     * to select the type of confirmation to display : 'logout' 'reject' 'verify'
      */
     confirmationType: {
       type: String,
-      default: ''
+      default: '',
+      validator (value) {
+        return ['logout', 'reject', 'verify'].includes(value)
+      }
     }
   },
   methods: {
