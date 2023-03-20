@@ -1,8 +1,6 @@
 import { formatInTimeZone } from 'date-fns-tz'
 import { isValid } from 'date-fns'
 
-import VueJwtDecode from 'vue-jwt-decode'
-
 export function generateItemsPerPageOptions (itemsPerPage) {
   const options = []
   for (let i = 1; i <= 5; i++) {
@@ -29,17 +27,6 @@ export function base64ToBlobUrl (base64, type) {
   const blob = new Blob([arr], { type })
   const url = URL.createObjectURL(blob)
   return url
-}
-
-export function isAdmin (auth) {
-  const tokenBearer = auth.strategy.token.get()
-  const token = tokenBearer.split(' ')
-  const tokenDecode = VueJwtDecode.decode(token[1])
-  if (tokenDecode.realm_access.roles.includes('admin')) {
-    return 'rw'
-  } else {
-    return 'tiket'
-  }
 }
 
 export function convertToRupiah (value) {
