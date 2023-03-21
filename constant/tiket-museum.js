@@ -57,21 +57,21 @@ export const ticketStatus = {
 }
 
 export const rejectConfirmationPopup = {
-  title: 'Konfirmasi Reject',
-  descriptionText: 'Apakah Anda yakin ingin melakukan reject pada tiket ini?',
+  title: 'Konfirmasi Tolak Tiket',
+  descriptionText: 'Apakah Anda yakin ingin menolak pada tiket ini?',
   dialogType: 'confirmation',
   buttonLeft: {
     label: 'Batal',
     variant: 'secondary'
   },
   buttonRight: {
-    label: 'Reject Tiket',
+    label: 'Tolak Tiket',
     variant: 'danger'
   }
 }
 
 export const rejectInformationPopup = {
-  title: 'Reject Tiket',
+  title: 'Tolak Tiket',
   successInformation: {
     descriptionText: 'Tiket ',
     dialogType: 'information',
@@ -81,7 +81,7 @@ export const rejectInformationPopup = {
     }
   },
   failedInformation: {
-    descriptionText: 'Tiket gagal direject',
+    descriptionText: 'Tiket gagal ditolak',
     dialogType: 'confirmation',
     buttonRight: {
       label: 'Coba Lagi',
@@ -103,7 +103,7 @@ export const verificationConfirmationPopup = {
     variant: 'secondary'
   },
   buttonRight: {
-    label: 'Ya Verifikasikan',
+    label: 'Ya Verifikasi',
     variant: 'primary'
   }
 }

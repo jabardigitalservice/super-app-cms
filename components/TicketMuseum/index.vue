@@ -49,7 +49,7 @@
             :list-menu-pop-over="
               filterTableAction(ticketStatus[`${item?.status}`])
             "
-            @reject="showRejectTicketHandle(item)"
+            @tolak="showRejectTicketHandle(item)"
             @verification="showVerificationTicketHandle(item)"
           />
         </template>
@@ -224,8 +224,8 @@ export default {
       showFile: false,
       menuTableAction: [
         { menu: 'Lihat Detail', value: 'detail' },
-        { menu: 'Verification', value: 'verification' },
-        { menu: 'Reject', value: 'reject' }
+        { menu: 'Verifikasi', value: 'verification' },
+        { menu: 'Tolak', value: 'tolak' }
       ],
       iconPopup,
       rejectConfirmationPopup,
