@@ -49,17 +49,26 @@ export default {
     },
     submitHandle () {
       if (this.popupName === 'publish') {
-        this.publishedMessageNotifHandle(this.dataMessageNotif.id)
+        this.publishedMessageNotifHandle()
       } else {
         this.deleteMessageNotifHandle()
       }
     },
     async publishedMessageNotifHandle () {
+      this.popupMessage = {}
+      this.popupMessage.detail = this.dataMessageNotif.title
+      this.dataPopup = {
+        title: this.publishedInformationPopup.title,
+        buttonLeft: this.deleteInformationPopup.buttonLeft
+      }
       try {
         await this.$axios.post(`/messages/${this.dataMessageNotif.id}/send`)
       } catch {
         this.isError = true
       }
+      this.informationPopupHandle(this.publishedInformationPopup, this.isError)
+      this.$store.commit('dialog/setMessage', this.popupMessage)
+      this.$store.dispatch('dialog/showHandle', this.dataPopup)
     },
     async deleteMessageNotifHandle () {
       this.popupMessage = {}
