@@ -50,9 +50,9 @@
         <!-- FOOTER -->
         <div class="h-fit px-[24px] flex justify-end bg-gray-50 py-[16px]" :class="{'justify-center': getDialogType!=='confirmation'}">
           <div class="mr-[16px]">
-            <jds-button v-show="getDialogType==='confirmation'" :label="getButtonLeft.label" :variant="getButtonLeft.variant" class="!h-[38px] !text-sm !font-bold py-[2px]" @click="closePopupHandle" />
+            <jds-button v-show="getDialogType==='confirmation'" :label="getButtonLeft.label" :variant="getButtonLeft.variant" class="!text-sm !font-lato !font-bold" @click="closePopupHandle" />
           </div>
-          <jds-button v-show="getDialogType==='confirmation'|| 'information'" :label="getButtonRight.label" :variant="getButtonRight.variant" class="!h-[38px] !text-sm !font-bold py-[2px]" @click="submitHandle" />
+          <jds-button v-show="getDialogType==='confirmation'|| 'information'" :label="getButtonRight.label" :variant="getButtonRight.variant" class="!text-sm !font-lato !font-bold" @click="submitHandle" />
         </div>
       </div>
     </div>
