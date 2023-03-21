@@ -26,7 +26,9 @@ export default {
         }
       },
       dataMessageNotif: '',
-      isError: false
+      isError: false,
+      showPopupConfirmationInformation: false,
+      popupName: '' //  to find out which popup is running, ex: 'publish' or 'delete'
     }
   },
   mixins: [dialog],
@@ -35,22 +37,38 @@ export default {
       this.confirmationPopupHandle(this.publishedConfirmationPopup, item)
       this.$store.commit('dialog/setMessage', this.popupMessage)
       this.$store.dispatch('dialog/showHandle', this.dataPopup)
-      this.showPopup = true
+      this.showPopupConfirmationInformation = true
+      this.popupName = 'publish'
     },
     showDeletePopupHandle (item) {
       this.confirmationPopupHandle(this.deleteConfirmationPopup, item)
       this.$store.commit('dialog/setMessage', this.popupMessage)
       this.$store.dispatch('dialog/showHandle', this.dataPopup)
-      this.showPopup = true
+      this.showPopupConfirmationInformation = true
+      this.popupName = 'delete'
     },
-    async publishedMessageNotifHandle (id) {
-      this.confirmationDialog.showPublished = false
+    submitHandle () {
+      if (this.popupName === 'publish') {
+        this.publishedMessageNotifHandle()
+      } else {
+        this.deleteMessageNotifHandle()
+      }
+    },
+    async publishedMessageNotifHandle () {
+      this.popupMessage = {}
+      this.popupMessage.detail = this.dataMessageNotif.title
+      this.dataPopup = {
+        title: this.publishedInformationPopup.title,
+        buttonLeft: this.deleteInformationPopup.buttonLeft
+      }
       try {
-        await this.$axios.post(`/messages/${id}/send`)
+        await this.$axios.post(`/messages/${this.dataMessageNotif.id}/send`)
       } catch {
         this.isError = true
       }
-      this.showInformationDialog = true
+      this.informationPopupHandle(this.publishedInformationPopup, this.isError)
+      this.$store.commit('dialog/setMessage', this.popupMessage)
+      this.$store.dispatch('dialog/showHandle', this.dataPopup)
     },
     async deleteMessageNotifHandle () {
       this.popupMessage = {}
@@ -60,7 +78,7 @@ export default {
         buttonLeft: this.deleteInformationPopup.buttonLeft
       }
       try {
-        await this.$axios.delete('/messages')
+        await this.$axios.delete(`/messages/${this.dataMessageNotif.id}`)
       } catch (error) {
         this.isError = true
       }
@@ -71,7 +89,7 @@ export default {
 
     closeHandle () {
       this.$store.commit('dialog/clearState')
-      this.showPopup = false
+      this.showPopupConfirmationInformation = false
       this.$fetch()
     }
   }
