@@ -64,7 +64,11 @@
       @close="showFile = false"
     />
 
-    <BasePopup :show-popup="showPopup" @submit="submitHandle" @close="closeHandle" />
+    <BasePopup
+      :show-popup="showPopup"
+      @submit="submitHandle"
+      @close="closeHandle"
+    />
   </div>
 </template>
 
@@ -72,7 +76,9 @@
 import debounce from 'lodash.debounce'
 import { iconPopup } from '~/constant/icon-popup'
 import {
-  headerTicketMuseum, ticketStatus, rejectConfirmationPopup,
+  headerTicketMuseum,
+  ticketStatus,
+  rejectConfirmationPopup,
   rejectInformationPopup,
   verificationConfirmationPopup,
   verificationInformationPopup
@@ -308,21 +314,18 @@ export default {
       }
     },
     getColorIconStatus (status) {
-      if (status === ticketStatus.verified) {
-        return 'bg-green-600'
-      } else if (
-        status === ticketStatus.rejected ||
-        status === ticketStatus.canceled ||
-        status === ticketStatus.expired
-      ) {
-        return 'bg-red-600'
-      } else if (
-        status === ticketStatus.ordered ||
-        status === ticketStatus.confirmed
-      ) {
-        return 'bg-yellow-600'
-      } else {
-        return 'bg-black'
+      switch (status) {
+        case ticketStatus.verified:
+          return 'bg-green-600'
+        case ticketStatus.rejected:
+        case ticketStatus.canceled:
+        case ticketStatus.expired:
+          return 'bg-red-600'
+        case ticketStatus.ordered:
+        case ticketStatus.confirmed:
+          return 'bg-yellow-600'
+        default:
+          return 'bg-black'
       }
     },
     pageChangeHandle (value) {
