@@ -248,14 +248,14 @@ export default {
         params: queryParams
       })
 
-      const { data } = response.data
-      this.data = data?.data || []
-      if (this.data.length) {
+      // todo: fix response data if API ready
+      const data = response.data.data
+      if (data.length) {
         this.pagination.disabled = false
       } else {
         this.pagination.disabled = true
       }
-      this.ticketList = data?.data
+      this.ticketList = data
       this.pagination.currentPage = data?.meta.page
       this.pagination.totalRows = data?.meta.totalCount
       this.pagination.itemsPerPage = data?.meta.limit
