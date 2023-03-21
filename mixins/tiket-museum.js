@@ -66,7 +66,7 @@ export default {
         buttonLeft: this.verificationInformationPopup.buttonLeft
       }
       try {
-        await this.$axios.post('/ticket/aljabbar/payment-verification', { invoce: this.titleTicket })
+        await this.$axios.post('/ticket/aljabbar/payment-verification', { invoice: this.titleTicket })
       } catch {
         this.isError = true
       }
@@ -82,7 +82,7 @@ export default {
         buttonLeft: this.rejectInformationPopup.buttonLeft
       }
       try {
-        await this.$axios.post('/ticket/aljabbar/payment-reject', { invoce: this.titleTicket })
+        await this.$axios.post('/ticket/aljabbar/payment-reject', { invoice: this.titleTicket })
       } catch (error) {
         this.isError = true
       }
