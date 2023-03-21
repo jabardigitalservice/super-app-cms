@@ -28,3 +28,7 @@ export function base64ToBlobUrl (base64, type) {
   const url = URL.createObjectURL(blob)
   return url
 }
+
+export function convertToRupiah (value) {
+  return value.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })
+}

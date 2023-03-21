@@ -110,7 +110,7 @@
                 </td>
                 <td>
                   <BaseButton
-                    class="w-fit border border-green-600 py-[6px] font-medium text-green-600 mr-2"
+                    class="mr-2 w-fit border border-green-600 py-[6px] font-medium text-green-600"
                     @click="editDocumentHandle"
                   >
                     Edit Dokumen
@@ -188,7 +188,8 @@
         </div>
       </div>
     </div>
-    <ViewDocument
+    <BaseViewFile
+      title="Dokumen SK RW"
       :show="documentDialog.showDialog"
       :file="documentDialog.fileId"
       :mime-type="documentDialog.mimeType"
@@ -246,7 +247,6 @@ import ArrowLeft from '~/assets/icon/arrow-left.svg?inline'
 import DetailTableComponent from '~/components/KlaimRW/KlaimRwDetail/DetailTableComponent'
 import { formatDate } from '~/utils'
 import { userStatus } from '~/constant/klaim-rw'
-import ViewDocument from '~/components/KlaimRW/ViewDocument'
 import EditDocument from '~/components/KlaimRW/EditDocument'
 
 export default {
@@ -257,7 +257,6 @@ export default {
     RejectConfirmation,
     VerifyConfirmation,
     InformationPopup,
-    ViewDocument,
     EditDocument,
     EditStatusPopup
   },

@@ -84,11 +84,12 @@ export default {
         scope: ['openid', 'profile', 'offline_access'],
         codeChallengeMethod: 'S256'
       }
-    }
+    },
+    plugins: ['~/plugins/get-roles.js']
   },
 
   router: {
-    middleware: ['auth']
+    middleware: ['auth', 'guardRoutes']
   },
 
   googleFonts: {
