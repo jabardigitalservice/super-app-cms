@@ -31,7 +31,8 @@ export default {
         }
       },
       titleTicket: '',
-      isError: false
+      isError: false,
+      popupName: '' //  to find out which popup is running, ex: 'verify' or 'reject'
     }
   },
   mixins: [dialog],
@@ -41,21 +42,37 @@ export default {
       this.$store.commit('dialog/setMessage', this.popupMessage)
       this.$store.dispatch('dialog/showHandle', this.dataPopup)
       this.showPopup = true
+      this.popupName = 'verify'
     },
     showRejectTicketHandle (item) {
       this.confirmationPopupHandle(this.rejectConfirmationPopup, item.invoice)
       this.$store.commit('dialog/setMessage', this.popupMessage)
       this.$store.dispatch('dialog/showHandle', this.dataPopup)
       this.showPopup = true
+      this.popupName = 'reject'
     },
-    async verificationTicketHandle (id) {
-      this.confirmationDialog.showPublished = false
+    submitHandle () {
+      if (this.popupName === 'verify') {
+        this.verificationTicketHandle()
+      } else {
+        this.rejectTicketHandle()
+      }
+    },
+    async verificationTicketHandle () {
+      this.popupMessage = {}
+      this.popupMessage.detail = this.titleTicket
+      this.dataPopup = {
+        title: this.verificationInformationPopup.title,
+        buttonLeft: this.verificationInformationPopup.buttonLeft
+      }
       try {
-        await this.$axios.post(`/messages/${id}/send`)
+        await this.$axios.post('/ticket/aljabbar/payment-verification', { invoce: this.titleTicket })
       } catch {
         this.isError = true
       }
-      this.showInformationDialog = true
+      this.informationPopupHandle(this.verificationInformationPopup, this.isError)
+      this.$store.commit('dialog/setMessage', this.popupMessage)
+      this.$store.dispatch('dialog/showHandle', this.dataPopup)
     },
     async rejectTicketHandle () {
       this.popupMessage = {}
@@ -65,7 +82,7 @@ export default {
         buttonLeft: this.rejectInformationPopup.buttonLeft
       }
       try {
-        await this.$axios.delete('/messages')
+        await this.$axios.post('/ticket/aljabbar/payment-reject', { invoce: this.titleTicket })
       } catch (error) {
         this.isError = true
       }

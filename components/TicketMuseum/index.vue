@@ -64,7 +64,7 @@
       @close="showFile = false"
     />
 
-    <BasePopup :show-popup="showPopup" @submit="rejectTicketHandle" @close="closeHandle" />
+    <BasePopup :show-popup="showPopup" @submit="submitHandle" @close="closeHandle" />
   </div>
 </template>
 

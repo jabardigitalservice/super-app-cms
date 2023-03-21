@@ -1,3 +1,5 @@
+// todo: I think it could use one dialog file, but I need to discuss it with the team first and decide on a fix, in happened on deadline
+
 import { iconPopup } from '~/constant/icon-popup'
 
 export default {
