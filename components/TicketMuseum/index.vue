@@ -10,7 +10,7 @@
         class="h-[38px] w-[275px] text-gray-500"
       />
     </div>
-    <div class="table-content overflow-x-auto rounded-lg font-roboto">
+    <div class="overflow-x-auto rounded-lg font-roboto">
       <JdsDataTable
         :headers="headerTicketMuseum"
         :items="getListTicket"
@@ -45,7 +45,13 @@
         </template>
         <!-- eslint-disable-next-line vue/valid-v-slot -->
         <template #item.action="{ item }">
-          <BaseTableAction :list-menu-pop-over="filterTableAction(ticketStatus[`${item?.status}`])" @detail="goToDetailPageHandle(item)" @delete="showDeletePopupHandle(item)" @publish="showPublishedPopupHandle(item)" />
+          <BaseTableAction
+            :list-menu-pop-over="
+              filterTableAction(ticketStatus[`${item?.status}`])
+            "
+            @reject="showRejectTicketHandle(item)"
+            @verification="showVerificationTicketHandle(item)"
+          />
         </template>
       </JdsDataTable>
     </div>
@@ -57,19 +63,29 @@
       :show="showFile"
       @close="showFile = false"
     />
+
+    <BasePopup :show-popup="showPopup" @submit="rejectTicketHandle" @close="closeHandle" />
   </div>
 </template>
 
 <script>
 import debounce from 'lodash.debounce'
-import { headerTicketMuseum, ticketStatus } from '~/constant/tiket-museum'
+import { iconPopup } from '~/constant/icon-popup'
+import {
+  headerTicketMuseum, ticketStatus, rejectConfirmationPopup,
+  rejectInformationPopup,
+  verificationConfirmationPopup,
+  verificationInformationPopup
+} from '~/constant/tiket-museum'
 import {
   formatDate,
   convertToRupiah,
   generateItemsPerPageOptions
 } from '~/utils'
+import popup from '~/mixins/tiket-museum'
 export default {
   name: 'ListTicketMuseum',
+  mixins: [popup],
   data () {
     return {
       // todo: if API ready, i wil delete array items
@@ -210,7 +226,12 @@ export default {
         { menu: 'Lihat Detail', value: 'detail' },
         { menu: 'Verification', value: 'verification' },
         { menu: 'Reject', value: 'reject' }
-      ]
+      ],
+      iconPopup,
+      rejectConfirmationPopup,
+      rejectInformationPopup,
+      verificationConfirmationPopup,
+      verificationInformationPopup
     }
   },
   async fetch () {
@@ -281,7 +302,9 @@ export default {
       if (status === ticketStatus.confirmed) {
         return this.menuTableAction
       } else {
-        return this.menuTableAction.filter(item => item.menu !== 'Verification' && item.menu !== 'Reject')
+        return this.menuTableAction.filter(
+          item => item.menu !== 'Verification' && item.menu !== 'Reject'
+        )
       }
     },
     getColorIconStatus (status) {
