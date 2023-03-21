@@ -30,8 +30,5 @@ export function base64ToBlobUrl (base64, type) {
 }
 
 export function convertToRupiah (value) {
-  let rupiah = ''
-  const valueRev = value.toString().split('').reverse().join('')
-  for (let i = 0; i < valueRev.length; i++) { if (i % 3 === 0) { rupiah += valueRev.substr(i, 3) + '.' } }
-  return 'Rp. ' + rupiah.split('', rupiah.length - 1).reverse().join('')
+  return value.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })
 }
