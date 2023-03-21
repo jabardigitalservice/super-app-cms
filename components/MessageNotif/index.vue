@@ -43,7 +43,7 @@
           </template>
           <!-- eslint-disable-next-line vue/valid-v-slot -->
           <template #item.action="{ item }">
-            <BaseTableAction :list-menu-pop-over="filterTableAction(item.messageStatus)" @detail="goToDetailPageHandle(item)" @delete="showDeletePopupHandle(item)" @publish="showPublishedPopupHandle(item)" />
+            <BaseTableAction :list-menu-pop-over="filterTableAction(item.status)" @detail="goToDetailPageHandle(item)" @delete="showDeletePopupHandle(item)" @publish="showPublishedPopupHandle(item)" />
           </template>
         </JdsDataTable>
       </div>
@@ -121,8 +121,8 @@ export default {
     this.pagination.itemsPerPageOptions = generateItemsPerPageOptions(this.pagination.itemsPerPage)
   },
   methods: {
-    filterTableAction (currentUserStatus) {
-      if (currentUserStatus === messageStatus.published.id) {
+    filterTableAction (currentMessageStatus) {
+      if (currentMessageStatus === messageStatus.published.id) {
         return this.menuTableAction.filter(item => item.menu !== 'Publikasikan')
       } else {
         return this.menuTableAction
