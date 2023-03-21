@@ -11,7 +11,7 @@
         <div class="mr-3">
           <jds-button label="Hapus Pesan" variant="secondary" class="!h-[38px] !py-1 !text-[14px] !font-bold !text-red-400 !border-red-400" @click="showDeletePopupHandle(detailMessageNotif)" />
         </div>
-        <jds-button label="Publikasikan" variant="primary" class="!h-[38px] !py-1 !text-[14px] !font-bold" @click="showPublishedPopupHandle(detailMessageNotif)" />
+        <jds-button v-show="detailMessageNotif.status!==messageStatus.published.id" label="Publikasikan" variant="primary" class="!h-[38px] !py-1 !text-[14px] !font-bold" @click="showPublishedPopupHandle(detailMessageNotif)" />
       </div>
     </div>
     <div
@@ -74,7 +74,7 @@
           <BaseTableDetail header="Cover Image" class="mb-4">
             <tr>
               <td class="w-1/4">
-                <strong>{{ detailMessageNotif?.imageBackground !== ''|| '-' }}</strong>
+                <strong>{{ detailMessageNotif?.originalFilename || '-' }}</strong>
               </td>
               <td>
                 <jds-button v-show="detailMessageNotif?.imageBackground" variant="secondary" label="Lihat Gambar" class="!h-[30px] !py-[2px] !border-green-600 !text-[14px] !text-green-600 !font-medium" @click="showImageCoverPopup=true" />
@@ -140,11 +140,12 @@ export default {
       this.$router.push('/message-notif')
     },
     closePopupDetailHandle () {
-      this.$store.commit('dialog/clearState')
-      this.showPopupConfirmationInformation = false
-      if (this.popupName === 'delete' && this.deleteInformationPopup.successInformation.dialogType) {
-        this.$router.push('/message-notif')
+      const dataPopup = {
+        popupName: this.popupName,
+        dialogType: this.deleteInformationPopup.successInformation.dialogType
       }
+      this.showPopupConfirmationInformation = false
+      this.$emit('close', dataPopup)
     }
   }
 }
