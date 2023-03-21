@@ -28,7 +28,7 @@
           <h1
             class="font-roboto text-[21px] font-bold text-green-800"
           >
-            Gambar Cover
+            {{ title }}
           </h1>
         </div>
         <!-- BODY -->
@@ -51,6 +51,10 @@ export default {
     showPopup: {
       type: Boolean,
       default: false
+    },
+    title: {
+      type: String,
+      default: ''
     },
     imageUrl: {
       type: String,

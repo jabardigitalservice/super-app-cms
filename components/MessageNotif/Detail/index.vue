@@ -103,7 +103,7 @@
         </div>
       </div>
     </div>
-    <MessageNotifViewImage :show-popup="showImageCoverPopup" :image-url="detailMessageNotif.imageBackground" @close="showImageCoverPopup=false" />
+    <BaseViewImage :show-popup="showImageCoverPopup" :image-url="detailMessageNotif.imageBackground" title="Cover Image" @close="showImageCoverPopup=false" />
     <BasePopup :show-popup="showPopupConfirmationInformation" @submit="submitHandle" @close="closePopupDetailHandle" />
   </div>
 </template>
