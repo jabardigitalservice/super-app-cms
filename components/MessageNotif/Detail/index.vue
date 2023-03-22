@@ -136,9 +136,6 @@ export default {
     getStatusName (currentStatus) {
       return Object.values(this.messageStatus).find(item => item.id === currentStatus).status
     },
-    goToBackHandle () {
-      this.$router.push('/message-notif')
-    },
     closePopupDetailHandle () {
       const dataPopup = {
         popupName: this.popupName,
