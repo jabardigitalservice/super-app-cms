@@ -2,7 +2,8 @@ import {
   rejectConfirmationPopup,
   rejectInformationPopup,
   verificationConfirmationPopup,
-  verificationInformationPopup
+  verificationInformationPopup,
+  ticketStatus
 } from '~/constant/tiket-museum'
 import dialog from '~/mixins/global-dialog'
 
@@ -32,6 +33,7 @@ export default {
       },
       titleTicket: '',
       isError: false,
+      showPopUp: false,
       popupName: '' //  to find out which popup is running, ex: 'verify' or 'reject'
     }
   },
@@ -41,14 +43,14 @@ export default {
       this.confirmationPopupHandle(this.verificationConfirmationPopup, item.invoice)
       this.$store.commit('dialog/setMessage', this.popupMessage)
       this.$store.dispatch('dialog/showHandle', this.dataPopup)
-      this.showPopup = true
+      this.showPopUp = true
       this.popupName = 'verify'
     },
     showRejectTicketHandle (item) {
       this.confirmationPopupHandle(this.rejectConfirmationPopup, item.invoice)
       this.$store.commit('dialog/setMessage', this.popupMessage)
       this.$store.dispatch('dialog/showHandle', this.dataPopup)
-      this.showPopup = true
+      this.showPopUp = true
       this.popupName = 'reject'
     },
     submitHandle () {
@@ -93,8 +95,23 @@ export default {
 
     closeHandle () {
       this.$store.commit('dialog/clearState')
-      this.showPopup = false
+      this.showPopUp = false
       this.$fetch()
+    },
+    getColorIconStatus (status) {
+      switch (status) {
+        case ticketStatus.verified:
+          return 'bg-green-600'
+        case ticketStatus.rejected:
+        case ticketStatus.canceled:
+        case ticketStatus.expired:
+          return 'bg-red-600'
+        case ticketStatus.ordered:
+        case ticketStatus.confirmed:
+          return 'bg-yellow-600'
+        default:
+          return 'bg-black'
+      }
     }
   }
 }

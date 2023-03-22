@@ -10,7 +10,7 @@ export default {
       navigations: [
         {
           label: 'Tiket Museum',
-          link: '/'
+          link: '/ticket-museum'
         }
       ],
       descriptionPage:
