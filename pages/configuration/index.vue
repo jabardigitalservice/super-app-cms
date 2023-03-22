@@ -9,7 +9,7 @@ export default {
   mounted () {
     this.$store.commit('setActivePage', 'Master Data - Konfigurasi')
     this.$store.commit('setHeader', {
-      navigations: '',
+      navigations: [],
       descriptionPage: ''
     })
   }
