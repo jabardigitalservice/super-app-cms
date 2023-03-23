@@ -112,7 +112,7 @@ import DokumenIcon from '~/assets/icon/document.svg?inline'
 import TrashIcon from '~/assets/icon/trash.svg?inline'
 import EyesIcon from '~/assets/icon/eyes.svg?inline'
 export default {
-  name: 'BaseDragAndDropFile',
+  name: 'BasePopupDragAndDropFile',
   components: {
     UploadIcon,
     DokumenIcon,

@@ -227,7 +227,7 @@
       @close="closeInformationDialogHandle"
     />
 
-    <BaseDragAndDropFile
+    <BasePopupDragAndDropFile
       :show-popup="documentEdit.showDialog"
       :detail-drag-and-drop="DragAndDropComponentInformation"
       :api-update-file="`/user/rw/${detail?.id}`"
@@ -252,7 +252,7 @@
           </div>
         </div>
       </template>
-    </BaseDragAndDropFile>
+    </BasePopupDragAndDropFile>
   </div>
 </template>
 
