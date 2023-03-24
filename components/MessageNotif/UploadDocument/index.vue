@@ -3,7 +3,7 @@
     <div class="mt-2 flex w-full items-center justify-center">
       <div
         v-if="fileInputIsChange"
-        class="flex h-40 w-full flex-col justify-center rounded-lg border-2 border-dashed px-4"
+        class="flex h-60 w-full flex-col justify-center rounded-lg border-2 border-dashed px-4"
         :class="
           fileIsCorrect
             ? 'border-green-300 bg-green-50'
@@ -43,23 +43,23 @@
               v-if="!FileSizeIsCompatible()"
               class="font-lato text-[11px] font-bold text-red-600"
             >
-              Ukuran file dokumen SK tidak boleh melebihi 2 MB.
+              Ukuran file tidak boleh melebihi 2 MB.
             </p>
 
             <p
               v-if="!FormatFileIsCompatible()"
               class="font-lato text-[11px] font-bold text-red-600"
             >
-              Hanya file yang berformat PDF/JPG/JPEG/PNG yang dapat diupload.
+              Hanya file yang berformat JPG/JPEG/PNG yang dapat diupload.
             </p>
           </div>
 
           <div class="flex flex-row">
-            <BaseButton class="w-4" @click="resetDataEditSK">
+            <BaseButton class="w-4" @click="resetFile">
               <TrashIcon class="h-4 w-4" />
             </BaseButton>
-            <BaseButton class="w-4" @click="previewFileSK">
-              <EyesIcon v-if="!proggresBarIsSuccess" class="h-4 w-4" />
+            <BaseButton class="w-5">
+              <EyesIcon v-if="!proggresBarIsSuccess" class="h-4 w-4" @click.prevent="previewFile" />
             </BaseButton>
           </div>
         </div>
@@ -83,9 +83,10 @@
         <input
           id="drag-and-drop-file"
           ref="file"
+          :v-model="value"
           type="file"
           class="hidden"
-          accept=".pdf,.jpg,.jpeg,.png"
+          accept=".jpg,.jpeg,.png"
           @change="onChangeUpload"
         >
       </label>
@@ -111,13 +112,9 @@ export default {
       type: Boolean,
       default: false
     },
-    accountName: {
-      type: String,
-      default: ''
-    },
-    accountId: {
-      type: String,
-      default: ''
+    value: {
+      type: Object,
+      default: () => {}
     }
   },
   data () {
@@ -139,21 +136,11 @@ export default {
       formatTypeFile: [
         'image/jpeg',
         'image/png',
-        'image/jpg',
-        'application/pdf'
+        'image/jpg'
       ],
       maxSizeFile: 2097152,
       decreeFile: '',
-      infromationSuccess: {
-        info: 'Edit Dokumen SK RW telah berhasil dilakukan.',
-        message: 'Silahkan cek kembali Dokumen SK yang diganti.'
-      },
-      informationError: {
-        info: 'Gagal Edit Dokumen SK',
-        message: ''
-      },
-      fileIsCorrect: false,
-      disabledButton: true
+      fileIsCorrect: false
     }
   },
   methods: {
@@ -162,12 +149,16 @@ export default {
         this.files = this.$refs.file.files[0]
         this.dataFiles.name = this.files.name
         this.dataFiles.mimeType = this.files.type
-
         this.dataFiles.fileSize = this.convertSize(this.files.size)
         this.fileInputIsChange = true
-        this.convertFileToBase64(this.files)
+        this.dataFiles.imageUrl = URL.createObjectURL(this.files)
         this.runProgressBar()
+        this.convertFileToBase64(this.files)
         this.checkFileValidation()
+        this.dataFiles.fileCorrect = this.fileIsCorrect
+        const imageFile = { ...this.dataFiles }
+        imageFile.data = this.dataFiles.data
+        this.$store.commit('setDataImage', JSON.parse(JSON.stringify(this.dataFiles)))
       }
     },
     dragover (e) {
@@ -225,7 +216,7 @@ export default {
         this.percentageProggres++
       }
     },
-    resetDataEditSK () {
+    resetFile () {
       this.percentageProggres = 0
       this.proggresBarIsSuccess = false
       this.fileInputIsChange = false
@@ -234,52 +225,16 @@ export default {
       this.fileIsCorrect = false
       this.disabledButton = true
     },
-    previewFileSK () {
-      this.$emit('preview-file-sk', this.dataFiles)
+    previewFile () {
+      this.$emit('preview-file', this.dataFiles)
     },
     convertFileToBase64 (FileObject) {
       const reader = new FileReader()
-
       reader.onload = () => {
         this.dataFiles.data = reader.result.split(',')[1]
+        this.$store.commit('setDataImage', { ...this.dataFiles })
       }
       reader.readAsDataURL(FileObject)
-    },
-    closeEdit () {
-      this.$emit('close')
-      this.resetDataEditSK()
-    },
-    async submitEditFileSK () {
-      this.checkFileValidation()
-
-      if (this.fileIsCorrect) {
-        try {
-          const response = await this.$axios.post(
-            '/file/upload',
-            this.dataFiles
-          )
-          if (response.data.status) {
-            this.decreeFile = response.data.data.id
-            this.updateFileDecreeSK()
-          }
-        } catch {
-          this.$emit('submit-edit-file-sk', this.informationError)
-        }
-      }
-    },
-    async updateFileDecreeSK () {
-      try {
-        const response = await this.$axios.patch(`/user/rw/${this.accountId}`, {
-          decree: this.decreeFile
-        })
-
-        if (response.data.status) {
-          this.resetDataEditSK()
-          this.$emit('submit-edit-file-sk', this.infromationSuccess)
-        }
-      } catch {
-        this.$emit('submit-edit-file-sk', this.informationError)
-      }
     },
     checkFileValidation () {
       if (this.files) {
