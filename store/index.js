@@ -3,7 +3,8 @@ export const state = () => ({
   header: {
     navigations: [],
     descriptionPage: ''
-  }
+  },
+  dataImage: {}
 })
 
 export const mutations = {
@@ -13,5 +14,8 @@ export const mutations = {
   setHeader (state, header) {
     state.header.navigations = header.navigations
     state.header.descriptionPage = header.descriptionPage
+  },
+  setDataImage (state, image) {
+    state.dataImage = image
   }
 }

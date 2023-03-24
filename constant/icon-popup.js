@@ -8,5 +8,10 @@ export const iconPopup = [
     type: 'failed',
     name: 'times-circle',
     fill: '#EF5350'
+  },
+  {
+    type: 'warning',
+    name: 'warning',
+    fill: '#FF9500'
   }
 ]

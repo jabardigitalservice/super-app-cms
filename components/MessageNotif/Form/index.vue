@@ -11,142 +11,253 @@
         <div class="mr-3">
           <jds-button label="Simpan Pesan" variant="secondary" class="!font-lato !text-[14px] !font-bold" @click="showSaveMessageNotifPopupHandle" />
         </div>
-        <jds-button label="Publikasikan Pesan" variant="primary" class="!font-lato !text-[14px] !font-bold !bg-green-600" />
+        <jds-button label="Publikasikan Pesan" variant="primary" class="!font-lato !text-[14px] !font-bold !bg-green-600" @click="showPublishedPopupHandle" />
       </div>
     </div>
-    <form class="message-notif__form grid grid-cols-2 bg-white py-4 px-6 gap-x-6 rounded-lg">
-      <div>
-        <jds-input-text v-model="dataMessageNotif.title" placeholder="Masukkan judul pesan" label="Judul Pesan" helper-text="Minimum 10 Karakter, maksimal 100 karakter" class="!mb-2" />
-        <div class="mb-2">
-          <label>Subtext Pesan</label>
-          <div>
-            <textarea v-model="dataMessageNotif.notificationBody" placeholder="Tulis isi subtext disini" class="border border-gray-500 rounded-lg w-full py-2 px-[14px] placeholder:text-sm font-lato resize-none focus:outline-none" rows="3" />
+    <ValidationObserver ref="form">
+      <form class="message-notif-form grid grid-cols-2 bg-white py-4 px-6 gap-x-6 rounded-lg">
+        <div>
+          <ValidationProvider v-slot="{ errors }" name="Judul Pesan" rules="max:100|min:10|required">
+            <label class="message-notif-form__label-required">Judul Pesan</label>
+            <jds-input-text
+              v-model="fieldMessageNotif.title"
+              placeholder="Masukkan judul pesan"
+              helper-text="Minimum 10 Karakter, maksimal 100 karakter"
+              class="!mb-2"
+              :error-message="errors[0]"
+            />
+          </ValidationProvider>
+          <div class="mb-2">
+            <ValidationProvider v-slot="{ errors }" name="Subtext Pesan" rules="required">
+              <label class="message-notif-form__label-required">Subtext Pesan</label>
+              <div class="mt-1">
+                <textarea v-model="fieldMessageNotif.notificationBody" placeholder="Tulis isi subtext disini" class="border border-gray-500 rounded-lg w-full py-2 px-[14px] placeholder:text-sm font-lato resize-none focus:outline-none" :class="{'border border-red-600':errors.length>0}" rows="3" />
+              </div>
+              <small class="text-red-600">{{ errors[0] }}</small>
+            </ValidationProvider>
           </div>
+          <ValidationProvider v-slot="{errors}" name="Kategori Pesan" rules="requiredSelectForm">
+            <label class="message-notif-form__label-required">Kategori Pesan</label>
+            <jds-select
+              v-model="fieldMessageNotif.category"
+              placeholder="Pilih kategori"
+              :options="categoryOptions"
+              class="!w-full mt-1"
+              :error-message="errors[0]"
+            />
+          </ValidationProvider>
         </div>
-        <jds-select label="Kategori Pesan" placeholder="Pilih kategori" class="!w-full" />
-      </div>
-      <div>
-        <label class="text-[15px]">Gambar Cover</label>
-        <p class="my-1 text-[13px]">
-          Tipe File JPG/JPEG/PNG dengan maksimal ukuran file 2 MB
-        </p>
-        <MessageNotifUploadDocument />
-        <!-- <div class="border border-2 border-dashed rounded-lg border-gray-300 min-h-[240px] w-full" @dragover="dragover" @dragleave="dragleave" @drop="drop">
-          <div class="flex flex-col justify-center items-center min-h-[240px] w-full">
-            <UploadFile class="h-[33px] w-[33px]" />
-            <p class="mt-[11.33px] text-sm">
-              Drag file ke sini atau <span class="text-green-600 font-bold">Pilih File</span>
-            </p>
-          </div>
-        </div> -->
-      </div>
-      <div class="col-span-2 mt-4">
-        <label>Detail Pesan</label>
-        <Editor
-          v-model="dataMessageNotif.content"
-          api-key="bc9fyz4qkr92d8xh4ca8yuk06i4lm0pzn1w0md1lsd9t20mk"
-          :init="{
-            forced_root_block : '',
-            menubar: false,
-            selector: 'textarea',
-            branding: false,
-            resize:false,
-            plugins: [
-              'advlist autolink lists link image charmap print preview anchor',
-              'searchreplace visualblocks code fullscreen',
-              'insertdatetime media table paste code help'
-            ],
-            toolbar:
-              'undo redo | formatselect | bold italic underline backcolor | \
-           alignleft aligncenter alignright alignjustify | \
-           bullist numlist outdent indent | removeformat | help'
-          }"
-        />
-      </div>
-      <div class="mt-4 col-span-2">
-        <h2 class="text-sm text-gray-800 font-bold">
-          Tombol Tautan
-        </h2>
-      </div>
-      <div class="mt-1">
-        <jds-input-text v-model="dataMessageNotif.actionTitle" placeholder="Masukkan teks tombol" label="Teks Tombol" />
-      </div>
-      <div class="mt-1">
-        <jds-input-text v-model="dataMessageNotif.actionUrl" placeholder="https://contohtautan.com" label="Tautan" />
-      </div>
-    </form>
-    <BasePopup :show-popup="showPopupConfirmationInformation" @submit="saveMessageNotificationHandle" @close="closeFormPopupHandle" />
+        <div>
+          <label class="text-[15px]">Gambar Cover</label>
+          <p class="my-1 text-[13px]">
+            Tipe File JPG/JPEG/PNG dengan maksimal ukuran file 2 MB
+          </p>
+          <MessageNotifUploadDocument @preview-file="viewFileHandle" />
+        </div>
+        <div class="col-span-2 mt-5">
+          <ValidationProvider v-slot="{errors}" name="Detail Pesan" rules="required">
+            <label class="message-notif-form__label-required">Detail Pesan</label>
+            <div class="mt-1">
+              <Editor
+                v-model="fieldMessageNotif.content"
+                :api-key="`${$config.tinymceApiKey}`"
+                :init="{
+                  forced_root_block : '',
+                  menubar: false,
+                  selector: 'textarea',
+                  branding: false,
+                  resize:false,
+                  plugins: [
+                    'advlist autolink lists link image charmap print preview anchor',
+                    'searchreplace visualblocks code fullscreen',
+                    'insertdatetime media table paste code help'
+                  ],
+                  toolbar:
+                    'bold italic underline backcolor | \
+                    alignleft aligncenter alignright alignjustify | \
+                    bullist numlist outdent indent | help'
+                }"
+              />
+            </div>
+
+            <small class="text-red-600">{{ errors[0] }}</small>
+          </ValidationProvider>
+        </div>
+        <div class="mt-4 col-span-2">
+          <h2 class="text-sm text-gray-800 font-bold">
+            Tombol Tautan
+          </h2>
+        </div>
+        <div class="mt-1">
+          <label class="message-notif-form__label">Teks Tombol</label>
+          <jds-input-text v-model="fieldMessageNotif.actionTitle" placeholder="Masukkan teks tombol" class="mt-1" />
+        </div>
+        <div class="mt-1">
+          <ValidationProvider v-slot="{errors}" name="Tautan" rules="url">
+            <label class="message-notif-form__label">Tautan</label>
+            <jds-input-text v-model="fieldMessageNotif.actionUrl" placeholder="https://contohtautan.com" class="mt-1" :error-message="errors[0]" />
+          </ValidationProvider>
+        </div>
+      </form>
+    </ValidationObserver>
+    <MessageNotifPopupLoading :show-popup="isLoading" />
+    <BasePopup :show-popup="showPopupConfirmationInformation" @submit="submitFormMessageNotifHandle" @close="closeFormPopupHandle" />
+    <BaseViewImage :show-popup="showViewImagePopup" title="Cover Image" :image-url="dataImage.imageUrl" @close="showViewImagePopup=false" />
   </div>
 </template>
 <script>
 import Editor from '@tinymce/tinymce-vue'
+import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import ArrowLeft from '~/assets/icon/arrow-left.svg?inline'
-// import UploadFile from '~/assets/icon/upload-file.svg?inline'
 import popup from '~/mixins/message-notif'
 import { savedConfirmationPopup, savedInformationPopup } from '~/constant/message-notif'
 
 export default {
   name: 'MessageNotifForm',
   components: {
-    // UploadFile,
     Editor,
-    ArrowLeft
+    ArrowLeft,
+    ValidationObserver,
+    ValidationProvider
   },
   mixins: [popup],
   data () {
     return {
-      dataMessageNotif: {
+      fieldMessageNotif: {
         title: '',
         notificationBody: '',
-        imageBacground: '',
-        originalFilename: 'jsa.png',
+        imageBackground: '',
+        originalFilename: '',
         content: '',
         actionTitle: '',
         actionUrl: '',
-        category: 'informasi'
+        category: ''
       },
-      category: [],
-      idMessageNotif: '',
+      categoryOptions: [],
       isInformationPopup: false,
       savedConfirmationPopup,
-      savedInformationPopup
+      savedInformationPopup,
+      dataImage: {},
+      showViewImagePopup: false,
+      isLoading: false,
+      isPublished: false,
+      tinymceApiKey: this.$config.tinymceApiKey
+    }
+  },
+  async fetch () {
+    try {
+      const response = await this.$axios.get('/messages/category')
+      response.data.data.forEach((item) => {
+        this.categoryOptions.push({ label: item.name, value: item.name })
+      })
+    } catch (error) {
+      this.categories = []
     }
   },
   methods: {
-    dragover (e) {
-      e.preventDefault()
-      this.isDragging = true
-    },
-    dragleave () {
-      this.isDragging = false
-    },
-    drop (e) {
-      e.preventDefault()
-      console.log(e.dataTransfer.files)
+    viewFileHandle (value) {
+      this.dataImage = value
+      this.showViewImagePopup = true
     },
     showSaveMessageNotifPopupHandle () {
-      this.confirmationPopupHandle(this.savedConfirmationPopup, this.dataMessageNotif)
+      this.$store.commit('dialog/clearState')
+      this.confirmationPopupHandle(this.savedConfirmationPopup, this.fieldMessageNotif)
       this.$store.commit('dialog/setMessage', this.popupMessage)
       this.$store.dispatch('dialog/showHandle', this.dataPopup)
       this.showPopupConfirmationInformation = true
+      this.popupName = 'saveNotifMessage'
     },
-    async saveMessageNotificationHandle () {
-      this.popupMessage = {}
-      this.popupMessage.detail = this.dataMessageNotif.title
-      this.dataPopup = {
-        title: this.savedInformationPopup.title,
-        buttonLeft: this.savedInformationPopup.buttonLeft
-      }
+    async uploadFileHandle () {
       try {
-        const response = await this.$axios.post('/messages', { ...this.dataMessageNotif })
-        this.idMessageNotif = response.data.data.id
-        this.isInformationPopup = true
+        let responseImage = {}
+        this.fieldMessageNotif.originalFilename = this.dataImage.name
+        const dataUpload = {
+          name: this.dataImage.name,
+          isConfidental: false,
+          mimeType: this.dataImage.mimeType,
+          roles: ['admin'],
+          data: this.dataImage.data
+        }
+        responseImage = await this.$axios.post('/file/upload', { ...dataUpload })
+        this.fieldMessageNotif.imageBackground = responseImage.data.data.path
       } catch (error) {
         this.isError = true
+        this.showInformationPopupHandle()
       }
-      this.informationPopupHandle(this.savedInformationPopup, this.isError)
+    },
+    async validHandle (fileCorrect = true) {
+      const isDataValid = await this.$refs.form.validate()
+      if (!isDataValid || !fileCorrect) {
+        return false
+      }
+      return true
+    },
+    async submitFormMessageNotifHandle () {
+      this.$store.commit('dialog/clearState')
+      this.isPublished = false
+      this.showPopupConfirmationInformation = false
+      this.isLoading = true
+      this.dataImage = this.$store.state.dataImage
+      if (await this.validHandle(this.dataImage?.fileCorrect)) {
+        if (this.popupName === 'saveNotifMessage') {
+          await this.saveMessageNotificationHandle()
+        } else {
+          this.publishedFormMessageNotifHandle()
+        }
+      } else {
+        this.isLoading = false
+        this.dataPopup = {
+          title: 'Data Belum Benar',
+          buttonLeft: this.savedInformationPopup.buttonLeft
+        }
+        this.showPopupConfirmationInformation = true
+        this.showInformationPopupHandle(this.savedInformationPopup, true)
+      }
+    },
+    async saveMessageNotificationHandle () {
+      this.showPopupConfirmationInformation = false
+      this.popupMessage = {}
+      try {
+        if (Object.keys(this.dataImage).length > 0) {
+          await this.uploadFileHandle()
+        }
+        const response = await this.$axios.post('/messages', { ...this.fieldMessageNotif })
+        this.dataMessageNotif.id = response.data.data.id
+        this.isInformationPopup = true
+        this.showPopupConfirmationInformation = !this.isPublished
+      } catch (error) {
+        this.isError = true
+      } finally {
+        this.isLoading = !!this.isPublished
+      }
+      if (!this.isPublished) {
+        this.showInformationPopupHandle(this.savedInformationPopup, this.isError)
+      }
+    },
+    showInformationPopupHandle (informationPopup, warning = false) {
+      this.dataPopup = {
+        title: informationPopup.title,
+        buttonLeft: informationPopup.buttonLeft
+      }
+      this.informationPopupHandle(informationPopup, this.isError, warning)
       this.$store.commit('dialog/setMessage', this.popupMessage)
       this.$store.dispatch('dialog/showHandle', this.dataPopup)
+    },
+    async publishedFormMessageNotifHandle () {
+      this.isPublished = true
+      try {
+        await this.saveMessageNotificationHandle()
+        if (this.dataMessageNotif.id) {
+          await this.$axios.post(`/messages/${this.dataMessageNotif.id}/send`)
+          this.isInformationPopup = true
+          this.showPopupConfirmationInformation = true
+        }
+      } catch (error) {
+        this.isError = true
+      } finally {
+        this.isLoading = false
+      }
+      this.showInformationPopupHandle(this.publishedInformationPopup, this.isError)
     },
     closeFormPopupHandle () {
       this.$store.commit('dialog/clearState')
@@ -160,34 +271,44 @@ export default {
 </script>
 
 <style>
-  .message-notif__form label{
-    @apply text-[15px] text-gray-800 mb-1 font-lato
+  .message-notif-form__label , .message-notif-form__label-required{
+    @apply text-[15px] text-gray-800 mb-3 font-lato
   }
 
-  .message-notif__helper-text{
+  .message-notif-form__label-required::before{
+    content: '*';
+    color: red;
+    margin-right: 4px;
+  }
+
+  .message-notif-form__helper-text{
     @apply text-[13px] text-gray-700
   }
 
-  .message-notif__form input[type='text']{
+  .message-notif-form input[type='text']{
     @apply h-[38px] border border-gray-500 rounded-lg bg-gray-50 w-full px-2 py-[11px] placeholder:text-sm font-lato text-gray-600 focus:outline-none
   }
 
-  .message-notif__form .jds-popover__activator{
+  .message-notif-form .jds-popover__activator{
     @apply !w-full
   }
 
-  .message-notif__form .jds-select{
+  .message-notif-form .jds-select{
     @apply !w-full
   }
 
-  .message-notif__form .jds-input-text__input-wrapper{
+  .message-notif-form .jds-input-text__input-wrapper{
     @apply !w-full !h-[40px]
   }
-  .message-notif__form .jds-input-text{
+  .message-notif-form .jds-input-text{
      @apply !w-full !h-fit;
   }
 
-  .message-notif__form .jds-options__option-list-item--selected{
+  .message-notif-form .jds-options__option-list-item--selected{
+    display: none !important;
+  }
+
+  .message-notif-form .tox-statusbar{
     display: none !important;
   }
 </style>

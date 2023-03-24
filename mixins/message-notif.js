@@ -55,6 +55,7 @@ export default {
       }
     },
     async publishedMessageNotifHandle () {
+      console.log('masuk mixin pulish')
       this.popupMessage = {}
       this.popupMessage.detail = this.dataMessageNotif.title
       this.dataPopup = {

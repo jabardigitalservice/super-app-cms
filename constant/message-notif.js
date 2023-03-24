@@ -106,6 +106,14 @@ export const savedInformationPopup = {
       variant: 'primary'
     }
   },
+  warningInformation: {
+    descriptionText: 'Pastikan Anda mengisi field yang diminta terlebih dahulu.',
+    dialogType: 'information',
+    buttonRight: {
+      label: 'Saya mengerti',
+      variant: 'primary'
+    }
+  },
   failedInformation: {
     descriptionText: 'Pesan gagal disimpan',
     dialogType: 'confirmation',
