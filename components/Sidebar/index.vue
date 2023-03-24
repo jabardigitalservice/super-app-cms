@@ -13,7 +13,7 @@
           :role="menu.role"
         />
       </div>
-      <SidebarTitleMenu title="Pesan" />
+      <SidebarTitleMenu title="Pesan dan Notif" />
       <div class="flex flex-col gap-2">
         <SidebarItem
           v-for="menu in messageNotifMenu"
