@@ -10,13 +10,12 @@
         class="h-[38px] w-[275px] text-gray-500"
       />
     </div>
-    <div class="overflow-x-auto rounded-lg font-roboto">
+    <div class=" overflow-x-auto rounded-lg font-roboto">
       <JdsDataTable
         :headers="headerTicketMuseum"
         :items="getListTicket"
         :loading="$fetchState.pending"
         :pagination="pagination"
-        class="w-full"
         @next-page="pageChangeHandle"
         @previous-page="pageChangeHandle"
         @page-change="pageChangeHandle"
@@ -51,6 +50,7 @@
             "
             @tolak="showRejectTicketHandle(item)"
             @verification="showVerificationTicketHandle(item)"
+            @detail="goToDetailPageHandle(item)"
           />
         </template>
       </JdsDataTable>
@@ -65,7 +65,7 @@
     />
 
     <BasePopup
-      :show-popup="showPopup"
+      :show-popup="showPopUp"
       @submit="submitHandle"
       @close="closeHandle"
     />
@@ -219,7 +219,6 @@ export default {
       },
       sortBy: '',
       sortOrder: '',
-      showPopup: false,
       search: '',
 
       buktiPembayaranInfo: {
@@ -290,6 +289,9 @@ export default {
     )
   },
   methods: {
+    goToDetailPageHandle (item) {
+      this.$router.push(`/ticket-museum/detail/${item.invoice}`)
+    },
     async onClickDocument (fileId) {
       this.showFile = true
       this.buktiPembayaranInfo.file = 'loading'
@@ -309,23 +311,8 @@ export default {
         return this.menuTableAction
       } else {
         return this.menuTableAction.filter(
-          item => item.menu !== 'Verification' && item.menu !== 'Reject'
+          item => item.menu !== 'Verifikasi' && item.menu !== 'Tolak'
         )
-      }
-    },
-    getColorIconStatus (status) {
-      switch (status) {
-        case ticketStatus.verified:
-          return 'bg-green-600'
-        case ticketStatus.rejected:
-        case ticketStatus.canceled:
-        case ticketStatus.expired:
-          return 'bg-red-600'
-        case ticketStatus.ordered:
-        case ticketStatus.confirmed:
-          return 'bg-yellow-600'
-        default:
-          return 'bg-black'
       }
     },
     pageChangeHandle (value) {

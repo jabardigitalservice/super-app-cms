@@ -1,6 +1,6 @@
 <template>
   <BaseDialog
-    title="Edit Dokumen SK"
+    :title="detailDragAndDrop.titleModal"
     :show-popup="showPopup"
     label-button="Simpan"
     confirmation-type="verify"
@@ -10,21 +10,7 @@
     @close="closeEdit"
   >
     <div class="py-[16px] font-lato text-gray-800">
-      <p class="font-lato text-[14px] text-gray-800">
-        Nama
-      </p>
-      <div class="font-lato text-[16px] text-gray-800">
-        <strong>{{ accountName }}</strong>
-      </div>
-
-      <div class="mt-[22px]">
-        <p class="font-lato text-[14px] text-gray-800">
-          Upload Dokumen SK
-        </p>
-        <div class="font-lato text-[13px] text-gray-600">
-          Tipe File PDF/JPG/JPEG/PNG dengan maksimal ukuran file 2 MB
-        </div>
-      </div>
+      <slot name="header" />
 
       <div class="mt-2 flex w-full items-center justify-center">
         <div
@@ -69,14 +55,14 @@
                 v-if="!FileSizeIsCompatible()"
                 class="font-lato text-[11px] font-bold text-red-600"
               >
-                Ukuran file dokumen SK tidak boleh melebihi 2 MB.
+                {{ detailDragAndDrop.informationSizeCompatible }}
               </p>
 
               <p
                 v-if="!FormatFileIsCompatible()"
                 class="font-lato text-[11px] font-bold text-red-600"
               >
-                Hanya file yang berformat PDF/JPG/JPEG/PNG yang dapat diupload.
+                {{ detailDragAndDrop.informationFormatCompatible }}.
               </p>
             </div>
 
@@ -111,7 +97,7 @@
             ref="file"
             type="file"
             class="hidden"
-            accept=".pdf,.jpg,.jpeg,.png"
+            :accept="detailDragAndDrop.acceptFile"
             @change="onChangeUpload"
           >
         </label>
@@ -126,7 +112,7 @@ import DokumenIcon from '~/assets/icon/document.svg?inline'
 import TrashIcon from '~/assets/icon/trash.svg?inline'
 import EyesIcon from '~/assets/icon/eyes.svg?inline'
 export default {
-  name: 'EditDocument',
+  name: 'BasePopupDragAndDropFile',
   components: {
     UploadIcon,
     DokumenIcon,
@@ -138,11 +124,12 @@ export default {
       type: Boolean,
       default: false
     },
-    accountName: {
-      type: String,
-      default: ''
+
+    detailDragAndDrop: {
+      type: Object,
+      default: () => {}
     },
-    accountId: {
+    apiUpdateFile: {
       type: String,
       default: ''
     }
@@ -163,22 +150,7 @@ export default {
       percentageProggres: 0,
       intervalPercentage: '',
       formatSizeFile: ['Bytes', 'KB', 'MB', 'GB', 'TB'],
-      formatTypeFile: [
-        'image/jpeg',
-        'image/png',
-        'image/jpg',
-        'application/pdf'
-      ],
-      maxSizeFile: 2097152,
       decreeFile: '',
-      infromationSuccess: {
-        info: 'Edit Dokumen SK RW telah berhasil dilakukan.',
-        message: 'Silahkan cek kembali Dokumen SK yang diganti.'
-      },
-      informationError: {
-        info: 'Gagal Edit Dokumen SK',
-        message: ''
-      },
       fileIsCorrect: false,
       disabledButton: true
     }
@@ -262,7 +234,7 @@ export default {
       this.disabledButton = true
     },
     previewFileSK () {
-      this.$emit('preview-file-sk', this.dataFiles)
+      this.$emit('preview-file', this.dataFiles)
     },
     convertFileToBase64 (FileObject) {
       const reader = new FileReader()
@@ -290,22 +262,30 @@ export default {
             this.updateFileDecreeSK()
           }
         } catch {
-          this.$emit('submit-edit-file-sk', this.informationError)
+          this.$emit(
+            'submit-edit-file',
+            this.detailDragAndDrop.informationError
+          )
         }
       }
     },
     async updateFileDecreeSK () {
       try {
-        const response = await this.$axios.patch(`/user/rw/${this.accountId}`, {
-          decree: this.decreeFile
-        })
-
+        const response = await this.$axios.patch(
+          this.apiUpdateFile,
+          {
+            decree: this.decreeFile
+          }
+        )
         if (response.data.status) {
           this.resetDataEditSK()
-          this.$emit('submit-edit-file-sk', this.infromationSuccess)
+          this.$emit(
+            'submit-edit-file',
+            this.detailDragAndDrop.infromationSuccess
+          )
         }
       } catch {
-        this.$emit('submit-edit-file-sk', this.informationError)
+        this.$emit('submit-edit-file', this.detailDragAndDrop.informationError)
       }
     },
     checkFileValidation () {
@@ -321,14 +301,14 @@ export default {
       }
     },
     FileSizeIsCompatible () {
-      if (this.files.size <= this.maxSizeFile) {
+      if (this.files.size <= this.detailDragAndDrop.maxSizeFile) {
         return true
       } else {
         return false
       }
     },
     FormatFileIsCompatible () {
-      if (this.formatTypeFile.includes(this.files.type)) {
+      if (this.detailDragAndDrop.formatTypeFile.includes(this.files.type)) {
         return true
       } else {
         return false

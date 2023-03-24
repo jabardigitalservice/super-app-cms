@@ -227,14 +227,32 @@
       @close="closeInformationDialogHandle"
     />
 
-    <EditDocument
+    <BasePopupDragAndDropFile
       :show-popup="documentEdit.showDialog"
-      :account-name="detail?.name || '-'"
-      :account-id="detail?.id || '-'"
-      @preview-file-sk="previewFile"
-      @submit-edit-file-sk="informationEditSk"
-      @close="closeEditDIalogHandle"
-    />
+      :detail-drag-and-drop="DragAndDropComponentInformation"
+      :api-update-file="`/user/rw/${detail?.id}`"
+      @preview-file="previewFile"
+      @submit-edit-file="informationEditSk"
+      @close="closeEditDialogHandle"
+    >
+      <template #header>
+        <p class="font-lato text-[14px] text-gray-800">
+          Nama
+        </p>
+        <div class="font-lato text-[16px] text-gray-800">
+          <strong>{{ detail?.name }}</strong>
+        </div>
+
+        <div class="mt-[22px]">
+          <p class="font-lato text-[14px] text-gray-800">
+            Upload Dokumen SK
+          </p>
+          <div class="font-lato text-[13px] text-gray-600">
+            Tipe File PDF/JPG/JPEG/PNG dengan maksimal ukuran file 2 MB
+          </div>
+        </div>
+      </template>
+    </BasePopupDragAndDropFile>
   </div>
 </template>
 
@@ -247,7 +265,6 @@ import ArrowLeft from '~/assets/icon/arrow-left.svg?inline'
 import DetailTableComponent from '~/components/KlaimRW/KlaimRwDetail/DetailTableComponent'
 import { formatDate } from '~/utils'
 import { userStatus } from '~/constant/klaim-rw'
-import EditDocument from '~/components/KlaimRW/EditDocument'
 
 export default {
   name: 'KlaimRwDetail',
@@ -257,7 +274,6 @@ export default {
     RejectConfirmation,
     VerifyConfirmation,
     InformationPopup,
-    EditDocument,
     EditStatusPopup
   },
   data () {
@@ -280,6 +296,29 @@ export default {
       },
       documentEdit: {
         showDialog: false
+      },
+      DragAndDropComponentInformation: {
+        titleModal: 'Edit Dokumen SK',
+        informationSizeCompatible:
+          'Ukuran file dokumen SK tidak boleh melebihi 2 MB.',
+        informationFormatCompatible:
+          'Hanya file yang berformat PDF/JPG/JPEG/PNG yang dapat diupload.',
+        infromationSuccess: {
+          info: 'Edit Dokumen SK RW telah berhasil dilakukan.',
+          message: 'Silahkan cek kembali Dokumen SK yang diganti.'
+        },
+        informationError: {
+          info: 'Gagal Edit Dokumen SK',
+          message: ''
+        },
+        formatTypeFile: [
+          'image/jpeg',
+          'image/png',
+          'image/jpg',
+          'application/pdf'
+        ],
+        maxSizeFile: 2097152,
+        acceptFile: '.pdf,.jpg,.jpeg,.png'
       },
 
       detail: {},
@@ -392,7 +431,7 @@ export default {
       this.documentDialog.fileId = file.data
       this.documentDialog.mimeType = file.mimeType
     },
-    closeEditDIalogHandle () {
+    closeEditDialogHandle () {
       this.documentEdit.showDialog = false
     }
   }
