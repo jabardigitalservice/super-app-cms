@@ -11,7 +11,7 @@
           class="w-[275px] h-[38px] text-gray-500"
           @input="searchHandle"
         />
-        <jds-button class="!bg-green-600 !w-[102px] !h-[38px] !text-sm !hidden">
+        <jds-button class="!bg-green-600 !w-[102px] !text-sm" @click.prevent="goToFormAddMessageNotifHandle">
           Buat Pesan
         </jds-button>
       </div>
@@ -160,6 +160,9 @@ export default {
     },
     goToDetailPageHandle (item) {
       this.$router.push(`/message-notif/detail/${item.id}`)
+    },
+    goToFormAddMessageNotifHandle () {
+      this.$router.push('/message-notif/add')
     }
   }
 }

@@ -34,6 +34,20 @@ export const publishedConfirmationPopup = {
   }
 }
 
+export const savedConfirmationPopup = {
+  title: 'Konfirmasi Simpan',
+  descriptionText: 'Apakah Anda yakin ingin menyimpan pesan ini?',
+  dialogType: 'confirmation',
+  buttonLeft: {
+    label: 'Batal',
+    variant: 'secondary'
+  },
+  buttonRight: {
+    label: 'Ya Simpan',
+    variant: 'primary'
+  }
+}
+
 export const publishedInformationPopup = {
   title: 'Publikasi Pesan',
   successInformation: {
@@ -70,6 +84,38 @@ export const deleteInformationPopup = {
   },
   failedInformation: {
     descriptionText: 'Pesan gagal dihapus',
+    dialogType: 'confirmation',
+    buttonRight: {
+      label: 'Coba Lagi',
+      variant: 'primary'
+    }
+  },
+  buttonLeft: {
+    label: 'Batal',
+    variant: 'secondary'
+  }
+}
+
+export const savedInformationPopup = {
+  title: 'Simpan Pesan',
+  successInformation: {
+    descriptionText: 'Pesan berhasil disimpan',
+    dialogType: 'information',
+    buttonRight: {
+      label: 'Saya mengerti',
+      variant: 'primary'
+    }
+  },
+  warningInformation: {
+    descriptionText: 'Pastikan Anda mengisi field yang diminta terlebih dahulu.',
+    dialogType: 'information',
+    buttonRight: {
+      label: 'Saya mengerti',
+      variant: 'primary'
+    }
+  },
+  failedInformation: {
+    descriptionText: 'Pesan gagal disimpan',
     dialogType: 'confirmation',
     buttonRight: {
       label: 'Coba Lagi',

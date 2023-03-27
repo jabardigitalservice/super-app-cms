@@ -44,6 +44,7 @@ jobs:
             ACCOUNT_ID_NEW_RELIC=${{secrets.ACCOUNT_ID_NEW_RELIC}}
             NEW_RELIC_APP_NAME=${{secrets.NEW_RELIC_APP_NAME}}
             NEW_RELIC_LICENSE_KEY=${{secrets.NEW_RELIC_LICENSE_KEY}}
+            TINYMCE_API_KEY=${{secrets.TINYMCE_API_KEY}}
       # GitOps
       - name: GitOps ArgoCD Setup
         run: |

@@ -36,7 +36,8 @@ export default {
     { src: '~/plugins/jds-design-system.js' },
     // plugin axios
     '~/plugins/axios',
-    '~/plugins/vue-gtag.js'
+    '~/plugins/vue-gtag.js',
+    '~/plugins/vee-validate.js'
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -125,7 +126,8 @@ export default {
     axios: {
       browserBaseURL: process.env.BROWSER_BASE_URL + '/' + process.env.VERSION_ENDPOINT
     },
-    googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID
+    googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID,
+    tinymceApiKey: process.env.TINYMCE_API_KEY
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -137,7 +139,8 @@ export default {
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
     transpile: [
-      '@jabardigitalservice/jds-design-system'
+      '@jabardigitalservice/jds-design-system',
+      'vee-validate/dist/rules'
     ]
   }
 }

@@ -15,12 +15,17 @@ export default {
       this.dataMessageNotif = item
       this.dataPopup = confirmationPopup
     },
-    informationPopupHandle (informationPopup, isError) {
+    informationPopupHandle (informationPopup, isError = false, isWarning = false) {
       if (isError) {
         this.popupMessage.title = informationPopup.failedInformation.descriptionText
         this.$store.commit('dialog/setIcon', this.iconPopup[1])
         this.dataPopup.buttonRight = informationPopup.failedInformation.buttonRight
         this.dataPopup.dialogType = informationPopup.failedInformation.dialogType
+      } else if (isWarning) {
+        this.popupMessage.title = informationPopup.warningInformation.descriptionText
+        this.$store.commit('dialog/setIcon', this.iconPopup[2])
+        this.dataPopup.buttonRight = informationPopup.warningInformation.buttonRight
+        this.dataPopup.dialogType = informationPopup.warningInformation.dialogType
       } else {
         this.popupMessage.title = informationPopup.successInformation.descriptionText
         this.$store.commit('dialog/setIcon', this.iconPopup[0])

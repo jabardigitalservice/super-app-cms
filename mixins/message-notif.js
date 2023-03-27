@@ -59,7 +59,7 @@ export default {
       this.popupMessage.detail = this.dataMessageNotif.title
       this.dataPopup = {
         title: this.publishedInformationPopup.title,
-        buttonLeft: this.deleteInformationPopup.buttonLeft
+        buttonLeft: this.publishedInformationPopup.buttonLeft
       }
       try {
         await this.$axios.post(`/messages/${this.dataMessageNotif.id}/send`)
@@ -91,6 +91,9 @@ export default {
       this.$store.commit('dialog/clearState')
       this.showPopupConfirmationInformation = false
       this.$fetch()
+    },
+    goToBackHandle () {
+      this.$router.push('/message-notif')
     }
   }
 }

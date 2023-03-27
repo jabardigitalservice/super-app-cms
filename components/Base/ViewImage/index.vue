@@ -18,11 +18,11 @@
           flex
           justify-center
           items-center
-          w-full
+          h-screen w-screen
           z-10
         "
     >
-      <div class="bg-white h-fit rounded-lg">
+      <div class="bg-white min-h-min min-w-[300px] max-w-[800px] rounded-lg">
         <!-- HEADER -->
         <div class="h-[50px] bg-white py-[8px] px-[24px] rounded-t-lg">
           <h1
@@ -32,7 +32,7 @@
           </h1>
         </div>
         <!-- BODY -->
-        <div class="px-[24px] overflow-y-auto min-h-min w-[800px]">
+        <div class="px-[24px] overflow-y-auto max-h-[calc(100vh-64px-120px)]">
           <img :src="imageUrl" alt="image-cover">
         </div>
         <!-- FOOTER -->
