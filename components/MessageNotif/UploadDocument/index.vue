@@ -249,18 +249,10 @@ export default {
       }
     },
     FileSizeIsCompatible () {
-      if (this.files.size <= this.maxSizeFile) {
-        return true
-      } else {
-        return false
-      }
+      return this.files.size <= this.maxSizeFile
     },
     FormatFileIsCompatible () {
-      if (this.formatTypeFile.includes(this.files.type)) {
-        return true
-      } else {
-        return false
-      }
+      return this.formatTypeFile.includes(this.files.type)
     }
   }
 }
