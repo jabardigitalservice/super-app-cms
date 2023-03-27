@@ -245,19 +245,10 @@ export default {
     },
     async publishedFormMessageNotifHandle () {
       this.isPublished = true
-      try {
-        await this.saveMessageNotificationHandle()
-        if (this.dataMessageNotif.id) {
-          await this.$axios.post(`/messages/${this.dataMessageNotif.id}/send`)
-          this.isInformationPopup = true
-          this.showPopupConfirmationInformation = true
-        }
-      } catch (error) {
-        this.isError = true
-      } finally {
-        this.isLoading = false
-      }
-      this.showInformationPopupHandle(this.publishedInformationPopup, this.isError)
+      await this.saveMessageNotificationHandle()
+      await this.publishedMessageNotifHandle()
+      this.isLoading = false
+      this.showPopupConfirmationInformation = true
     },
     closeFormPopupHandle () {
       this.$store.commit('dialog/clearState')
