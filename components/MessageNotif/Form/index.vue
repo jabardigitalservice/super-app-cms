@@ -161,7 +161,7 @@ export default {
     },
     showSaveMessageNotifPopupHandle () {
       this.$store.commit('dialog/clearState')
-      this.confirmationPopupHandle(this.savedConfirmationPopup, this.fieldMessageNotif)
+      this.confirmationPopupHandle(this.savedConfirmationPopup, this.fieldMessageNotif, this.fieldMessageNotif.title)
       this.$store.commit('dialog/setMessage', this.popupMessage)
       this.$store.dispatch('dialog/showHandle', this.dataPopup)
       this.showPopupConfirmationInformation = true
@@ -222,7 +222,7 @@ export default {
           await this.uploadFileHandle()
         }
         const response = await this.$axios.post('/messages', { ...this.fieldMessageNotif })
-        this.dataMessageNotif.id = response.data.data.id
+        this.dataDetail.id = response.data.data.id
         this.isInformationPopup = true
         this.showPopupConfirmationInformation = !this.isPublished
       } catch (error) {

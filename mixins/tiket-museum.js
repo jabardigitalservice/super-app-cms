@@ -5,7 +5,7 @@ import {
   verificationInformationPopup,
   ticketStatus
 } from '~/constant/tiket-museum'
-import dialog from '~/mixins/global-dialog'
+import dialog from '~/mixins/dialog'
 
 export default {
   data () {
