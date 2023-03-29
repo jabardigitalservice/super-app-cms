@@ -271,12 +271,9 @@ export default {
     },
     async updateFileDecreeSK () {
       try {
-        const response = await this.$axios.patch(
-          this.apiUpdateFile,
-          {
-            decree: this.decreeFile
-          }
-        )
+        const response = await this.$axios.patch(this.apiUpdateFile, {
+          decree: this.decreeFile
+        })
         if (response.data.status) {
           this.resetDataEditSK()
           this.$emit(
@@ -301,18 +298,10 @@ export default {
       }
     },
     FileSizeIsCompatible () {
-      if (this.files.size <= this.detailDragAndDrop.maxSizeFile) {
-        return true
-      } else {
-        return false
-      }
+      return this.files.size <= this.detailDragAndDrop.maxSizeFile
     },
     FormatFileIsCompatible () {
-      if (this.detailDragAndDrop.formatTypeFile.includes(this.files.type)) {
-        return true
-      } else {
-        return false
-      }
+      return this.detailDragAndDrop.formatTypeFile.includes(this.files.type)
     }
   }
 }
