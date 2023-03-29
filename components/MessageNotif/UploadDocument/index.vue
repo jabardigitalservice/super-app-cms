@@ -3,7 +3,7 @@
     <div class="mt-2 flex w-full items-center justify-center">
       <div
         v-if="fileInputIsChange"
-        class="flex h-60 w-full flex-col justify-center rounded-lg border-2 border-dashed px-4"
+        class="flex h-[226px] w-full flex-col justify-center rounded-lg border-2 border-dashed px-4"
         :class="
           fileIsCorrect
             ? 'border-green-300 bg-green-50'
@@ -67,7 +67,7 @@
       <label
         v-else
         for="drag-and-drop-file"
-        class="flex h-[240px] w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-[#FEFEFE] px-4 hover:bg-gray-200"
+        class="flex h-[226px] w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-[#FEFEFE] px-4 hover:bg-gray-200"
         @dragover="dragover"
         @dragleave="dragleave"
         @drop="drop"
