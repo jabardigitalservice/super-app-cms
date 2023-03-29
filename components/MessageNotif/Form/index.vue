@@ -11,7 +11,7 @@
         <div class="mr-3">
           <jds-button label="Simpan Pesan" variant="secondary" class="!font-lato !text-[14px] !font-bold" @click="showSaveMessageNotifPopupHandle" />
         </div>
-        <jds-button label="Publikasikan Pesan" variant="primary" class="!font-lato !text-[14px] !font-bold !bg-green-600" @click="showPublishedPopupHandle" />
+        <jds-button label="Publikasikan Pesan" variant="primary" class="!font-lato !text-[14px] !font-bold !bg-green-600" @click="showPublishedPopupHandle(fieldMessageNotif)" />
       </div>
     </div>
     <ValidationObserver ref="form">
