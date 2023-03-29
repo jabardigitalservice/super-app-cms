@@ -92,6 +92,7 @@ export default {
      */
     dialogType: {
       type: String,
+      default: null,
       required: true,
       validator (value) {
         return ['information', 'confirmation'].includes(value)
@@ -102,7 +103,8 @@ export default {
      */
     confirmationType: {
       type: String,
-      default: '',
+      default: null,
+      required: true,
       validator (value) {
         return ['logout', 'reject', 'verify'].includes(value)
       }

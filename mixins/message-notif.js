@@ -25,7 +25,7 @@ export default {
           variant: ''
         }
       },
-      dataMessageNotif: '',
+      dataMessageNotif: {},
       isError: false,
       showPopupConfirmationInformation: false,
       popupName: '' //  to find out which popup is running, ex: 'publish' or 'delete'

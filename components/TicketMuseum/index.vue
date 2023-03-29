@@ -10,7 +10,7 @@
         class="h-[38px] w-[275px] text-gray-500"
       />
     </div>
-    <div class=" overflow-x-auto rounded-lg font-roboto">
+    <div class="overflow-x-auto rounded-lg font-roboto">
       <JdsDataTable
         :headers="headerTicketMuseum"
         :items="getListTicket"
@@ -353,11 +353,11 @@ export default {
 }
 
 .jds-data-table:deep tr th {
-  @apply min-w-[170px] border-r border-white;
+  @apply border-r border-white;
 }
 
 .jds-data-table:deep tr td {
-  @apply min-w-[170px] border-r border-gray-200;
+  @apply border-r border-gray-200;
 }
 .jds-pagination:deep {
   @apply !bg-red-600;
