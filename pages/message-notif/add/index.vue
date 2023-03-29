@@ -18,7 +18,7 @@ export default {
         }
       ],
       descriptionPage:
-        'Pengaturan versi rilis aplikasi Sapawarga'
+        'Pembuatan pesan publik untuk dikirimkan ke aplikasi sapawarga'
     }
   },
   mounted () {

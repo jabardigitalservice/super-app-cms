@@ -15,7 +15,7 @@
           Buat Pesan
         </jds-button>
       </div>
-      <div class=" overflow-x-auto">
+      <div class=" overflow-x-auto overflow-y-hidden">
         <JdsDataTable
           :headers="messageNotifHeader"
           :items="getListMessageNotif"
@@ -95,7 +95,7 @@ export default {
         page: this.pagination.currentPage,
         limit: this.pagination.itemsPerPage,
         sortBy: this.sortBy,
-        sortOrder: this.pagination.sortOrder
+        sortOrder: this.sortOrder
       }
       const response = await this.$axios.get('/messages', { params: queryParams })
       const dataMessageNotif = response.data

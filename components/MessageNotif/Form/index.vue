@@ -19,33 +19,47 @@
         <div>
           <ValidationProvider v-slot="{ errors }" name="Judul Pesan" rules="max:100|min:10|required">
             <label class="message-notif-form__label-required">Judul Pesan</label>
-            <jds-input-text
+            <p class="text-[13px] text-gray-700 mb-1">
+              Minimum 10 Karakter, maksimal 100 karakter
+            </p>
+            <input
               v-model="fieldMessageNotif.title"
+              type="text"
+              minlength="10"
+              maxlength="100"
               placeholder="Masukkan judul pesan"
-              helper-text="Minimum 10 Karakter, maksimal 100 karakter"
-              class="!mb-2"
-              :error-message="errors[0]"
-            />
+              :class="{'!border !border-red-600':errors.length>0}"
+            >
+            <small class="text-red-600">{{ errors[0] }}</small>
           </ValidationProvider>
-          <div class="mb-2">
-            <ValidationProvider v-slot="{ errors }" name="Subtext Pesan" rules="required">
+          <div class="mt-4">
+            <ValidationProvider v-slot="{ errors }" name="Subtext Pesan" rules="required|max:100|min:10">
               <label class="message-notif-form__label-required">Subtext Pesan</label>
               <div class="mt-1">
-                <textarea v-model="fieldMessageNotif.notificationBody" placeholder="Tulis isi subtext disini" class="border border-gray-500 rounded-lg w-full py-2 px-[14px] placeholder:text-sm font-lato resize-none focus:outline-none" :class="{'border border-red-600':errors.length>0}" rows="3" />
+                <textarea
+                  v-model="fieldMessageNotif.notificationBody"
+                  minlength="10"
+                  maxlength="100"
+                  placeholder="Tulis isi subtext disini"
+                  class="border border-gray-500 rounded-lg w-full h-[64px] py-2 px-[14px] placeholder:text-sm placeholder:text-gray-600 text-gray-600 font-lato resize-none focus:outline-none"
+                  :class="{'border border-red-600':errors.length>0}"
+                />
               </div>
               <small class="text-red-600">{{ errors[0] }}</small>
             </ValidationProvider>
           </div>
-          <ValidationProvider v-slot="{errors}" name="Kategori Pesan" rules="requiredSelectForm">
-            <label class="message-notif-form__label-required">Kategori Pesan</label>
-            <jds-select
-              v-model="fieldMessageNotif.category"
-              placeholder="Pilih kategori"
-              :options="categoryOptions"
-              class="!w-full mt-1"
-              :error-message="errors[0]"
-            />
-          </ValidationProvider>
+          <div class="mt-4">
+            <ValidationProvider v-slot="{errors}" name="Kategori Pesan" rules="requiredSelectForm">
+              <label class="message-notif-form__label-required">Kategori Pesan</label>
+              <jds-select
+                v-model="fieldMessageNotif.category"
+                placeholder="Pilih kategori"
+                :options="categoryOptions"
+                class="!w-full mt-1"
+                :error-message="errors[0]"
+              />
+            </ValidationProvider>
+          </div>
         </div>
         <div>
           <label class="text-[15px]">Gambar Cover</label>
@@ -175,7 +189,7 @@ export default {
           name: this.dataImage.name,
           isConfidental: false,
           mimeType: this.dataImage.mimeType,
-          roles: ['admin'],
+          roles: ['admin', 'rw'],
           data: this.dataImage.data
         }
         responseImage = await this.$axios.post('/file/upload', { ...dataUpload })
@@ -272,12 +286,8 @@ export default {
     margin-right: 4px;
   }
 
-  .message-notif-form__helper-text{
-    @apply text-[13px] text-gray-700
-  }
-
   .message-notif-form input[type='text']{
-    @apply h-[38px] border border-gray-500 rounded-lg bg-gray-50 w-full px-2 py-[11px] placeholder:text-sm font-lato text-gray-600 focus:outline-none
+    @apply h-[38px] border border-gray-500 rounded-lg bg-gray-50 w-full px-2 py-[11px] placeholder:text-sm placeholder:text-gray-600 font-lato text-gray-600 focus:outline-none
   }
 
   .message-notif-form .jds-popover__activator{
