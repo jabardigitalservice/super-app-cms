@@ -1,6 +1,6 @@
 export default function ({ $role, route, redirect, $auth, params }) {
   if (route.path !== '/login' && $auth.strategy.token.get()) {
-    const allowedRolesPathAdminRW = ['/', '/activities', '/message-notif', '/data-user', '/configuration', '/management-release', `/detail/${params.id}`]
+    const allowedRolesPathAdminRW = ['/', `/detail/${params.id}`, '/activities', '/message-notif', '/message-notif/create', `/message-notif/detail/${params.id}`, '/data-user', '/configuration', '/management-release']
 
     // redirect first login by role
     if ($role.includes('admin_ticket')) {
@@ -15,7 +15,7 @@ export default function ({ $role, route, redirect, $auth, params }) {
     }
 
     // guard routes for admin ticket
-    const allowedRolesPathAdminTicket = ['/ticket-museum']
+    const allowedRolesPathAdminTicket = ['/ticket-museum', `/ticket-museum/detail/${params.invoice}`]
     if (!$role.includes('admin_ticket') && allowedRolesPathAdminTicket.includes(route.path)) {
       return redirect('/unauthorized')
     }
