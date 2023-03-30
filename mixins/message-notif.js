@@ -9,8 +9,8 @@ export default {
       deleteConfirmationPopup,
       deleteInformationPopup,
       popupMessage: {
-        title: '',
-        detail: ''
+        titlePopup: '',
+        detailPopup: ''
       },
       dataPopup: {
         title: '',
@@ -25,7 +25,7 @@ export default {
           variant: ''
         }
       },
-      dataMessageNotif: {},
+      dataDetail: {},
       isError: false,
       showPopupConfirmationInformation: false,
       popupName: '' //  to find out which popup is running, ex: 'publish' or 'delete'
@@ -33,15 +33,15 @@ export default {
   },
   mixins: [dialog],
   methods: {
-    showPublishedPopupHandle (item) {
-      this.confirmationPopupHandle(this.publishedConfirmationPopup, item)
+    showPublishedPopupHandle (itemDataDetail) {
+      this.confirmationPopupHandle(this.publishedConfirmationPopup, itemDataDetail, itemDataDetail.title)
       this.$store.commit('dialog/setMessage', this.popupMessage)
       this.$store.dispatch('dialog/showHandle', this.dataPopup)
       this.showPopupConfirmationInformation = true
       this.popupName = 'publish'
     },
-    showDeletePopupHandle (item) {
-      this.confirmationPopupHandle(this.deleteConfirmationPopup, item)
+    showDeletePopupHandle (itemDataDetail) {
+      this.confirmationPopupHandle(this.deleteConfirmationPopup, itemDataDetail, itemDataDetail.title)
       this.$store.commit('dialog/setMessage', this.popupMessage)
       this.$store.dispatch('dialog/showHandle', this.dataPopup)
       this.showPopupConfirmationInformation = true
@@ -56,13 +56,13 @@ export default {
     },
     async publishedMessageNotifHandle () {
       this.popupMessage = {}
-      this.popupMessage.detail = this.dataMessageNotif.title
+      this.popupMessage.titlePopup = this.dataDetail.title
       this.dataPopup = {
         title: this.publishedInformationPopup.title,
         buttonLeft: this.publishedInformationPopup.buttonLeft
       }
       try {
-        await this.$axios.post(`/messages/${this.dataMessageNotif.id}/send`)
+        await this.$axios.post(`/messages/${this.dataDetail.id}/send`)
       } catch {
         this.isError = true
       }
@@ -72,13 +72,13 @@ export default {
     },
     async deleteMessageNotifHandle () {
       this.popupMessage = {}
-      this.popupMessage.detail = this.dataMessageNotif.title
+      this.popupMessage.titlePopup = this.dataDetail.title
       this.dataPopup = {
         title: this.deleteInformationPopup.title,
         buttonLeft: this.deleteInformationPopup.buttonLeft
       }
       try {
-        await this.$axios.delete(`/messages/${this.dataMessageNotif.id}`)
+        await this.$axios.delete(`/messages/${this.dataDetail.id}`)
       } catch (error) {
         this.isError = true
       }
