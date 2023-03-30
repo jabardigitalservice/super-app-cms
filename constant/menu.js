@@ -6,14 +6,14 @@ const mainMenu =
     {
       name: 'Klaim Akun RW',
       path: 'index',
-      arrow: false,
-      role: 'admin'
+      arrow: false
+
     },
     {
       name: 'Kegiatan RW',
       path: 'activities',
-      arrow: true,
-      role: 'admin'
+      arrow: true
+
     }
   ]
 }
@@ -25,8 +25,7 @@ const messageNotifMenu =
   menu: [{
     name: 'Pesan',
     path: 'message-notif',
-    arrow: false,
-    role: 'admin'
+    arrow: false
   }]
 }
 
@@ -37,8 +36,7 @@ const tiketMuseumMenu =
   menu: [{
     name: 'Tiket Museum',
     path: 'ticket-museum',
-    arrow: false,
-    role: 'admin_ticket'
+    arrow: false
   }]
 }
 
@@ -49,20 +47,17 @@ const masterDataMenu =
   menu: [{
     name: 'Kelola Pengguna',
     path: 'data-user',
-    arrow: true,
-    role: 'admin'
+    arrow: true
   },
   {
     name: 'Konfigurasi',
     path: 'configuration',
-    arrow: true,
-    role: 'admin'
+    arrow: true
   },
   {
     name: 'Manajemen Rilis',
     path: 'management-release',
-    arrow: true,
-    role: 'admin'
+    arrow: true
   }]
 }
 

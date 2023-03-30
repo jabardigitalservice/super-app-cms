@@ -3,17 +3,19 @@
     <SidebarHeader class="border-b px-6 py-7" />
     <div class="sidebar-content overflow-y-auto p-4">
       <div v-for="(menuList, index) in menu" :key="index">
-        <SidebarTitleMenu v-if="$role.includes(menuList.role)" :title="menuList.titleMenu" />
-        <div class="flex flex-col gap-2">
-          <SidebarItem
-            v-for="menuSidebar in menuList.menu"
-            :key="menuSidebar.path"
-            :label="menuSidebar.name"
-            :is-show-arrow="menuSidebar.arrow"
-            :link="menuSidebar.path"
-            :role="menuSidebar.role"
-          />
-        </div>
+        <template v-if="$role.includes(menuList.role)">
+          <SidebarTitleMenu :title="menuList.titleMenu" />
+          <div class="flex flex-col gap-2">
+            <SidebarItem
+              v-for="menuSidebar in menuList.menu"
+              :key="menuSidebar.path"
+              :label="menuSidebar.name"
+              :is-show-arrow="menuSidebar.arrow"
+              :link="menuSidebar.path"
+              :role="menuSidebar.role"
+            />
+          </div>
+        </template>
       </div>
     </div>
     <SidebarFooter
