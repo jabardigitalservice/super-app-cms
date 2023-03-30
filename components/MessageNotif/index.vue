@@ -166,7 +166,7 @@ export default {
       this.$router.push(`/message-notif/detail/${item.id}`)
     },
     goToFormAddMessageNotifHandle () {
-      this.$router.push('/message-notif/add')
+      this.$router.push('/message-notif/create')
     }
   }
 }
