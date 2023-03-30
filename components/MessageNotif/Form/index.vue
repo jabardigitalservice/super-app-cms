@@ -231,7 +231,7 @@ export default {
     async saveMessageNotificationHandle () {
       this.showPopupConfirmationInformation = false
       this.popupMessage = {}
-      this.popupMessage.title = this.fieldMessageNotif.title
+      this.popupMessage.titlePopup = this.fieldMessageNotif.title
       try {
         if (Object.keys(this.dataImage).length > 0) {
           await this.uploadFileHandle()

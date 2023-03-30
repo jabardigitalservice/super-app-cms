@@ -15,8 +15,8 @@ export default {
       verificationConfirmationPopup,
       verificationInformationPopup,
       popupMessage: {
-        title: '',
-        detail: ''
+        titlePopup: '',
+        detailPopup: ''
       },
       dataPopup: {
         title: '',
@@ -31,7 +31,7 @@ export default {
           variant: ''
         }
       },
-      titleTicket: '',
+      dataDetail: {},
       isError: false,
       showPopUp: false,
       popupName: '' //  to find out which popup is running, ex: 'verify' or 'reject'
@@ -39,15 +39,15 @@ export default {
   },
   mixins: [dialog],
   methods: {
-    showVerificationTicketHandle (item) {
-      this.confirmationPopupHandle(this.verificationConfirmationPopup, item.invoice)
+    showVerificationTicketHandle (itemDataDetail) {
+      this.confirmationPopupHandle(this.verificationConfirmationPopup, itemDataDetail, itemDataDetail.invoice)
       this.$store.commit('dialog/setMessage', this.popupMessage)
       this.$store.dispatch('dialog/showHandle', this.dataPopup)
       this.showPopUp = true
       this.popupName = 'verify'
     },
-    showRejectTicketHandle (item) {
-      this.confirmationPopupHandle(this.rejectConfirmationPopup, item.invoice)
+    showRejectTicketHandle (itemDataDetail) {
+      this.confirmationPopupHandle(this.rejectConfirmationPopup, itemDataDetail, itemDataDetail.invoice)
       this.$store.commit('dialog/setMessage', this.popupMessage)
       this.$store.dispatch('dialog/showHandle', this.dataPopup)
       this.showPopUp = true
@@ -62,13 +62,13 @@ export default {
     },
     async verificationTicketHandle () {
       this.popupMessage = {}
-      this.popupMessage.detail = this.titleTicket
+      this.popupMessage.titlePopup = this.dataDetail.invoice
       this.dataPopup = {
         title: this.verificationInformationPopup.title,
         buttonLeft: this.verificationInformationPopup.buttonLeft
       }
       try {
-        await this.$axios.post('/ticket/aljabbar/payment-verification', { invoice: this.titleTicket })
+        await this.$axios.post('/ticket/aljabbar/payment-verification', { invoice: this.dataDetail.invoice })
       } catch {
         this.isError = true
       }
@@ -78,13 +78,13 @@ export default {
     },
     async rejectTicketHandle () {
       this.popupMessage = {}
-      this.popupMessage.detail = this.titleTicket
+      this.popupMessage.titlePopup = this.dataDetail.invoice
       this.dataPopup = {
         title: this.rejectInformationPopup.title,
         buttonLeft: this.rejectInformationPopup.buttonLeft
       }
       try {
-        await this.$axios.post('/ticket/aljabbar/payment-reject', { invoice: this.titleTicket })
+        await this.$axios.post('/ticket/aljabbar/payment-reject', { invoice: this.dataDetail.invoice })
       } catch (error) {
         this.isError = true
       }

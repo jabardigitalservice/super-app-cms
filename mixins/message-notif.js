@@ -9,8 +9,8 @@ export default {
       deleteConfirmationPopup,
       deleteInformationPopup,
       popupMessage: {
-        title: '',
-        detail: ''
+        titlePopup: '',
+        detailPopup: ''
       },
       dataPopup: {
         title: '',
@@ -56,7 +56,7 @@ export default {
     },
     async publishedMessageNotifHandle () {
       this.popupMessage = {}
-      this.popupMessage.title = this.dataDetail.title
+      this.popupMessage.titlePopup = this.dataDetail.title
       this.dataPopup = {
         title: this.publishedInformationPopup.title,
         buttonLeft: this.publishedInformationPopup.buttonLeft
@@ -72,7 +72,7 @@ export default {
     },
     async deleteMessageNotifHandle () {
       this.popupMessage = {}
-      this.popupMessage.title = this.dataDetail.title
+      this.popupMessage.titlePopup = this.dataDetail.title
       this.dataPopup = {
         title: this.deleteInformationPopup.title,
         buttonLeft: this.deleteInformationPopup.buttonLeft

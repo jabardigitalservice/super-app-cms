@@ -38,10 +38,10 @@
               <jds-icon v-show="getIcon.name" :name="getIcon.name" size="16px" :fill="getIcon.fill" class="mt-1" />
               <div class="ml-[13px]">
                 <p class="text-[14px] text-gray-800 font-lato">
-                  {{ getMessage.detail }}
+                  {{ getMessage.detailPopup }}
                 </p>
                 <div class="text-[16px] font-lato text-gray-800">
-                  <strong>{{ getMessage.title }}</strong>
+                  <strong>{{ getMessage.titlePopup }}</strong>
                 </div>
               </div>
             </div>
