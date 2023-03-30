@@ -15,51 +15,6 @@
           />
         </div>
       </div>
-
-      <!-- <SidebarTitleMenu title="RW" />
-      <div class="flex flex-col gap-2">
-        <SidebarItem
-          v-for="menu in mainMenu"
-          :key="menu.path"
-          :label="menu.name"
-          :is-show-arrow="menu.arrow"
-          :link="menu.path"
-          :role="menu.role"
-        />
-      </div>
-      <SidebarTitleMenu title="Pesan dan Notif" />
-      <div class="flex flex-col gap-2">
-        <SidebarItem
-          v-for="menu in messageNotifMenu"
-          :key="menu.path"
-          :label="menu.name"
-          :is-show-arrow="menu.arrow"
-          :link="menu.path"
-          :role="menu.role"
-        />
-      </div>
-      <SidebarTitleMenu title="Tiket Museum" />
-      <div class="flex flex-col gap-2">
-        <SidebarItem
-          v-for="menu in tiketMuseumMenu"
-          :key="menu.path"
-          :label="menu.name"
-          :is-show-arrow="menu.arrow"
-          :link="menu.path"
-          :role="menu.role"
-        />
-      </div>
-      <SidebarTitleMenu title="Master Data" />
-      <div class="flex flex-col gap-2">
-        <SidebarItem
-          v-for="menu in masterDataMenu"
-          :key="menu.path"
-          :label="menu.name"
-          :is-show-arrow="menu.arrow"
-          :link="menu.path"
-          :role="menu.role"
-        />
-      </div> -->
     </div>
     <SidebarFooter
       class="mt-auto border-t p-6 hover:bg-gray-50"
@@ -80,7 +35,6 @@ export default {
     }
   },
   mounted () {
-    console.log(menu)
     this.profileName = this.$auth?.user?.name
   }
 }
