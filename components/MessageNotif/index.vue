@@ -144,6 +144,10 @@ export default {
       // replace createdAt & publishedAt to created_at & published_at, because in firebase is using snake case & json using camel case
       this.sortBy = Object.keys(value)[0].replace('At', '_at')
       this.sortOrder = Object.values(value)[0]
+      if (this.sortOrder === 'no-sort') {
+        this.sortBy = ''
+        this.sortOrder = ''
+      }
       this.$fetch()
     },
     searchDebounce: debounce(function (value) {
