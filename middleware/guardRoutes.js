@@ -3,22 +3,21 @@ export default function ({ $role, route, redirect, $auth, params }) {
     const allowedRolesPathAdminRW = ['/', '/activities', '/message-notif', '/data-user', '/configuration', '/management-release', `/detail/${params.id}`]
 
     // redirect first login by role
-    if ($role === 'adminTicket') {
+    if ($role.includes('admin_ticket')) {
       if (route.path === '/') {
         return redirect('/ticket-museum')
       }
     }
 
     // guard routes for admin rw
-    if ($role !== 'adminRW' && allowedRolesPathAdminRW.includes(route.path)) {
+    if (!$role.includes('admin') && allowedRolesPathAdminRW.includes(route.path)) {
       return redirect('/unauthorized')
     }
 
-    //  todo : if role in API  ready i used this code
     // guard routes for admin ticket
-    // const allowedRolesPathAdminTicket = ['/ticket-museum']
-    // if ($role !== 'adminTicket' && allowedRolesPathAdminTicket.includes(route.path)) {
-    //   return redirect('/unauthorized')
-    // }
+    const allowedRolesPathAdminTicket = ['/ticket-museum']
+    if (!$role.includes('admin_ticket') && allowedRolesPathAdminTicket.includes(route.path)) {
+      return redirect('/unauthorized')
+    }
   }
 }
