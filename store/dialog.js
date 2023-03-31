@@ -33,8 +33,8 @@ const defautState = {
     variant: ''
   },
   message: {
-    title: '',
-    detail: ''
+    titlePopup: '',
+    detailPopup: ''
   },
   dialogType: '',
   title: ''

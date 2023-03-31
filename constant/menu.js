@@ -1,60 +1,71 @@
-const mainMenu = [
-  {
-    name: 'Klaim Akun RW',
-    path: 'index',
-    arrow: false,
-    role: 'adminRW'
-  },
-  {
-    name: 'Kegiatan RW',
-    path: 'activities',
-    arrow: true,
-    role: 'adminRW'
-  }
-]
+const mainMenu =
+{
+  titleMenu: 'RW',
+  role: 'admin',
+  menu: [
+    {
+      name: 'Klaim Akun RW',
+      path: 'index',
+      arrow: false
 
-const messageNotifMenu = [
-  {
+    },
+    {
+      name: 'Kegiatan RW',
+      path: 'activities',
+      arrow: true
+
+    }
+  ]
+}
+
+const messageNotifMenu =
+{
+  titleMenu: 'pesan dan notif',
+  role: 'admin',
+  menu: [{
     name: 'Pesan',
     path: 'message-notif',
-    arrow: false,
-    role: 'adminRW'
-  }
-]
+    arrow: false
+  }]
+}
 
-const tiketMuseumMenu = [
-  {
+const tiketMuseumMenu =
+{
+  titleMenu: 'tiket museum',
+  role: 'admin_ticket',
+  menu: [{
     name: 'Tiket Museum',
     path: 'ticket-museum',
-    arrow: false,
-    role: 'adminRW'
-  }
-]
+    arrow: false
+  }]
+}
 
-const masterDataMenu = [
-  {
+const masterDataMenu =
+{
+  titleMenu: 'master data',
+  role: 'admin',
+  menu: [{
     name: 'Kelola Pengguna',
     path: 'data-user',
-    arrow: true,
-    role: 'adminRW'
+    arrow: true
   },
   {
     name: 'Konfigurasi',
     path: 'configuration',
-    arrow: true,
-    role: 'adminRW'
+    arrow: true
   },
   {
     name: 'Manajemen Rilis',
     path: 'management-release',
-    arrow: true,
-    role: 'adminRW'
-  }
-]
+    arrow: true
+  }]
+}
 
-export {
-  mainMenu,
+const menu = [mainMenu,
   messageNotifMenu,
   masterDataMenu,
-  tiketMuseumMenu
+  tiketMuseumMenu]
+
+export {
+  menu
 }

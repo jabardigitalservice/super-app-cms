@@ -11,7 +11,7 @@
         <div class="mr-3">
           <jds-button label="Simpan Pesan" variant="secondary" class="!font-lato !text-[14px] !font-bold" @click="showSaveMessageNotifPopupHandle" />
         </div>
-        <jds-button label="Publikasikan Pesan" variant="primary" class="!font-lato !text-[14px] !font-bold !bg-green-600" @click="showPublishedPopupHandle" />
+        <jds-button label="Publikasikan Pesan" variant="primary" class="!font-lato !text-[14px] !font-bold !bg-green-600" @click="showPublishedPopupHandle(fieldMessageNotif)" />
       </div>
     </div>
     <ValidationObserver ref="form">
@@ -175,7 +175,7 @@ export default {
     },
     showSaveMessageNotifPopupHandle () {
       this.$store.commit('dialog/clearState')
-      this.confirmationPopupHandle(this.savedConfirmationPopup, this.fieldMessageNotif)
+      this.confirmationPopupHandle(this.savedConfirmationPopup, this.fieldMessageNotif, this.fieldMessageNotif.title)
       this.$store.commit('dialog/setMessage', this.popupMessage)
       this.$store.dispatch('dialog/showHandle', this.dataPopup)
       this.showPopupConfirmationInformation = true
@@ -231,12 +231,13 @@ export default {
     async saveMessageNotificationHandle () {
       this.showPopupConfirmationInformation = false
       this.popupMessage = {}
+      this.popupMessage.titlePopup = this.fieldMessageNotif.title
       try {
         if (Object.keys(this.dataImage).length > 0) {
           await this.uploadFileHandle()
         }
         const response = await this.$axios.post('/messages', { ...this.fieldMessageNotif })
-        this.dataMessageNotif.id = response.data.data.id
+        this.dataDetail.id = response.data.data.id
         this.isInformationPopup = true
         this.showPopupConfirmationInformation = !this.isPublished
       } catch (error) {
