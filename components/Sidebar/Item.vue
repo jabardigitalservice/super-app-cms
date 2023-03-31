@@ -1,6 +1,5 @@
 <template>
   <nuxt-link
-    v-if="$role === role"
     :to="{ name: link }"
     class="flex w-full min-w-[200px] items-center justify-between rounded-lg p-3 hover:bg-gray-50 hover:font-bold hover:text-gray-800"
     :class="{ 'nuxt-link-exact-active': getActivePage == label }"
