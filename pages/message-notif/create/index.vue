@@ -14,7 +14,7 @@ export default {
         },
         {
           label: 'Tambah Pesan',
-          link: '/message-notif/add'
+          link: '/message-notif/create'
         }
       ],
       descriptionPage:
