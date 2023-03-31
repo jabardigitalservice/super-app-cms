@@ -17,7 +17,7 @@ export const headerTicketMuseum = [
   {
     key: 'sessionName',
     text: 'sesi',
-    sortable: true
+    sortable: false
   },
   {
     key: 'reservationDate',
