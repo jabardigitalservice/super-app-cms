@@ -1,5 +1,5 @@
 export default function ({ $role, route, redirect, $auth, params }) {
-  if ($auth.strategy.token.get()) {
+  if (route.path !== '/login' && $auth.strategy.token.get()) {
     // redirect first login by role
     if ($role.includes('admin_ticket')) {
       if (route.path === '/') {
