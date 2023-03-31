@@ -172,7 +172,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
   .jds-data-table:deep{
     border-spacing: 1px !important;
     @apply rounded-lg;
@@ -190,6 +190,6 @@ export default {
   }
 
   .jds-data-table:deep tr td {
-    @apply border-r border-gray-200 max-w-[435px];
+    @apply border-r border-gray-200;
   }
 </style>
