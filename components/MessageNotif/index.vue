@@ -190,6 +190,6 @@ export default {
   }
 
   .jds-data-table:deep tr td {
-    @apply border-r border-gray-200;
+    @apply border-r border-gray-200 max-w-[435px];
   }
 </style>
