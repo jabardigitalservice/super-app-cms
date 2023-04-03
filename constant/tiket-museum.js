@@ -7,7 +7,7 @@ export const headerTicketMuseum = [
   {
     key: 'invoice',
     text: 'ID Pembayaran',
-    sortable: false
+    sortable: true
   },
   {
     key: 'amount',

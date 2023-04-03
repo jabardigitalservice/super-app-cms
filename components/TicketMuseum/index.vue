@@ -170,6 +170,7 @@ export default {
     query: {
       deep: true,
       handler () {
+        console.log(this.query)
         this.$fetch()
       }
     }
@@ -205,45 +206,44 @@ export default {
           item => item.menu !== 'Verifikasi' && item.menu !== 'Tolak'
         )
       }
-    }
-
-  },
-  searchInvoice: debounce(function (value) {
-    if (value.length > 2) {
+    },
+    searchInvoice: debounce(function (value) {
+      if (value.length > 2) {
+        this.query.page = 1
+        this.query.search = value
+        this.$fetch()
+      } else if (value.length === 0) {
+        this.query.search = null
+        this.$fetch()
+      }
+    }, 500),
+    onSearch (value) {
+      this.searchInvoice(value)
+    },
+    nextPage (value) {
+      this.query.page = value
+    },
+    previousPage (value) {
+      this.query.page = value
+    },
+    pageChange (value) {
+      this.query.page = value
+    },
+    perPageChange (value) {
+      if (value) {
+        this.query.pageSize = value
+      }
       this.query.page = 1
-      this.query.search = value
-      this.$fetch()
-    } else if (value.length === 0) {
-      this.query.search = null
-      this.$fetch()
-    }
-  }, 500),
-  onSearch (value) {
-    this.searchInvoice(value)
-  },
-  nextPage (value) {
-    this.query.page = value
-  },
-  previousPage (value) {
-    this.query.page = value
-  },
-  pageChange (value) {
-    this.query.page = value
-  },
-  perPageChange (value) {
-    if (value) {
-      this.query.pageSize = value
-    }
-    this.query.page = 1
-  },
-  sortChange (value) {
-    const key = Object.keys(value)[0]
-    if (key && value[key] !== 'no-sort') {
-      this.query.sortType = value[key]
-      this.query.sortBy = key === 'status' ? 'rwStatus' : key
-    } else {
-      this.query.sortType = 'desc'
-      this.query.sortBy = 'orderedAt'
+    },
+    sortChange (value) {
+      const key = Object.keys(value)[0]
+      if (key && value[key] !== 'no-sort') {
+        this.query.sortType = value[key]
+        this.query.sortBy = key === 'status' ? 'rwStatus' : key
+      } else {
+        this.query.sortType = 'desc'
+        this.query.sortBy = 'orderedAt'
+      }
     }
   }
 }
