@@ -239,7 +239,7 @@ export default {
       const key = Object.keys(value)[0]
       if (key && value[key] !== 'no-sort') {
         this.query.sortType = value[key]
-        this.query.sortBy = key === 'status' ? 'rwStatus' : key
+        this.query.sortBy = key === 'status' ? 'status' : key
       } else {
         this.query.sortType = 'desc'
         this.query.sortBy = 'orderedAt'
