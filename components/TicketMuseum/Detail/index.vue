@@ -11,7 +11,7 @@
           Kembali
         </div>
       </jds-button>
-      <div class="flex">
+      <div v-if="ticketStatus[`${dataDetailTicket?.status}`] === ticketStatus.confirmed" class="flex">
         <div class="mr-3">
           <jds-button
             label="Tolak"

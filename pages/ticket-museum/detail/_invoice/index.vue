@@ -50,11 +50,7 @@ export default {
   methods: {
     closeHandle (value) {
       this.$store.commit('dialog/clearState')
-      if (value.popupName === 'reject' && value.dialogType === 'information') {
-        this.$router.push('/ticket-museum')
-      } else {
-        this.$fetch()
-      }
+      this.$fetch()
     }
   }
 }
