@@ -76,6 +76,12 @@
             </tr>
             <tr>
               <td>
+                <strong>Pembayaran Melalui</strong>
+              </td>
+              <td>{{ dataDetailTicket?.paymentName || "-" }}</td>
+            </tr>
+            <tr>
+              <td>
                 <strong>Status</strong>
               </td>
               <td>
@@ -84,7 +90,9 @@
                     v-show="dataDetailTicket?.status"
                     class="mr-2 h-2 w-2 rounded-full"
                     :class="
-                      getColorIconStatus(ticketStatus[`${dataDetailTicket?.status}`])
+                      getColorIconStatus(
+                        ticketStatus[`${dataDetailTicket?.status}`]
+                      )
                     "
                   />
                   {{ ticketStatus[`${dataDetailTicket?.status}`] }}
@@ -112,12 +120,27 @@
             </tr>
           </BaseTableDetail>
 
-          <BaseTableDetail header="Informasi Tiket" class="mb-4">
-            <tr v-for="infoTicket in dataDetailTicket?.tickets" :key="infoTicket.id">
+          <BaseTableDetail
+            v-for="infoTicket in dataDetailTicket?.tickets"
+            :key="infoTicket.id"
+            :header="`Informasi Tiket ${infoTicket.name}`"
+            class="mb-4"
+          >
+            <tr>
               <td class="w-1/4">
-                <strong> Ticket {{ infoTicket.name }}</strong>
+                <strong>Jumlah Tiket</strong>
               </td>
-              <td>{{ infoTicket?.ticketNumber || 0 }}</td>
+              <td>
+                {{ infoTicket?.quantity || 0 }} Orang
+              </td>
+            </tr>
+            <tr>
+              <td class="w-1/4">
+                <strong>Total Harga </strong>
+              </td>
+              <td>
+                {{ priceTicket(infoTicket?.price || 0) }}
+              </td>
             </tr>
           </BaseTableDetail>
         </div>
@@ -143,6 +166,7 @@
 import ArrowLeft from '~/assets/icon/arrow-left.svg?inline'
 import { ticketStatus } from '~/constant/tiket-museum'
 import popup from '~/mixins/tiket-museum'
+import { convertToRupiah } from '~/utils'
 export default {
   name: 'TicketMuseumDetail',
   components: {
@@ -166,7 +190,11 @@ export default {
       }
     }
   },
+
   methods: {
+    priceTicket (price) {
+      return convertToRupiah(price)
+    },
     goToBackHandle () {
       this.$router.push('/ticket-museum')
     },
