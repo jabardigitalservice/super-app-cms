@@ -73,7 +73,7 @@ export const rejectConfirmationPopup = {
 export const rejectInformationPopup = {
   title: 'Tolak Tiket',
   successInformation: {
-    descriptionText: 'Tiket ',
+    descriptionText: 'Tiket berhasil ditolak',
     dialogType: 'information',
     buttonRight: {
       label: 'Saya mengerti',
