@@ -1,42 +1,38 @@
 <template>
-  <div>
-    <SidebarHeader class="px-6 py-7 border-b" />
-    <div class="h-[calc(100%-170px)] overflow-y-scroll sidebar-content p-6">
-      <div class="flex flex-col gap-2">
-        <SidebarItem
-          v-for="menu in mainMenu"
-          :key="menu.path"
-          :label="menu.name"
-          :is-show-arrow="menu.arrow"
-          :link="menu.path"
-        />
-      </div>
-      <div class="mt-6 mb-4 py-3 font-roboto text-gray-600 uppercase font-bold border-b">
-        Master Data
-      </div>
-      <div class="flex flex-col gap-2">
-        <SidebarItem
-          v-for="menu in masterDataMenu"
-          :key="menu.path"
-          :label="menu.name"
-          :is-show-arrow="menu.arrow"
-          :link="menu.path"
-        />
+  <div class="sticky top-0 flex h-screen flex-col">
+    <SidebarHeader class="border-b px-6 py-7" />
+    <div class="sidebar-content overflow-y-auto p-4">
+      <div v-for="(menuList, index) in menu" :key="index">
+        <template v-if="$role.includes(menuList.role)">
+          <SidebarTitleMenu :title="menuList.titleMenu" />
+          <div class="flex flex-col gap-2">
+            <SidebarItem
+              v-for="menuSidebar in menuList.menu"
+              :key="menuSidebar.path"
+              :label="menuSidebar.name"
+              :is-show-arrow="menuSidebar.arrow"
+              :link="menuSidebar.path"
+              :role="menuSidebar.role"
+            />
+          </div>
+        </template>
       </div>
     </div>
-    <SidebarFooter class="p-6 border-t hover:bg-gray-50" :name-user="profileName" />
+    <SidebarFooter
+      class="mt-auto border-t p-6 hover:bg-gray-50"
+      :name-user="profileName"
+    />
   </div>
 </template>
 
 <script>
-import { mainMenu, masterDataMenu } from '@/constant/menu'
+import { menu } from '@/constant/menu'
 
 export default {
   name: 'ComponentSidebar',
   data () {
     return {
-      mainMenu,
-      masterDataMenu,
+      menu,
       profileName: ''
     }
   },
@@ -47,21 +43,20 @@ export default {
 </script>
 
 <style>
-  .sidebar-content{
-    scrollbar-color: #e0e0e0 transparent;
-    scrollbar-width: thin;
-  }
+.sidebar-content {
+  scrollbar-color: #e0e0e0 transparent;
+  scrollbar-width: thin;
+}
 
-  .sidebar-content::-webkit-scrollbar{
-    @apply w-5 h-5;
-  }
+.sidebar-content::-webkit-scrollbar {
+  @apply h-5 w-5;
+}
 
-  .sidebar-content::-webkit-scrollbar-track {
-    @apply bg-transparent;
-  }
+.sidebar-content::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
 
-  .sidebar-content::-webkit-scrollbar-thumb {
-    @apply bg-gray-300 rounded-xl border-solid border-[6px] border-transparent bg-clip-content;
-  }
-
+.sidebar-content::-webkit-scrollbar-thumb {
+  @apply rounded-xl border-[6px] border-solid border-transparent bg-gray-300 bg-clip-content;
+}
 </style>

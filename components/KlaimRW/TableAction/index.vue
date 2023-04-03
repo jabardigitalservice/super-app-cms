@@ -27,14 +27,14 @@
           Lihat Detail
         </button>
         <button
-          v-if="status === userStatus.waiting"
+          v-show="status === userStatus.waiting || status === userStatus.rejected"
           class="text-sm leading-4 text-gray-800 hover:text-green-700"
           @click="$emit('verify')"
         >
           Verifikasi
         </button>
         <button
-          v-if="status === userStatus.waiting"
+          v-show="status === userStatus.waiting"
           class="text-sm leading-4 text-gray-800 hover:text-green-700"
           @click="$emit('reject')"
         >

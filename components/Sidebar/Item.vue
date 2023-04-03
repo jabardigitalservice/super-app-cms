@@ -1,12 +1,12 @@
 <template>
   <nuxt-link
-    :to="{name: link}"
-    class="flex justify-between items-center min-w-[200px] w-full p-3 rounded-lg hover:bg-gray-50 hover:text-gray-800 hover:font-bold"
-    :class="{'nuxt-link-exact-active':getActivePage==label}"
+    :to="{ name: link }"
+    class="flex w-full min-w-[200px] items-center justify-between rounded-lg p-3 hover:bg-gray-50 hover:font-bold hover:text-gray-800"
+    :class="{ 'nuxt-link-exact-active': getActivePage == label }"
   >
     <div class="flex items-center">
-      <component :is="icon" class="flex-shrink-0 mr-3" />
-      <div class="font-lato text-gray-600 text-sm">
+      <component :is="icon" class="mr-3 flex-shrink-0" />
+      <div class="font-lato text-sm text-gray-600">
         {{ label }}
       </div>
     </div>
@@ -21,7 +21,8 @@ import IconItem from '~/assets/icon/item.svg?inline'
 export default {
   name: 'ItemSidebar',
   components: {
-    ChevronRight, IconItem
+    ChevronRight,
+    IconItem
   },
   props: {
     label: {
@@ -39,6 +40,10 @@ export default {
     isShowArrow: {
       type: Boolean,
       default: true
+    },
+    role: {
+      type: String,
+      default: ''
     }
   },
   computed: {
@@ -51,6 +56,6 @@ export default {
 
 <style scoped>
 a.nuxt-link-exact-active {
-  @apply bg-gray-50 text-gray-800 font-bold !important;
+  @apply bg-gray-50 font-bold text-gray-800 !important;
 }
 </style>

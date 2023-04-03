@@ -1,12 +1,6 @@
 <template>
   <div>
-    <h1 class="font-roboto text-[38px] text-blue-gray-800 mb-4">
-      Klaim Akun RW
-    </h1>
-    <p class="font-roboto text-blue-gray-400 mb-8">
-      Berisi semua daftar terkait klaim yang dilakukan oleh RW di aplikasi Sapawarga.
-    </p>
-    <div class="flex justify-between mb-6">
+    <div class="mb-6 flex justify-between">
       <jds-search
         v-model="search"
         small
@@ -17,7 +11,7 @@
         @input="onSearch"
       />
     </div>
-    <div class="rounded-lg overflow-x-scroll font-roboto table-content">
+    <div class="overflow-x-auto rounded-lg font-roboto">
       <JdsDataTable
         :headers="headerTableKlaimRW"
         :items="dataRW"
@@ -30,39 +24,39 @@
         @change:sort="sortChange"
       >
         <!-- eslint-disable-next-line vue/valid-v-slot -->
-        <template #item.address="{item}">
+        <template #item.address="{ item }">
           <button
-            class="border border-green-700 text-green-700 hover:bg-green-50 rounded-lg px-4 py-1"
+            class="rounded-lg border border-green-700 px-4 py-1 text-green-700 hover:bg-green-50"
             @click="openModalDetailAddress(item)"
           >
             Lihat Alamat
           </button>
         </template>
         <!-- eslint-disable-next-line vue/valid-v-slot -->
-        <template #item.document="{item}">
+        <template #item.document="{ item }">
           <button
-            class="border border-green-700 text-green-700 hover:bg-green-50 rounded-lg px-4 py-1"
+            class="rounded-lg border border-green-700 px-4 py-1 text-green-700 hover:bg-green-50"
             @click="onClickDocument(item?.rwDecree)"
           >
             Lihat Dokumen
           </button>
         </template>
         <!-- eslint-disable-next-line vue/valid-v-slot -->
-        <template #item.status="{item}">
+        <template #item.status="{ item }">
           <div class="flex items-center">
             <span
               :class="{
-                'rounded-full w-2 h-2 mr-2' : true,
-                'bg-green-600' : item.rwStatus === userStatus.verified,
-                'bg-yellow-600' : item.rwStatus === userStatus.waiting,
-                'bg-red-600' : item.rwStatus === userStatus.rejected,
+                'mr-2 h-2 w-2 rounded-full': true,
+                'bg-green-600': item.rwStatus === userStatus.verified,
+                'bg-yellow-600': item.rwStatus === userStatus.waiting,
+                'bg-red-600': item.rwStatus === userStatus.rejected,
               }"
             />
             {{ item.rwStatus }}
           </div>
         </template>
         <!-- eslint-disable-next-line vue/valid-v-slot -->
-        <template #item.action="{item}">
+        <template #item.action="{ item }">
           <KlaimRWTableAction
             :status="item.rwStatus"
             @detail="$router.push(`/detail/${item.id}`)"
@@ -80,18 +74,25 @@
       :show="showDetailAddress"
       @close="showDetailAddress = false"
     />
-    <KlaimRWViewDocument
+    <BaseViewFile
       title="Dokumen SK RW"
       :file="dataInfo.file"
+      :mime-type="dataInfo.mimeType"
       :show="showDocument"
       @close="showDocument = false"
     />
-    <PopupRejectRw :show-popup="showRejectRw" :account-name="dataUser.name" :account-email="dataUser.email" @close="showRejectRw=false" @submit="actionRejectUser" />
+    <PopupRejectRw
+      :show-popup="showRejectRw"
+      :account-name="dataUser.name"
+      :account-email="dataUser.email"
+      @close="showRejectRw = false"
+      @submit="actionRejectUser"
+    />
     <PopupVerifyRW
       :show-popup="showVerifyRW"
       :account-name="dataUser.name"
       @submit="actionVerifyUser"
-      @close="showVerifyRW=false"
+      @close="showVerifyRW = false"
     />
     <PopupInformation
       :show-popup="dataInfo.show"
@@ -115,7 +116,9 @@ import { generateItemsPerPageOptions, formatDate } from '~/utils'
 export default {
   name: 'ComponentKlaimRW',
   components: {
-    PopupRejectRw, PopupVerifyRW, PopupInformation
+    PopupRejectRw,
+    PopupVerifyRW,
+    PopupInformation
   },
   data () {
     return {
@@ -153,13 +156,16 @@ export default {
         show: false,
         info: '',
         message: '',
-        file: ''
+        file: '',
+        mimeType: ''
       }
     }
   },
   async fetch () {
     try {
-      const response = await this.$axios.get('/user/rw', { params: this.query })
+      const response = await this.$axios.get('/user/rw', {
+        params: this.query
+      })
       const { data } = response.data
       this.data = data?.data || []
       if (this.data.length) {
@@ -179,7 +185,7 @@ export default {
       return this.data.map((item) => {
         return {
           ...item,
-          date: formatDate(item.createdAt)
+          date: formatDate(item.createdAt || '')
         }
       })
     }
@@ -193,7 +199,9 @@ export default {
     }
   },
   mounted () {
-    this.pagination.itemsPerPageOptions = generateItemsPerPageOptions(this.pagination.itemsPerPage)
+    this.pagination.itemsPerPageOptions = generateItemsPerPageOptions(
+      this.pagination.itemsPerPage
+    )
   },
   methods: {
     searchTitle: debounce(function (value) {
@@ -270,8 +278,9 @@ export default {
         const response = await this.$axios.get(`/file/view/${fileId}`, {
           headers: { 'x-file-id': fileId }
         })
-        const { data } = response.data
-        this.dataInfo.file = data || ''
+
+        this.dataInfo.file = response.data.data || ''
+        this.dataInfo.mimeType = response.data.meta.mimeType || ''
       } catch {
         this.dataInfo.file = ''
       }
@@ -287,10 +296,13 @@ export default {
       this.showRejectRw = false
       this.dataInfo.title = 'Penolakan Akun RW'
       try {
-        await this.$axios.post('/user/role/reject-rw', { userId: this.dataUser.id })
+        await this.$axios.post('/user/role/reject-rw', {
+          userId: this.dataUser.id
+        })
         this.dataInfo.show = true
         this.dataInfo.info = 'Penolakan akun RW telah berhasil dilakukan.'
-        this.dataInfo.message = 'Email terkait informasi penolakan telah dikirimkan ke email akun RW bersangkutan.'
+        this.dataInfo.message =
+          'Email terkait informasi penolakan telah dikirimkan ke email akun RW bersangkutan.'
       } catch (error) {
         this.dataInfo.show = true
         this.dataInfo.info = 'Penolakan akun RW gagal dilakukan'
@@ -311,7 +323,8 @@ export default {
         this.showVerifyRW = false
         this.dataInfo.show = true
         this.dataInfo.info = 'Verifikasi akun RW telah berhasil dilakukan.'
-        this.dataInfo.message = 'Email terkait informasi verifikasi telah dikirimkan ke email akun RW bersangkutan.'
+        this.dataInfo.message =
+          'Email terkait informasi verifikasi telah dikirimkan ke email akun RW bersangkutan.'
       } catch (error) {
         this.showVerifyRW = false
         this.dataInfo.show = true
@@ -328,29 +341,17 @@ export default {
 </script>
 
 <style scoped>
-  .jds-data-table:deep {
-    border-spacing: 1px !important;
-    @apply !bg-[#EDEFF3];
-  }
+.jds-data-table:deep {
+  border-spacing: 1px !important;
+  @apply !bg-[#EDEFF3];
+}
 
-  .jds-data-table:deep tr th {
-    @apply min-w-[170px] border-r border-white;
-  }
+.jds-data-table:deep tr th {
+  @apply min-w-[170px] border-r border-white;
+}
 
-  .jds-data-table:deep tr td {
-    @apply min-w-[170px] border-r border-gray-200;
-  }
-
-  .table-content::-webkit-scrollbar{
-    @apply w-5 h-5;
-  }
-
-  .table-content::-webkit-scrollbar-track {
-    @apply bg-gray-50 rounded-b-lg border-none;
-  }
-
-  .table-content::-webkit-scrollbar-thumb {
-    @apply bg-gray-300 rounded-xl border-solid border-[6px] border-transparent bg-clip-content;
-  }
+.jds-data-table:deep tr td {
+  @apply min-w-[170px] border-r border-gray-200;
+}
 
 </style>

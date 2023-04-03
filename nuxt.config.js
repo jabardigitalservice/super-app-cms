@@ -15,7 +15,15 @@ export default {
       { name: 'format-detection', content: 'telephone=no' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.png' }
+    ],
+    script: [
+      {
+        src: '/newrelic-browser-script.js',
+        'data-account-id': `${process.env.ACCOUNT_ID_NEW_RELIC}`,
+        'data-browser-license-key': `${process.env.LICENSE_KEY_NEW_RELIC_ACCOUNT}`,
+        'data-application-id': `${process.env.APPLICATION_ID_NEW_RELIC}`
+      }
     ]
   },
 
@@ -27,7 +35,9 @@ export default {
   plugins: [
     { src: '~/plugins/jds-design-system.js' },
     // plugin axios
-    '~/plugins/axios'
+    '~/plugins/axios',
+    '~/plugins/vue-gtag.js',
+    '~/plugins/vee-validate.js'
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -42,7 +52,6 @@ export default {
     '@nuxtjs/google-fonts',
     '@nuxtjs/svg'
   ],
-
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     // https://go.nuxtjs.dev/axios
@@ -76,11 +85,12 @@ export default {
         scope: ['openid', 'profile', 'offline_access'],
         codeChallengeMethod: 'S256'
       }
-    }
+    },
+    plugins: ['~/plugins/get-roles.js']
   },
 
   router: {
-    middleware: ['auth']
+    middleware: ['auth', 'guardRoutes']
   },
 
   googleFonts: {
@@ -115,7 +125,9 @@ export default {
     keyclockBaseUrl: process.env.KEYCLOCK_BASE_URL,
     axios: {
       browserBaseURL: process.env.BROWSER_BASE_URL + '/' + process.env.VERSION_ENDPOINT
-    }
+    },
+    googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID,
+    tinymceApiKey: process.env.TINYMCE_API_KEY
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -127,7 +139,8 @@ export default {
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
     transpile: [
-      '@jabardigitalservice/jds-design-system'
+      '@jabardigitalservice/jds-design-system',
+      'vee-validate/dist/rules'
     ]
   }
 }

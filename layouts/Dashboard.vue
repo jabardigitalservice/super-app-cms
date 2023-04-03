@@ -1,9 +1,15 @@
 <template>
   <div>
-    <div class="bg-[#EDEFF3]">
-      <Sidebar class="bg-white w-min-[260px] fixed left-0 top-0 h-screen z-10" />
-      <div class="ml-[260px] p-6 h-screen">
-        <Nuxt />
+    <div class="flex bg-[#EDEFF3]">
+      <Sidebar class="fixed left-0 top-0 z-10 h-screen bg-white" />
+      <div class="h-full w-full p-6">
+        <div class="mx-10">
+          <BaseHeader
+            :navigations="$store.state.header.navigations"
+            :description-page="$store.state.header.descriptionPage"
+          />
+          <Nuxt />
+        </div>
       </div>
     </div>
   </div>
