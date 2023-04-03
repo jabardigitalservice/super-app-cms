@@ -170,7 +170,6 @@ export default {
     query: {
       deep: true,
       handler () {
-        console.log(this.query)
         this.$fetch()
       }
     }
