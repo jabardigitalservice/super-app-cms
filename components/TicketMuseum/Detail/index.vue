@@ -11,20 +11,20 @@
           Kembali
         </div>
       </jds-button>
-      <div class="flex">
+      <div v-if="ticketStatus[`${dataDetailTicket?.status}`] === ticketStatus.confirmed" class="flex">
         <div class="mr-3">
           <jds-button
             label="Tolak"
             variant="secondary"
             class="!h-[38px] !border-red-400 !py-1 !text-[14px] !font-bold !text-red-400"
-            @click="showRejectTicketHandle(dataDetail)"
+            @click="showRejectTicketHandle(dataDetailTicket)"
           />
         </div>
         <jds-button
           label="Verifikasi"
           variant="primary"
           class="!h-[38px] !py-1 !text-[14px] !font-bold"
-          @click="showVerificationTicketHandle(dataDetail)"
+          @click="showVerificationTicketHandle(dataDetailTicket)"
         />
       </div>
     </div>
@@ -45,34 +45,40 @@
               <td class="w-1/4">
                 <strong>Invoice</strong>
               </td>
-              <td>{{ dataDetail?.invoice || "-" }}</td>
+              <td>{{ dataDetailTicket?.invoice || "-" }}</td>
             </tr>
             <tr>
               <td>
                 <strong>Sesi</strong>
               </td>
               <td>
-                {{ dataDetail?.sessionName || "-" }} Jam
-                {{ dataDetail?.sessionHour || "-" }}
+                {{ dataDetailTicket?.sessionName || "-" }} Jam
+                {{ dataDetailTicket?.sessionHour || "-" }}
               </td>
             </tr>
             <tr>
               <td>
                 <strong>Tanggal Reservasi</strong>
               </td>
-              <td>{{ dataDetail?.reservationDate || "-" }}</td>
+              <td>{{ dataDetailTicket?.reservationDate || "-" }}</td>
             </tr>
             <tr>
               <td>
                 <strong>Jumlah Tiket</strong>
               </td>
-              <td>{{ dataDetail?.ticketCount || "-" }}</td>
+              <td>{{ dataDetailTicket?.ticketCount || "-" }}</td>
             </tr>
             <tr>
               <td>
                 <strong>Jumlah Pembayaran</strong>
               </td>
-              <td>{{ dataDetail?.amount || "-" }}</td>
+              <td>{{ dataDetailTicket?.amount || "-" }}</td>
+            </tr>
+            <tr>
+              <td>
+                <strong>Pembayaran Melalui</strong>
+              </td>
+              <td>{{ dataDetailTicket?.paymentName || "-" }}</td>
             </tr>
             <tr>
               <td>
@@ -81,13 +87,15 @@
               <td>
                 <div class="flex items-center">
                   <div
-                    v-show="dataDetail?.status"
+                    v-show="dataDetailTicket?.status"
                     class="mr-2 h-2 w-2 rounded-full"
                     :class="
-                      getColorIconStatus(ticketStatus[`${dataDetail?.status}`])
+                      getColorIconStatus(
+                        ticketStatus[`${dataDetailTicket?.status}`]
+                      )
                     "
                   />
-                  {{ ticketStatus[`${dataDetail?.status}`] }}
+                  {{ ticketStatus[`${dataDetailTicket?.status}`] }}
                 </div>
               </td>
             </tr>
@@ -95,7 +103,7 @@
               <td>
                 <strong>Tanggal Pemesanan</strong>
               </td>
-              <td>{{ dataDetail?.orderedAt || "-" }}</td>
+              <td>{{ dataDetailTicket?.orderedAt || "-" }}</td>
             </tr>
             <tr>
               <td>
@@ -104,7 +112,7 @@
               <td>
                 <button
                   class="rounded-lg border border-green-700 px-4 py-1 text-green-700 hover:bg-green-50"
-                  @click="onClickDocument(dataDetail?.fileId)"
+                  @click="onClickDocument(dataDetailTicket?.fileId)"
                 >
                   Lihat Bukti Pembayaran
                 </button>
@@ -112,12 +120,27 @@
             </tr>
           </BaseTableDetail>
 
-          <BaseTableDetail header="Informasi Tiket" class="mb-4">
-            <tr v-for="infoTicket in dataDetail?.tickets" :key="infoTicket.id">
+          <BaseTableDetail
+            v-for="infoTicket in dataDetailTicket?.tickets"
+            :key="infoTicket.id"
+            :header="`Informasi Tiket ${infoTicket.name}`"
+            class="mb-4"
+          >
+            <tr>
               <td class="w-1/4">
-                <strong> Ticket {{ infoTicket.name }}</strong>
+                <strong>Jumlah Tiket</strong>
               </td>
-              <td>{{ infoTicket?.ticketNumber || 0 }}</td>
+              <td>
+                {{ infoTicket?.quantity || 0 }} Orang
+              </td>
+            </tr>
+            <tr>
+              <td class="w-1/4">
+                <strong>Total Harga </strong>
+              </td>
+              <td>
+                {{ priceTicket(infoTicket?.price || 0) }}
+              </td>
             </tr>
           </BaseTableDetail>
         </div>
@@ -143,6 +166,7 @@
 import ArrowLeft from '~/assets/icon/arrow-left.svg?inline'
 import { ticketStatus } from '~/constant/tiket-museum'
 import popup from '~/mixins/tiket-museum'
+import { convertToRupiah } from '~/utils'
 export default {
   name: 'TicketMuseumDetail',
   components: {
@@ -150,7 +174,7 @@ export default {
   },
   mixins: [popup],
   props: {
-    dataDetail: {
+    dataDetailTicket: {
       type: Object,
       default: () => {}
     }
@@ -166,7 +190,11 @@ export default {
       }
     }
   },
+
   methods: {
+    priceTicket (price) {
+      return convertToRupiah(price)
+    },
     goToBackHandle () {
       this.$router.push('/ticket-museum')
     },

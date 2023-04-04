@@ -7,7 +7,7 @@ export const headerTicketMuseum = [
   {
     key: 'invoice',
     text: 'ID Pembayaran',
-    sortable: false
+    sortable: true
   },
   {
     key: 'amount',
@@ -17,7 +17,7 @@ export const headerTicketMuseum = [
   {
     key: 'sessionName',
     text: 'sesi',
-    sortable: true
+    sortable: false
   },
   {
     key: 'reservationDate',
@@ -73,7 +73,7 @@ export const rejectConfirmationPopup = {
 export const rejectInformationPopup = {
   title: 'Tolak Tiket',
   successInformation: {
-    descriptionText: 'Tiket ',
+    descriptionText: 'Tiket berhasil ditolak',
     dialogType: 'information',
     buttonRight: {
       label: 'Saya mengerti',
