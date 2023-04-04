@@ -76,7 +76,13 @@
             </tr>
             <tr>
               <td>
-                <strong>Pembayaran Melalui</strong>
+                <strong>Unique Number</strong>
+              </td>
+              <td>{{ dataDetailTicket?.uniqueNumber || "-" }}</td>
+            </tr>
+            <tr>
+              <td>
+                <strong>Pembayaran Dengan</strong>
               </td>
               <td>{{ dataDetailTicket?.paymentName || "-" }}</td>
             </tr>
