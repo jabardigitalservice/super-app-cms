@@ -63,8 +63,9 @@ const masterDataMenu =
 
 const menu = [mainMenu,
   messageNotifMenu,
-  masterDataMenu,
-  tiketMuseumMenu]
+  tiketMuseumMenu,
+  masterDataMenu
+]
 
 export {
   menu
