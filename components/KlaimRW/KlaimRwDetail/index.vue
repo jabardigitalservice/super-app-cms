@@ -227,7 +227,7 @@
       @close="closeInformationDialogHandle"
     />
 
-    <BasePopupDragAndDropFile
+    <!-- <BasePopupDragAndDropFile
       :show-popup="documentEdit.showDialog"
       :detail-drag-and-drop="DragAndDropComponentInformation"
       :api-update-file="`/user/rw/${detail?.id}`"
@@ -252,7 +252,13 @@
           </div>
         </div>
       </template>
-    </BasePopupDragAndDropFile>
+    </BasePopupDragAndDropFile> -->
+
+    <BaseDialogDragAndDropFile
+      :show-popup="documentEdit.showDialog"
+      :detail-drag-and-drop="DragAndDropComponentInformation"
+      @close="closeEditDialogHandle"
+    />
   </div>
 </template>
 
@@ -303,14 +309,14 @@ export default {
           'Ukuran file dokumen SK tidak boleh melebihi 2 MB.',
         informationFormatCompatible:
           'Hanya file yang berformat PDF/JPG/JPEG/PNG yang dapat diupload.',
-        infromationSuccess: {
-          info: 'Edit Dokumen SK RW telah berhasil dilakukan.',
-          message: 'Silahkan cek kembali Dokumen SK yang diganti.'
-        },
-        informationError: {
-          info: 'Gagal Edit Dokumen SK',
-          message: ''
-        },
+        // infromationSuccess: {
+        //   info: 'Edit Dokumen SK RW telah berhasil dilakukan.',
+        //   message: 'Silahkan cek kembali Dokumen SK yang diganti.'
+        // },
+        // informationError: {
+        //   info: 'Gagal Edit Dokumen SK',
+        //   message: ''
+        // },
         formatTypeFile: [
           'image/jpeg',
           'image/png',
