@@ -57,10 +57,10 @@
           </div>
 
           <div class="flex flex-row">
-            <BaseButton class="w-4" @click="resetDataEditSK">
+            <BaseButton class="w-4" @click="resetDataFile">
               <TrashIcon class="h-4 w-4" />
             </BaseButton>
-            <BaseButton class="w-4" @click="previewFileSK">
+            <BaseButton class="w-4" @click="previewFile">
               <EyesIcon v-if="!proggresBarIsSuccess" class="h-4 w-4" />
             </BaseButton>
           </div>
@@ -112,11 +112,11 @@ export default {
     detailDragAndDrop: {
       type: Object,
       default: () => {}
+    },
+    autoDecree: {
+      type: Boolean,
+      default: false
     }
-    // apiUpdateFile: {
-    //   type: String,
-    //   default: ''
-    // }
   },
   data () {
     return {
@@ -151,6 +151,10 @@ export default {
         this.convertFileToBase64(this.files)
         this.runProgressBar()
         this.checkFileValidation()
+        this.dataFiles.fileCorrect = this.fileIsCorrect
+        const imageFile = { ...this.dataFiles }
+        imageFile.data = this.dataFiles.data
+        this.$store.commit('setDataImage', JSON.parse(JSON.stringify(this.dataFiles)))
       }
     },
     dragover (e) {
@@ -208,7 +212,7 @@ export default {
         this.percentageProggres++
       }
     },
-    resetDataEditSK () {
+    resetDataFile () {
       this.percentageProggres = 0
       this.proggresBarIsSuccess = false
       this.fileInputIsChange = false
@@ -216,64 +220,26 @@ export default {
       this.decreeFile = ''
       this.fileIsCorrect = false
       this.disabledButton = true
+      this.$emit('disabled-button', this.disabledButton)
+      this.$store.commit('setDataImage', {})
     },
-    previewFileSK () {
-      this.$emit('preview-file', this.dataFiles)
+    previewFile () {
+      this.$emit('preview-file')
     },
     convertFileToBase64 (FileObject) {
       const reader = new FileReader()
-
       reader.onload = () => {
         this.dataFiles.data = reader.result.split(',')[1]
+        this.$store.commit('setDataImage', { ...this.dataFiles })
       }
       reader.readAsDataURL(FileObject)
     },
-    // closeEdit () {
-    //   this.$emit('close')
-    //   this.resetDataEditSK()
-    // },
-    // async submitEditFileSK () {
-    //   this.checkFileValidation()
-
-    //   if (this.fileIsCorrect) {
-    //     try {
-    //       const response = await this.$axios.post(
-    //         '/file/upload',
-    //         this.dataFiles
-    //       )
-    //       if (response.data.status) {
-    //         this.decreeFile = response.data.data.id
-    //         this.updateFileDecreeSK()
-    //       }
-    //     } catch {
-    //       this.$emit(
-    //         'submit-edit-file',
-    //         this.detailDragAndDrop.informationError
-    //       )
-    //     }
-    //   }
-    // },
-    // async updateFileDecreeSK () {
-    //   try {
-    //     const response = await this.$axios.patch(this.apiUpdateFile, {
-    //       decree: this.decreeFile
-    //     })
-    //     if (response.data.status) {
-    //       this.resetDataEditSK()
-    //       this.$emit(
-    //         'submit-edit-file',
-    //         this.detailDragAndDrop.infromationSuccess
-    //       )
-    //     }
-    //   } catch {
-    //     this.$emit('submit-edit-file', this.detailDragAndDrop.informationError)
-    //   }
-    // },
     checkFileValidation () {
       if (this.files) {
         if (this.FileSizeIsCompatible() && this.FormatFileIsCompatible()) {
           this.fileIsCorrect = true
           this.disabledButton = false
+          this.$emit('disabled-button', this.disabledButton)
         } else {
           this.fileIsCorrect = false
         }
