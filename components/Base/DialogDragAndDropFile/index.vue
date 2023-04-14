@@ -15,8 +15,10 @@
       :detail-drag-and-drop="detailDragAndDrop"
       :auto-decree="true"
       @disabled-button="changeDisabeButton"
+      @get-decree-file="getDecreeFile"
       @preview-file="previewFile"
     />
+    <slot name="footer" />
   </BaseDialog>
 </template>
 
@@ -55,24 +57,17 @@ export default {
       this.$emit('preview-file')
     },
     async submitFile () {
-      if (this.$store.state.dataImage.fileCorrect) {
-        try {
-          const response = await this.$axios.post('/file/upload', {
-            ...this.$store.state.dataImage
-          })
-          if (response.data.status) {
-            this.decreeFile = response.data.data.id
-            this.updateFileDecreeSK()
-          }
-        } catch {
-          this.$emit(
-            'submit-edit-file',
-            this.detailDragAndDrop.informationError
-          )
-        }
+      await this.$refs.BaseDragAndDropFile.uploadFile()
+    },
+    getDecreeFile (decreeFile) {
+      if (decreeFile === 'error') {
+        this.$emit('submit-edit-file', this.detailDragAndDrop.informationError)
+      } else {
+        this.decreeFile = decreeFile
+        this.updateFileDecree()
       }
     },
-    async updateFileDecreeSK () {
+    async updateFileDecree () {
       try {
         const response = await this.$axios.patch(this.apiUpdateFile, {
           decree: this.decreeFile
@@ -83,6 +78,7 @@ export default {
             this.detailDragAndDrop.infromationSuccess
           )
           this.$refs.BaseDragAndDropFile.resetDataFile()
+          this.decreeFile = ''
         }
       } catch (error) {
         this.$emit('submit-edit-file', this.detailDragAndDrop.informationError)

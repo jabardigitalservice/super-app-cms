@@ -154,7 +154,10 @@ export default {
         this.dataFiles.fileCorrect = this.fileIsCorrect
         const imageFile = { ...this.dataFiles }
         imageFile.data = this.dataFiles.data
-        this.$store.commit('setDataImage', JSON.parse(JSON.stringify(this.dataFiles)))
+        this.$store.commit(
+          'setDataImage',
+          JSON.parse(JSON.stringify(this.dataFiles))
+        )
       }
     },
     dragover (e) {
@@ -252,6 +255,24 @@ export default {
     },
     FormatFileIsCompatible () {
       return this.detailDragAndDrop.formatTypeFile.includes(this.files.type)
+    },
+    async uploadFile () {
+      this.checkFileValidation()
+
+      if (this.fileIsCorrect) {
+        try {
+          const response = await this.$axios.post(
+            '/file/upload',
+            this.dataFiles
+          )
+          if (response.data.status) {
+            this.decreeFile = response.data.data.id
+            this.$emit('get-decree-file', this.decreeFile)
+          }
+        } catch {
+          this.$emit('get-decree-file', 'error')
+        }
+      }
     }
   }
 }
