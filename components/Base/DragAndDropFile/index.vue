@@ -1,15 +1,16 @@
 <template>
-  <div class="py-[16px] font-lato text-gray-800">
+  <div class="font-lato text-gray-800">
     <slot name="header" />
 
     <div class="mt-2 flex w-full items-center justify-center">
       <div
         v-if="fileInputIsChange"
-        class="flex h-40 w-full flex-col justify-center rounded-lg border-2 border-dashed px-4"
-        :class="
+        class="flex w-full flex-col justify-center rounded-lg border-2 border-dashed px-4"
+
+        :class="[
           fileIsCorrect
             ? 'border-green-300 bg-green-50'
-            : 'border-red-300 bg-red-50'
+            : 'border-red-300 bg-red-50',heightDragAndDrop]
         "
       >
         <div class="mb-3 flex items-center justify-center">
@@ -60,7 +61,7 @@
             <BaseButton class="w-4" @click="resetDataFile">
               <TrashIcon class="h-4 w-4" />
             </BaseButton>
-            <BaseButton class="w-4" @click="previewFile">
+            <BaseButton class="w-4" @click.prevent="previewFile">
               <EyesIcon v-if="!proggresBarIsSuccess" class="h-4 w-4" />
             </BaseButton>
           </div>
@@ -68,8 +69,9 @@
       </div>
       <label
         v-else
+        :class="heightDragAndDrop"
         for="drag-and-drop-file"
-        class="flex h-40 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 px-4 hover:bg-gray-200"
+        class="flex w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 px-4 hover:bg-gray-200"
         @dragover="dragover"
         @dragleave="dragleave"
         @drop="drop"
@@ -113,9 +115,9 @@ export default {
       type: Object,
       default: () => {}
     },
-    autoDecree: {
-      type: Boolean,
-      default: false
+    heightDragAndDrop: {
+      type: String,
+      default: 'h-40'
     }
   },
   data () {
@@ -123,7 +125,7 @@ export default {
       files: '',
       dataFiles: {
         name: '',
-        isConfidental: true,
+        isConfidental: false,
         mimeType: '',
         roles: ['admin', 'rw'],
         data: '',
@@ -134,7 +136,7 @@ export default {
       percentageProggres: 0,
       intervalPercentage: '',
       formatSizeFile: ['Bytes', 'KB', 'MB', 'GB', 'TB'],
-      decreeFile: '',
+      responseImage: '',
       fileIsCorrect: false,
       disabledButton: true
     }
@@ -220,7 +222,7 @@ export default {
       this.proggresBarIsSuccess = false
       this.fileInputIsChange = false
       this.files = ''
-      this.decreeFile = ''
+      this.responseImage = ''
       this.fileIsCorrect = false
       this.disabledButton = true
       this.$emit('disabled-button', this.disabledButton)
@@ -261,13 +263,14 @@ export default {
 
       if (this.fileIsCorrect) {
         try {
-          const response = await this.$axios.post(
-            '/file/upload',
-            this.dataFiles
-          )
+          let response = {}
+          response = await this.$axios.post('/file/upload', {
+            ...this.dataFiles
+          })
+
           if (response.data.status) {
-            this.decreeFile = response.data.data.id
-            this.$emit('get-decree-file', this.decreeFile)
+            this.responseImage = response.data.data
+            this.$emit('get-decree-file', this.responseImage)
           }
         } catch {
           this.$emit('get-decree-file', 'error')

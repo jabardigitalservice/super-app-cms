@@ -13,9 +13,8 @@
     <BaseDragAndDropFile
       ref="BaseDragAndDropFile"
       :detail-drag-and-drop="detailDragAndDrop"
-      :auto-decree="true"
       @disabled-button="changeDisabeButton"
-      @get-decree-file="getDecreeFile"
+      @get-decree-file="getResponseImage"
       @preview-file="previewFile"
     />
     <slot name="footer" />
@@ -59,11 +58,11 @@ export default {
     async submitFile () {
       await this.$refs.BaseDragAndDropFile.uploadFile()
     },
-    getDecreeFile (decreeFile) {
-      if (decreeFile === 'error') {
+    getResponseImage (responseImage) {
+      if (responseImage === 'error') {
         this.$emit('submit-edit-file', this.detailDragAndDrop.informationError)
       } else {
-        this.decreeFile = decreeFile
+        this.decreeFile = responseImage.id
         this.updateFileDecree()
       }
     },
