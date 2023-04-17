@@ -313,6 +313,7 @@ export default {
         this.dataDetail.id = response.data.data.id
         this.isInformationPopup = true
         this.showPopupConfirmationInformation = !this.isPublished
+        this.$refs.BaseDragAndDropFile.resetDataFile()
       } catch (error) {
         this.isError = true
       } finally {
