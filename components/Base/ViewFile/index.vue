@@ -8,16 +8,16 @@
         <h1
           class="px-4 pt-4 font-roboto text-[21px] font-medium text-green-700"
         >
-          {{ title }} {{ file.meta }}
+          {{ title }}
         </h1>
         <div
-          v-if="file === 'loading'"
+          v-if="file === 'loading' && fileDocument !== ''"
           class="flex items-center justify-center p-4"
         >
           <jds-spinner size="72px" />
         </div>
         <div
-          v-else-if="file !== 'loading'"
+          v-else-if="file !== 'loading' && fileDocument !== ''"
           class="max-h-[calc(100vh-64px-120px)]"
           :class="
             mimeType === 'application/pdf' ? 'overflow-scroll' : 'overflow-auto'
@@ -72,7 +72,7 @@ export default {
       type: String,
       default: ''
     },
-    urlPath: {
+    withUrlPath: {
       type: Boolean,
       default: false
     }
@@ -80,8 +80,8 @@ export default {
   },
   computed: {
     fileDocument () {
-      if (this.urlPath) {
-        return this.file
+      if (this.withUrlPath) {
+        return this.file ? this.file : ''
       } else {
         return this.file ? base64ToBlobUrl(this.file, this.mimeType) : ''
       }

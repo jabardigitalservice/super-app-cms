@@ -273,6 +273,7 @@ export default {
             this.$emit('get-decree-file', this.responseImage)
           }
         } catch {
+          this.resetDataFile()
           this.$emit('get-decree-file', 'error')
         }
       }
