@@ -1,13 +1,16 @@
 <template>
   <div class="font-lato text-gray-800">
+    <slot name="header" />
+
     <div class="mt-2 flex w-full items-center justify-center">
       <div
         v-if="fileInputIsChange"
-        class="flex h-[226px] w-full flex-col justify-center rounded-lg border-2 border-dashed px-4"
-        :class="
+        class="flex w-full flex-col justify-center rounded-lg border-2 border-dashed px-4"
+
+        :class="[
           fileIsCorrect
             ? 'border-green-300 bg-green-50'
-            : 'border-red-300 bg-red-50'
+            : 'border-red-300 bg-red-50',heightDragAndDrop]
         "
       >
         <div class="mb-3 flex items-center justify-center">
@@ -43,31 +46,32 @@
               v-if="!FileSizeIsCompatible()"
               class="font-lato text-[11px] font-bold text-red-600"
             >
-              Ukuran file tidak boleh melebihi 2 MB.
+              {{ detailDragAndDrop.informationSizeCompatible }}
             </p>
 
             <p
               v-if="!FormatFileIsCompatible()"
               class="font-lato text-[11px] font-bold text-red-600"
             >
-              Hanya file yang berformat JPG/JPEG/PNG yang dapat diupload.
+              {{ detailDragAndDrop.informationFormatCompatible }}.
             </p>
           </div>
 
           <div class="flex flex-row">
-            <BaseButton class="w-4" @click="resetFile">
+            <BaseButton class="w-4" @click="resetDataFile">
               <TrashIcon class="h-4 w-4" />
             </BaseButton>
-            <BaseButton class="w-5">
-              <EyesIcon v-if="!proggresBarIsSuccess" class="h-4 w-4" @click.prevent="previewFile" />
+            <BaseButton class="w-4" @click.prevent="previewFile">
+              <EyesIcon v-if="!proggresBarIsSuccess" class="h-4 w-4" />
             </BaseButton>
           </div>
         </div>
       </div>
       <label
         v-else
+        :class="heightDragAndDrop"
         for="drag-and-drop-file"
-        class="flex h-[226px] w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-[#FEFEFE] px-4 hover:bg-gray-200"
+        class="flex w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 px-4 hover:bg-gray-200"
         @dragover="dragover"
         @dragleave="dragleave"
         @drop="drop"
@@ -83,10 +87,9 @@
         <input
           id="drag-and-drop-file"
           ref="file"
-          :v-model="value"
           type="file"
           class="hidden"
-          accept=".jpg,.jpeg,.png"
+          :accept="detailDragAndDrop.acceptFile"
           @change="onChangeUpload"
         >
       </label>
@@ -100,7 +103,7 @@ import DokumenIcon from '~/assets/icon/document.svg?inline'
 import TrashIcon from '~/assets/icon/trash.svg?inline'
 import EyesIcon from '~/assets/icon/eyes.svg?inline'
 export default {
-  name: 'EditDocument',
+  name: 'BaseDragAndDropFile',
   components: {
     UploadIcon,
     DokumenIcon,
@@ -108,13 +111,13 @@ export default {
     EyesIcon
   },
   props: {
-    showPopup: {
-      type: Boolean,
-      default: false
-    },
-    value: {
+    detailDragAndDrop: {
       type: Object,
       default: () => {}
+    },
+    heightDragAndDrop: {
+      type: String,
+      default: 'h-40'
     }
   },
   data () {
@@ -122,7 +125,7 @@ export default {
       files: '',
       dataFiles: {
         name: '',
-        isConfidental: true,
+        isConfidental: false,
         mimeType: '',
         roles: ['admin', 'rw'],
         data: '',
@@ -133,14 +136,9 @@ export default {
       percentageProggres: 0,
       intervalPercentage: '',
       formatSizeFile: ['Bytes', 'KB', 'MB', 'GB', 'TB'],
-      formatTypeFile: [
-        'image/jpeg',
-        'image/png',
-        'image/jpg'
-      ],
-      maxSizeFile: 2097152,
-      decreeFile: '',
-      fileIsCorrect: false
+      responseImage: '',
+      fileIsCorrect: false,
+      disabledButton: true
     }
   },
   methods: {
@@ -149,16 +147,19 @@ export default {
         this.files = this.$refs.file.files[0]
         this.dataFiles.name = this.files.name
         this.dataFiles.mimeType = this.files.type
+
         this.dataFiles.fileSize = this.convertSize(this.files.size)
         this.fileInputIsChange = true
-        this.dataFiles.imageUrl = URL.createObjectURL(this.files)
-        this.runProgressBar()
         this.convertFileToBase64(this.files)
+        this.runProgressBar()
         this.checkFileValidation()
         this.dataFiles.fileCorrect = this.fileIsCorrect
         const imageFile = { ...this.dataFiles }
         imageFile.data = this.dataFiles.data
-        this.$store.commit('setDataImage', JSON.parse(JSON.stringify(this.dataFiles)))
+        this.$store.commit(
+          'setDataImage',
+          JSON.parse(JSON.stringify(this.dataFiles))
+        )
       }
     },
     dragover (e) {
@@ -216,17 +217,19 @@ export default {
         this.percentageProggres++
       }
     },
-    resetFile () {
+    resetDataFile () {
       this.percentageProggres = 0
       this.proggresBarIsSuccess = false
       this.fileInputIsChange = false
       this.files = ''
-      this.decreeFile = ''
+      this.responseImage = ''
       this.fileIsCorrect = false
       this.disabledButton = true
+      this.$emit('disabled-button', this.disabledButton)
+      this.$store.commit('setDataImage', {})
     },
     previewFile () {
-      this.$emit('preview-file', this.dataFiles)
+      this.$emit('preview-file')
     },
     convertFileToBase64 (FileObject) {
       const reader = new FileReader()
@@ -241,6 +244,7 @@ export default {
         if (this.FileSizeIsCompatible() && this.FormatFileIsCompatible()) {
           this.fileIsCorrect = true
           this.disabledButton = false
+          this.$emit('disabled-button', this.disabledButton)
         } else {
           this.fileIsCorrect = false
         }
@@ -249,10 +253,30 @@ export default {
       }
     },
     FileSizeIsCompatible () {
-      return this.files.size <= this.maxSizeFile
+      return this.files.size <= this.detailDragAndDrop.maxSizeFile
     },
     FormatFileIsCompatible () {
-      return this.formatTypeFile.includes(this.files.type)
+      return this.detailDragAndDrop.formatTypeFile.includes(this.files.type)
+    },
+    async uploadFile () {
+      this.checkFileValidation()
+
+      if (this.fileIsCorrect) {
+        try {
+          let response = {}
+          response = await this.$axios.post('/file/upload', {
+            ...this.dataFiles
+          })
+
+          if (response.data.status) {
+            this.responseImage = response.data.data
+            this.$emit('get-decree-file', this.responseImage)
+          }
+        } catch {
+          this.resetDataFile()
+          this.$emit('get-decree-file', 'error')
+        }
+      }
     }
   }
 }

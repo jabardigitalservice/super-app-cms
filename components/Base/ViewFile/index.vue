@@ -4,20 +4,20 @@
       v-if="show"
       class="fixed inset-0 z-50 flex h-screen w-screen items-center justify-center bg-black bg-opacity-75"
     >
-      <div class="flex min-h-min w-[800px] flex-col gap-4 rounded-lg bg-white">
+      <div class="flex min-h-min min-w-[300px] w-[800px] flex-col gap-4 rounded-lg bg-white">
         <h1
           class="px-4 pt-4 font-roboto text-[21px] font-medium text-green-700"
         >
-          {{ title }} {{ file.meta }}
+          {{ title }}
         </h1>
         <div
-          v-if="file === 'loading'"
+          v-if="file === 'loading' && fileDocument !== ''"
           class="flex items-center justify-center p-4"
         >
           <jds-spinner size="72px" />
         </div>
         <div
-          v-else-if="file !== 'loading'"
+          v-else-if="file !== 'loading' && fileDocument !== ''"
           class="max-h-[calc(100vh-64px-120px)]"
           :class="
             mimeType === 'application/pdf' ? 'overflow-scroll' : 'overflow-auto'
@@ -26,10 +26,10 @@
           <iframe
             v-if="mimeType === 'application/pdf'"
             :src="fileDocument"
-            class="min-h-[600px] w-full"
+            class="w-full min-h-[600px]"
           />
 
-          <img v-else :src="fileDocument" class="min-h-[600px] w-full">
+          <img v-else :src="fileDocument" class="w-full">
         </div>
         <div v-else class="px-4">
           Tidak ada data
@@ -48,22 +48,22 @@ export default {
   name: 'BaseViewFile',
   props: {
     /**
-       * make modal visible or not
-       */
+     * make modal visible or not
+     */
     show: {
       type: Boolean,
       default: false
     },
     /**
-       * title modal
-       */
+     * title modal
+     */
     title: {
       type: String,
       default: ''
     },
     /**
-       * data base64 encoded pdf
-       */
+     * data base64 encoded pdf
+     */
     file: {
       type: String,
       default: ''
@@ -71,11 +71,20 @@ export default {
     mimeType: {
       type: String,
       default: ''
+    },
+    withUrlPath: {
+      type: Boolean,
+      default: false
     }
+
   },
   computed: {
     fileDocument () {
-      return this.file ? base64ToBlobUrl(this.file, this.mimeType) : ''
+      if (this.withUrlPath) {
+        return this.file ? this.file : ''
+      } else {
+        return this.file ? base64ToBlobUrl(this.file, this.mimeType) : ''
+      }
     }
   },
   methods: {

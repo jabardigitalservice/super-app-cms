@@ -227,13 +227,13 @@
       @close="closeInformationDialogHandle"
     />
 
-    <BasePopupDragAndDropFile
+    <BaseDialogDragAndDropFile
+      :api-update-file="`/user/rw/${detail?.id}`"
       :show-popup="documentEdit.showDialog"
       :detail-drag-and-drop="DragAndDropComponentInformation"
-      :api-update-file="`/user/rw/${detail?.id}`"
-      @preview-file="previewFile"
-      @submit-edit-file="informationEditSk"
       @close="closeEditDialogHandle"
+      @submit-edit-file="informationEditSk"
+      @preview-file="previewFile"
     >
       <template #header>
         <p class="font-lato text-[14px] text-gray-800">
@@ -252,7 +252,7 @@
           </div>
         </div>
       </template>
-    </BasePopupDragAndDropFile>
+    </BaseDialogDragAndDropFile>
   </div>
 </template>
 
@@ -425,11 +425,11 @@ export default {
     editDocumentHandle () {
       this.documentEdit.showDialog = true
     },
-    previewFile (file) {
+    previewFile () {
       this.documentDialog.showDialog = true
       this.documentDialog.fileId = 'loading'
-      this.documentDialog.fileId = file.data
-      this.documentDialog.mimeType = file.mimeType
+      this.documentDialog.fileId = this.$store.state.dataImage.data
+      this.documentDialog.mimeType = this.$store.state.dataImage.mimeType
     },
     closeEditDialogHandle () {
       this.documentEdit.showDialog = false
