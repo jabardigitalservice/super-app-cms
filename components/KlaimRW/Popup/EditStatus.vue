@@ -1,31 +1,34 @@
 <template>
-  <BaseDialog
-    title="Edit Status Akun RW"
-    :show-popup="showPopup"
-    label-button="Simpan"
-    dialog-type="confirmation"
-    @submit="editStatusHandle"
-    @close="closeHandle"
-  >
-    <div class="mt-6">
-      <p class="text-[14px] font-lato text-gray-800">
-        Nama
-      </p>
-      <p class="text-[16px] font-lato text-gray-800 font-bold">
-        <strong>{{ accountName }}</strong>
-      </p>
-      <form class="py-4 select__form" :class="{'mb-4':errorMessage!==''}">
-        <jds-select
-          placeholder="Pilih status"
-          label="Status Akun RW"
-          :options="statusOptions"
-          :value="getValueStatusRw"
-          :error-message="errorMessage"
-          @change="getStatusFromSelect"
-        />
-      </form>
-    </div>
-  </BaseDialog>
+  <BaseCustomPopup title="Edit Status Akun RW" :show-popup="showPopup">
+    <template #body-popup>
+      <div class="mt-6 px-6">
+        <p class="text-[14px] font-lato text-gray-800">
+          Nama
+        </p>
+        <p class="text-[16px] font-lato text-gray-800 font-bold">
+          <strong>{{ accountName }}</strong>
+        </p>
+        <form class="py-4 select__form" :class="{'mb-4':errorMessage!==''}">
+          <jds-select
+            placeholder="Pilih status"
+            label="Status Akun RW"
+            :options="statusOptions"
+            :value="getValueStatusRw"
+            :error-message="errorMessage"
+            @change="getStatusFromSelect"
+          />
+        </form>
+      </div>
+    </template>
+    <template #footer-popup>
+      <div class="h-fit flex justify-end bg-gray-50">
+        <div class="mr-[16px]">
+          <jds-button label="Batal" variant="secondary" class="!text-sm !font-lato !font-bold" @click="$emit('close')" />
+        </div>
+        <jds-button label="Simpan" variant="primary" class="!text-sm !font-lato !font-bold" @click="editStatusHandle" />
+      </div>
+    </template>
+  </BaseCustomPopup>
 </template>
 <script>
 import { userStatus } from '~/constant/klaim-rw'
