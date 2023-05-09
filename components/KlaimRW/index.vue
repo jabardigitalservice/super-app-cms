@@ -60,7 +60,7 @@
           <KlaimRWTableAction
             :status="item.rwStatus"
             @detail="$router.push(`/detail/${item.id}`)"
-            @verify="verifyUser(item)"
+            @verify="showVerifyPopupHandle(item)"
             @reject="rejectUser(item)"
           />
         </template>
@@ -76,8 +76,8 @@
     />
     <BaseViewFile
       title="Dokumen SK RW"
-      :file="dataInfo.file"
-      :mime-type="dataInfo.mimeType"
+      :file="informationDialog.file"
+      :mime-type="informationDialog.mimeType"
       :show="showDocument"
       @close="showDocument = false"
     />
@@ -88,18 +88,13 @@
       @close="showRejectRw = false"
       @submit="actionRejectUser"
     />
-    <PopupVerifyRW
-      :show-popup="showVerifyRW"
-      :account-name="dataUser.name"
-      @submit="actionVerifyUser"
-      @close="showVerifyRW = false"
-    />
+    <BasePopup :show-popup="showPopupConfirmationInformation" @submit="actionVerifyUser" @close="onClosePopupInfo" />
     <PopupInformation
-      :show-popup="dataInfo.show"
-      :title="dataInfo.title"
-      :description-text="dataInfo.info"
+      :show-popup="informationDialog.show"
+      :title="informationDialog.title"
+      :description-text="informationDialog.info"
       :account-name="dataUser.name"
-      :message="dataInfo.message"
+      :message="informationDialog.message"
       @close="onClosePopupInfo"
     />
   </div>
@@ -107,9 +102,9 @@
 
 <script>
 import debounce from 'lodash.debounce'
-import PopupVerifyRW from './Popup/VerifyConfirmation.vue'
 import PopupRejectRw from './Popup/RejectConfirmation.vue'
 import PopupInformation from './Popup/Information.vue'
+import popup from '~/mixins/klaim-rw'
 import { headerTableKlaimRW, userStatus } from '~/constant/klaim-rw'
 import { generateItemsPerPageOptions, formatDate } from '~/utils'
 
@@ -117,9 +112,9 @@ export default {
   name: 'ComponentKlaimRW',
   components: {
     PopupRejectRw,
-    PopupVerifyRW,
     PopupInformation
   },
+  mixins: [popup],
   data () {
     return {
       search: '',
@@ -144,20 +139,11 @@ export default {
       userStatus,
       showDetailAddress: false,
       showDocument: false,
-      showVerifyRW: false,
       showRejectRw: false,
       dataUser: {
         id: null,
         name: '',
         email: ''
-      },
-      dataInfo: {
-        title: '',
-        show: false,
-        info: '',
-        message: '',
-        file: '',
-        mimeType: ''
       }
     }
   },
@@ -273,68 +259,17 @@ export default {
     },
     async onClickDocument (fileId) {
       this.showDocument = true
-      this.dataInfo.file = 'loading'
+      this.informationDialog.file = 'loading'
       try {
         const response = await this.$axios.get(`/file/view/${fileId}`, {
           headers: { 'x-file-id': fileId }
         })
 
-        this.dataInfo.file = response.data.data || ''
-        this.dataInfo.mimeType = response.data.meta.mimeType || ''
+        this.informationDialog.file = response.data.data || ''
+        this.informationDialog.mimeType = response.data.meta.mimeType || ''
       } catch {
-        this.dataInfo.file = ''
+        this.informationDialog.file = ''
       }
-    },
-    rejectUser (data) {
-      const { id, name, email } = data
-      this.dataUser.id = id || ''
-      this.dataUser.name = name || ''
-      this.dataUser.email = email || ''
-      this.showRejectRw = true
-    },
-    async actionRejectUser () {
-      this.showRejectRw = false
-      this.dataInfo.title = 'Penolakan Akun RW'
-      try {
-        await this.$axios.post('/user/role/reject-rw', {
-          userId: this.dataUser.id
-        })
-        this.dataInfo.show = true
-        this.dataInfo.info = 'Penolakan akun RW telah berhasil dilakukan.'
-        this.dataInfo.message =
-          'Email terkait informasi penolakan telah dikirimkan ke email akun RW bersangkutan.'
-      } catch (error) {
-        this.dataInfo.show = true
-        this.dataInfo.info = 'Penolakan akun RW gagal dilakukan'
-        this.dataInfo.message = ''
-      }
-    },
-    verifyUser (data) {
-      const { id, name } = data
-      this.showVerifyRW = true
-      this.dataUser.id = id || null
-      this.dataUser.name = name || '-'
-    },
-    async actionVerifyUser () {
-      const { id } = this.dataUser
-      this.dataInfo.title = 'Verifikasi Akun RW'
-      try {
-        await this.$axios.post('/user/role/verify-rw', { userId: id })
-        this.showVerifyRW = false
-        this.dataInfo.show = true
-        this.dataInfo.info = 'Verifikasi akun RW telah berhasil dilakukan.'
-        this.dataInfo.message =
-          'Email terkait informasi verifikasi telah dikirimkan ke email akun RW bersangkutan.'
-      } catch (error) {
-        this.showVerifyRW = false
-        this.dataInfo.show = true
-        this.dataInfo.info = 'Verifikasi akun RW gagal dilakukan.'
-        this.dataInfo.message = ''
-      }
-    },
-    onClosePopupInfo () {
-      this.dataInfo.show = false
-      this.$fetch()
     }
   }
 }

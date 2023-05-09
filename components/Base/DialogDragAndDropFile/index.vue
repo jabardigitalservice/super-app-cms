@@ -1,24 +1,27 @@
 <template>
-  <BaseDialog
-    :title="detailDragAndDrop.titleModal"
-    :show-popup="showPopup"
-    label-button="Simpan"
-    confirmation-type="verify"
-    dialog-type="confirmation"
-    :disabled-button="disabledButton"
-    @submit="submitFile"
-    @close="closeEdit"
-  >
-    <slot name="header" />
-    <BaseDragAndDropFile
-      ref="BaseDragAndDropFile"
-      :detail-drag-and-drop="detailDragAndDrop"
-      @disabled-button="changeDisabeButton"
-      @get-decree-file="getResponseImage"
-      @preview-file="previewFile"
-    />
-    <slot name="footer" />
-  </BaseDialog>
+  <BaseCustomPopup :title="detailDragAndDrop.titleModal" :show-popup="showPopup">
+    <template #body-popup>
+      <div class="px-6 mb-6 mt-4">
+        <slot name="header" />
+        <BaseDragAndDropFile
+          ref="BaseDragAndDropFile"
+          :detail-drag-and-drop="detailDragAndDrop"
+          @disabled-button="changeDisabeButton"
+          @get-decree-file="getResponseImage"
+          @preview-file="previewFile"
+        />
+      </div>
+    </template>
+
+    <template #footer-popup>
+      <div class="px-[24px] flex justify-end">
+        <div class="mr-[16px]">
+          <jds-button label="Batal" variant="secondary" class="!text-sm !font-lato !font-bold" @click="closeEdit" />
+        </div>
+        <jds-button label="Simpan" variant="primary" :class="disabledButton ? 'disabled:opacity-25' : ''" :disabled="disabledButton" @click="submitFile" />
+      </div>
+    </template>
+  </BaseCustomPopup>
 </template>
 
 <script>

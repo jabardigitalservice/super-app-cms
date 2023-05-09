@@ -31,6 +31,44 @@ export const headerTableKlaimRW = [
   }
 ]
 
+export const verifyConfirmationPopup = {
+  title: 'Verifikasi Akun RW',
+  descriptionText: 'Apakah Anda yakin ingin memverifikasi akun RW ini?',
+  dialogType: 'confirmation',
+  buttonLeft: {
+    label: 'Batal',
+    variant: 'secondary'
+  },
+  buttonRight: {
+    label: 'Ya, verifikasi akun RW ini',
+    variant: 'primary'
+  }
+}
+
+export const verificationInformationPopup = {
+  title: 'Verifikasi Akun RW',
+  successInformation: {
+    info: 'Verifikasi akun RW telah berhasil dilakukan.',
+    message: 'Email terkait informasi verifikasi telah dikirimkan ke email akun RW bersangkutan.'
+  },
+  failedInformation: {
+    info: 'Verifikasi akun RW gagal dilakukan.',
+    message: ''
+  }
+}
+
+export const rejectInformationPopup = {
+  title: 'Penolakan Akun RW',
+  successInformation: {
+    info: 'Penolakan akun RW telah berhasil dilakukan.',
+    message: 'Email terkait informasi penolakan telah dikirimkan ke email akun RW bersangkutan'
+  },
+  failedInformation: {
+    info: 'Penolakan akun RW gagal dilakukan',
+    message: ''
+  }
+}
+
 export const userStatus = {
   waiting: 'Menunggu Verifikasi',
   verified: 'Terverifikasi',
