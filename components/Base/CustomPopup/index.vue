@@ -36,7 +36,7 @@
           <slot name="body-popup" />
         </content>
         <!-- FOOTER -->
-        <footer class="h-fit px-6 bg-gray-50 py-4">
+        <footer class="h-fit px-6 bg-gray-50 py-4 rounded-b-lg">
           <slot name="footer-popup" />
         </footer>
       </div>

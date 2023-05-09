@@ -48,7 +48,7 @@
           </div>
         </div>
         <!-- FOOTER -->
-        <div class="h-fit px-[24px] flex justify-end bg-gray-50 py-[16px]" :class="{'justify-center': getDialogType!=='confirmation'}">
+        <div class="h-fit px-[24px] flex justify-end bg-gray-50 py-[16px] rounded-b-lg" :class="{'justify-center': getDialogType!=='confirmation'}">
           <div class="mr-[16px]">
             <jds-button v-show="getDialogType==='confirmation'" :label="getButtonLeft.label" :variant="getButtonLeft.variant" class="!text-sm !font-lato !font-bold" @click="closePopupHandle" />
           </div>
