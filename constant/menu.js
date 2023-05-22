@@ -57,7 +57,7 @@ const masterDataMenu =
   {
     name: 'Manajemen Rilis',
     path: 'management-release',
-    arrow: true
+    arrow: false
   }]
 }
 
