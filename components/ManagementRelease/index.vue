@@ -10,6 +10,13 @@
         class="h-[38px] w-[275px] text-gray-500"
         @input="onSearch"
       />
+
+      <jds-button
+        class=" !bg-green-600 !text-sm"
+        @click.prevent="goToForm"
+      >
+        Tambah Versi Rilis
+      </jds-button>
     </div>
     <div class="onverflow-x-auto rounded-lg font-roboto">
       <JdsDataTable
@@ -212,6 +219,9 @@ export default {
         this.query.sortType = 'desc'
         this.query.sortBy = 'orderedAt'
       }
+    },
+    goToForm () {
+      this.$router.push('/management-release/create')
     }
   }
 }

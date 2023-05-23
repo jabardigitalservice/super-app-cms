@@ -1,10 +1,9 @@
 <template>
-  <ManagementRelease />
+  <ManagementReleaseForm />
 </template>
 
 <script>
 export default {
-  name: 'PageManagementRelease',
   layout: 'Dashboard',
   data () {
     return {
@@ -12,6 +11,10 @@ export default {
         {
           label: 'Manajemen Rilis',
           link: '/management-release'
+        },
+        {
+          label: 'Tambah Versi Rilis',
+          link: '/management-release/create'
         }
       ],
       descriptionPage: 'Pengaturan versi rilis aplikasi Sapawarga.'
