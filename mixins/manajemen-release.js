@@ -97,6 +97,9 @@ export default {
       this.showPopUp = false
       this.$fetch()
     },
+    goToBackHandle () {
+      this.$router.push('/management-release')
+    },
     getColorIconStatus (status) {
       switch (status) {
         case statusTable.released:
