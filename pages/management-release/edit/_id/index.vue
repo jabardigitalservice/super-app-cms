@@ -1,5 +1,5 @@
 <template>
-  <ManagementReleaseForm type-form="create" />
+  <ManagementReleaseForm type-form="edit" />
 </template>
 
 <script>
@@ -13,8 +13,8 @@ export default {
           link: '/management-release'
         },
         {
-          label: 'Tambah Versi Rilis',
-          link: '/management-release/create'
+          label: 'Ubah Versi Rilis',
+          link: `/management-release/edit/${this.$route.params.id}`
         }
       ],
       descriptionPage: 'Pengaturan versi rilis aplikasi Sapawarga.'
