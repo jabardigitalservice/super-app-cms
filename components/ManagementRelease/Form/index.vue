@@ -13,10 +13,9 @@
       </jds-button>
       <div class="flex">
         <jds-button
-          label="Simpan Versi Rilis"
+          :label="typeForm === 'create' ? 'Simpan Versi Rilis' : 'Simpan Perubahan Versi Rilis'"
           variant="primary"
           class="!bg-green-600 !font-lato !text-[14px] !font-bold"
-          @click="showPublishedPopupHandle(fieldForm)"
         />
       </div>
     </div>
@@ -29,59 +28,49 @@
           <label class="vee-validate-form__label-required">Masukan versi rilis terbaru
             <span class="text-sm italic text-blue-400">(Versi terakhir saat ini 3.1.1)
             </span></label>
-          <div class="flex flex-row gap-x-2.5">
-            <div>
-              <ValidationProvider
-                v-slot="{ errors }"
-                rules="required|numeric"
-                name="Major Version Number"
-              >
-                <jds-input-text
-                  v-model="fieldForm.majorVersion"
-                  placeholder="Major Version Number"
-                  class="mt-1"
-                  :error-message="errors[0]"
-                />
-              </ValidationProvider>
-            </div>
+          <div class="mt-2 flex flex-row gap-x-2.5">
+            <ValidationProvider
+              v-slot="{ errors }"
+              rules="required|numeric"
+              name="Major Version Number"
+            >
+              <jds-input-text
+                v-model="fieldForm.majorVersion"
+                placeholder="Major Version Number"
+                class="mt-1"
+                :error-message="errors[0]"
+              />
+            </ValidationProvider>
 
-            <div class="flex items-end">
-              <span class="text-center text-base font-bold">.</span>
-            </div>
+            <span class="text-center text-base font-bold mt-6">.</span>
 
-            <div>
-              <ValidationProvider
-                v-slot="{ errors }"
-                rules="required|numeric"
-                name="Minor Version Number"
-              >
-                <jds-input-text
-                  v-model="fieldForm.minorVersion"
-                  placeholder="Minor Version Number"
-                  class="mt-1"
-                  :error-message="errors[0]"
-                />
-              </ValidationProvider>
-            </div>
+            <ValidationProvider
+              v-slot="{ errors }"
+              rules="required|numeric"
+              name="Minor Version Number"
+            >
+              <jds-input-text
+                v-model="fieldForm.minorVersion"
+                placeholder="Minor Version Number"
+                class="mt-1"
+                :error-message="errors[0]"
+              />
+            </ValidationProvider>
 
-            <div class="flex items-end">
-              <span class="text-center text-base font-bold">.</span>
-            </div>
+            <span class="text-center text-base font-bold mt-6">.</span>
 
-            <div>
-              <ValidationProvider
-                v-slot="{ errors }"
-                rules="required|numeric"
-                name="Patch Number"
-              >
-                <jds-input-text
-                  v-model="fieldForm.patchNumber"
-                  placeholder="Patch Number"
-                  class="mt-1"
-                  :error-message="errors[0]"
-                />
-              </ValidationProvider>
-            </div>
+            <ValidationProvider
+              v-slot="{ errors }"
+              rules="required|numeric"
+              name="Patch Number"
+            >
+              <jds-input-text
+                v-model="fieldForm.patchNumber"
+                placeholder="Patch Number"
+                class="mt-1"
+                :error-message="errors[0]"
+              />
+            </ValidationProvider>
           </div>
         </div>
 
@@ -92,18 +81,22 @@
             rules="required"
           >
             <label class="vee-validate-form__label-required">Pembaruan apa saja yang ada diversi ini?</label>
-            <div class="mt-1">
+            <div class="mt-2">
               <Editor
                 v-model="fieldForm.content"
                 :api-key="`${$config.tinymceApiKey}`"
                 :init="{
+                  height: 350,
                   forced_root_block: '',
                   menubar: false,
                   selector: 'textarea',
+                  maxlength: 100,
                   branding: false,
                   resize: false,
+                  paste_as_text: true,
                   placeholder: 'Masukkan disini',
                   plugins: [
+                    'wordcount',
                     'advlist autolink lists link image charmap print preview anchor',
                     'searchreplace visualblocks code fullscreen',
                     'insertdatetime media table paste code help',
@@ -113,9 +106,13 @@
                     alignleft aligncenter alignright alignjustify | \
                     bullist numlist outdent indent | help',
                 }"
+                @input="handleInputTinyMce"
               />
             </div>
 
+            <p :class="isExceedCharacterLimit ? 'text-red-500' : ''">
+              {{ isExceedCharacterLimit ? `Max Karakter Hanya ${characterLimit}` : `Tersisa ${ characterLimit - countCharacter } Karakter` }}
+            </p>
             <small class="text-red-600">{{ errors[0] }}</small>
           </ValidationProvider>
         </div>
@@ -124,10 +121,10 @@
           <ValidationProvider
             v-slot="{ errors }"
             name="Tampilan force update"
-            rules="required"
+            rules="requiredSelectForm"
           >
             <label class="vee-validate-form__label-required">Tampilan force update</label>
-            <div class="mt-1">
+            <div class="mt-2">
               <jds-radio-button-group
                 class="fix-6 !gap-x-10"
                 :items="[
@@ -163,9 +160,41 @@ export default {
     ValidationProvider
   },
   mixins: [popup],
+  props: {
+    typeForm: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     return {
-      fieldForm: {}
+      fieldForm: {
+        majorVersion: '',
+        minorVersion: '',
+        content: ''
+      },
+      countCharacter: 0,
+      characterLimit: 800,
+      isExceedCharacterLimit: false
+    }
+  },
+  computed: {
+    characterCount () {
+      return this.content.length
+    }
+  },
+  methods: {
+    handleInputTinyMce () {
+      const content = this.fieldForm.content
+      if (content.length > this.characterLimit) {
+        this.isExceedCharacterLimit = true
+      } else {
+        this.isExceedCharacterLimit = false
+      }
+      this.updateCharacterCountTinyMce(content)
+    },
+    updateCharacterCountTinyMce (content) {
+      this.countCharacter = content.length
     }
   }
 }
@@ -210,7 +239,7 @@ export default {
   display: none !important;
 }
 
-.jds-radio-button-group__list{
-  @apply !gap-x-10
+.jds-radio-button-group__list {
+  @apply !gap-x-10;
 }
 </style>
