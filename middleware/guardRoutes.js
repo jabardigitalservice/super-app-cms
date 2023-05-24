@@ -9,7 +9,7 @@ export default function ({ $role, route, redirect, $auth, params }) {
 
     // guard routes by roles
 
-    const allowedRolesPathAdminRW = ['/', `/detail/${params.id}`, '/activities', '/message-notif', '/message-notif/create', `/message-notif/detail/${params.id}`, '/data-user', '/configuration', '/management-release', '/management-release/create', `/management-release/detail/${params.id}`]
+    const allowedRolesPathAdminRW = ['/', `/detail/${params.id}`, '/activities', '/message-notif', '/message-notif/create', `/message-notif/detail/${params.id}`, '/data-user', '/configuration', '/management-release', '/management-release/create', `/management-release/detail/${params.id}`, `/management-release/edit/${params.id}`]
     const allowedRolesPathAdminTicket = ['/ticket-museum', `/ticket-museum/detail/${params.invoice}`]
 
     const allowedRoutes = [
