@@ -26,7 +26,6 @@ export default {
       this.showPopupConfirmationInformation = true
       this.user.id = id || ''
       this.user.name = name || ''
-      console.log(this.user)
     },
     rejectUser (dataRw) {
       const { id, name, email } = dataRw
