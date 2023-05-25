@@ -1,5 +1,5 @@
 <template>
-  <ManagementReleaseDetail :data-detail="dataDetail" @close="closeHandle" />
+  <ManagementReleaseDetail :data-detail-management="dataDetail" @close="closeHandle" />
 </template>
 
 <script>
@@ -19,7 +19,7 @@ export default {
         }
       ],
       dataDetail: {},
-      descriptionPage: 'Detail Versi Rilis.',
+      descriptionPage: '',
       dummyData: {
         majorVersion: 3,
         minorVersion: 1,
@@ -38,6 +38,7 @@ export default {
         `/management-release/detail/${this.$route.params.id}`
       )
       this.dataDetail = response.data.data
+      this.descriptionPage = `Detail dari pesan “${this.dataDetail.versiRilis}”`
       this.dataDetail.date =
         formatDate(
           this.dataDetail.date || '',
@@ -47,14 +48,15 @@ export default {
       this.dataDetail = {}
       this.dataDetail = this.dummyData
       this.dataDetail.date =
-        formatDate(
-          this.dataDetail.date || '',
-          'dd/MM/yyyy HH:mm'
-        ) || '-'
+      formatDate(
+        this.dataDetail.date || '',
+        'dd/MM/yyyy HH:mm'
+      ) || '-'
+      this.descriptionPage = `Detail dari versi rilis “${this.dataDetail.versiRilis}”`
     }
   },
-  mounted () {
-    this.$store.commit('setActivePage', 'Master Data - Manajemen Rilis')
+  updated () {
+    this.$store.commit('setActivePage', 'Manajemen Rilis')
     this.$store.commit('setHeader', {
       navigations: this.navigations,
       descriptionPage: this.descriptionPage
