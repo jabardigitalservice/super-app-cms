@@ -361,6 +361,7 @@ export default {
 
       this.informationDialog.info = information.info
       this.informationDialog.message = information.message
+      this.$fetch()
     },
     closeInformationDialogHandle () {
       this.informationDialog.show = false
