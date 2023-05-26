@@ -3,6 +3,10 @@ import {
   deleteInformationPopup,
   verificationConfirmationPopup,
   verificationInformationPopup,
+  savedConfirmationPopup,
+  savedInformationPopup,
+  editConfirmationPopup,
+  editInformationPopup,
   statusTable
 } from '~/constant/manajemen-release'
 import dialog from '~/mixins/dialog'
@@ -13,6 +17,10 @@ export default {
       deleteInformationPopup,
       verificationConfirmationPopup,
       verificationInformationPopup,
+      savedConfirmationPopup,
+      savedInformationPopup,
+      editConfirmationPopup,
+      editInformationPopup,
       popupMessage: {
         titlePopup: '',
         detailPopup: ''
