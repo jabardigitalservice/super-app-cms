@@ -13,9 +13,14 @@
       </jds-button>
       <div class="flex">
         <jds-button
-          :label="typeForm === 'create' ? 'Simpan Versi Rilis' : 'Simpan Perubahan Versi Rilis'"
+          :label="
+            typeForm === 'create'
+              ? 'Simpan Versi Rilis'
+              : 'Simpan Perubahan Versi Rilis'
+          "
           variant="primary"
           class="!bg-green-600 !font-lato !text-[14px] !font-bold"
+          @click="showSaveData"
         />
       </div>
     </div>
@@ -35,14 +40,14 @@
               name="Major Version Number"
             >
               <jds-input-text
-                v-model="fieldForm.majorVersion"
+                v-model="formField.majorVersion"
                 placeholder="Major Version Number"
                 class="mt-1"
                 :error-message="errors[0]"
               />
             </ValidationProvider>
 
-            <span class="text-center text-base font-bold mt-6">.</span>
+            <span class="mt-6 text-center text-base font-bold">.</span>
 
             <ValidationProvider
               v-slot="{ errors }"
@@ -50,14 +55,14 @@
               name="Minor Version Number"
             >
               <jds-input-text
-                v-model="fieldForm.minorVersion"
+                v-model="formField.minorVersion"
                 placeholder="Minor Version Number"
                 class="mt-1"
                 :error-message="errors[0]"
               />
             </ValidationProvider>
 
-            <span class="text-center text-base font-bold mt-6">.</span>
+            <span class="mt-6 text-center text-base font-bold">.</span>
 
             <ValidationProvider
               v-slot="{ errors }"
@@ -65,7 +70,7 @@
               name="Patch Number"
             >
               <jds-input-text
-                v-model="fieldForm.patchNumber"
+                v-model="formField.patchNumber"
                 placeholder="Patch Number"
                 class="mt-1"
                 :error-message="errors[0]"
@@ -83,7 +88,7 @@
             <label class="vee-validate-form__label-required">Pembaruan apa saja yang ada diversi ini?</label>
             <div class="mt-2">
               <Editor
-                v-model="fieldForm.content"
+                v-model="formField.content"
                 :api-key="`${$config.tinymceApiKey}`"
                 :init="{
                   height: 350,
@@ -111,7 +116,11 @@
             </div>
 
             <p :class="isExceedCharacterLimit ? 'text-red-500' : ''">
-              {{ isExceedCharacterLimit ? `Max Karakter Hanya ${characterLimit}` : `Tersisa ${ characterLimit - countCharacter } Karakter` }}
+              {{
+                isExceedCharacterLimit
+                  ? `Max Karakter Hanya ${characterLimit}`
+                  : `Tersisa ${characterLimit - countCharacter} Karakter`
+              }}
             </p>
             <small class="text-red-600">{{ errors[0] }}</small>
           </ValidationProvider>
@@ -126,10 +135,11 @@
             <label class="vee-validate-form__label-required">Tampilan force update</label>
             <div class="mt-2">
               <jds-radio-button-group
+                v-model="formField.forceUpdate"
                 class="fix-6 !gap-x-10"
                 :items="[
-                  { label: 'Ya, tampilkan', val: true },
-                  { label: 'Tidak perlu ditampilkan', val: false },
+                  { label: 'Ya, tampilkan', val: 'Ya' },
+                  { label: 'Tidak perlu ditampilkan', val: 'Tidak' },
                 ]"
                 value-key="val"
                 placeholder-key="label"
@@ -143,6 +153,13 @@
         </div>
       </form>
     </ValidationObserver>
+
+    <MessageNotifPopupLoading :show-popup="isLoading" />
+    <BasePopup
+      :show-popup="showPopUp"
+      @submit="submitFormHandle"
+      @close="closeFormPopupHandle"
+    />
   </div>
 </template>
 
@@ -151,6 +168,12 @@ import Editor from '@tinymce/tinymce-vue'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import popup from '~/mixins/manajemen-release'
 import ArrowLeft from '~/assets/icon/arrow-left.svg?inline'
+import {
+  savedConfirmationPopup,
+  savedInformationPopup,
+  editConfirmationPopup,
+  editInformationPopup
+} from '~/constant/message-notif'
 export default {
   name: 'ManagementReleaseForm',
   components: {
@@ -164,25 +187,42 @@ export default {
     typeForm: {
       type: String,
       default: ''
+    },
+    idVersion: {
+      type: String,
+      default: ''
+    },
+    fieldForm: {
+      type: Object,
+      default: null
     }
   },
   data () {
     return {
-      fieldForm: {
-        majorVersion: '',
-        minorVersion: '',
-        content: ''
-      },
       countCharacter: 0,
       characterLimit: 800,
-      isExceedCharacterLimit: false
+      isExceedCharacterLimit: false,
+      isPublished: false,
+      isLoading: false,
+      savedConfirmationPopup,
+      savedInformationPopup,
+      editConfirmationPopup,
+      editInformationPopup
     }
   },
   computed: {
-    characterCount () {
-      return this.content.length
+    formField: {
+      get () {
+        return {
+          ...this.fieldForm
+        }
+      },
+      set (value) {
+        this.$emit('update:fieldForm', value)
+      }
     }
   },
+
   methods: {
     handleInputTinyMce () {
       const content = this.fieldForm.content
@@ -195,6 +235,48 @@ export default {
     },
     updateCharacterCountTinyMce (content) {
       this.countCharacter = content.length
+    },
+    showSaveData () {
+      // const endpoint =
+      //   this.typeForm === 'create'
+      //     ? '/release/create'
+      //     : `/release/edit/${this.idVersion}`
+
+      this.$store.commit('dialog/clearState')
+
+      // if (this.$refs.form.validate()) {
+      this.$emit('update:fieldForm', this.formField)
+      if (this.typeForm === 'create') {
+        console.log(this.typeForm, this.idVersion)
+        this.confirmationPopupHandle(
+          this.savedConfirmationPopup,
+          this.formField,
+          this.formField.idVersion
+        )
+      } else {
+        console.log(this.typeForm, this.idVersion)
+
+        this.confirmationPopupHandle(
+          this.editConfirmationPopup,
+          this.formField,
+          this.formField.idVersion
+        )
+      }
+      // }
+
+      this.$store.commit('dialog/setMessage', this.popupMessage)
+      this.$store.dispatch('dialog/showHandle', this.dataPopup)
+      this.showPopUp = true
+    },
+    submitFormHandle () {
+      console.log('asdf')
+    },
+    closeFormPopupHandle () {
+      this.$store.commit('dialog/clearState')
+      this.showPopUp = false
+      // if (this.isInformationPopup) {
+      //   this.$router.push('/management-release')
+      // }
     }
   }
 }

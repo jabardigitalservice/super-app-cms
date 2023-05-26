@@ -144,7 +144,7 @@ export default {
         return {
           ...item,
           date: formatDate(item.date || '', 'dd/MM/yyyy HH:mm'),
-          forceUpdate: item.forceUpdate
+          forceUpdate: item.forceUpdate === 'Ya'
             ? 'Ya, tampilkan'
             : 'Tidak perlu ditampilkan'
         }

@@ -95,7 +95,7 @@
               </td>
               <td>
                 <!-- eslint-disable-next-line vue/no-v-html --><span
-                  v-html="dataDetailManagement?.detail"
+                  v-html="dataDetailManagement?.content"
                 />
               </td>
             </tr>

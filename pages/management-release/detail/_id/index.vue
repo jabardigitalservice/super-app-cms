@@ -21,14 +21,14 @@ export default {
       dataDetail: {},
       descriptionPage: '',
       dummyData: {
-        majorVersion: 3,
-        minorVersion: 1,
-        patchNumber: 0,
+        majorVersion: '3',
+        minorVersion: '1',
+        patchNumber: '0',
         versiRilis: '3.1.0',
         status: 'deleted',
         date: '2023-05-18T13:23:15.935833Z',
-        forceUpdate: true,
-        detail: 'adasass'
+        forceUpdate: 'Ya',
+        content: 'adasass'
       }
     }
   },
