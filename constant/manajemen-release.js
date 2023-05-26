@@ -37,25 +37,37 @@ export const dummmyData = [
     versiRilis: '3.1.1',
     status: 'waiting',
     date: '',
-    forceUpdate: true
+    forceUpdate: true,
+    majorVersion: 3,
+    minorVersion: 1,
+    patchNumber: 0
   },
   {
     versiRilis: '3.1.0',
     status: 'deleted',
     date: '2023-05-18T13:23:15.935833Z',
-    forceUpdate: true
+    forceUpdate: true,
+    majorVersion: 3,
+    minorVersion: 1,
+    patchNumber: 0
   },
   {
     versiRilis: '3.0.9',
     status: 'released',
     date: '2023-05-19T13:23:15.935833Z',
-    forceUpdate: true
+    forceUpdate: true,
+    majorVersion: 3,
+    minorVersion: 1,
+    patchNumber: 0
   },
   {
     versiRilis: '3.0.8',
     status: 'released',
     date: '2023-06-19T13:23:15.935833Z',
-    forceUpdate: false
+    forceUpdate: false,
+    majorVersion: 3,
+    minorVersion: 1,
+    patchNumber: 0
   }
 ]
 

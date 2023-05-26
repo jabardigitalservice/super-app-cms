@@ -155,6 +155,7 @@ export default {
         popupName: this.popupName,
         dialogType: this.deleteInformationPopup.successInformation.dialogType
       }
+
       this.showPopUp = false
       this.$emit('close', dataPopup)
     }

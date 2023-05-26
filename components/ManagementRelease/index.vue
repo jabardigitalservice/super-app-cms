@@ -48,6 +48,8 @@
             "
             @hapus="showDeleteManajemenRelease(item)"
             @rilis="showVerificationManajemenRelease(item)"
+            @detail="goToPageDetail(item)"
+            @ubah="goToPageEdit(item)"
           />
         </template>
       </JdsDataTable>
@@ -163,9 +165,6 @@ export default {
     )
   },
   methods: {
-    goToDetailPageHandle (item) {
-      this.$router.push(`/manajemen-release/detail/${item.versiRilis}`)
-    },
     filterTableAction (status) {
       if (status === statusTable.released) {
         return this.menuTableAction.filter(
@@ -222,6 +221,12 @@ export default {
     },
     goToForm () {
       this.$router.push('/management-release/create')
+    },
+    goToPageDetail (item) {
+      this.$router.push(`/management-release/detail/${item.versiRilis}`)
+    },
+    goToPageEdit (item) {
+      this.$router.push(`/management-release/edit/${item.versiRilis}`)
     }
   }
 }
