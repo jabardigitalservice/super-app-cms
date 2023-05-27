@@ -101,7 +101,6 @@
                   paste_as_text: true,
                   placeholder: 'Masukkan disini',
                   plugins: [
-                    'wordcount',
                     'advlist autolink lists link image charmap print preview anchor',
                     'searchreplace visualblocks code fullscreen',
                     'insertdatetime media table paste code help',
@@ -154,10 +153,10 @@
       </form>
     </ValidationObserver>
 
-    <MessageNotifPopupLoading :show-popup="isLoading" />
+    <BasePopupLoading :show-popup="isLoading" />
     <BasePopup
       :show-popup="showPopUp"
-      @submit="submitFormHandle"
+      @submit="showConfirmationSubmitFormHandle"
       @close="closeFormPopupHandle"
     />
   </div>
@@ -173,7 +172,7 @@ import {
   savedInformationPopup,
   editConfirmationPopup,
   editInformationPopup
-} from '~/constant/message-notif'
+} from '~/constant/manajemen-release'
 export default {
   name: 'ManagementReleaseForm',
   components: {
@@ -207,7 +206,8 @@ export default {
       savedConfirmationPopup,
       savedInformationPopup,
       editConfirmationPopup,
-      editInformationPopup
+      editInformationPopup,
+      isInformationPopup: false
     }
   },
   computed: {
@@ -225,7 +225,7 @@ export default {
 
   methods: {
     handleInputTinyMce () {
-      const content = this.fieldForm.content
+      const content = this.formField.content
       if (content.length > this.characterLimit) {
         this.isExceedCharacterLimit = true
       } else {
@@ -237,46 +237,101 @@ export default {
       this.countCharacter = content.length
     },
     showSaveData () {
-      // const endpoint =
-      //   this.typeForm === 'create'
-      //     ? '/release/create'
-      //     : `/release/edit/${this.idVersion}`
-
       this.$store.commit('dialog/clearState')
 
-      // if (this.$refs.form.validate()) {
       this.$emit('update:fieldForm', this.formField)
-      if (this.typeForm === 'create') {
-        console.log(this.typeForm, this.idVersion)
-        this.confirmationPopupHandle(
-          this.savedConfirmationPopup,
-          this.formField,
-          this.formField.idVersion
-        )
-      } else {
-        console.log(this.typeForm, this.idVersion)
+      this.formField.fullVersion = this.getFullVersion()
+      const confirmationPopup =
+        this.typeForm === 'create'
+          ? this.savedConfirmationPopup
+          : this.editConfirmationPopup
 
-        this.confirmationPopupHandle(
-          this.editConfirmationPopup,
-          this.formField,
-          this.formField.idVersion
-        )
-      }
-      // }
+      this.confirmationPopupHandle(
+        confirmationPopup,
+        this.formField,
+        this.formField.fullVersion
+      )
 
       this.$store.commit('dialog/setMessage', this.popupMessage)
       this.$store.dispatch('dialog/showHandle', this.dataPopup)
       this.showPopUp = true
     },
-    submitFormHandle () {
-      console.log('asdf')
+    async showConfirmationSubmitFormHandle () {
+      this.$store.commit('dialog/clearState')
+      this.showPopup = false
+      this.isLoading = true
+
+      if (await this.validHandle()) {
+        this.submitFormHandle()
+      } else {
+        this.isLoading = false
+        this.dataPopup = {
+          title: 'Data Belum Benar',
+          buttonLeft: this.getInformationPopupByTypeForm().buttonLeft
+        }
+        this.showPopUp = true
+        this.showInformationPopupHandle(this.getInformationPopupByTypeForm(), true)
+      }
+    },
+    async submitFormHandle () {
+      const endpoint =
+        this.typeForm === 'create'
+          ? '/release/create'
+          : `/release/edit/${this.idVersion}`
+
+      this.showPopUp = false
+      this.popupMessage = {}
+      this.popupMessage.titlePopup = this.formField.fullVersion
+
+      try {
+        const response = await this.$axios.post(endpoint, {
+          ...this.formField
+        })
+
+        this.dataDetail.id = response.data.data.id
+        this.isInformationPopup = true
+        this.showPopUp = true
+        this.isLoading = false
+      } catch (error) {
+        this.showPopUp = true
+        this.isError = true
+        this.isLoading = false
+      }
+
+      this.showInformationPopupHandle(this.getInformationPopupByTypeForm(), this.isError)
     },
     closeFormPopupHandle () {
       this.$store.commit('dialog/clearState')
       this.showPopUp = false
-      // if (this.isInformationPopup) {
-      //   this.$router.push('/management-release')
-      // }
+      if (this.isInformationPopup) {
+        this.$router.push('/management-release')
+      }
+    },
+    async validHandle () {
+      const isDataValid = await this.$refs.form.validate()
+      if (!isDataValid) {
+        return false
+      }
+      return true
+    },
+    showInformationPopupHandle (informationPopup, warning = false) {
+      this.dataPopup = {
+        title: informationPopup.title,
+        buttonLeft: informationPopup.buttonLeft
+      }
+      this.informationPopupHandle(informationPopup, this.isError, warning)
+      this.$store.commit('dialog/setMessage', this.popupMessage)
+      this.$store.dispatch('dialog/showHandle', this.dataPopup)
+    },
+    getInformationPopupByTypeForm () {
+      return this.typeForm === 'create'
+        ? this.savedInformationPopup
+        : this.editInformationPopup
+    },
+    getFullVersion () {
+      return this.formField.majorVersion && this.formField.minorVersion && this.formField.patchNumber
+        ? `${this.formField.majorVersion}.${this.formField.minorVersion}.${this.formField.patchNumber}`
+        : ''
     }
   }
 }
