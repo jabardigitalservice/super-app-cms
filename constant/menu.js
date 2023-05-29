@@ -53,12 +53,14 @@ const masterDataMenu =
     name: 'Konfigurasi',
     path: 'configuration',
     arrow: true
-  },
-  {
-    name: 'Manajemen Rilis',
-    path: 'management-release',
-    arrow: true
-  }]
+  }
+  // TODO: api is currently not ready, so I hide the menu, until the configuration with the API is complete
+  // {
+  //   name: 'Manajemen Rilis',
+  //   path: 'management-release',
+  //   arrow: false
+  // }
+  ]
 }
 
 const menu = [mainMenu,

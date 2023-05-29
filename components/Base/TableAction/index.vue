@@ -8,7 +8,7 @@
         </div>
       </Basebutton>
     </template>
-    <div class="bg-white w-[113px] p-[18px] mt-1 shadow-xl border border-gray-400 rounded-lg">
+    <div class="bg-white w-[120px] p-[16px] mt-1 shadow-xl border border-gray-400 rounded-lg">
       <div v-for="(menuPopOver,index) in listMenuPopOver" :key="index" :class="{'mb-4':index!==listMenuPopOver.length-1}">
         <button :key="index" @click="$emit(`${menuPopOver.value}`)">
           {{ menuPopOver.menu }}
