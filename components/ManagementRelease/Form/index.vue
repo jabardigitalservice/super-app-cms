@@ -284,7 +284,7 @@ export default {
       this.popupMessage.titlePopup = this.formField.fullVersion
 
       try {
-        const response = await this.$axios.post(endpoint, {
+        const response = await this.$axios[this.typeForm === 'create' ? 'post' : 'put'](endpoint, {
           ...this.formField
         })
 
