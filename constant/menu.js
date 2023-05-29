@@ -46,8 +46,8 @@ const masterDataMenu =
   role: 'admin',
   menu: [{
     name: 'Kelola Pengguna',
-    path: 'data-user',
-    arrow: true
+    path: 'management-user',
+    arrow: false
   },
   {
     name: 'Konfigurasi',
