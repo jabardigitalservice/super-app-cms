@@ -136,6 +136,35 @@
             <small class="text-red-600">{{ errors[0] }}</small>
           </ValidationProvider>
         </div>
+        <!--- Target must be choose one between platform or topic, because in firebase only can submit one of them. -->
+        <div class="col-span-2 mt-4">
+          <h2 class="text-sm font-bold text-gray-800 before:content-['*'] before:ml-0.5 before:text-red-500">
+            Target <em>(Wajib pilih salah satu)</em>
+          </h2>
+        </div>
+        <div class="mt-1">
+          <label class="message-notif-form__label">Target Platform</label>
+          <jds-select
+            v-model="fieldMessageNotif.targetPlatform"
+            placeholder="Pilih Target Platform"
+            :options="platformOptions"
+            class="mt-1 !w-full"
+            :disabled="isDisabledPlatform"
+            @change="checkFormSelectPlatformDisabled"
+          />
+        </div>
+        <div class="mt-1">
+          <label class="message-notif-form__label">Topik</label>
+          <jds-select
+            v-model="fieldMessageNotif.targetTopic"
+            placeholder="Pilih Topik"
+            :options="topicOptions"
+            class="mt-1 !w-full"
+            :disabled="isDisabledTopic"
+            @change="checkFormSelectTopicDisabled"
+          />
+        </div>
+        <small class="text-red-600">{{ errMessageTarget }}</small>
         <div class="col-span-2 mt-4">
           <h2 class="text-sm font-bold text-gray-800">
             Tombol Tautan
@@ -207,7 +236,9 @@ export default {
         content: '',
         actionTitle: '',
         actionUrl: '',
-        category: ''
+        category: '',
+        targetPlatform: '',
+        targetTopic: ''
       },
       detailDragAndDrop: {
         informationSizeCompatible:
@@ -219,6 +250,8 @@ export default {
         acceptFile: '.jpg,.jpeg,.png'
       },
       categoryOptions: [],
+      platformOptions: [{ label: 'Android OS', value: 'android' }, { label: 'Apple iOS', value: 'apple ios' }],
+      topicOptions: [{ label: 'RW', value: 'rw' }, { label: 'Publik', value: 'general' }],
       isInformationPopup: false,
       savedConfirmationPopup,
       savedInformationPopup,
@@ -229,7 +262,10 @@ export default {
       },
       isLoading: false,
       isPublished: false,
-      tinymceApiKey: this.$config.tinymceApiKey
+      tinymceApiKey: this.$config.tinymceApiKey,
+      isDisabledPlatform: false,
+      isDisabledTopic: false,
+      errMessageTarget: ''
     }
   },
   async fetch () {
@@ -271,7 +307,10 @@ export default {
     },
     async validHandle (fileCorrect = true) {
       const isDataValid = await this.$refs.form.validate()
-      if (!isDataValid || !fileCorrect) {
+      if (this.fieldMessageNotif.targetPlatform === '' && this.fieldMessageNotif.targetTopic === '') {
+        this.errMessageTarget = 'wajib memilih salah satu target.'
+      }
+      if (!isDataValid || !fileCorrect || this.errMessageTarget) {
         return false
       }
       return true
@@ -347,6 +386,16 @@ export default {
       this.showPopupConfirmationInformation = false
       if (this.isInformationPopup) {
         this.$router.push('/message-notif')
+      }
+    },
+    checkFormSelectPlatformDisabled (value) {
+      if (value !== null) {
+        this.isDisabledTopic = true
+      }
+    },
+    checkFormSelectTopicDisabled (value) {
+      if (value !== null) {
+        this.isDisabledPlatform = true
       }
     }
   }
