@@ -309,8 +309,7 @@ export default {
     },
     async validHandle (fileCorrect = true) {
       const isDataValid = await this.$refs.form.validate()
-      this.errMessageTarget = ''
-      if (this.fieldMessageNotif.targetPlatform === '' && this.fieldMessageNotif.targetTopic === '') {
+      if (this.fieldMessageNotif.target.platform === '' && this.fieldMessageNotif.target.topic === '') {
         this.errMessageTarget = 'wajib memilih salah satu target.'
       }
       if (!isDataValid || !fileCorrect || this.errMessageTarget) {
