@@ -88,6 +88,18 @@
               </td>
             </tr>
           </BaseTableDetail>
+          <BaseTableDetail header="Target" class="mb-4">
+            <tr>
+              <td class="w-[146px]">
+                <strong>Platform</strong>
+              </td>
+              <td>{{ detailMessageNotif?.targetPlatform || '-' }}</td>
+            </tr>
+            <tr>
+              <td><strong>Topik</strong></td>
+              <td>{{ detailMessageNotif?.topic|| '-' }}</td>
+            </tr>
+          </BaseTableDetail>
           <BaseTableDetail header="Tombol Tautan">
             <tr>
               <td class="w-[146px]">

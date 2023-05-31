@@ -1,5 +1,5 @@
 import { extend } from 'vee-validate'
-import { required, min, max } from 'vee-validate/dist/rules'
+import { required, min, max, numeric } from 'vee-validate/dist/rules'
 
 extend('required', {
   ...required,
@@ -24,4 +24,9 @@ extend('max', {
 extend('url', {
   validate: value => value.startsWith('http://') || value.startsWith('https://'),
   message: (_, values) => `${values._field_} tidak valid`
+})
+
+extend('numeric', {
+  ...numeric,
+  message: (_, values) => `${values._field_} harus diisi angka`
 })

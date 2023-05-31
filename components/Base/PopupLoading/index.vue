@@ -11,16 +11,16 @@
     <div
       v-show="showPopup"
       class="
-          fixed
-          inset-0
-          bg-black bg-opacity-75
-          transition-opacity
-          flex
-          justify-center
-          items-center
-          w-full
-          z-10
-        "
+            fixed
+            inset-0
+            bg-black bg-opacity-75
+            transition-opacity
+            flex
+            justify-center
+            items-center
+            w-full
+            z-10
+          "
     >
       <div class="bg-white w-[510px] py-4 px-6 h-[300px] rounded-lg">
         <div class="flex flex-col items-center justify-center h-[300px]">
@@ -35,7 +35,7 @@
 </template>
 <script>
 export default {
-  name: 'PopupLoading',
+  name: 'BasePopupLoading',
   props: {
     showPopup: {
       type: Boolean,
