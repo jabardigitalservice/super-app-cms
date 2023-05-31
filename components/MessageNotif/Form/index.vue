@@ -17,14 +17,14 @@
             label="Simpan Pesan"
             variant="secondary"
             class="!font-lato !text-[14px] !font-bold"
-            @click="showSaveMessageNotifPopupHandle"
+            @click="submitFormMessageNotifHandle('save')"
           />
         </div>
         <jds-button
           label="Publikasikan Pesan"
           variant="primary"
           class="!bg-green-600 !font-lato !text-[14px] !font-bold"
-          @click="showPublishedPopupHandle(fieldMessageNotif)"
+          @click="submitFormMessageNotifHandle('publish')"
         />
       </div>
     </div>
@@ -136,6 +136,35 @@
             <small class="text-red-600">{{ errors[0] }}</small>
           </ValidationProvider>
         </div>
+        <!--- Target must be choose one between platform or topic, because in firebase only can submit one of them. -->
+        <div class="col-span-2 mt-4">
+          <h2 class="text-sm font-bold text-gray-800 before:content-['*'] before:ml-0.5 before:text-red-500">
+            Target <em>(Wajib pilih salah satu)</em>
+          </h2>
+        </div>
+        <div class="mt-1">
+          <label class="message-notif-form__label">Target Platform</label>
+          <jds-select
+            v-model="fieldMessageNotif.target.platform"
+            placeholder="Pilih Target Platform"
+            :options="platformOptions"
+            class="mt-1 !w-full"
+            :disabled="isDisabledPlatform"
+            @change="checkFormSelectPlatformDisabled"
+          />
+        </div>
+        <div class="mt-1">
+          <label class="message-notif-form__label">Topik</label>
+          <jds-select
+            v-model="fieldMessageNotif.target.topic"
+            placeholder="Pilih Topik"
+            :options="topicOptions"
+            class="mt-1 !w-full"
+            :disabled="isDisabledTopic"
+            @change="checkFormSelectTopicDisabled"
+          />
+        </div>
+        <small class="text-red-600">{{ errMessageTarget }}</small>
         <div class="col-span-2 mt-4">
           <h2 class="text-sm font-bold text-gray-800">
             Tombol Tautan
@@ -162,10 +191,10 @@
         </div>
       </form>
     </ValidationObserver>
-    <MessageNotifPopupLoading :show-popup="isLoading" />
+    <BasePopupLoading :show-popup="isLoading" />
     <BasePopup
       :show-popup="showPopupConfirmationInformation"
-      @submit="submitFormMessageNotifHandle"
+      @submit="confirmationSaveMessageNotifHandle"
       @close="closeFormPopupHandle"
     />
 
@@ -207,7 +236,11 @@ export default {
         content: '',
         actionTitle: '',
         actionUrl: '',
-        category: ''
+        category: '',
+        target: {
+          platform: '',
+          topic: ''
+        }
       },
       detailDragAndDrop: {
         informationSizeCompatible:
@@ -219,6 +252,8 @@ export default {
         acceptFile: '.jpg,.jpeg,.png'
       },
       categoryOptions: [],
+      platformOptions: [{ label: 'Android OS', value: 'android' }, { label: 'Apple iOS', value: 'ios' }],
+      topicOptions: [{ label: 'RW', value: 'rw' }, { label: 'Publik', value: 'general' }],
       isInformationPopup: false,
       savedConfirmationPopup,
       savedInformationPopup,
@@ -229,7 +264,10 @@ export default {
       },
       isLoading: false,
       isPublished: false,
-      tinymceApiKey: this.$config.tinymceApiKey
+      tinymceApiKey: this.$config.tinymceApiKey,
+      isDisabledPlatform: false,
+      isDisabledTopic: false,
+      errMessageTarget: ''
     }
   },
   async fetch () {
@@ -271,42 +309,61 @@ export default {
     },
     async validHandle (fileCorrect = true) {
       const isDataValid = await this.$refs.form.validate()
-      if (!isDataValid || !fileCorrect) {
+      if (this.fieldMessageNotif.target.platform === '' && this.fieldMessageNotif.target.topic === '') {
+        this.errMessageTarget = 'wajib memilih salah satu target.'
+      }
+      if (!isDataValid || !fileCorrect || this.errMessageTarget) {
         return false
       }
       return true
     },
-    async submitFormMessageNotifHandle () {
+    async submitFormMessageNotifHandle (submitType) {
       this.$store.commit('dialog/clearState')
       this.isPublished = false
       this.showPopupConfirmationInformation = false
-      this.isLoading = true
       this.dataImage = this.$store.state.dataImage
       this.fieldMessageNotif.originalFilename = this.dataImage.name
       if (await this.validHandle(this.dataImage?.fileCorrect)) {
-        if (this.popupName === 'saveNotifMessage') {
-          await this.saveMessageNotificationHandle()
+        if (submitType === 'publish') {
+          this.showPublishedPopupHandle(this.fieldMessageNotif)
         } else {
-          this.publishedFormMessageNotifHandle()
+          this.showSaveMessageNotifPopupHandle()
         }
       } else {
         this.isLoading = false
         this.dataPopup = {
-          title: 'Data Belum Benar',
+          title: 'Isian Belum Lengkap',
           buttonLeft: this.savedInformationPopup.buttonLeft
         }
         this.showPopupConfirmationInformation = true
-        this.showInformationPopupHandle(this.savedInformationPopup, true)
+        this.informationPopupHandle(this.savedInformationPopup, this.isError, true)
+        this.$store.commit('dialog/setMessage', this.popupMessage)
+        this.$store.dispatch('dialog/showHandle', this.dataPopup)
+      }
+    },
+    async confirmationSaveMessageNotifHandle () {
+      if (this.popupName === 'saveNotifMessage') {
+        await this.saveMessageNotificationHandle()
+      } else {
+        this.publishedFormMessageNotifHandle()
       }
     },
     async saveMessageNotificationHandle () {
       this.showPopupConfirmationInformation = false
       this.popupMessage = {}
+      this.isLoading = true
       this.popupMessage.titlePopup = this.fieldMessageNotif.title
       try {
         if (Object.keys(this.dataImage).length > 0) {
           await this.$refs.BaseDragAndDropFile.uploadFile()
         }
+
+        if (this.fieldMessageNotif.target.platform !== '') {
+          delete this.fieldMessageNotif.target.topic
+        } else {
+          delete this.fieldMessageNotif.target.platform
+        }
+
         const response = await this.$axios.post('/messages', {
           ...this.fieldMessageNotif
         })
@@ -316,6 +373,7 @@ export default {
         this.$refs.BaseDragAndDropFile.resetDataFile()
       } catch (error) {
         this.isError = true
+        this.showPopupConfirmationInformation = true
       } finally {
         this.isLoading = !!this.isPublished
       }
@@ -347,6 +405,18 @@ export default {
       this.showPopupConfirmationInformation = false
       if (this.isInformationPopup) {
         this.$router.push('/message-notif')
+      }
+    },
+    checkFormSelectPlatformDisabled (value) {
+      if (value !== null) {
+        this.isDisabledTopic = true
+        this.errMessageTarget = ''
+      }
+    },
+    checkFormSelectTopicDisabled (value) {
+      if (value !== null) {
+        this.isDisabledPlatform = true
+        this.errMessageTarget = ''
       }
     }
   }
