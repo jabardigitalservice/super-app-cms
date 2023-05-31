@@ -17,7 +17,7 @@
             label="Simpan Pesan"
             variant="secondary"
             class="!font-lato !text-[14px] !font-bold"
-            @click="submitFormMessageNotifHandle('draft')"
+            @click="submitFormMessageNotifHandle('save')"
           />
         </div>
         <jds-button
@@ -309,6 +309,7 @@ export default {
     },
     async validHandle (fileCorrect = true) {
       const isDataValid = await this.$refs.form.validate()
+      this.errMessageTarget = ''
       if (this.fieldMessageNotif.targetPlatform === '' && this.fieldMessageNotif.targetTopic === '') {
         this.errMessageTarget = 'wajib memilih salah satu target.'
       }
@@ -332,7 +333,7 @@ export default {
       } else {
         this.isLoading = false
         this.dataPopup = {
-          title: 'Data Belum Benar',
+          title: 'Isian Belum Lengkap',
           buttonLeft: this.savedInformationPopup.buttonLeft
         }
         this.showPopupConfirmationInformation = true
