@@ -143,6 +143,7 @@
       :required="true"
       input-type="text"
       placeholder="Masukkan No.HP"
+      :is-error="true"
       label-input="No. Handphone <em>(No. sebelumnya 0822 1000 2000)</em>"
       @close="showPopup=false"
     />

@@ -15,7 +15,7 @@
               :type="inputType"
               :placeholder="placeholder"
               class="h-[38px] w-full rounded-lg border border-gray-500 bg-gray-50 px-2 py-[11px] font-lato text-gray-600 placeholder:text-sm placeholder:text-gray-600 focus:outline-none"
-              :class="{ '!border !border-red-600': errorMessage!=='' }"
+              :class="{ '!border !border-red-600': isError }"
             >
             <small class="text-red-600">{{ errorMessage }}</small>
           </form>
@@ -63,6 +63,10 @@ export default {
       default: ''
     },
     required: {
+      type: Boolean,
+      default: false
+    },
+    isError: {
       type: Boolean,
       default: false
     }
