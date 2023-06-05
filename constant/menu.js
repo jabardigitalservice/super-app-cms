@@ -44,16 +44,18 @@ const masterDataMenu =
 {
   titleMenu: 'master data',
   role: 'admin',
-  menu: [{
-    name: 'Kelola Pengguna',
-    path: 'data-user',
-    arrow: true
-  },
-  {
-    name: 'Konfigurasi',
-    path: 'configuration',
-    arrow: true
-  }
+  menu: [
+    // TODO : This menu cannot be displayed yet, because the API is not ready.
+    // {
+    //   name: 'Kelola Pengguna',
+    //   path: 'management-user',
+    //   arrow: false
+    // },
+    {
+      name: 'Konfigurasi',
+      path: 'configuration',
+      arrow: true
+    }
   // TODO: api is currently not ready, so I hide the menu, until the configuration with the API is complete
   // {
   //   name: 'Manajemen Rilis',
