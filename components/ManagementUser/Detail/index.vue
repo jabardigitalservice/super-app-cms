@@ -138,8 +138,9 @@
     </div>
     <BasePopupInputText
       :show-popup="showPopup"
-      account-name="Aaaaa"
+      account-name="Asep Kumaha"
       title="Edit No.HP"
+      :required="true"
       input-type="text"
       placeholder="Masukkan No.HP"
       label-input="No. Handphone <em>(No. sebelumnya 0822 1000 2000)</em>"
