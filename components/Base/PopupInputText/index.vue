@@ -10,10 +10,11 @@
         </p>
         <div class="my-4">
           <form class="global-form">
-            <label class="global-form__label" :class="{'global-form__label-required':required}" v-html="labelInput" />
+            <label class="font-lato text-[15px] text-gray-800 mb-1" :class="{'before:content-[\'*\'] before:mr-0.5 before:text-red-500':required}" v-html="labelInput" />
             <input
               :type="inputType"
               :placeholder="placeholder"
+              class="h-[38px] w-full rounded-lg border border-gray-500 bg-gray-50 px-2 py-[11px] font-lato text-gray-600 placeholder:text-sm placeholder:text-gray-600 focus:outline-none"
               :class="{ '!border !border-red-600': errorMessage!=='' }"
             >
             <small class="text-red-600">{{ errorMessage }}</small>

@@ -10,7 +10,7 @@
         </p>
         <div class="my-4">
           <form class="py-4 select__form" :class="{'mb-4':errorMessage!==''}">
-            <label class="text-[15px] text-gray-800 mb-1" :class="{'global-form_label-required':required}" v-html="labelInput" />
+            <label class="text-[15px] text-gray-800 mb-1" :class="{'before:content-[\'*\'] before:mr-0.5 before:text-red-500':required}" v-html="labelInput" />
             <jds-select
               :placeholder="placeholder"
               :options="options"

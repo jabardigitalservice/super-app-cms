@@ -6,17 +6,3 @@
   font-family: Lato;
 }
 
-.global-form__label,
-.global-form__label-required {
-  @apply font-lato text-[15px] text-gray-800 mb-1;
-}
-
-.global-form__label-required::before {
-  content: "*";
-  color: red;
-  margin-right: 4px;
-}
-
-.global-form input[type='text']{
-  @apply h-[38px] w-full rounded-lg border border-gray-500 bg-gray-50 px-2 py-[11px] font-lato text-gray-600 placeholder:text-sm placeholder:text-gray-600 focus:outline-none;
-}
