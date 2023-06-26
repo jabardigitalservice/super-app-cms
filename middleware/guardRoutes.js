@@ -15,7 +15,6 @@ export default function ({ $role, route, redirect, $auth, params }) {
     const allowedRoutesMenu = menu
       .flatMap(menuItem => menuItem.menu || [])
       .filter(menu =>
-        // menu.showMenuAndAccessForRoles?.includes(selectedPosition)
         menu?.showMenuAndAccessForRoles?.some(value => $role.includes(value))
       )
       .map(detailSubMenu => detailSubMenu.path)
