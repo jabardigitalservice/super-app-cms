@@ -1,6 +1,6 @@
 const rwMenu = {
   titleMenu: 'RW',
-  showTitleMenuForRoles: ['admin_ticket'],
+  showTitleMenuForRoles: ['admin'],
   menu: [
     {
       name: 'Klaim Akun RW',
