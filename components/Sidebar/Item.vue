@@ -40,10 +40,6 @@ export default {
     isShowArrow: {
       type: Boolean,
       default: true
-    },
-    role: {
-      type: String,
-      default: ''
     }
   },
   computed: {

@@ -3,19 +3,17 @@
     <SidebarHeader class="border-b px-6 py-7" />
     <div class="sidebar-content overflow-y-auto p-4">
       <div v-for="(menuList, index) in menu" :key="index">
-        <template v-if="$role.includes(menuList.role)">
-          <SidebarTitleMenu :title="menuList.titleMenu" />
-          <div class="flex flex-col gap-2">
-            <SidebarItem
-              v-for="menuSidebar in menuList.menu"
-              :key="menuSidebar.path"
-              :label="menuSidebar.name"
-              :is-show-arrow="menuSidebar.arrow"
-              :link="menuSidebar.path"
-              :role="menuSidebar.role"
-            />
-          </div>
-        </template>
+        <SidebarTitleMenu v-show="menuList?.showTitleMenuForRoles?.some(value => $role.includes(value))" :title="menuList.titleMenu" />
+        <div class="flex flex-col gap-2">
+          <SidebarItem
+            v-for="menuSidebar in menuList.menu"
+            v-show="menuSidebar?.showMenuAndAccessForRoles?.some(value => $role.includes(value))"
+            :key="menuSidebar.path"
+            :label="menuSidebar.name"
+            :is-show-arrow="menuSidebar.arrow"
+            :link="menuSidebar.path"
+          />
+        </div>
       </div>
     </div>
     <SidebarFooter
@@ -26,7 +24,7 @@
 </template>
 
 <script>
-import { menu } from '@/constant/menu'
+import { menu } from '@/constant/menuList.js'
 
 export default {
   name: 'ComponentSidebar',

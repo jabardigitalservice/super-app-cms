@@ -1,3 +1,6 @@
+
+import { menu } from '@/constant/menuList.js'
+
 export default function ({ $role, route, redirect, $auth, params }) {
   if (route.path !== '/login' && $auth.strategy.token.get()) {
     // redirect first login by role
@@ -7,27 +10,22 @@ export default function ({ $role, route, redirect, $auth, params }) {
       }
     }
 
-    // guard routes by roles
+    const allowedRoutesForAllRoles = ['/', '/login', '/logout', '/unauthorized']
 
-    const allowedRolesPathAdminRW = ['/', `/detail/${params.id}`, '/activities', '/message-notif', '/message-notif/create', `/message-notif/detail/${params.id}`, '/management-user', `/management-user/detail/${params.id}`, '/configuration', '/management-release', '/management-release/create', `/management-release/detail/${params.id}`, `/management-release/edit/${params.id}`]
-    const allowedRolesPathAdminTicket = ['/ticket-museum', `/ticket-museum/detail/${params.invoice}`]
+    const allowedRoutesMenu = menu
+      .flatMap(menuItem => menuItem.menu || [])
+      .filter(menu =>
+        menu?.showMenuAndAccessForRoles?.some(value => $role.includes(value))
+      )
+      .map(detailSubMenu => detailSubMenu.path)
 
-    const allowedRoutes = [
-      { routes: allowedRolesPathAdminRW, role: 'admin' },
-      { routes: allowedRolesPathAdminTicket, role: 'admin_ticket' }
-    ]
+    const hasMatchingRoute = allowedRoutesMenu.some(routePattern =>
+      route.path.startsWith(`/${routePattern}`)
+    )
 
-    const isAuthorized = allowedRoutes.flatMap((route) => {
-      if ($role.includes(route.role)) {
-        return route.routes
-      }
-      return []
-    }).includes(route.path)
-
-    if (route.path !== '/unauthorized') {
-      if (!isAuthorized) {
-        return redirect('/unauthorized')
-      }
+    if (!hasMatchingRoute && !allowedRoutesForAllRoles.includes(route.path)) {
+      // Pengguna tidak memiliki akses ke halaman saat ini, redirect atau tindakan lain
+      redirect('/unauthorized')
     }
   }
 }
