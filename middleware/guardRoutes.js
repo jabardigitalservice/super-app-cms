@@ -19,7 +19,16 @@ export default function ({ $role, route, redirect, $auth, params }) {
       )
       .map(detailSubMenu => detailSubMenu.path)
 
-    const hasMatchingRoute = allowedRoutesMenu.some(routePattern =>
+    const allowedRoutesChild = menu
+      .flatMap(menuItem => menuItem.childRoute || [])
+      .filter(childRoute =>
+        childRoute?.accessChildRouteForRoles?.some(value => $role.includes(value))
+      )
+      .map(detailSubMenu => detailSubMenu.path)
+
+    const allowedRoutesByRoles = [...allowedRoutesMenu, ...allowedRoutesChild]
+
+    const hasMatchingRoute = allowedRoutesByRoles.some(routePattern =>
       route.path.startsWith(`/${routePattern}`)
     )
 
