@@ -70,9 +70,21 @@ const masterDataMenu =
   ]
 }
 
+const aduanMenu = {
+  titleMenu: 'aduan',
+  showTitleMenuForRoles: ['admin'],
+  menu: [{
+    name: 'Daftar Aduan Masuk',
+    path: 'daftar-aduan-masuk',
+    arrow: false,
+    showMenuAndAccessForRoles: ['admin']
+  }]
+}
+
 export const menu = [
   rwMenu,
   messageNotifMenu,
   tiketMuseumMenu,
-  masterDataMenu
+  masterDataMenu,
+  aduanMenu
 ]
