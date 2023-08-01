@@ -42,7 +42,7 @@
           show-select
           :headers="complaintHeader"
           :items="listDataComplaint"
-          :pagination="{'currentPage':1,'totalRows':200,'itemsPerPage':10,'itemsPerPageOptions':[10,20,30,40,50],'disabled':false}"
+          :pagination="pagination"
         >
           <!-- eslint-disable-next-line vue/valid-v-slot -->
           <template #item.complaintStatus="{item}">
@@ -209,7 +209,7 @@ export default {
         currentPage: 1,
         totalRows: 5,
         itemsPerPage: 5,
-        itemsPerPageOptions: []
+        itemsPerPageOptions: [5, 10, 20]
       },
       sortBy: '',
       sortOrder: '',
