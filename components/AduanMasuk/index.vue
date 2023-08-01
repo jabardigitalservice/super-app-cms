@@ -219,7 +219,7 @@ export default {
     }
   },
   mounted () {
-    this.listDataComplaint = this.listTab[0].data
+    this.selectedTabHandle(0)
   },
   methods: {
     selectedTabHandle (index) {
