@@ -36,7 +36,7 @@ export default {
     },
     async actionRejectUser () {
       this.showRejectRw = false
-      this.dataInfo.title = 'Penolakan Akun RW'
+      this.informationDialog.title = 'Penolakan Akun RW'
       try {
         await this.$axios.post('/user/role/reject-rw', {
           userId: this.user.id
