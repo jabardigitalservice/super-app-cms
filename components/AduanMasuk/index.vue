@@ -71,14 +71,16 @@
 </template>
 
 <script>
-import IconAllComplaint from '~/assets/icon/complaint-icon.svg?inline'
-import IconWaitVerification from '~/assets/icon/complaint-wait-verify-icon.svg?inline'
-import IconVerification from '~/assets/icon/complaint-verify-icon.svg?inline'
-import IconFailed from '~/assets/icon/complaint-failed-icon.svg?inline'
+import IconAllComplaint from '~/assets/icon/icon-aduan/complaint-icon.svg?inline'
+import IconWaitVerification from '~/assets/icon/icon-aduan/complaint-wait-verify-icon.svg?inline'
+import IconVerification from '~/assets/icon/icon-aduan/complaint-verify-icon.svg?inline'
+import IconFailed from '~/assets/icon/icon-aduan/complaint-failed-icon.svg?inline'
+import IconCoordination from '~/assets/icon/icon-aduan/complaint-coordination-icon.svg?inline'
+import IconSpan from '~/assets/icon/icon-aduan/complaint-span-icon.svg?inline'
 import { complaintHeader, complaintStatus } from '~/constant/aduan-masuk'
 export default {
   name: 'AduanMasuk',
-  components: { IconAllComplaint, IconWaitVerification, IconVerification, IconFailed },
+  components: { IconAllComplaint, IconWaitVerification, IconVerification, IconFailed, IconCoordination, IconSpan },
   data () {
     return {
       listTab: [{
@@ -196,6 +198,93 @@ export default {
             createdAt: '05/01/2023 - 18:00',
             complaintStatus: 'Gagal Diverifikasi'
           }
+        ]
+      },
+      {
+        name: 'Dikoordinasikan',
+        icon: 'icon-coordination',
+        count: 50,
+        unit: 'ribu',
+        data: [
+          // {
+          //   complaintId: 'JBR0501202200012',
+          //   fullName: 'Kumaha',
+          //   complaintCategory: 'Kependudukan',
+          //   createdAt: '05/01/2023 - 18:00',
+          //   complaintStatus: 'Dikoordinasikan'
+          // },
+          // {
+          //   complaintId: 'JBR0501202200012',
+          //   fullName: 'Kumaha',
+          //   complaintCategory: 'Kependudukan',
+          //   createdAt: '05/01/2023 - 18:00',
+          //   complaintStatus: 'Dikoordinasikan'
+          // },
+          // {
+          //   complaintId: 'JBR0501202200012',
+          //   fullName: 'Kumaha',
+          //   complaintCategory: 'Kependudukan',
+          //   createdAt: '05/01/2023 - 18:00',
+          //   complaintStatus: 'Dikoordinasikan'
+          // }
+        ]
+      },
+      {
+        name: 'Dialihkan ke SP4N Lapor',
+        icon: 'icon-span',
+        count: 1,
+        unit: 'juta',
+        data: [
+          // {
+          //   complaintId: 'JBR0501202200012',
+          //   fullName: 'Kumaha',
+          //   complaintCategory: 'Kependudukan',
+          //   createdAt: '05/01/2023 - 18:00',
+          //   complaintStatus: 'Dialihkan ke SP4N Lapor'
+          // },
+          // {
+          //   complaintId: 'JBR0501202200012',
+          //   fullName: 'Kumaha',
+          //   complaintCategory: 'Kependudukan',
+          //   createdAt: '05/01/2023 - 18:00',
+          //   complaintStatus: 'Dialihkan ke SP4N Lapor'
+          // },
+          // {
+          //   complaintId: 'JBR0501202200012',
+          //   fullName: 'Kumaha',
+          //   complaintCategory: 'Kependudukan',
+          //   createdAt: '05/01/2023 - 18:00',
+          //   complaintStatus: 'Dialihkan ke SP4N Lapor'
+          // }
+        ]
+      },
+      {
+        name: 'Ditolak',
+        icon: 'icon-failed',
+        count: 25,
+        unit: 'ribu',
+        data: [
+          // {
+          //   complaintId: 'JBR0501202200012',
+          //   fullName: 'Kumaha',
+          //   complaintCategory: 'Kependudukan',
+          //   createdAt: '05/01/2023 - 18:00',
+          //   complaintStatus: 'Ditolak'
+          // },
+          // {
+          //   complaintId: 'JBR0501202200012',
+          //   fullName: 'Kumaha',
+          //   complaintCategory: 'Kependudukan',
+          //   createdAt: '05/01/2023 - 18:00',
+          //   complaintStatus: 'Ditolak'
+          // },
+          // {
+          //   complaintId: 'JBR0501202200012',
+          //   fullName: 'Kumaha',
+          //   complaintCategory: 'Kependudukan',
+          //   createdAt: '05/01/2023 - 18:00',
+          //   complaintStatus: 'Ditolak'
+          // }
         ]
       }
       ],
