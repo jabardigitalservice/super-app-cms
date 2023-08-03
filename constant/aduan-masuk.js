@@ -10,7 +10,10 @@ export const complaintHeader = [
 export const complaintStatus = {
   waiting: { id: 1, status: 'Menunggu Verifikasi' },
   success: { id: 2, status: 'Terverifikasi' },
-  failed: { id: 3, status: 'Gagal Diverifikasi' }
+  failed: { id: 3, status: 'Gagal Diverifikasi' },
+  coordination: { id: 4, status: 'Dikoordinasikan' },
+  redirecttospan: { id: 5, status: 'Dialihkan ke SP4N Lapor' },
+  rejected: { id: 6, status: 'Ditolak' }
 }
 
 export const aduanSpanHeader = [
