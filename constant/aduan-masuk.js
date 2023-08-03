@@ -12,3 +12,14 @@ export const complaintStatus = {
   success: { id: 2, status: 'Terverifikasi' },
   failed: { id: 3, status: 'Gagal Diverifikasi' }
 }
+
+export const aduanSpanHeader = [
+  { key: 'complaintId', text: 'ID Aduan', sortable: true },
+  { key: 'fullName', text: 'Nama Lengkap', sortable: true },
+  { key: 'createdAt', text: 'Tanggal Aduan Masuk', sortable: true },
+  { key: 'createdSpanAt', text: 'Tanggal Diinput SP4N', sortable: true },
+  { key: 'verificationSpan', text: 'Tanggal Verifikasi SP4n', sortable: true },
+  { key: 'spanID', text: 'ID SP4N', sortable: true },
+  { key: 'complaintStatus', text: 'Status', sortable: true },
+  { key: 'action', text: 'Aksi' }
+]
