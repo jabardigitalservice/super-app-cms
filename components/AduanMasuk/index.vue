@@ -61,8 +61,8 @@
             </div>
           </template>
           <!-- eslint-disable-next-line vue/valid-v-slot -->
-          <template #item.action>
-            <BaseTableAction :list-menu-pop-over="menuTableAction" />
+          <template #item.action="{item}">
+            <BaseTableAction :list-menu-pop-over="menuTableAction" @detail="goToPageDetailHandle(item)" />
           </template>
         </JdsDataTable>
       </BaseTabPanel>
@@ -225,12 +225,15 @@ export default {
     selectedTabHandle (index) {
       this.selectedTabIndex = index
       this.listDataComplaint = this.listTab[index].data
+    },
+    goToPageDetailHandle (item) {
+      this.$router.push(`/daftar-aduan-masuk/detail-aduan/${item.complaintId}`)
     }
   }
 }
 </script>
 
-<style sco>
+<style scoped>
   .icon-tab rect{
     fill: #008444 !important;
   }

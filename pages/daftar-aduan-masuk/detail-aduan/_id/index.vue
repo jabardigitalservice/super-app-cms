@@ -1,10 +1,10 @@
 <template>
-  <AduanMasuk />
+  <AduanMasukDetail />
 </template>
 
 <script>
+
 export default {
-  name: 'PageDaftarAduanMasuk',
   layout: 'Dashboard',
   data () {
     return {
@@ -12,9 +12,13 @@ export default {
         {
           label: 'Daftar Aduan Masuk',
           link: '/daftar-aduan-masuk'
+        },
+        {
+          label: 'Detail Aduan',
+          link: `/daftar-aduan-masuk/detail-aduan/${this.$route.params.id}`
         }
       ],
-      descriptionPage: 'Berisi semua daftar aduan dari masyarakat Jabar'
+      descriptionPage: 'Lorem ipsum dolor sit amet consectetur. Quis platea malesuada tincidunt et.'
     }
   },
   mounted () {
