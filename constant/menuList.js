@@ -75,7 +75,7 @@ const aduanMenu = {
   showTitleMenuForRoles: ['admin'],
   menu: [{
     name: 'Daftar Aduan Masuk',
-    path: 'daftar-aduan-masuk',
+    path: 'aduan/aduan-masuk',
     arrow: false,
     showMenuAndAccessForRoles: ['admin']
   }]
