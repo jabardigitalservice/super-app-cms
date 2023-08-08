@@ -3,7 +3,7 @@
     <template #tab-list>
       <BaseTabList
         class="bg-green-600"
-        :list-tab="listTab"
+        :list-tab="complaintStatus"
         @selected="selectedTabHandle"
       >
         <template #default="{ dataTab, indexTab }">
@@ -13,9 +13,12 @@
             :title="dataTab.name"
           >
             <button class="flex items-start text-sm text-green-100">
-              <component
-                :is="dataTab.icon"
-                class="icon-tab-content mt-1"
+              <BaseIconSvg
+                :icon="dataTab.icon"
+                class="icon-tab-content mt-1 !h-[14px] !w-[14px] !shadow-lg"
+                :fill-color="
+                  indexTab === selectedTabIndex ? '#16A75C' : '#FFFFFF'
+                "
                 :class="{ 'icon-tab-selected': indexTab === selectedTabIndex }"
               />
               <div
@@ -83,12 +86,12 @@
         </div>
         <JdsDataTable
           show-select
-          :headers="complaintHeader"
+          :headers="checkTypeHeaderAduan(typeAduanPage)"
           :items="listDataComplaint"
           :pagination="pagination"
         >
           <!-- eslint-disable-next-line vue/valid-v-slot -->
-          <template #item.complaintStatus="{ item }">
+          <!-- <template #item.complaintStatus="{ item }">
             <div class="flex items-center">
               <p
                 v-show="item?.complaintStatus"
@@ -105,7 +108,7 @@
                 {{ item.complaintStatus || "-" }}
               </p>
             </div>
-          </template>
+          </template> -->
           <!-- eslint-disable-next-line vue/valid-v-slot -->
           <template #item.action>
             <BaseTableAction :list-menu-pop-over="menuTableAction" />
@@ -117,22 +120,19 @@
 </template>
 
 <script>
-import IconAllComplaint from '~/assets/icon/icon-aduan/complaint-icon.svg?inline'
-import IconWaitVerification from '~/assets/icon/icon-aduan/complaint-wait-verify-icon.svg?inline'
-import IconVerification from '~/assets/icon/icon-aduan/complaint-verify-icon.svg?inline'
-import IconFailed from '~/assets/icon/icon-aduan/complaint-failed-icon.svg?inline'
-import IconCoordination from '~/assets/icon/icon-aduan/complaint-coordination-icon.svg?inline'
-import IconSpan from '~/assets/icon/icon-aduan/complaint-span-icon.svg?inline'
-import { complaintHeader, complaintStatus } from '~/constant/aduan-masuk'
+import {
+  complaintHeader,
+  complaintStatus,
+  aduanSpanHeader,
+  typeAduan
+} from '~/constant/aduan-masuk'
 export default {
   name: 'AduanMasuk',
-  components: {
-    IconAllComplaint,
-    IconWaitVerification,
-    IconVerification,
-    IconFailed,
-    IconCoordination,
-    IconSpan
+  props: {
+    typeAduanPage: {
+      type: String,
+      default: ''
+    }
   },
   data () {
     return {
@@ -358,7 +358,9 @@ export default {
       sortOrder: '',
       complaintHeader,
       complaintStatus,
-      selectedTabIndex: 0
+      selectedTabIndex: 0,
+      aduanSpanHeader,
+      typeAduan
     }
   },
   mounted () {
@@ -368,6 +370,16 @@ export default {
     selectedTabHandle (index) {
       this.selectedTabIndex = index
       this.listDataComplaint = this.listTab[index].data
+    },
+    checkTypeHeaderAduan (type) {
+      switch (type) {
+        case typeAduan.aduanMasuk:
+          return complaintHeader
+        case typeAduan.aduanSpanLapor:
+          return aduanSpanHeader
+        default:
+          return {}
+      }
     }
   }
 }

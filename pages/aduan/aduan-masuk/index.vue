@@ -1,8 +1,9 @@
 <template>
-  <AduanMasuk />
+  <AduanMasuk :type-aduan-page="typeAduan.aduanMasuk" />
 </template>
 
 <script>
+import { typeAduan } from '~/constant/aduan-masuk'
 export default {
   name: 'PageManagementRelease',
   layout: 'Dashboard',
@@ -11,10 +12,11 @@ export default {
       navigations: [
         {
           label: 'Daftar Aduan Masuk',
-          link: '/daftar-aduan-masuk'
+          link: '/aduan/aduan-masuk'
         }
       ],
-      descriptionPage: 'Berisi semua daftar aduan dari masyarakat Jabar'
+      descriptionPage: 'Berisi semua daftar aduan dari masyarakat Jabar',
+      typeAduan
     }
   },
   mounted () {
