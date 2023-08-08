@@ -1,5 +1,5 @@
 <template>
-  <AduanMasuk :type-aduan-page="typeAduan.aduanMasuk.props" />
+  <AduanMasuk :type-aduan-page="typeAduan.aduanDiProses.props" />
 </template>
 
 <script>
@@ -11,8 +11,8 @@ export default {
     return {
       navigations: [
         {
-          label: typeAduan.aduanMasuk.label,
-          link: typeAduan.aduanMasuk.link
+          label: typeAduan.aduanDiProses.label,
+          link: typeAduan.aduanDiProses.link
         }
       ],
       descriptionPage: 'Berisi semua daftar aduan dari masyarakat Jabar',
@@ -20,7 +20,7 @@ export default {
     }
   },
   mounted () {
-    this.$store.commit('setActivePage', typeAduan.aduanMasuk.label)
+    this.$store.commit('setActivePage', typeAduan.aduanDiProses.label)
     this.$store.commit('setHeader', {
       navigations: this.navigations,
       descriptionPage: this.descriptionPage

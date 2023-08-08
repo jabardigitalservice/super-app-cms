@@ -8,19 +8,32 @@
       >
         <template #default="{ dataTab, indexTab }">
           <BaseTab
+            v-if="
+              dataTab.typeAduan.includes(typeAduanPage) || dataTab.typeAduan.includes('all')
+            "
             :class="{ 'ml-2': indexTab > 0 }"
             :selected="indexTab === selectedTabIndex"
             :title="dataTab.name"
           >
             <button class="flex items-start text-sm text-green-100">
-              <BaseIconSvg
-                :icon="dataTab.icon"
-                class="icon-tab-content mt-1 !h-[14px] !w-[14px] !shadow-lg"
-                :fill-color="
-                  indexTab === selectedTabIndex ? '#16A75C' : '#FFFFFF'
+              <div
+                class="h-[28px] w-[28px] rounded-full"
+                :class="
+                  indexTab === selectedTabIndex ? 'bg-gray-100' : 'bg-green-800'
                 "
-                :class="{ 'icon-tab-selected': indexTab === selectedTabIndex }"
-              />
+              >
+                <BaseIconSvg
+                  :icon="dataTab.icon"
+                  class="icon-tab-content mt-1 !h-[14px] !w-[14px] !shadow-lg"
+                  :fill-color="
+                    indexTab === selectedTabIndex ? '#16A75C' : '#FFFFFF'
+                  "
+                  :class="{
+                    'icon-tab-selected': indexTab === selectedTabIndex,
+                  }"
+                />
+              </div>
+
               <div
                 class="ml-2 !font-roboto text-green-100"
                 :class="{ '!text-gray-700': indexTab === selectedTabIndex }"
@@ -32,7 +45,7 @@
                     '!text-blue-gray-800': indexTab === selectedTabIndex,
                   }"
                 >
-                  {{ dataTab.count }}
+                  {{ dataTab.value }}
                   <span
                     class="!font-roboto text-sm font-medium capitalize text-white"
                     :class="{
@@ -90,13 +103,15 @@
           :items="listDataComplaint"
           :pagination="pagination"
         >
+          {{ item }}
           <!-- eslint-disable-next-line vue/valid-v-slot -->
-          <!-- <template #item.complaintStatus="{ item }">
+          <template #item.complaintStatus="{ item }">
             <div class="flex items-center">
-              <p
+              {{ item.complaint_status }}
+              <!-- <p
                 v-show="item?.complaintStatus"
+                class="h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 text-xs font-semibold"
                 :class="{
-                  'h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 text-xs font-semibold': true,
                   'text-[#FF9500]':
                     item.complaintStatus == complaintStatus.waiting.status,
                   'text-[#1E88E5]':
@@ -106,9 +121,9 @@
                 }"
               >
                 {{ item.complaintStatus || "-" }}
-              </p>
+              </p> -->
             </div>
-          </template> -->
+          </template>
           <!-- eslint-disable-next-line vue/valid-v-slot -->
           <template #item.action>
             <BaseTableAction :list-menu-pop-over="menuTableAction" />
@@ -363,19 +378,42 @@ export default {
       typeAduan
     }
   },
+  async fetch () {
+    try {
+      let query = {
+        // search: this.search,
+        page: this.pagination.currentPage,
+        limit: this.pagination.totalRows
+      }
+      if (this.search !== '') {
+        query = { search: this.search, ...query }
+      }
+      const response = await this.$axios.get('/warga/complaints', { params: query })
+      const dataComplaint = response.data.data
+      this.listDataComplaint = dataComplaint.data.map((item) => {
+        return { id: item.id, name: item.user.name, category: item.complaint_category.name, status: item.complaint_status.name, created_at: item.created_at }
+      })
+      this.pagination.currentPage = dataComplaint.page
+      this.pagination.totalRows = dataComplaint.total_data
+    } catch {
+      this.listDataComplaint = []
+    }
+  },
   mounted () {
     this.selectedTabHandle(0)
   },
   methods: {
+
     selectedTabHandle (index) {
       this.selectedTabIndex = index
       this.listDataComplaint = this.listTab[index].data
     },
     checkTypeHeaderAduan (type) {
       switch (type) {
-        case typeAduan.aduanMasuk:
+        case typeAduan.aduanMasuk.props:
+        case typeAduan.aduanDiProses.props:
           return complaintHeader
-        case typeAduan.aduanSpanLapor:
+        case typeAduan.aduanSpanLapor.props:
           return aduanSpanHeader
         default:
           return {}
