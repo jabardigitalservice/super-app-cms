@@ -15,6 +15,12 @@ const rwMenu = {
       showMenuAndAccessForRoles: ['admin']
 
     }
+  ],
+  childRoute: [
+    {
+      path: 'detail',
+      accessChildRouteForRoles: ['admin']
+    }
   ]
 }
 

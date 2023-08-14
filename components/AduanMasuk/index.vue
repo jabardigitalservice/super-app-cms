@@ -117,8 +117,8 @@
             </div>
           </template>
           <!-- eslint-disable-next-line vue/valid-v-slot -->
-          <template #item.action>
-            <BaseTableAction :list-menu-pop-over="menuTableAction" />
+          <template #item.action="{item}">
+            <BaseTableAction :list-menu-pop-over="menuTableAction" @detail="goToPageDetailHandle(item)" />
           </template>
         </JdsDataTable>
       </BaseTabPanel>
@@ -423,15 +423,29 @@ export default {
       const status = complaintStatus.find(item => item.id === statusId)
 
       return status?.statusColor ? status.statusColor : ''
+    },
+    goToPageDetailHandle (item) {
+      this.$router.push(`/daftar-aduan-masuk/detail-aduan/${item.complaintId}`)
     }
   }
 }
 </script>
 
+<<<<<<< .merge_file_a09236
 <style sco>
 .icon-tab rect {
   fill: #008444 !important;
 }
+=======
+<style scoped>
+  .icon-tab rect{
+    fill: #008444 !important;
+  }
+
+  .icon-tab path{
+    stroke: white;
+  }
+>>>>>>> .merge_file_a02376
 
 .icon-tab path {
   stroke: white;
