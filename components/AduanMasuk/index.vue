@@ -431,12 +431,6 @@ export default {
 }
 </script>
 
-<<<<<<< .merge_file_a09236
-<style sco>
-.icon-tab rect {
-  fill: #008444 !important;
-}
-=======
 <style scoped>
   .icon-tab rect{
     fill: #008444 !important;
@@ -445,7 +439,6 @@ export default {
   .icon-tab path{
     stroke: white;
   }
->>>>>>> .merge_file_a02376
 
 .icon-tab path {
   stroke: white;
