@@ -9,7 +9,8 @@
         <template #default="{ dataTab, indexTab }">
           <BaseTab
             v-if="
-              dataTab.typeAduan.includes(typeAduanPage) || dataTab.typeAduan.includes('all')
+              dataTab.typeAduan.includes(typeAduanPage) ||
+                dataTab.typeAduan.includes('all')
             "
             :class="{ 'ml-2': indexTab > 0 }"
             :selected="indexTab === selectedTabIndex"
@@ -103,25 +104,16 @@
           :items="listDataComplaint"
           :pagination="pagination"
         >
-          {{ item }}
           <!-- eslint-disable-next-line vue/valid-v-slot -->
-          <template #item.complaintStatus="{ item }">
+          <template #item.status="{ item }">
             <div class="flex items-center">
-              {{ item.complaint_status }}
-              <!-- <p
-                v-show="item?.complaintStatus"
+              <p
+                v-show="item?.status"
                 class="h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 text-xs font-semibold"
-                :class="{
-                  'text-[#FF9500]':
-                    item.complaintStatus == complaintStatus.waiting.status,
-                  'text-[#1E88E5]':
-                    item.complaintStatus == complaintStatus.success.status,
-                  'text-[#DD5E5E]':
-                    item.complaintStatus == complaintStatus.failed.status,
-                }"
+                :class="getColor(item?.status_id)"
               >
-                {{ item.complaintStatus || "-" }}
-              </p> -->
+                {{ item.status }}
+              </p>
             </div>
           </template>
           <!-- eslint-disable-next-line vue/valid-v-slot -->
@@ -388,10 +380,19 @@ export default {
       if (this.search !== '') {
         query = { search: this.search, ...query }
       }
-      const response = await this.$axios.get('/warga/complaints', { params: query })
+      const response = await this.$axios.get('/warga/complaints', {
+        params: query
+      })
       const dataComplaint = response.data.data
       this.listDataComplaint = dataComplaint.data.map((item) => {
-        return { id: item.id, name: item.user.name, category: item.complaint_category.name, status: item.complaint_status.name, created_at: item.created_at }
+        return {
+          id: item.id,
+          name: item.user.name,
+          category: item.complaint_category.name,
+          status: item.complaint_status.name,
+          created_at: item.created_at,
+          status_id: item.complaint_status.id
+        }
       })
       this.pagination.currentPage = dataComplaint.page
       this.pagination.totalRows = dataComplaint.total_data
@@ -403,7 +404,6 @@ export default {
     this.selectedTabHandle(0)
   },
   methods: {
-
     selectedTabHandle (index) {
       this.selectedTabIndex = index
       this.listDataComplaint = this.listTab[index].data
@@ -418,6 +418,11 @@ export default {
         default:
           return {}
       }
+    },
+    getColor (statusId) {
+      const status = complaintStatus.find(item => item.id === statusId)
+
+      return status?.statusColor ? status.statusColor : ''
     }
   }
 }
