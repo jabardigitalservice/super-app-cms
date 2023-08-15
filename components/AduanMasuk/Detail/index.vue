@@ -16,11 +16,14 @@
     </div>
     <BaseTabGroup>
       <template #tab-list>
-        <BaseTabList :list-tab="listTab" class="h-11">
+        <BaseTabList :list-tab="listTab">
           <template #default="{dataTab,indexTab}">
-            <BaseTab class="h-11 !p-[6px]" :selected="(indexTab===selectedTabIndex)">
+            <BaseTab class="!h-11 !p-[6px]" :selected="(indexTab===selectedTabIndex)">
               <button class="flex items-center text-sm text-green-100">
-                <component :is="dataTab.icon" class="mt-1 icon-tab-content h-7 w-7" :class="{'icon-tab-selected':(indexTab===selectedTabIndex)}" />
+                <div class="rounded-full px-[6px] py-1" :class="{'bg-gray-100':indexTab===selectedTabIndex}">
+                  <BaseIconSvg :icon="dataTab.icon" :size="14" :fill-color="indexTab===selectedTabIndex ? '#069550' : '#0000'" />
+                </div>
+
                 <div class="ml-2 text-green-100 !font-roboto" :class="{'!text-gray-700':(indexTab===selectedTabIndex)}">
                   {{ dataTab.name }}
                 </div>
@@ -42,18 +45,18 @@
                 <td class="w-[164px] text-lato">
                   <strong class="text-[10px]">ID Aduan </strong>
                 </td>
-                <td>5594123812518</td>
+                <td>{{ detailComplaint?.id || '-' }}</td>
               </tr>
               <tr>
                 <td><strong>Tanggal Aduan Masuk</strong></td>
-                <td>05/01/2023 - 18:00</td>
+                <td>{{ detailComplaint?.created_at }} </td>
               </tr>
               <tr>
                 <td><strong>Status</strong></td>
                 <td>
                   <div class="flex items-center">
-                    <div class=" mr-2 h-2 w-2 rounded-full bg-yellow-600" />
-                    Menunggu Verifikasi
+                    <div v-show="detailComplaint?.complaint_status" class=" mr-2 h-2 w-2 rounded-full" :class="getStatusColorHandle(detailComplaint?.complaint_status?.id)" />
+                    {{ detailComplaint?.complaint_status?.name|| '-' }}
                   </div>
                 </td>
               </tr>
@@ -63,23 +66,23 @@
                 <td class="w-[180px]">
                   <strong class="text-[10px]">Nama Lengkap </strong>
                 </td>
-                <td>Asep Kumaha</td>
+                <td>{{ detailComplaint?.user?.name || "-" }}</td>
               </tr>
               <tr>
                 <td><strong>No. Kontak</strong></td>
-                <td>082210002000</td>
+                <td>{{ detailComplaint?.user?.phone || "-" }}</td>
               </tr>
               <tr>
                 <td><strong>Email</strong></td>
-                <td>asep.kumaha@gmail.com</td>
+                <td>{{ detailComplaint?.user?.email || '-' }}</td>
               </tr>
               <tr>
                 <td><strong>Jenis Media Sosial</strong></td>
-                <td>Instagram</td>
+                <td>{{ detailComplaint?.social_media?.name || "-" }}</td>
               </tr>
               <tr>
                 <td><strong>Link Akun Media Sosial</strong></td>
-                <td>https://instagram.com/asep.kumaha</td>
+                <td>{{ detailComplaint?.social_media_link || '-' }}</td>
               </tr>
               <tr>
                 <td colspan="2">
@@ -88,7 +91,7 @@
               </tr>
               <tr>
                 <td>Koordinat</td>
-                <td>-6.902020, 107.61807</td>
+                <td>{{ getCoordinatHandle() }}</td>
               </tr>
             </BaseTableDetail>
             <BaseTableDetail header="Detail Aduan" class="mb-4">
@@ -96,30 +99,30 @@
                 <td class="w-[180px]">
                   <strong class="text-[10px]">Kategori Aduan </strong>
                 </td>
-                <td>Kependudukan</td>
+                <td>{{ detailComplaint?.complaint_category?.name || '-' }}</td>
               </tr>
               <tr>
                 <td><strong>Sub Kategori Aduan</strong></td>
-                <td>Administrasi Kependudukan</td>
+                <td>{{ detailComplaint?.complaint_subcategory?.name || '-' }}</td>
               </tr>
               <tr>
                 <td><strong>Judul Aduan</strong></td>
-                <td>Pungli</td>
+                <td>{{ detailComplaint?.title || '-' }}</td>
               </tr>
               <tr>
                 <td><strong>Detail Aduan</strong></td>
-                <td>saya dimintai uang sama RT dengan alasan karena saya merrusak tiang listrik dan rumah nya beliau , salah saya dimana ? saya tidak terima !!!!</td>
+                <td>{{ detailComplaint?.description || '-' }}</td>
               </tr>
               <tr>
                 <td><strong>Lokasi Kejadian</strong></td>
               </tr>
               <tr>
                 <td>Kabupaten</td>
-                <td>Bekasi</td>
+                <td>{{ detailComplaint?.district?.name || '-' }}</td>
               </tr>
               <tr>
                 <td>Kecamatan</td>
-                <td>Bojongsoang</td>
+                <td>{{ detailComplaint?.subdistrict?.name || '-' }}</td>
               </tr>
               <tr>
                 <td>Kelurahan</td>
@@ -131,46 +134,69 @@
                 </td>
               </tr>
               <tr>
-                <td>Gmaps</td>
-                <td><a class="text-[#1E88E5]" href="https://gmaps.com/klasjdlkfjaslkdjf/-12000,15000">https://gmaps.com/klasjdlkfjaslkdjf/-12000,15000</a></td>
-              </tr>
-              <tr>
                 <td>
                   Detail Lokasi
                 </td>
-                <td>Jl. Raya Cimahi-Cibeureum, Randusari, Kec. Cibeureum, Kabupaten Kuningan, Jawa Barat 45588, Indonesia</td>
+                <td>{{ detailComplaint?.address_detail || '-' }}</td>
               </tr>
             </BaseTableDetail>
             <BaseTableDetail header="Bukti Foto">
-              <td class="px-2">
-                <strong>IMG202305011800.jpg</strong>
-              </td>
-              <td class="px-2 py-[6px]">
-                <jds-button variant="secondary" class="!font-medium w-[100px] !text-sm !py-[6px] !px-4 !border-green-600 !text-green-600">
-                  Lihat Foto
-                </jds-button>
-              </td>
+              <tr v-for="item in detailComplaint?.photos" :key="item.url">
+                <td class="px-2 w-1/2">
+                  <strong>{{ item.url }}</strong>
+                </td>
+                <td class="px-2 py-[6px]">
+                  <jds-button variant="secondary" class="!font-medium w-[100px] !text-sm !py-[6px] !px-4 !border-green-600 !text-green-600" @click="showViewPhotoDialogHandle(item.url)">
+                    Lihat Foto
+                  </jds-button>
+                </td>
+              </tr>
             </BaseTableDetail>
           </div>
         </BaseTabPanel>
       </template>
     </basetabgroup>
+    <BaseViewFile
+      title="Bukti Foto Aduan"
+      :with-url-path="true"
+      :file="photo.url"
+      mime-type="image/*"
+      :show="photo.showPopup"
+      @close="photo.showPopup=false"
+    />
   </div>
 </template>
 
 <script>
 import ArrowLeft from '~/assets/icon/arrow-left.svg?inline'
-import IconDetailComplaint from '~/assets/icon/complaint-detail-icon.svg?inline'
+import { complaintStatus } from '~/constant/aduan-masuk'
+import { formatDate } from '~/utils'
 export default {
   name: 'DetailAduanMasuk',
-  components: { ArrowLeft, IconDetailComplaint },
+  components: { ArrowLeft },
   data () {
     return {
       listTab: [{
         name: 'Detail Aduan',
-        icon: 'icon-detail-complaint'
+        icon: '/icon/icon-aduan/complaint-detail.svg'
       }],
-      selectedTabIndex: 0
+      selectedTabIndex: 0,
+      detailComplaint: {},
+      complaintStatus,
+      photo: {
+        url: '',
+        showPopup: false
+      }
+    }
+  },
+  async fetch () {
+    try {
+      const response = await this.$axios.get(`/warga/complaints/${this.$route.params.id}`)
+      this.detailComplaint = response.data.data
+      this.detailComplaint.created_at = formatDate(this.detailComplaint?.created_at, 'dd/MM/yyyy-HH:mm')
+      this.detailComplaint.complaint_status = this.getStatusHandle(this.detailComplaint?.complaint_status?.id)
+    } catch {
+      this.detailComplaint = {}
     }
   },
   mounted () {
@@ -182,6 +208,36 @@ export default {
     },
     goToBackHandle () {
       this.$router.push('/daftar-aduan-masuk')
+    },
+    getStatusHandle (id) {
+      const result = this.complaintStatus.find(item => item.id === id)
+      return result
+    },
+    getCoordinatHandle () {
+      if (this.detailComplaint?.longitude && this.detailComplaint?.latitude) {
+        return `${this.detailComplaint.latitude}, ${this.detailComplaint.longitude}`
+      } else {
+        return '-'
+      }
+    },
+    getStatusColorHandle (id) {
+      let result = ''
+      switch (id) {
+        case 'unverified':
+          result = 'bg-yellow-600'
+          break
+        case 'verified':
+          result = 'bg-[#1E88E5]'
+          break
+        case 'failed':
+          result = 'bg-red-400'
+      }
+      return result
+    },
+    showViewPhotoDialogHandle (url) {
+      this.photo.showPopup = true
+      this.photo.url = 'loading'
+      this.photo.url = url
     }
   }
 }
