@@ -24,12 +24,12 @@ export const typeAduan = {
   aduanSpanLapor: { props: 'aduan-span-lapor', label: 'Daftar Aduan Dialihkan Ke SP4N Lapor', link: '/aduan/aduan-span-lapor' }
 }
 
-export const complaintStatus = [
-  { id: 'total', name: 'Semua Aduan', value: 150, statusColor: '', icon: '/icon/icon-aduan/complaint-icon.svg', typeAduan: ['all'] },
-  { id: 'unverified', name: 'Menunggu Verifikasi', value: 2000, statusColor: 'yellow-800', icon: '/icon/icon-aduan/complaint-wait-verify-icon.svg', typeAduan: [typeAduan.aduanMasuk.props, typeAduan.aduanSpanLapor.props] },
-  { id: 'verified', name: 'Terverifikasi', value: 300, statusColor: 'blue-600', icon: '/icon/icon-aduan/complaint-verify-icon.svg', typeAduan: [typeAduan.aduanMasuk.props, typeAduan.aduanSpanLapor.props] },
-  { id: 'failed', name: 'Gagal Diverifikasi', value: 1000, statusColor: '[#DD5E5E]', icon: '/icon/icon-aduan/complaint-failed-icon.svg', typeAduan: [typeAduan.aduanMasuk.props, typeAduan.aduanSpanLapor.props] },
-  { id: 'coordination', name: 'Dikoordinasikan', value: 25000, statusColor: 'green-600', icon: '/icon/icon-aduan/complaint-coordination-icon.svg', typeAduan: [typeAduan.aduanDiProses.props] },
-  { id: 'divertedtospan', name: 'Dialihkan ke SP4N Lapor', value: 123, statusColor: 'green-600', icon: '/icon/icon-aduan/complaint-span-icon.svg', typeAduan: [typeAduan.aduanDiProses.props] },
-  { id: 'rejected', name: 'Ditolak', value: 2312, statusColor: 'red-400', icon: '/icon/icon-aduan/complaint-failed-icon.svg', typeAduan: [typeAduan.aduanDiProses.props] }
-]
+export const complaintStatus = {
+  total: { id: 'total', name: 'Semua Aduan', value: 150, statusColor: '', icon: '/icon/icon-aduan/complaint-icon.svg', typeAduan: ['all'] },
+  unverified: { id: 'unverified', name: 'Menunggu Verifikasi', value: 2000, statusColor: '[#FF9500]', icon: '/icon/icon-aduan/complaint-wait-verify-icon.svg', typeAduan: [typeAduan.aduanMasuk.props, typeAduan.aduanSpanLapor.props] },
+  verified: { id: 'verified', name: 'Terverifikasi', value: 300, statusColor: '[#1E88E5]', icon: '/icon/icon-aduan/complaint-verify-icon.svg', typeAduan: [typeAduan.aduanMasuk.props, typeAduan.aduanSpanLapor.props] },
+  failed: { id: 'failed', name: 'Gagal Diverifikasi', value: 1000, statusColor: '[#DD5E5E]', icon: '/icon/icon-aduan/complaint-failed-icon.svg', typeAduan: [typeAduan.aduanMasuk.props, typeAduan.aduanSpanLapor.props] },
+  coordinated: { id: 'coordinated', name: 'Dikoordinasikan', value: 25000, statusColor: '[#16A75C]', icon: '/icon/icon-aduan/complaint-coordination-icon.svg', typeAduan: [typeAduan.aduanDiProses.props] },
+  diverted_to_span: { id: 'diverted_to_span', name: 'Dialihkan ke SP4N Lapor', value: 123, statusColor: '[#16A75C]', icon: '/icon/icon-aduan/complaint-span-icon.svg', typeAduan: [typeAduan.aduanDiProses.props] },
+  rejected: { id: 'rejected', name: 'Ditolak', value: 2312, statusColor: '[#EF5350]', icon: '/icon/icon-aduan/complaint-failed-icon.svg', typeAduan: [typeAduan.aduanDiProses.props] }
+}
