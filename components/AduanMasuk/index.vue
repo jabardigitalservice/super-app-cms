@@ -116,6 +116,7 @@
               <p
                 v-show="item?.status"
                 class="h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 text-xs font-semibold"
+                :class="getColorText(item?.status_id)"
               >
                 {{ item.status }}
               </p>
@@ -294,6 +295,31 @@ export default {
     },
     goToPageDetailHandle (item) {
       this.$router.push(`/daftar-aduan-masuk/detail-aduan/${item.complaintId}`)
+    },
+    getColorText (statusId) {
+      console.log('Status ID:', statusId) // Cek nilai statusId pada konsol
+      switch (statusId) {
+        case complaintStatus.unverified.id:
+          console.log('Matching unverified status')
+          return `text-${complaintStatus.unverified.statusColor}`
+        case complaintStatus.verified.id:
+          console.log('Matching verified status')
+          return `text-${complaintStatus.verified.statusColor}`
+        case complaintStatus.failed.id:
+          console.log('Matching failed status')
+          return `text-${complaintStatus.failed.statusColor}`
+        case complaintStatus.coordinated.id:
+          console.log('Matching coordinated status')
+          return `text-${complaintStatus.coordinated.statusColor}`
+        case complaintStatus.diverted_to_span.id:
+          console.log('Matching diverted to span status')
+          return `text-${complaintStatus.diverted_to_span.statusColor}`
+        case complaintStatus.rejected.id:
+          console.log('Matching rejected status')
+          return `text-${complaintStatus.rejected.statusColor}`
+        default:
+          return 'text-gray-900'
+      }
     }
   }
 }
