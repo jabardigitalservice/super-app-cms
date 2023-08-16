@@ -126,7 +126,7 @@
               </tr>
               <tr>
                 <td>Kelurahan</td>
-                <td>Jangraga</td>
+                <td>{{ detailComplaint?.village?.name || '-' }}</td>
               </tr>
               <tr>
                 <td>
@@ -193,7 +193,7 @@ export default {
     try {
       const response = await this.$axios.get(`/warga/complaints/${this.$route.params.id}`)
       this.detailComplaint = response.data.data
-      this.detailComplaint.created_at = formatDate(this.detailComplaint?.created_at, 'dd/MM/yyyy-HH:mm')
+      this.detailComplaint.created_at = formatDate(this.detailComplaint?.created_at, 'dd/MM/yyyy - HH:mm')
       this.detailComplaint.complaint_status = this.getStatusHandle(this.detailComplaint?.complaint_status?.id)
     } catch {
       this.detailComplaint = {}
@@ -227,7 +227,7 @@ export default {
           result = 'bg-yellow-600'
           break
         case 'verified':
-          result = 'bg-[#1E88E5]'
+          result = 'bg-green-600'
           break
         case 'failed':
           result = 'bg-red-400'
