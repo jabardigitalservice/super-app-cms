@@ -117,16 +117,16 @@
                 <td><strong>Lokasi Kejadian</strong></td>
               </tr>
               <tr>
-                <td>Kabupaten</td>
-                <td>{{ detailComplaint?.district?.name || '-' }}</td>
+                <td>Kabupaten / Kota </td>
+                <td>{{ detailComplaint?.city?.name || '-' }}</td>
               </tr>
               <tr>
                 <td>Kecamatan</td>
-                <td>{{ detailComplaint?.subdistrict?.name || '-' }}</td>
+                <td>{{ detailComplaint?.district?.name || '-' }}</td>
               </tr>
               <tr>
                 <td>Kelurahan</td>
-                <td>{{ detailComplaint?.village?.name || '-' }}</td>
+                <td>{{ detailComplaint?.subdistrict?.name || '-' }}</td>
               </tr>
               <tr>
                 <td>
