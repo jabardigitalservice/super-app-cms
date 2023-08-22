@@ -148,11 +148,11 @@
               </tr>
               <tr>
                 <td>Latitude</td>
-                <td>{{ detailComplaint?.latitude || '-0' }}</td>
+                <td>{{ detailComplaint?.latitude || '-' }}</td>
               </tr>
               <tr>
                 <td>Longitude</td>
-                <td>{{ detailComplaint?.longitude || '0' }}</td>
+                <td>{{ detailComplaint?.longitude || '-' }}</td>
               </tr>
               <tr>
                 <td class="align-top">
