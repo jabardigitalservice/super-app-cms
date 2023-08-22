@@ -60,6 +60,15 @@
                   </div>
                 </td>
               </tr>
+              <tr v-show="detailComplaint?.complaint_status?.id==='failed'">
+                <td><strong>Alasan</strong></td>
+                <td>
+                  <div class="flex items-center">
+                    <div v-show="detailComplaint?.complaint_status" class=" mr-2 h-2 w-2 rounded-full" :class="getStatusColorHandle(detailComplaint?.complaint_status?.id)" />
+                    {{ detailComplaint?.complaint_status?.name|| '-' }}
+                  </div>
+                </td>
+              </tr>
             </BaseTableDetail>
             <BaseTableDetail header="Informasi Pelapor" class="mb-4">
               <tr>
@@ -128,25 +137,52 @@
                 <td>Kelurahan</td>
                 <td>{{ detailComplaint?.subdistrict?.name || '-' }}</td>
               </tr>
+              <tr colspan="2">
+                <td>Detail Lokasi Kejadian</td>
+                <td>{{ detailComplaint?.address_detail || '-' }}</td>
+              </tr>
               <tr>
-                <td>
+                <td colspan="2">
                   <strong>Titik Lokasi Kejadian</strong>
                 </td>
               </tr>
               <tr>
-                <td>
+                <td>Latitude</td>
+                <td>{{ detailComplaint?.latitude || '-0' }}</td>
+              </tr>
+              <tr>
+                <td>Longitude</td>
+                <td>{{ detailComplaint?.longitude || '0' }}</td>
+              </tr>
+              <tr>
+                <td class="align-top">
                   Detail Lokasi
                 </td>
-                <td>{{ detailComplaint?.address_detail || '-' }}</td>
+                <td>
+                  <iframe
+                    v-if="detailComplaint?.latitude&&detailComplaint?.longitude"
+                    class="rounded-lg"
+                    width="389"
+                    height="245"
+                    frameborder="0"
+                    style="border:0"
+                    referrerpolicy="no-referrer-when-downgrade"
+                    :src="`https://www.google.com/maps/embed/v1/place?key=AIzaSyAb1GS1A6oPN6YxCLgflZ79_pci2Vc5Qvw&q=${detailComplaint?.latitude},${detailComplaint?.longitude}`"
+                    allowfullscreen
+                  />
+                  <div v-else>
+                    -
+                  </div>
+                </td>
               </tr>
             </BaseTableDetail>
             <BaseTableDetail header="Bukti Foto">
-              <tr v-for="item in detailComplaint?.photos" :key="item.url">
-                <td class="px-2 w-1/2">
-                  <strong>{{ item.url }}</strong>
+              <tr>
+                <td class="px-2 w-1/4">
+                  <strong>{{ listPhoto.length }} Foto</strong>
                 </td>
                 <td class="px-2 py-[6px]">
-                  <jds-button variant="secondary" class="!font-medium w-[100px] !text-sm !py-[6px] !px-4 !border-green-600 !text-green-600" @click="showViewPhotoDialogHandle(item.url)">
+                  <jds-button variant="secondary" class="!font-medium w-[100px] !text-sm !border-green-600 !text-green-600 disabled:opacity-50 disabled:cursor-not-allowed" :disabled="listPhoto.length===0" @click="popup.viewImage=true">
                     Lihat Foto
                   </jds-button>
                 </td>
@@ -156,14 +192,7 @@
         </BaseTabPanel>
       </template>
     </basetabgroup>
-    <BaseViewFile
-      title="Bukti Foto Aduan"
-      :with-url-path="true"
-      :file="photo.url"
-      mime-type="image/*"
-      :show="photo.showPopup"
-      @close="photo.showPopup=false"
-    />
+    <DialogViewImage :list-photo="listPhoto" :show-popup="popup.viewImage" @close="closePopupHandle()" />
   </div>
 </template>
 
@@ -171,9 +200,13 @@
 import ArrowLeft from '~/assets/icon/arrow-left.svg?inline'
 import { complaintStatus } from '~/constant/aduan-masuk'
 import { formatDate } from '~/utils'
+import DialogViewImage from '~/components/Aduan/DialogViewImage'
+import aduan from '~/mixins/aduan-masuk'
+
 export default {
   name: 'DetailAduanMasuk',
-  components: { ArrowLeft },
+  components: { ArrowLeft, DialogViewImage },
+  mixins: [aduan],
   data () {
     return {
       listTab: [{
@@ -183,10 +216,7 @@ export default {
       selectedTabIndex: 0,
       detailComplaint: {},
       complaintStatus,
-      photo: {
-        url: '',
-        showPopup: false
-      }
+      listPhoto: []
     }
   },
   async fetch () {
@@ -195,6 +225,7 @@ export default {
       this.detailComplaint = response.data.data
       this.detailComplaint.created_at = formatDate(this.detailComplaint?.created_at, 'dd/MM/yyyy - HH:mm')
       this.detailComplaint.complaint_status = this.getStatusHandle(this.detailComplaint?.complaint_status?.id)
+      this.listPhoto = this.detailComplaint.photos
     } catch {
       this.detailComplaint = {}
     }

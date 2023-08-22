@@ -1,11 +1,13 @@
 <template>
-  <AduanMasukDetail />
+  <DetailAduanMasuk />
 </template>
 
 <script>
 import { typeAduan } from '~/constant/aduan-masuk'
+import DetailAduanMasuk from '~/components/Aduan/AduanMasuk/Detail'
 export default {
-  name: 'DetailAduanMasuk',
+  name: 'PageDetailAduanMasuk',
+  components: { DetailAduanMasuk },
   layout: 'Dashboard',
   data () {
     return {
