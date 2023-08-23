@@ -151,7 +151,7 @@
               </tr>
               <tr>
                 <td class="align-top">
-                  Detail Lokasi
+                  Map
                 </td>
                 <td>
                   <iframe
@@ -163,7 +163,6 @@
                     style="border:0"
                     referrerpolicy="no-referrer-when-downgrade"
                     :src="`https://www.google.com/maps/embed/v1/place?key=${$config.googleMapsApiKey}&q=${detailComplaint?.latitude},${detailComplaint?.longitude}`"
-                    allowfullscreen
                   />
                   <div v-else>
                     -
