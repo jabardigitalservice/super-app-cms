@@ -62,12 +62,7 @@
               </tr>
               <tr v-show="detailComplaint?.complaint_status?.id==='failed'">
                 <td><strong>Alasan</strong></td>
-                <td>
-                  <div class="flex items-center">
-                    <div v-show="detailComplaint?.complaint_status" class=" mr-2 h-2 w-2 rounded-full" :class="getStatusColorHandle(detailComplaint?.complaint_status?.id)" />
-                    {{ detailComplaint?.complaint_status?.name|| '-' }}
-                  </div>
-                </td>
+                <td>{{ detailComplaint?.reason || '-' }}</td>
               </tr>
             </BaseTableDetail>
             <BaseTableDetail header="Informasi Pelapor" class="mb-4">
@@ -167,7 +162,7 @@
                     frameborder="0"
                     style="border:0"
                     referrerpolicy="no-referrer-when-downgrade"
-                    :src="`https://www.google.com/maps/embed/v1/place?key=AIzaSyAb1GS1A6oPN6YxCLgflZ79_pci2Vc5Qvw&q=${detailComplaint?.latitude},${detailComplaint?.longitude}`"
+                    :src="`https://www.google.com/maps/embed/v1/place?key=${$config.googleMapsApiKey}&q=${detailComplaint?.latitude},${detailComplaint?.longitude}`"
                     allowfullscreen
                   />
                   <div v-else>
