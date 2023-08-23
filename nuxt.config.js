@@ -127,7 +127,8 @@ export default {
       browserBaseURL: process.env.BROWSER_BASE_URL + '/' + process.env.VERSION_ENDPOINT
     },
     googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID,
-    tinymceApiKey: process.env.TINYMCE_API_KEY
+    tinymceApiKey: process.env.TINYMCE_API_KEY,
+    googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios

@@ -1,5 +1,5 @@
 <template>
-  <AduanMasuk :type-aduan-page="typeAduan.aduanMasuk.props" />
+  <Aduan :type-aduan-page="typeAduan.aduanMasuk.props" />
 </template>
 
 <script>
