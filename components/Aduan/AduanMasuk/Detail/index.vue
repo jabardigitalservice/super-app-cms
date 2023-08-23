@@ -60,9 +60,9 @@
                   </div>
                 </td>
               </tr>
-              <tr v-show="detailComplaint?.complaint_status?.id==='failed'">
+              <tr v-show="detailComplaint?.complaint_status_note">
                 <td><strong>Alasan</strong></td>
-                <td>{{ detailComplaint?.reason || '-' }}</td>
+                <td>{{ detailComplaint?.complaint_status_note }}</td>
               </tr>
             </BaseTableDetail>
             <BaseTableDetail header="Informasi Pelapor" class="mb-4">
