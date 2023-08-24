@@ -212,7 +212,7 @@ export default {
         return {
           ...item,
           id: item.id,
-          name: item?.user?.name || 'dummy',
+          name: item?.user?.name || '-',
           category: item.complaint_category.name,
           status: item.complaint_status.name,
           created_at: formatDate(item.created_at || '', 'dd/MM/yyyy HH:mm'),
