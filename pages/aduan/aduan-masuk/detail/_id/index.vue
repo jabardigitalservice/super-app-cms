@@ -1,11 +1,13 @@
 <template>
-  <Aduan :type-aduan-page="typeAduan.aduanMasuk.props" />
+  <DetailAduanMasuk />
 </template>
 
 <script>
 import { typeAduan } from '~/constant/aduan-masuk'
+import DetailAduanMasuk from '~/components/Aduan/AduanMasuk/Detail'
 export default {
-  name: 'PageManagementRelease',
+  name: 'PageDetailAduanMasuk',
+  components: { DetailAduanMasuk },
   layout: 'Dashboard',
   data () {
     return {
@@ -13,9 +15,13 @@ export default {
         {
           label: typeAduan.aduanMasuk.label,
           link: typeAduan.aduanMasuk.link
+        },
+        {
+          label: 'Detail Aduan',
+          link: `/aduan/aduan-masuk/detail/${this.$route.params.id}`
         }
       ],
-      descriptionPage: 'Berisi semua daftar aduan dari masyarakat Jabar',
+      descriptionPage: 'Berisi detail aduan dari masyarakat Jabar',
       typeAduan
     }
   },
