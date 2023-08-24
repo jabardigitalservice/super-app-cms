@@ -90,6 +90,7 @@
             small
             icon
             :button="false"
+            @input="onSearch"
           />
           <div class="ml-4 flex items-center">
             <jds-icon name="filter-outline" size="sm" fill="#022B55" />
@@ -99,10 +100,15 @@
           </div>
         </div>
         <JdsDataTable
-          show-select
           :headers="checkTypeHeaderAduan(typeAduanPage)"
-          :items="listDataComplaint"
+          :items="getListData"
+          :loading="$fetchState.pending"
           :pagination="pagination"
+          @next-page="nextPage"
+          @previous-page="previousPage"
+          @page-change="pageChange"
+          @per-page-change="perPageChange"
+          @change:sort="sortChange"
         >
           <!-- eslint-disable-next-line vue/valid-v-slot -->
           <template #item.status="{ item }">
@@ -110,7 +116,7 @@
               <p
                 v-show="item?.status"
                 class="h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 text-xs font-semibold"
-                :class="getColor(item?.status_id)"
+                :class="getColorText(item?.status_id)"
               >
                 {{ item.status }}
               </p>
@@ -127,6 +133,9 @@
 </template>
 
 <script>
+import debounce from 'lodash.debounce'
+import { formatDate, generateItemsPerPageOptions } from '~/utils'
+
 import {
   complaintHeader,
   complaintStatus,
@@ -143,212 +152,6 @@ export default {
   },
   data () {
     return {
-      listTab: [
-        {
-          name: 'Semua Aduan',
-          icon: 'icon-all-complaint',
-          count: 1.25,
-          unit: 'juta',
-          selected: false,
-          data: [
-            {
-              complaintId: 'JBR0501202200012',
-              fullName: 'Asep Kumaha',
-              complaintCategory: 'Kependudukan',
-              createdAt: '05/01/2023 - 18:00',
-              complaintStatus: 'Menunggu Verifikasi'
-            },
-            {
-              complaintId: 'JBR0501202200012',
-              fullName: 'Asep Kumaha',
-              complaintCategory: 'Kependudukan',
-              createdAt: '05/01/2023 - 18:00',
-              complaintStatus: 'Terverifikasi'
-            },
-            {
-              complaintId: 'JBR0501202200012',
-              fullName: 'Asep Kumaha',
-              complaintCategory: 'Kependudukan',
-              createdAt: '05/01/2023 - 18:00',
-              complaintStatus: 'Gagal Diverifikasi'
-            }
-          ]
-        },
-        {
-          name: 'Menunggu Verifikasi',
-          icon: 'icon-wait-verification',
-          count: 50,
-          unit: 'ribu',
-          data: [
-            {
-              complaintId: 'JBR0501202200012',
-              fullName: 'Budi Aja',
-              complaintCategory: 'Kependudukan',
-              createdAt: '05/01/2023 - 18:00',
-              complaintStatus: 'Menunggu Verifikasi'
-            },
-            {
-              complaintId: 'JBR0501202200012',
-              fullName: 'Budi aja',
-              complaintCategory: 'Kependudukan',
-              createdAt: '05/01/2023 - 18:00',
-              complaintStatus: 'Menunggu Verifikasi'
-            },
-            {
-              complaintId: 'JBR0501202200012',
-              fullName: 'Budi aja',
-              complaintCategory: 'Kependudukan',
-              createdAt: '05/01/2023 - 18:00',
-              complaintStatus: 'Menunggu Verifikasi'
-            }
-          ]
-        },
-        {
-          name: 'Terverifikasi',
-          icon: 'icon-verification',
-          count: 1,
-          unit: 'juta',
-          data: [
-            {
-              complaintId: 'JBR0501202200012',
-              fullName: 'Asep',
-              complaintCategory: 'Kependudukan',
-              createdAt: '05/01/2023 - 18:00',
-              complaintStatus: 'Terverifikasi'
-            },
-            {
-              complaintId: 'JBR0501202200012',
-              fullName: 'Asep',
-              complaintCategory: 'Kependudukan',
-              createdAt: '05/01/2023 - 18:00',
-              complaintStatus: 'Terverifikasi'
-            },
-            {
-              complaintId: 'JBR0501202200012',
-              fullName: 'Asep',
-              complaintCategory: 'Kependudukan',
-              createdAt: '05/01/2023 - 18:00',
-              complaintStatus: 'Terverifikasi'
-            }
-          ]
-        },
-        {
-          name: 'Gagal Diverifikasi',
-          icon: 'icon-failed',
-          count: 25,
-          unit: 'ribu',
-          data: [
-            {
-              complaintId: 'JBR0501202200012',
-              fullName: 'Kumaha',
-              complaintCategory: 'Kependudukan',
-              createdAt: '05/01/2023 - 18:00',
-              complaintStatus: 'Gagal Diverifikasi'
-            },
-            {
-              complaintId: 'JBR0501202200012',
-              fullName: 'Kumaha',
-              complaintCategory: 'Kependudukan',
-              createdAt: '05/01/2023 - 18:00',
-              complaintStatus: 'Gagal Diverifikasi'
-            },
-            {
-              complaintId: 'JBR0501202200012',
-              fullName: 'Kumaha',
-              complaintCategory: 'Kependudukan',
-              createdAt: '05/01/2023 - 18:00',
-              complaintStatus: 'Gagal Diverifikasi'
-            }
-          ]
-        },
-        {
-          name: 'Dikoordinasikan',
-          icon: 'icon-coordination',
-          count: 50,
-          unit: 'ribu',
-          data: [
-            {
-              complaintId: 'JBR0501202200012',
-              fullName: 'Kumaha',
-              complaintCategory: 'Kependudukan',
-              createdAt: '05/01/2023 - 18:00',
-              complaintStatus: 'Dikoordinasikan'
-            },
-            {
-              complaintId: 'JBR0501202200012',
-              fullName: 'Kumaha',
-              complaintCategory: 'Kependudukan',
-              createdAt: '05/01/2023 - 18:00',
-              complaintStatus: 'Dikoordinasikan'
-            },
-            {
-              complaintId: 'JBR0501202200012',
-              fullName: 'Kumaha',
-              complaintCategory: 'Kependudukan',
-              createdAt: '05/01/2023 - 18:00',
-              complaintStatus: 'Dikoordinasikan'
-            }
-          ]
-        },
-        {
-          name: 'Dialihkan ke SP4N Lapor',
-          icon: 'icon-span',
-          count: 1,
-          unit: 'juta',
-          data: [
-            {
-              complaintId: 'JBR0501202200012',
-              fullName: 'Kumaha',
-              complaintCategory: 'Kependudukan',
-              createdAt: '05/01/2023 - 18:00',
-              complaintStatus: 'Dialihkan ke SP4N Lapor'
-            },
-            {
-              complaintId: 'JBR0501202200012',
-              fullName: 'Kumaha',
-              complaintCategory: 'Kependudukan',
-              createdAt: '05/01/2023 - 18:00',
-              complaintStatus: 'Dialihkan ke SP4N Lapor'
-            },
-            {
-              complaintId: 'JBR0501202200012',
-              fullName: 'Kumaha',
-              complaintCategory: 'Kependudukan',
-              createdAt: '05/01/2023 - 18:00',
-              complaintStatus: 'Dialihkan ke SP4N Lapor'
-            }
-          ]
-        },
-        {
-          name: 'Ditolak',
-          icon: 'icon-failed',
-          count: 25,
-          unit: 'ribu',
-          data: [
-            {
-              complaintId: 'JBR0501202200012',
-              fullName: 'Kumaha',
-              complaintCategory: 'Kependudukan',
-              createdAt: '05/01/2023 - 18:00',
-              complaintStatus: 'Ditolak'
-            },
-            {
-              complaintId: 'JBR0501202200012',
-              fullName: 'Kumaha',
-              complaintCategory: 'Kependudukan',
-              createdAt: '05/01/2023 - 18:00',
-              complaintStatus: 'Ditolak'
-            },
-            {
-              complaintId: 'JBR0501202200012',
-              fullName: 'Kumaha',
-              complaintCategory: 'Kependudukan',
-              createdAt: '05/01/2023 - 18:00',
-              complaintStatus: 'Ditolak'
-            }
-          ]
-        }
-      ],
       menuTableAction: [
         { menu: 'Lihat Detail Aduan', value: 'detail' },
         { menu: 'Terverifikasi', value: 'verify' },
@@ -359,10 +162,21 @@ export default {
         currentPage: 1,
         totalRows: 5,
         itemsPerPage: 5,
-        itemsPerPageOptions: [5, 10, 20]
+        itemsPerPageOptions: [],
+        disabled: true
+      },
+      query: {
+        limit: 5,
+        page: 1
+        // search: ''
+        // start_date: '',
+        // end_date: ''
+        // sortType: 'desc',
+        // sortBy: 'orderedAt'
       },
       sortBy: '',
       sortOrder: '',
+      search: '',
       complaintHeader,
       complaintStatus,
       selectedTabIndex: 0,
@@ -372,41 +186,58 @@ export default {
   },
   async fetch () {
     try {
-      let query = {
-        // search: this.search,
-        page: this.pagination.currentPage,
-        limit: this.pagination.totalRows
-      }
-      if (this.search !== '') {
-        query = { search: this.search, ...query }
-      }
       const response = await this.$axios.get('/warga/complaints', {
-        params: query
+        params: this.query
       })
-      const dataComplaint = response.data.data
-      this.listDataComplaint = dataComplaint.data.map((item) => {
+
+      const data = response.data.data
+      this.listDataComplaint = data?.data || []
+
+      if (this.listDataComplaint.length) {
+        this.pagination.disabled = false
+      } else {
+        this.pagination.disabled = true
+      }
+
+      this.pagination.currentPage = data?.page || 1
+      this.pagination.totalRows = data?.total_data || 0
+      this.pagination.itemsPerPage = data?.page_size || this.query.limit
+    } catch {
+      this.pagination.disabled = true
+    }
+  },
+  computed: {
+    getListData () {
+      return this.listDataComplaint.map((item) => {
         return {
+          ...item,
           id: item.id,
-          name: item.user.name,
+          name: item?.user?.name || '-',
           category: item.complaint_category.name,
           status: item.complaint_status.name,
-          created_at: item.created_at,
+          created_at: formatDate(item.created_at || '', 'dd/MM/yyyy HH:mm'),
           status_id: item.complaint_status.id
         }
       })
-      this.pagination.currentPage = dataComplaint.page
-      this.pagination.totalRows = dataComplaint.total_data
-    } catch {
-      this.listDataComplaint = []
+    }
+  },
+  watch: {
+    query: {
+      deep: true,
+      handler () {
+        this.$fetch()
+      }
     }
   },
   mounted () {
+    this.pagination.itemsPerPageOptions = generateItemsPerPageOptions(
+      this.pagination.itemsPerPage
+    )
     this.selectedTabHandle(0)
   },
   methods: {
     selectedTabHandle (index) {
       this.selectedTabIndex = index
-      this.listDataComplaint = this.listTab[index].data
     },
     checkTypeHeaderAduan (type) {
       switch (type) {
@@ -422,10 +253,73 @@ export default {
     getColor (statusId) {
       const status = complaintStatus.find(item => item.id === statusId)
 
-      return status?.statusColor ? status.statusColor : ''
+      return `text-${status?.statusColor}` || 'text-gray-100'
+    },
+    nextPage (value) {
+      this.query.page = value
+    },
+    previousPage (value) {
+      this.query.page = value
+    },
+    pageChange (value) {
+      this.query.page = value
+    },
+    perPageChange (value) {
+      if (value) {
+        this.query.limit = value
+      }
+      this.query.page = 1
+    },
+    sortChange (value) {
+      const key = Object.keys(value)[0]
+      if (key && value[key] !== 'no-sort') {
+        this.query.sortType = value[key]
+        this.query.sortBy = key === 'status' ? 'status' : key
+      } else {
+        this.query.sortType = 'desc'
+        this.query.sortBy = 'orderedAt'
+      }
+    },
+    searchData: debounce(function (value) {
+      if (value.length > 2) {
+        this.query.page = 1
+        this.query.search = value
+        this.$fetch()
+      } else if (value.length === 0) {
+        this.query.search = null
+        this.$fetch()
+      }
+    }, 500),
+    onSearch (value) {
+      this.searchData(value)
     },
     goToPageDetailHandle (item) {
       this.$router.push(`/daftar-aduan-masuk/detail-aduan/${item.complaintId}`)
+    },
+    getColorText (statusId) {
+      console.log('Status ID:', statusId) // Cek nilai statusId pada konsol
+      switch (statusId) {
+        case complaintStatus.unverified.id:
+          console.log('Matching unverified status')
+          return `text-${complaintStatus.unverified.statusColor}`
+        case complaintStatus.verified.id:
+          console.log('Matching verified status')
+          return `text-${complaintStatus.verified.statusColor}`
+        case complaintStatus.failed.id:
+          console.log('Matching failed status')
+          return `text-${complaintStatus.failed.statusColor}`
+        case complaintStatus.coordinated.id:
+          console.log('Matching coordinated status')
+          return `text-${complaintStatus.coordinated.statusColor}`
+        case complaintStatus.diverted_to_span.id:
+          console.log('Matching diverted to span status')
+          return `text-${complaintStatus.diverted_to_span.statusColor}`
+        case complaintStatus.rejected.id:
+          console.log('Matching rejected status')
+          return `text-${complaintStatus.rejected.statusColor}`
+        default:
+          return 'text-gray-900'
+      }
     }
   }
 }
