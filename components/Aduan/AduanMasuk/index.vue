@@ -28,7 +28,6 @@
                 format="DD/MM/YYYY"
                 range
                 range-separator=" - "
-                :lang="lang"
                 @close="isShowPopupDate=false"
               >
                 <template #icon-calendar>
