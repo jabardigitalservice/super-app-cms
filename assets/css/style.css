@@ -5,4 +5,76 @@
 *{
   font-family: Lato;
 }
+/* style date picker */
+.mx-table-year td, .mx-table-month {
+  @apply text-gray-800 !important;
+}
+
+.mx-table-year td.cell.active, .mx-table-month td.cell.active{
+  @apply text-white bg-green-700 !important;
+}
+
+.mx-icon-left,.mx-icon-right,.mx-icon-double-left,.mx-icon-double-right{
+  @apply text-gray-900 font-black !important;
+}
+
+.mx-table-date th{
+  @apply text-sm text-gray-800 font-roboto font-medium !important;
+}
+
+.mx-table-date td {
+  @apply text-gray-700 font-lato text-sm !important;
+}
+
+.mx-table-date td.cell.active {
+    @apply bg-green-700 rounded-full text-white !important;
+}
+
+.mx-table-date td.cell.in-range, td.cell.hover-in-range{
+  @apply bg-green-50 !important;
+}
+
+.mx-datepicker-popup{
+  @apply rounded-lg border border-gray-400 !important;
+}
+
+.mx-datepicker-footer{
+  @apply !p-0;
+}
+
+.mx-input-wrapper{
+  @apply border border-gray-300 rounded-lg !important;
+}
+
+.mx-icon-calendar{
+  @apply text-green-700 !important;
+}
+
+.mx-input{
+  @apply text-sm font-lato text-gray-800 !important;
+}
+
+.mx-btn-text,.mx-calendar-header{
+  @apply text-gray-900 font-roboto font-bold text-[14px] !important;
+}
+
+.jds-data-table {
+  @apply rounded-lg border-spacing-[1px] !important;
+}
+
+.jds-data-table tr th:first-child {
+  @apply rounded-tl-lg;
+}
+
+.jds-data-table tr th:last-child {
+  @apply rounded-tr-lg;
+}
+.jds-data-table tr th {
+  @apply h-[42px] border-r border-white bg-green-700 !important;
+}
+
+.jds-data-table tr td {
+  @apply max-w-[435px] border-r border-gray-200;
+}
+
 
