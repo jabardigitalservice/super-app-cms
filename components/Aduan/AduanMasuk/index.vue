@@ -81,7 +81,7 @@
 
 <script>
 import debounce from 'lodash.debounce'
-// import DatePicker from 'vue2-datepicker'
+
 import { formatDate, generateItemsPerPageOptions, formatNumberToUnit, convertToUnit } from '~/utils'
 import aduanMasuk from '~/mixins/aduan-masuk'
 import 'vue2-datepicker/index.css'
@@ -135,7 +135,12 @@ export default {
       isShowPopupDate: false,
       listValueStatusComplaint: [],
       listStatisticComplaint: [],
-      dateRange: [new Date(new Date().setFullYear(new Date().getFullYear() - 1)), new Date()]
+      dateRange: [new Date(new Date().setFullYear(new Date().getFullYear() - 1)), new Date()],
+      lang: {
+        formatLocale: {
+          weekdaysShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+        }
+      }
     }
   },
   async fetch () {
@@ -178,8 +183,6 @@ export default {
       return this.listDataComplaint.map((item) => {
         return {
           ...item,
-          id: item.id,
-          name: item?.user?.name || '-',
           category: item.complaint_category.name,
           status: this.complaintStatus[item.complaint_status.id].name,
           created_at: formatDate(item.created_at || '', 'dd/MM/yyyy HH:mm'),
@@ -267,10 +270,6 @@ export default {
         switch (key) {
           case 'category' :
             this.query.sort_by = 'complaint_category_id'
-            this.query.sort_type = value[key]
-            break
-          case 'name' :
-            this.query.sort_by = 'user_name'
             this.query.sort_type = value[key]
             break
           case 'status' :
