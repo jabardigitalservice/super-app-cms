@@ -1,11 +1,15 @@
 <template>
-  <Aduan :type-aduan-page="typeAduan.aduanMasuk.props" />
+  <AduanMasuk :type-aduan-page="typeAduan.aduanMasuk.props" />
 </template>
 
 <script>
+import AduanMasuk from '~/components/Aduan/AduanMasuk'
 import { typeAduan } from '~/constant/aduan-masuk'
 export default {
   name: 'PageManagementRelease',
+  components: {
+    AduanMasuk
+  },
   layout: 'Dashboard',
   data () {
     return {
