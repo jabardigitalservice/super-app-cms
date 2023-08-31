@@ -35,14 +35,16 @@ export function convertToRupiah (value) {
 
 function dividerNumberHandle (value, divider) {
   let result = value / divider
-  const resultDecimal = result.toString().split('.')
-  if (divider <= 999999) {
-    result = result.toFixed(1)
-  } else if (resultDecimal[1]) {
-    if (resultDecimal[1].length > 2) {
-      result = result.toFixed(2)
+  const mod = value % divider
+  const digitTrunc = Math.trunc(result).toString() // for know digit without decimal
+  if (mod !== 0) {
+    if (divider <= 999999) {
+      result = result.toString().slice(0, digitTrunc.length + 2)
+    } else {
+      result = result.toString().slice(0, digitTrunc.length + 3)
     }
   }
+
   return result.toLocaleString('id-ID').replace(',', '.')
 }
 
