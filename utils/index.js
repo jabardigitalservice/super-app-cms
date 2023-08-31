@@ -32,3 +32,38 @@ export function base64ToBlobUrl (base64, type) {
 export function convertToRupiah (value) {
   return value.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })
 }
+
+function dividerNumberHandle (value, divider) {
+  let result = value / divider
+  const resultDecimal = result.toString().split('.')
+  if (divider <= 999999) {
+    result = result.toFixed(1)
+  } else if (resultDecimal[1]) {
+    if (resultDecimal[1].length > 2) {
+      result = result.toFixed(2)
+    }
+  }
+  return result.toLocaleString('id-ID').replace(',', '.')
+}
+
+export function formatNumberToUnit (value) {
+  let result = value.toLocaleString('id-ID')
+  if (value > 9999) {
+    const digitValue = value.toString().length - 1
+    const pow = Math.trunc(digitValue / 3)
+    result = dividerNumberHandle(value, Math.pow(1000, pow))
+  }
+  return result
+}
+
+export function convertToUnit (value) {
+  const units = ['', 'ribu', 'juta', 'miliyar', 'triliun']
+  let unitIndex = 0
+  if (value > 9999) {
+    const digitValue = value.toString().length - 1
+    const divider = 3 // divide 3, because increse unit to unit 3 digit
+    const rawIndex = Math.floor(digitValue / divider) // get index for array of units
+    unitIndex = Math.min(rawIndex, units.length - 1)
+  }
+  return units[unitIndex]
+}
