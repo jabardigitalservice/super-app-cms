@@ -29,6 +29,7 @@ export default {
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
+    '~/assets/css/style.css'
   ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
@@ -37,7 +38,8 @@ export default {
     // plugin axios
     '~/plugins/axios',
     '~/plugins/vue-gtag.js',
-    '~/plugins/vee-validate.js'
+    '~/plugins/vee-validate.js',
+    '~/plugins/date-picker.js'
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -127,7 +129,8 @@ export default {
       browserBaseURL: process.env.BROWSER_BASE_URL + '/' + process.env.VERSION_ENDPOINT
     },
     googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID,
-    tinymceApiKey: process.env.TINYMCE_API_KEY
+    tinymceApiKey: process.env.TINYMCE_API_KEY,
+    googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios

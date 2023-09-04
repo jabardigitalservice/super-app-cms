@@ -76,9 +76,31 @@ const masterDataMenu =
   ]
 }
 
+const aduanMenu = {
+  titleMenu: 'aduan',
+  showTitleMenuForRoles: ['admin'],
+  menu: [{
+    name: 'Daftar Aduan Masuk',
+    path: 'aduan/aduan-masuk',
+    arrow: false,
+    showMenuAndAccessForRoles: ['admin']
+  }, {
+    name: 'Daftar Aduan Diproses',
+    path: 'aduan/aduan-di-proses',
+    arrow: false,
+    showMenuAndAccessForRoles: ['admin']
+  }, {
+    name: 'Dialihkan ke SP4N',
+    path: 'aduan/dialihkan-ke-span',
+    arrow: false,
+    showMenuAndAccessForRoles: ['admin']
+  }]
+}
+
 export const menu = [
   rwMenu,
   messageNotifMenu,
   tiketMuseumMenu,
-  masterDataMenu
+  masterDataMenu,
+  aduanMenu
 ]
