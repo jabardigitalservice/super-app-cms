@@ -2,26 +2,25 @@
   <div>
     <BaseTabGroup>
       <template #tab-list>
-        <TabBarList :list-tab="getListStatistic" :type-aduan="typeAduanPage" @selected="selectedTabHandle" @button-tab="listTabHandle" />
+        <TabBarList :list-tab="listStatistic" :type-aduan="typeAduanPage" @selected="selectedTabHandle" @button-tab="listTabHandle" />
       </template>
       <template #tab-panel>
         <BaseTabPanel class="px-3 pt-6 pb-4">
           <div class="mb-4 flex">
             <jds-search
-              value=""
+              v-model="search"
               placeholder="Cari ID atau nama lengkap"
               small
               icon
               :button="false"
               class="w-[280px]"
-              @input="onSearch"
             />
             <div class="ml-4 flex items-center">
               <jds-icon name="filter-outline" size="sm" fill="#022B55" />
               <p class="ml-2 text-sm text-blue-gray-700">
                 Filter :
               </p>
-              <jds-select placeholder="Kategori Aduan" :options="getListCategory" class="!ml-2 mr-2" @change="filterCategoryHandle" />
+              <jds-select placeholder="Kategori Aduan" :options="listCategory" class="!ml-2 mr-2" @change="filterCategoryHandle" />
               <date-picker
                 ref="datepicker"
                 v-model="dateRange"
@@ -41,7 +40,7 @@
           </div>
           <JdsDataTable
             :headers="checkTypeHeaderAduan(typeAduanPage)"
-            :items="getListData"
+            :items="listData"
             :loading="$fetchState.pending"
             :pagination="pagination"
             @next-page="nextPage"
@@ -122,7 +121,9 @@ export default {
       },
       query: {
         limit: 5,
-        page: 1
+        page: 1,
+        search: null,
+        complaint_category_id: null
       },
       sortBy: '',
       sortOrder: '',
@@ -135,19 +136,15 @@ export default {
       isShowPopupDate: false,
       listValueStatusComplaint: [],
       listStatisticComplaint: [],
-      dateRange: [new Date(new Date().setFullYear(new Date().getFullYear() - 1)), new Date()],
-      lang: {
-        formatLocale: {
-          weekdaysShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-        }
-      }
+      dateRange: [new Date(new Date().setFullYear(new Date().getFullYear() - 1)), new Date()]
     }
   },
   async fetch () {
     try {
       if (!JSON.stringify(Object.keys(this.query)).match('complaint_status_id')) {
-        this.getComplaintStatusHandle()
+        this.query = this.addComplaintStatusFilterHandle()
       }
+
       const responseListComplaint = await this.$axios.get('/warga/complaints', {
         params: this.query
       })
@@ -156,10 +153,9 @@ export default {
       const responseListStatisticComplaint = await this.$axios.get('/warga/complaints/statistics')
 
       this.listDataCategory = responseListCategoryComplaint.data.data
-      this.listStatisticComplaint = responseListStatisticComplaint.data.data
-      this.listStatisticComplaint = this.listStatisticComplaint.filter(({ id: idStatic }) => this.listValueStatusComplaint.some(({ id: idStatus }) => idStatus === idStatic))
-
-      const data = responseListComplaint.data.data
+      const listDataStatisticComplaint = responseListStatisticComplaint.data.data
+      this.listStatisticComplaint = listDataStatisticComplaint.filter(item => this.complaintStatus[item.id].typeAduan.includes(this.typeAduanPage) && item.id === this.complaintStatus[item.id].id)
+      const { data } = responseListComplaint.data
       this.listDataComplaint = data?.data || []
 
       if (this.listDataComplaint.length) {
@@ -179,7 +175,7 @@ export default {
     }
   },
   computed: {
-    getListData () {
+    listData () {
       return this.listDataComplaint.map((item) => {
         return {
           ...item,
@@ -190,22 +186,21 @@ export default {
         }
       })
     },
-    getListCategory () {
+    listCategory () {
       return this.listDataCategory.map((item) => {
         return {
           value: item.id, label: item.name
         }
       })
     },
-    getListStatistic () {
+    listStatistic () {
       return this.listStatisticComplaint.map((item) => {
         return {
-          ...item,
-          icon: this.complaintStatus[item.id].icon,
-          name: this.complaintStatus[item.id].name,
-          typeAduan: this.complaintStatus[item.id].typeAduan,
+          ...this.complaintStatus[item.id],
           value: formatNumberToUnit(item.value),
-          unit: convertToUnit(item.value)
+          unit: convertToUnit(item.value),
+          icon: this.complaintStatus[item.id].icon,
+          name: this.complaintStatus[item.id].name
         }
       })
     }
@@ -219,7 +214,14 @@ export default {
     },
     dateRange () {
       this.$refs.datepicker.openPopup()
-    }
+    },
+    search: debounce(function (value) {
+      if (value.length > 2 || value.length === 0) {
+        this.query.page = 1
+        this.query.search = value.length > 2 ? value : null
+        this.$fetch()
+      }
+    }, 500)
   },
   mounted () {
     this.pagination.itemsPerPageOptions = generateItemsPerPageOptions(
@@ -284,19 +286,6 @@ export default {
 
       this.$fetch()
     },
-    searchData: debounce(function (value) {
-      if (value.length > 2) {
-        this.query.page = 1
-        this.query.search = value
-        this.$fetch()
-      } else if (value.length === 0) {
-        this.query.search = null
-        this.$fetch()
-      }
-    }, 500),
-    onSearch (value) {
-      this.searchData(value)
-    },
     filterCategoryHandle (value) {
       this.query.complaint_category_id = value
       this.$fetch()
@@ -329,22 +318,19 @@ export default {
       }, 0)
       return total
     },
-    getComplaintStatusHandle () {
+    addComplaintStatusFilterHandle () {
       this.listValueStatusComplaint = Object.values(this.complaintStatus)
-      this.listValueStatusComplaint = this.listValueStatusComplaint.filter(item => item.typeAduan.includes(this.typeAduanPage))
-      this.listValueStatusComplaint.forEach((item, index) => {
-        this.query[`complaint_status_id[${index}]`] = item.id
-      })
+      for (let i = 0; i < this.listValueStatusComplaint.length; i++) {
+        if (this.listValueStatusComplaint[i].typeAduan.includes(this.typeAduanPage)) {
+          this.setQuery({ [`complaint_status_id[${i - 1}]`]: this.listValueStatusComplaint[i].id })
+        }
+      }
+      return this.query
     },
     listTabHandle (status) {
-      this.query.page = 1
-      this.getComplaintStatusHandle()
+      this.query = { page: 1, limit: 5 }
       if (status !== 'total') {
-        for (let i = 0; i < this.listStatisticComplaint.length; i++) {
-          if (this.query[`complaint_status_id[${i}]`] !== status) {
-            delete this.query[`complaint_status_id[${i}]`]
-          }
-        }
+        this.setQuery({ 'complaint_status_id[0]': status })
       }
       this.$fetch()
     },
@@ -356,6 +342,10 @@ export default {
     },
     closePopupDateHandle () {
       this.$refs.datepicker.closePopup()
+    },
+    setQuery (params) {
+      this.query = { ...this.query, ...params }
+      return this.query
     }
   }
 }
