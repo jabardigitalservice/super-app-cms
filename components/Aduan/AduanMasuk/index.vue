@@ -345,7 +345,6 @@ export default {
     },
     setQuery (params) {
       this.query = { ...this.query, ...params }
-      return this.query
     }
   }
 }
