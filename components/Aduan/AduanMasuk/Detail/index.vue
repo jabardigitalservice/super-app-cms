@@ -45,7 +45,7 @@
                 <td class="w-[164px] text-lato">
                   <strong class="text-[10px]">ID Aduan </strong>
                 </td>
-                <td>{{ detailComplaint?.id || '-' }}</td>
+                <td>{{ detailComplaint?.complaint_id || '-' }}</td>
               </tr>
               <tr>
                 <td><strong>Tanggal Aduan Masuk</strong></td>
@@ -70,15 +70,15 @@
                 <td class="w-[180px]">
                   <strong class="text-[10px]">Nama Lengkap </strong>
                 </td>
-                <td>{{ detailComplaint?.user?.name || "-" }}</td>
+                <td>{{ detailComplaint?.user_name || "-" }}</td>
               </tr>
               <tr>
                 <td><strong>No. Kontak</strong></td>
-                <td>{{ detailComplaint?.user?.phone || "-" }}</td>
+                <td>{{ detailComplaint?.user_phone || "-" }}</td>
               </tr>
               <tr>
                 <td><strong>Email</strong></td>
-                <td>{{ detailComplaint?.user?.email || '-' }}</td>
+                <td>{{ detailComplaint?.user_email || '-' }}</td>
               </tr>
               <tr>
                 <td><strong>Jenis Media Sosial</strong></td>
@@ -218,7 +218,7 @@ export default {
       const response = await this.$axios.get(`/warga/complaints/${this.$route.params.id}`)
       this.detailComplaint = response.data.data
       this.detailComplaint.created_at = formatDate(this.detailComplaint?.created_at, 'dd/MM/yyyy - HH:mm')
-      this.detailComplaint.complaint_status = this.getStatusHandle(this.detailComplaint?.complaint_status?.id)
+      this.detailComplaint.complaint_status = this.complaintStatus[this.detailComplaint.complaint_status_id]
       this.listPhoto = this.detailComplaint.photos
     } catch {
       this.detailComplaint = {}
@@ -232,7 +232,7 @@ export default {
       this.selectedTabIndex = index
     },
     goToBackHandle () {
-      this.$router.push('/daftar-aduan-masuk')
+      this.$router.push('/aduan/aduan-masuk')
     },
     getStatusHandle (id) {
       const result = this.complaintStatus.find(item => item.id === id)
@@ -249,7 +249,7 @@ export default {
       let result = ''
       switch (id) {
         case 'unverified':
-          result = 'bg-yellow-600'
+          result = 'bg-yellow-[#FF7500]'
           break
         case 'verified':
           result = 'bg-green-600'
