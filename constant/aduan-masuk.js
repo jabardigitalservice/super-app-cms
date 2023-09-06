@@ -20,7 +20,7 @@ export const aduanSpanHeader = [
 
 export const typeAduan = {
   aduanMasuk: { props: 'aduan-masuk', label: 'Daftar Aduan Masuk', link: '/aduan/aduan-masuk' },
-  aduanDiProses: { props: 'aduan-di-proses', label: 'Daftar Aduan Dirposes', link: '/aduan/aduan-diproses' },
+  aduanDiProses: { props: 'aduan-di-proses', label: 'Daftar Aduan Diproses', link: '/aduan/aduan-di-proses' },
   aduanSpanLapor: { props: 'aduan-span-lapor', label: 'Daftar Aduan Dialihkan Ke SP4N Lapor', link: '/aduan/aduan-span-lapor' }
 }
 

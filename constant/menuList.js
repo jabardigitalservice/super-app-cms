@@ -4,7 +4,7 @@ const rwMenu = {
   menu: [
     {
       name: 'Klaim Akun RW',
-      path: 'index',
+      path: '/',
       arrow: false,
       showMenuAndAccessForRoles: ['admin']
     },
