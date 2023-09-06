@@ -66,15 +66,17 @@
               <BaseTableAction
                 :list-menu-pop-over="menuTableActionHandle(item?.status_id)"
                 @detail="goToPageDetailHandle(item)"
+                @verify="showPopupVerificationHandle(item,'verification')"
+                @failed="showPopupVerificationHandle(item,'failed')"
               />
             </template>
           </JdsDataTable>
         </BaseTabPanel>
       </template>
     </BaseTabGroup>
-    <!-- component will use when it has integrates with API -->
-    <!-- <DialogConfirmation :data-dialog="dataDialog" :show-popup="popup.confirmationVerification" @close="closePopupHandle()" /> -->
-    <!-- <DialogInputTextArea :data-dialog="dataDialog" :show-popup="popup.confirmationFailedVerification" @close="closePopupHandle()" /> -->
+    <DialogConfirmation :data-dialog="dataDialog" :show-popup="isShowPopupConfirmationVerification" @close="closePopupHandle()" @submit="submitPopupVerificationHandle" />
+    <DialogInformation :data-dialog="dataDialog" :show-popup="isShowPopupInformation" :icon-popup="iconPopup" @close="closePopupInformationHandle()" @submit="submitPopupVerificationHandle" />
+    <DialogInputTextArea :data-dialog="dataDialog" :show-popup="isShowPopupConfirmationFailedVerification" @close="closePopupHandle()" @submit="submitPopupVerificationHandle" />
   </div>
 </template>
 
@@ -82,7 +84,6 @@
 import debounce from 'lodash.debounce'
 
 import { formatDate, generateItemsPerPageOptions, formatNumberToUnit, convertToUnit } from '~/utils'
-import aduanMasuk from '~/mixins/aduan-masuk'
 import 'vue2-datepicker/index.css'
 import TabBarList from '~/components/Aduan/TabBar/List'
 
@@ -92,11 +93,12 @@ import {
   aduanSpanHeader,
   typeAduan
 } from '~/constant/aduan-masuk'
+import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
 
 export default {
   name: 'AduanMasuk',
   components: { TabBarList },
-  mixins: [aduanMasuk],
+  mixins: [popupAduanMasuk],
   props: {
     typeAduanPage: {
       type: String,
