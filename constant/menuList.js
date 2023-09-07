@@ -90,7 +90,7 @@ const aduanMenu = {
     arrow: false,
     showMenuAndAccessForRoles: ['admin']
   }, {
-    name: 'Dialihkan ke SP4N',
+    name: 'Daftar Aduan Dialihkan ke SP4N',
     path: 'aduan/dialihkan-ke-span',
     arrow: false,
     showMenuAndAccessForRoles: ['admin']
