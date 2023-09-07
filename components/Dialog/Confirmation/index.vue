@@ -1,0 +1,30 @@
+<template>
+  <BaseDialog :show-popup="showPopup">
+    <BaseDialogPanel>
+      <BaseDialogHeader :title="dataDialog.title" />
+      <BaseDialogDescription
+        :description="dataDialog.description"
+        :sub-description="dataDialog.subDescription"
+        class="p-6"
+      />
+      <BaseDialogFooter :label-button="dataDialog.labelButton" @close="$emit('close')" @submit="$emit('submit',{...dataDialog,status:'verified'})" />
+    </BaseDialogPanel>
+  </BaseDialog>
+</template>
+
+<script>
+
+export default {
+  name: 'DialogConfirmation',
+  props: {
+    showPopup: {
+      type: Boolean,
+      default: false
+    },
+    dataDialog: {
+      type: Object,
+      default: () => {}
+    }
+  }
+}
+</script>

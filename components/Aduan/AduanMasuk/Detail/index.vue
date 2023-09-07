@@ -7,36 +7,30 @@
           Kembali
         </div>
       </jds-button>
-      <div class="flex">
+      <div v-show="detailComplaint.complaint_status_id === 'unverified'" class="flex">
         <div class="mr-3">
-          <jds-button label="Gagal Diverifikasi" variant="secondary" class="!h-[38px] !py-1 !text-[14px] !font-bold !text-red-400 !border-red-400" />
+          <jds-button
+            label="Gagal Diverifikasi"
+            variant="secondary"
+            class="!h-[38px] !py-1 !text-[14px] !font-bold !text-red-400 !border-red-400"
+            @click="showPopupVerificationHandle(detailComplaint, 'failed')"
+          />
         </div>
-        <jds-button label="Terverifikasi" variant="primary" class="!h-[38px] !py-1 !text-[14px] !font-bold" />
+        <jds-button
+          label="Terverifikasi"
+          variant="primary"
+          class="!h-[38px] !py-1 !text-[14px] !font-bold"
+          @click="showPopupVerificationHandle(detailComplaint, 'verification')"
+        />
       </div>
     </div>
     <BaseTabGroup>
       <template #tab-list>
-        <BaseTabList :list-tab="listTab">
-          <template #default="{dataTab,indexTab}">
-            <BaseTab class="!h-11 !p-[6px]" :selected="(indexTab===selectedTabIndex)">
-              <button class="flex items-center text-sm text-green-100">
-                <div class="rounded-full px-[6px] py-1" :class="{'bg-gray-100':indexTab===selectedTabIndex}">
-                  <BaseIconSvg :icon="dataTab.icon" :size="14" :fill-color="indexTab===selectedTabIndex ? '#069550' : '#0000'" />
-                </div>
-
-                <div class="ml-2 text-green-100 !font-roboto" :class="{'!text-gray-700':(indexTab===selectedTabIndex)}">
-                  {{ dataTab.name }}
-                </div>
-              </button>
-            </BaseTab>
-          </template>
-        </BaseTabList>
+        <TabBarDetail :list-tab="listTab" />
       </template>
       <template #tab-panel>
         <BaseTabPanel class="px-6 py-4 layout-content h-[calc(100vh-280px)] overflow-y-auto px-[19px]">
-          <h1
-            class="font-roboto text-[16px] font-bold text-blue-gray-800 my-4"
-          >
+          <h1 class="font-roboto text-[16px] font-bold text-blue-gray-800 my-4">
             Detail Aduan Warga
           </h1>
           <div class="table-content">
@@ -55,8 +49,11 @@
                 <td><strong>Status</strong></td>
                 <td>
                   <div class="flex items-center">
-                    <div v-show="detailComplaint?.complaint_status" class=" mr-2 h-2 w-2 rounded-full" :class="getStatusColorHandle(detailComplaint?.complaint_status?.id)" />
-                    {{ detailComplaint?.complaint_status?.name|| '-' }}
+                    <div
+                      v-show="detailComplaint?.complaint_status"
+                      :class="[' mr-2 h-2 w-2 rounded-full',getStatusColorHandle(detailComplaint?.complaint_status?.id)]"
+                    />
+                    {{ detailComplaint?.complaint_status?.name || '-' }}
                   </div>
                 </td>
               </tr>
@@ -155,7 +152,7 @@
                 </td>
                 <td>
                   <iframe
-                    v-if="detailComplaint?.latitude&&detailComplaint?.longitude"
+                    v-if="detailComplaint?.latitude && detailComplaint?.longitude"
                     class="rounded-lg"
                     width="389"
                     height="245"
@@ -176,7 +173,12 @@
                   <strong>{{ listPhoto.length }} Foto</strong>
                 </td>
                 <td class="px-2 py-[6px]">
-                  <jds-button variant="secondary" class="!font-medium w-[100px] !text-sm !border-green-600 !text-green-600 disabled:opacity-50 disabled:cursor-not-allowed" :disabled="listPhoto.length===0" @click="popup.viewImage=true">
+                  <jds-button
+                    variant="secondary"
+                    class="!font-medium w-[100px] !text-sm !border-green-600 !text-green-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                    :disabled="listPhoto.length === 0"
+                    @click="isShowPopupViewImage = true"
+                  >
                     Lihat Foto
                   </jds-button>
                 </td>
@@ -186,7 +188,27 @@
         </BaseTabPanel>
       </template>
     </basetabgroup>
-    <DialogViewImage :list-photo="listPhoto" :show-popup="popup.viewImage" @close="closePopupHandle()" />
+    <DialogViewImage :list-photo="listPhoto" :show-popup="isShowPopupViewImage" @close="closePopupHandle()" />
+    <DialogConfirmation
+      :data-dialog="dataDialog"
+      :show-popup="isShowPopupConfirmationVerification"
+      @close="closePopupHandle()"
+      @submit="submitPopupVerificationHandle"
+    />
+    <DialogInformation
+      :data-dialog="dataDialog"
+      :show-popup="isShowPopupInformation"
+      :icon-popup="iconPopup"
+      @close="closePopupInformationHandle()"
+      @submit="submitPopupVerificationHandle"
+    />
+    <DialogInputTextArea
+      :data-dialog="dataDialog"
+      :show-popup="isShowPopupConfirmationFailedVerification"
+      @close="closePopupHandle()"
+      @submit="submitPopupVerificationHandle"
+    />
+    <DialogLoading :show-popup="isLoading" />
   </div>
 </template>
 
@@ -195,12 +217,13 @@ import ArrowLeft from '~/assets/icon/arrow-left.svg?inline'
 import { complaintStatus } from '~/constant/aduan-masuk'
 import { formatDate } from '~/utils'
 import DialogViewImage from '~/components/Aduan/DialogViewImage'
-import aduan from '~/mixins/aduan-masuk'
+import TabBarDetail from '~/components/Aduan/TabBar/Detail'
+import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
 
 export default {
   name: 'DetailAduanMasuk',
-  components: { ArrowLeft, DialogViewImage },
-  mixins: [aduan],
+  components: { ArrowLeft, DialogViewImage, TabBarDetail },
+  mixins: [popupAduanMasuk],
   data () {
     return {
       listTab: [{
@@ -249,7 +272,7 @@ export default {
       let result = ''
       switch (id) {
         case 'unverified':
-          result = 'bg-yellow-[#FF7500]'
+          result = 'bg-[#FF7500]'
           break
         case 'verified':
           result = 'bg-green-600'
@@ -274,6 +297,7 @@ export default {
   scrollbar-width: thin;
   scroll-margin-right: 10px;
 }
+
 .layout-content::-webkit-scrollbar {
   @apply h-5 w-5;
 }
