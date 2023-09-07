@@ -21,11 +21,11 @@ export default {
     },
     dataDialog: {
       type: Object,
-      default: () => {}
+      default: () => ({})
     },
     iconPopup: {
       type: Object,
-      default: () => {}
+      default: () => ({})
     }
   }
 }
