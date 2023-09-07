@@ -6,7 +6,7 @@
 import AduanMasuk from '~/components/Aduan/AduanMasuk'
 import { typeAduan } from '~/constant/aduan-masuk'
 export default {
-  name: 'PageManagementRelease',
+  name: 'PageAduanMasuk',
   components: {
     AduanMasuk
   },

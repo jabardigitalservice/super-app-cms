@@ -3,9 +3,13 @@
 </template>
 
 <script>
+import AduanMasuk from '~/components/Aduan/AduanMasuk'
 import { typeAduan } from '~/constant/aduan-masuk'
 export default {
-  name: 'PageManagementRelease',
+  name: 'PageAduanDiProses',
+  components: {
+    AduanMasuk
+  },
   layout: 'Dashboard',
   data () {
     return {
