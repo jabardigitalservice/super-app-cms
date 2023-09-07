@@ -162,7 +162,7 @@
                   <strong>{{ listPhoto.length }} Foto</strong>
                 </td>
                 <td class="px-2 py-[6px]">
-                  <jds-button variant="secondary" class="!font-medium w-[100px] !text-sm !border-green-600 !text-green-600 disabled:opacity-50 disabled:cursor-not-allowed" :disabled="listPhoto.length===0" @click="popup.viewImage=true">
+                  <jds-button variant="secondary" class="!font-medium w-[100px] !text-sm !border-green-600 !text-green-600 disabled:opacity-50 disabled:cursor-not-allowed" :disabled="listPhoto.length===0" @click="isShowPopupViewImage=true">
                     Lihat Foto
                   </jds-button>
                 </td>
@@ -172,7 +172,7 @@
         </BaseTabPanel>
       </template>
     </basetabgroup>
-    <DialogViewImage :list-photo="listPhoto" :show-popup="isShowPopupviewImage" @close="closePopupHandle()" />
+    <DialogViewImage :list-photo="listPhoto" :show-popup="isShowPopupViewImage" @close="closePopupHandle()" />
     <DialogConfirmation :data-dialog="dataDialog" :show-popup="isShowPopupConfirmationVerification" @close="closePopupHandle()" @submit="submitPopupVerificationHandle" />
     <DialogInformation :data-dialog="dataDialog" :show-popup="isShowPopupInformation" :icon-popup="iconPopup" @close="closePopupInformationHandle()" @submit="submitPopupVerificationHandle" />
     <DialogInputTextArea :data-dialog="dataDialog" :show-popup="isShowPopupConfirmationFailedVerification" @close="closePopupHandle()" @submit="submitPopupVerificationHandle" />
