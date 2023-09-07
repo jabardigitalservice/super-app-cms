@@ -77,6 +77,7 @@
     <DialogConfirmation :data-dialog="dataDialog" :show-popup="isShowPopupConfirmationVerification" @close="closePopupHandle()" @submit="submitPopupVerificationHandle" />
     <DialogInformation :data-dialog="dataDialog" :show-popup="isShowPopupInformation" :icon-popup="iconPopup" @close="closePopupInformationHandle()" @submit="submitPopupVerificationHandle" />
     <DialogInputTextArea :data-dialog="dataDialog" :show-popup="isShowPopupConfirmationFailedVerification" @close="closePopupHandle()" @submit="submitPopupVerificationHandle" />
+    <DialogLoading :show-popup="isLoading" />
   </div>
 </template>
 
