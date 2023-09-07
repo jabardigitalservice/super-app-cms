@@ -51,8 +51,7 @@
                   <div class="flex items-center">
                     <div
                       v-show="detailComplaint?.complaint_status"
-                      class=" mr-2 h-2 w-2 rounded-full"
-                      :class="getStatusColorHandle(detailComplaint?.complaint_status?.id)"
+                      :class="[' mr-2 h-2 w-2 rounded-full',getStatusColorHandle(detailComplaint?.complaint_status?.id)]"
                     />
                     {{ detailComplaint?.complaint_status?.name || '-' }}
                   </div>
