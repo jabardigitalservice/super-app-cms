@@ -4,7 +4,7 @@ export default {
       isShowPopupConfirmationVerification: false,
       isShowPopupConfirmationFailedVerification: false,
       isShowPopupInformation: false,
-      isShowPopupviewImage: false,
+      isShowPopupViewImage: false,
       dataDialog: {
         title: '',
         description: '',
