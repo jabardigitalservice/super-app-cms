@@ -52,12 +52,12 @@ export default {
   data () {
     return {
       fieldTextArea: '',
-      isInputTextArea: false // for check if user has typing something or no
+      isInputDirty: false // for check if user has typing something or no
     }
   },
   methods: {
     checkInputtextArea () {
-      this.isInputTextArea = true
+      this.isInputDirty = true
     },
     async submitConfirmationFaileComplaintdHandle () {
       const isDataValid = await this.$refs.form.validate()
@@ -65,7 +65,7 @@ export default {
         this.$emit('submit', { ...this.dataDialog, note: this.fieldTextArea, status: 'failed' })
       }
       this.fieldTextArea = ''
-      this.isInputTextArea = false
+      this.isInputDirty = false
     }
   }
 }
