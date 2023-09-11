@@ -25,7 +25,7 @@ export default {
       this.isShowPopupConfirmationFailedVerification = false
       this.isShowPopupConfirmationVerification = false
       this.isShowPopupInformation = false
-      this.isShowPopupviewImage = false
+      this.isShowPopupViewImage = false
     },
     showPopupVerificationHandle (dataComplaint, typeConfirmation) {
       this.dataDialog.subDescription = dataComplaint.complaint_id
