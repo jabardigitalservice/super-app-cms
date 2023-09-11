@@ -12,7 +12,7 @@
                 <div class="mt-1">
                   <textarea
                     v-model="fieldTextArea"
-                    :class="{ 'border border-red-600': isInputTextArea && errors.length>0 }"
+                    :class="{ 'border border-red-600': isInputDirty && errors.length>0 }"
                     placeholder="Catatan Aduan"
                     maxlength="255"
                     class="w-[462px] h-[83px] border border-gray-300 rounded-lg focus:outline-none px-2 py-[10px] placeholder:text-[14px] placeholder:font-lato"
@@ -20,7 +20,7 @@
                   />
                 </div>
 
-                <small v-show="isInputTextArea" class="text-red-600">{{ errors[0] }}</small>
+                <small v-show="isInputDirty" class="text-red-600">{{ errors[0] }}</small>
               </ValidationProvider>
               <p class="text-xs text-gray-600">
                 Tersisa {{ 255 - fieldTextArea.length }} Karakter
