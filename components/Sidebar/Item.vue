@@ -5,7 +5,13 @@
     :class="{ 'nuxt-link-exact-active': getActivePage == label }"
   >
     <div class="flex items-center">
-      <component :is="icon" class="mr-3 flex-shrink-0" />
+      <BaseIconSvg
+        v-if="icon"
+        :icon="`/icon/${icon}`"
+        :size="16"
+        fill-color="#EFEFF2"
+        class="mr-3 flex-shrink-0"
+      />
       <div class="font-lato text-sm text-gray-600">
         {{ label }}
       </div>
@@ -16,13 +22,11 @@
 
 <script>
 import ChevronRight from '~/assets/icon/chevron-right.svg?inline'
-import IconItem from '~/assets/icon/item.svg?inline'
 
 export default {
   name: 'ItemSidebar',
   components: {
-    ChevronRight,
-    IconItem
+    ChevronRight
   },
   props: {
     label: {
@@ -31,7 +35,7 @@ export default {
     },
     icon: {
       type: String,
-      default: 'icon-item'
+      default: ''
     },
     link: {
       type: String,

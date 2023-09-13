@@ -12,6 +12,7 @@
             :label="menuSidebar.name"
             :is-show-arrow="menuSidebar.arrow"
             :link="menuSidebar.path"
+            :icon="menuSidebar.icon"
           />
         </div>
       </div>
