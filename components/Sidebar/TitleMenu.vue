@@ -1,5 +1,7 @@
 <template>
-  <div class="mt-6 mb-4 py-3 font-roboto text-gray-600 uppercase font-bold border-b">
+  <div
+    class="border-b py-3 font-roboto font-bold uppercase text-white"
+  >
     {{ title }}
   </div>
 </template>

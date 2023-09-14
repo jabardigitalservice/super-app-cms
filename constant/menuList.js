@@ -6,14 +6,15 @@ const rwMenu = {
       name: 'Klaim Akun RW',
       path: '/',
       arrow: false,
-      showMenuAndAccessForRoles: ['admin']
+      showMenuAndAccessForRoles: ['admin'],
+      icon: 'item.svg'
     },
     {
       name: 'Kegiatan RW',
       path: 'activities',
       arrow: false,
-      showMenuAndAccessForRoles: ['admin']
-
+      showMenuAndAccessForRoles: ['admin'],
+      icon: 'item.svg'
     }
   ],
   childRoute: [
@@ -24,32 +25,35 @@ const rwMenu = {
   ]
 }
 
-const messageNotifMenu =
-{
+const messageNotifMenu = {
   titleMenu: 'pesan dan notif',
   showTitleMenuForRoles: ['admin'],
-  menu: [{
-    name: 'Pesan',
-    path: 'message-notif',
-    arrow: false,
-    showMenuAndAccessForRoles: ['admin']
-  }]
+  menu: [
+    {
+      name: 'Pesan',
+      path: 'message-notif',
+      arrow: false,
+      showMenuAndAccessForRoles: ['admin'],
+      icon: 'item.svg'
+    }
+  ]
 }
 
-const tiketMuseumMenu =
-{
+const tiketMuseumMenu = {
   titleMenu: 'tiket museum',
   showTitleMenuForRoles: ['admin_ticket'],
-  menu: [{
-    name: 'Tiket Museum',
-    path: 'ticket-museum',
-    arrow: false,
-    showMenuAndAccessForRoles: ['admin_ticket']
-  }]
+  menu: [
+    {
+      name: 'Tiket Museum',
+      path: 'ticket-museum',
+      arrow: false,
+      showMenuAndAccessForRoles: ['admin_ticket'],
+      icon: 'item.svg'
+    }
+  ]
 }
 
-const masterDataMenu =
-{
+const masterDataMenu = {
   titleMenu: 'master data',
   showTitleMenuForRoles: ['admin'],
   menu: [
@@ -59,12 +63,13 @@ const masterDataMenu =
     //   path: 'management-user',
     //   arrow: false,
     // showMenuAndAccessForRoles: ['admin']
-    // },
+    // }
     {
       name: 'Konfigurasi',
       path: 'configuration',
       arrow: true,
-      showMenuAndAccessForRoles: ['admin']
+      showMenuAndAccessForRoles: ['admin'],
+      icon: 'item.svg'
     }
     // TODO: api is currently not ready, so I hide the menu, until the configuration with the API is complete
     // {
@@ -97,10 +102,32 @@ const aduanMenu = {
   }]
 }
 
+const tahuraMenu = {
+  titleMenu: 'Ticketing Tahura',
+  showTitleMenuForRoles: ['admin'],
+  menu: [
+    {
+      name: 'Dashboard',
+      path: 'tahura/dashboard',
+      arrow: false,
+      showMenuAndAccessForRoles: ['admin'],
+      icon: 'speedo-meter.svg'
+    },
+    {
+      name: 'Laporan Pendapatan',
+      path: 'tahura/laporan-pendapatan',
+      arrow: false,
+      showMenuAndAccessForRoles: ['admin'],
+      icon: 'news-paper.svg'
+    }
+  ]
+}
+
 export const menu = [
   rwMenu,
   messageNotifMenu,
   tiketMuseumMenu,
   masterDataMenu,
-  aduanMenu
+  aduanMenu,
+  tahuraMenu
 ]
