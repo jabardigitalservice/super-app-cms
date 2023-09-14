@@ -85,13 +85,13 @@ const aduanMenu = {
     arrow: false,
     showMenuAndAccessForRoles: ['admin']
   }, {
-    name: 'Daftar Aduan Diproses',
-    path: 'aduan/aduan-di-proses',
+    name: 'Daftar Penentuan Kewenangan',
+    path: 'aduan/penentuan-kewenangan',
     arrow: false,
     showMenuAndAccessForRoles: ['admin']
   }, {
-    name: 'Daftar Aduan Dialihkan ke SP4N',
-    path: 'aduan/dialihkan-ke-span',
+    name: 'Dialihkan ke SP4N',
+    path: 'aduan/dialihkan-ke-span-lapor',
     arrow: false,
     showMenuAndAccessForRoles: ['admin']
   }]
