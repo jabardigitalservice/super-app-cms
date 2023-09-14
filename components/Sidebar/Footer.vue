@@ -1,20 +1,20 @@
 <template>
-  <div>
+  <div class="mt-auto p-6 hover:bg-green-700">
     <jds-popover ref="popover" :options="optionsPopover" :value="isPopupOpen">
       <template #activator>
         <div
-          class="w-full h-full min-w-[200px] flex justify-between items-center cursor-pointer hover:text-gray-800 hover:font-bold"
+          class="w-full h-full min-w-[200px] flex justify-between items-center cursor-pointer hover:text-white hover:font-bold"
           @click="toggleShowPopup"
         >
           <div class="flex gap-2 items-center">
-            <div class="rounded-full bg-gray-100 p-1">
-              <IconUser class="h-5 w-5 text-gray-600" />
+            <div class="rounded-full bg-gray-300 p-1">
+              <IconUser class="h-5 w-5 text-white" />
             </div>
-            <div class="min-w-0 flex-1 font-lato text-[#666687] text-[14px] capitalize">
+            <div class="min-w-0 flex-1 font-lato text-white text-[14px] capitalize">
               {{ nameUser }}
             </div>
           </div>
-          <ChevronRight class="stroke-gray-500" />
+          <ChevronRight class="stroke-white" />
         </div>
       </template>
       <div class="w-full bg-white rounded-lg shadow-xl p-2">
