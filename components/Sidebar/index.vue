@@ -1,8 +1,8 @@
 <template>
   <div class="sticky top-0 flex h-screen flex-col">
-    <SidebarHeader class="border-b px-6 py-7" />
-    <div class="sidebar-content overflow-y-auto p-4">
-      <div v-for="(menuList, index) in menu" :key="index">
+    <SidebarHeader class="px-6 py-7" />
+    <div class="sidebar-content overflow-y-auto px-6">
+      <div v-for="(menuList, index) in menu" :key="index" class="mb-3">
         <SidebarTitleMenu v-show="menuList?.showTitleMenuForRoles?.some(value => $role.includes(value))" :title="menuList.titleMenu" />
         <div class="flex flex-col gap-2">
           <SidebarItem
@@ -18,7 +18,6 @@
       </div>
     </div>
     <SidebarFooter
-      class="mt-auto border-t p-6 hover:bg-gray-50"
       :name-user="profileName"
     />
   </div>

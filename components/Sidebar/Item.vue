@@ -1,7 +1,7 @@
 <template>
   <nuxt-link
     :to="{ path: link }"
-    class="flex w-full min-w-[200px] items-center justify-between rounded-lg p-3 hover:bg-gray-50 hover:font-bold hover:text-gray-800"
+    class="flex w-full min-w-[200px] items-center justify-between rounded-lg p-3 hover:bg-green-700 hover:font-bold hover:text-white"
     :class="{ 'nuxt-link-exact-active': getActivePage == label }"
   >
     <div class="flex items-center">
@@ -9,14 +9,14 @@
         v-if="icon"
         :icon="`/icon/${icon}`"
         :size="16"
-        fill-color="#EFEFF2"
+        fill-color="#FFFFFF"
         class="mr-3 flex-shrink-0"
       />
-      <div class="font-lato text-sm text-gray-600">
+      <div class="font-lato text-sm text-white">
         {{ label }}
       </div>
     </div>
-    <ChevronRight v-if="isShowArrow" class="stroke-gray-500" />
+    <ChevronRight v-if="isShowArrow" class="stroke-white" />
   </nuxt-link>
 </template>
 
@@ -56,6 +56,6 @@ export default {
 
 <style scoped>
 a.nuxt-link-exact-active {
-  @apply bg-gray-50 font-bold text-gray-800 !important;
+  @apply bg-green-700 font-bold text-white p-3 !important;
 }
 </style>
