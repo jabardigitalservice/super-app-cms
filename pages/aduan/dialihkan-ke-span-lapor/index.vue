@@ -1,14 +1,14 @@
 <template>
-  <AduanDalihkanKeSpan :type-aduan-page="typeAduan.aduanDialihkanSpanLapor.props" />
+  <AduanDialihkanKeSpan :type-aduan-page="typeAduan.aduanDialihkanSpanLapor.props" />
 </template>
 
 <script>
-import AduanDalihkanKeSpan from '~/components/Aduan/DialihkanKeSpan'
+import AduanDialihkanKeSpan from '~/components/Aduan/DialihkanKeSpan'
 import { typeAduan } from '~/constant/aduan-masuk'
 export default {
   name: 'PageDialihkanKeSpan',
   components: {
-    AduanDalihkanKeSpan
+    AduanDialihkanKeSpan
   },
   layout: 'Dashboard',
   data () {
