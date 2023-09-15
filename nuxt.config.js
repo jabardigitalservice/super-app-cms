@@ -14,9 +14,7 @@ export default {
       { hid: 'description', name: 'description', content: '' },
       { name: 'format-detection', content: 'telephone=no' }
     ],
-    link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.png' }
-    ],
+    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.png' }],
     script: [
       {
         src: '/newrelic-browser-script.js',
@@ -28,9 +26,7 @@ export default {
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: [
-    '~/assets/css/style.css'
-  ],
+  css: ['~/assets/css/style.css'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
@@ -39,7 +35,8 @@ export default {
     '~/plugins/axios',
     '~/plugins/vue-gtag.js',
     '~/plugins/vee-validate.js',
-    '~/plugins/date-picker.js'
+    '~/plugins/date-picker.js',
+    { src: '~/plugins/vue-tableau.js', ssr: false }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -126,11 +123,13 @@ export default {
     apiKey: process.env.API_KEY,
     keyclockBaseUrl: process.env.KEYCLOCK_BASE_URL,
     axios: {
-      browserBaseURL: process.env.BROWSER_BASE_URL + '/' + process.env.VERSION_ENDPOINT
+      browserBaseURL:
+        process.env.BROWSER_BASE_URL + '/' + process.env.VERSION_ENDPOINT
     },
     googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID,
     tinymceApiKey: process.env.TINYMCE_API_KEY,
-    googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY
+    googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
+    linkTableu: process.env.LINK_TABLEU
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios

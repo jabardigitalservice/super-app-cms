@@ -1,9 +1,10 @@
 <template>
-  <div>Dashboard Tahura</div>
+  <TahuraDashboard />
 </template>
 
 <script>
 export default {
+  name: 'PageDashboardTahura',
   layout: 'Dashboard',
   data () {
     return {
@@ -12,8 +13,9 @@ export default {
           label: 'Dashboard',
           link: '/tahura/dashboard'
         }
-      ]
-
+      ],
+      descriptionPage:
+        'Lorem ipsum dolor sit amet consectetur. Quis platea malesuada tincidunt et.'
     }
   },
   mounted () {
@@ -26,6 +28,4 @@ export default {
 }
 </script>
 
-<style>
-
-</style>
+<style></style>
