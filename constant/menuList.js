@@ -84,29 +84,22 @@ const masterDataMenu = {
 const aduanMenu = {
   titleMenu: 'aduan',
   showTitleMenuForRoles: ['admin'],
-  menu: [
-    {
-      name: 'Daftar Aduan Masuk',
-      path: 'aduan/aduan-masuk',
-      arrow: false,
-      showMenuAndAccessForRoles: ['admin'],
-      icon: 'item.svg'
-    },
-    {
-      name: 'Daftar Aduan Diproses',
-      path: 'aduan/aduan-di-proses',
-      arrow: false,
-      showMenuAndAccessForRoles: ['admin'],
-      icon: 'item.svg'
-    },
-    {
-      name: 'Daftar Aduan Dialihkan ke SP4N',
-      path: 'aduan/dialihkan-ke-span',
-      arrow: false,
-      showMenuAndAccessForRoles: ['admin'],
-      icon: 'item.svg'
-    }
-  ]
+  menu: [{
+    name: 'Daftar Aduan Masuk',
+    path: 'aduan/aduan-masuk',
+    arrow: false,
+    showMenuAndAccessForRoles: ['admin']
+  }, {
+    name: 'Daftar Penentuan Kewenangan',
+    path: 'aduan/penentuan-kewenangan',
+    arrow: false,
+    showMenuAndAccessForRoles: ['admin']
+  }, {
+    name: 'Dialihkan ke SP4N',
+    path: 'aduan/dialihkan-ke-span-lapor',
+    arrow: false,
+    showMenuAndAccessForRoles: ['admin']
+  }]
 }
 
 const tahuraMenu = {
