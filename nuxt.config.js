@@ -21,6 +21,9 @@ export default {
         'data-account-id': `${process.env.ACCOUNT_ID_NEW_RELIC}`,
         'data-browser-license-key': `${process.env.LICENSE_KEY_NEW_RELIC_ACCOUNT}`,
         'data-application-id': `${process.env.APPLICATION_ID_NEW_RELIC}`
+      },
+      {
+        src: 'https://public.tableau.com/javascripts/api/tableau-2.min.js'
       }
     ]
   },
@@ -35,8 +38,7 @@ export default {
     '~/plugins/axios',
     '~/plugins/vue-gtag.js',
     '~/plugins/vee-validate.js',
-    '~/plugins/date-picker.js',
-    { src: '~/plugins/vue-tableau.js', ssr: false }
+    '~/plugins/date-picker.js'
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

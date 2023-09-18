@@ -1,18 +1,33 @@
 <template>
   <div class="flex h-fit w-full items-center rounded-lg bg-green-600 p-[2px]">
-    <div class="w-full rounded-lg bg-white">
-      <!-- <tableau-viz id="tableauViz" :src="$config.linkTableu" /> -->
-      <TableauViz :src="$config.linkTableu" />
+    <div class="rounded-lg bg-white w-full">
+      <div ref="tableau" />
     </div>
   </div>
 </template>
 
 <script>
-import { TableauViz } from 'vue-tableau'
+/* global tableau */
 export default {
   name: 'DashboardTahura',
-  components: {
-    TableauViz
+  data () {
+    return {
+      url: this.$config.linkTableu,
+      options: {
+        hideTabs: true,
+        width: '100%',
+        height: '559px'
+      }
+    }
+  },
+  mounted () {
+    this.initViz()
+  },
+  methods: {
+    initViz () {
+      const viz = new tableau.Viz(this.$refs.tableau, this.url, this.options)
+      console.log(viz)
+    }
   }
 }
 </script>
