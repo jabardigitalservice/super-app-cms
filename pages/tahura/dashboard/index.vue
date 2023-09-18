@@ -15,7 +15,7 @@ export default {
         }
       ],
       descriptionPage:
-        'Lorem ipsum dolor sit amet consectetur. Quis platea malesuada tincidunt et.'
+        'Dashboard Taman Hutan Raya.'
     }
   },
   mounted () {
