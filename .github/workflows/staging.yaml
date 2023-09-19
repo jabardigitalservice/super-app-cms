@@ -2,7 +2,7 @@ name: Jabar Super Apps Web Admin
 
 on:
   push:
-    branches: [ development ]
+    branches: [development]
 
 jobs:
   docker:
@@ -46,6 +46,10 @@ jobs:
             NEW_RELIC_LICENSE_KEY=${{secrets.NEW_RELIC_LICENSE_KEY}}
             TINYMCE_API_KEY=${{secrets.TINYMCE_API_KEY}}
             GOOGLE_MAPS_API_KEY=${{secrets.GOOGLE_MAPS_API_KEY}}
+            URL_TABLEAU_JABARPROV=${{secrets.URL_TABLEAU_JABARPROV}}
+            URL_DASHBOARD_TAHURA=${{secrets.URL_DASHBOARD_TAHURA}}
+            USERNAME_TABLEAU=${{secrets.USERNAME_TABLEAU}}
+            URL_GET_TOKEN_TABLEAU=${{secrets.URL_GET_TOKEN_TABLEAU}}
       # GitOps
       - name: GitOps ArgoCD Setup
         run: |
