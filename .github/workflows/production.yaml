@@ -46,6 +46,10 @@ jobs:
             NEW_RELIC_LICENSE_KEY=${{secrets.NEW_RELIC_LICENSE_KEY}}
             TINYMCE_API_KEY=${{secrets.TINYMCE_API_KEY}}
             GOOGLE_MAPS_API_KEY=${{secrets.GOOGLE_MAPS_API_KEY}}
+            LINK_TABLEAU=${{secrets.LINK_TABLEAU}}
+            LINK_DASHBOARD_TABLEAU=${{secrets.LINK_DASHBOARD_TABLEAU}}
+            USERNAME_TABLEAU=${{secrets.USERNAME_TABLEAU}}
+            LINK_TOKEN_TABLEAU=${{secrets.LINK_TOKEN_TABLEAU}}
       # GitOps
       - name: GitOps ArgoCD Setup
         run: |
