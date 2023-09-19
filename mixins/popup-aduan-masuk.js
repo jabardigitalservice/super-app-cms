@@ -47,8 +47,8 @@ export default {
       }
     },
     async submitPopupVerificationHandle (paramDialog) {
-      this.isShowPopupConfirmationVerification = paramDialog.status === 'verified'
-      this.isShowPopupConfirmationFailedVerification = paramDialog.status === 'failed'
+      this.isShowPopupConfirmationVerification = false
+      this.isShowPopupConfirmationFailedVerification = false
       this.dataDialog.title = paramDialog.status === 'verified' ? 'Verifikasi Aduan' : 'Aduan Gagal Diverifikasi'
       this.dataDialog.subDescription = paramDialog.subDescription
       this.isLoading = true
