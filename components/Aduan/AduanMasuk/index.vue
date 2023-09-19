@@ -20,7 +20,7 @@
               <p class="ml-2 text-sm text-blue-gray-700">
                 Filter :
               </p>
-              <jds-select placeholder="Kategori Aduan" :options="listCategory" class="!ml-2 mr-2" @change="filterCategoryHandle" />
+              <jds-select v-model="query.complaint_category_id" placeholder="Kategori Aduan" :options="listCategory" class="!ml-2 mr-2" @change="filterCategoryHandle" />
               <date-picker
                 ref="datepicker"
                 v-model="dateRange"
@@ -28,6 +28,8 @@
                 range
                 range-separator=" - "
                 @close="isShowPopupDate=false"
+                @clear="clearDateRangeHandle"
+                @change="changeDateRangeHandle"
               >
                 <template #icon-calendar>
                   <jds-icon name="calendar-date-outline" size="sm" fill="#069550" />
@@ -139,6 +141,7 @@ export default {
       isShowPopupDate: false,
       listValueStatusComplaint: [],
       listStatisticComplaint: [],
+      isShowPopupDateRange: false,
       dateRange: [new Date(new Date().setFullYear(new Date().getFullYear() - 1)), new Date()]
     }
   },
@@ -216,7 +219,11 @@ export default {
       }
     },
     dateRange () {
-      this.$refs.datepicker.openPopup()
+      if (!this.isShowPopupDateRange) {
+        this.$refs.datepicker.closePopup()
+      } else {
+        this.$refs.datepicker.openPopup()
+      }
     },
     search: debounce(function (value) {
       if (value.length > 2 || value.length === 0) {
@@ -333,21 +340,34 @@ export default {
     listTabHandle (status) {
       this.query = { page: 1, limit: 5 }
       if (status !== 'total') {
-        this.setQuery({ 'complaint_status_id[0]': status })
+        this.search = ''
+        this.dateRange = [new Date(new Date().setFullYear(new Date().getFullYear() - 1)), new Date()]
+        this.setQuery({ 'complaint_status_id[0]': status, search: null, complaint_category_id: null })
+        this.isShowPopupDateRange = false
       }
       this.$fetch()
     },
     filterDateHandle () {
-      this.query.start_date = formatDate(this.dateRange[0], 'yyyy-MM-dd')
-      this.query.end_date = formatDate(this.dateRange[1], 'yyyy-MM-dd')
+      this.setQuery({ start_date: formatDate(this.dateRange[0], 'yyyy-MM-dd'), end_date: formatDate(this.dateRange[1], 'yyyy-MM-dd') })
       this.$fetch()
       this.$refs.datepicker.closePopup()
     },
     closePopupDateHandle () {
+      this.isShowPopupDateRange = false
       this.$refs.datepicker.closePopup()
     },
+
     setQuery (params) {
       this.query = { ...this.query, ...params }
+    },
+    clearDateRangeHandle () {
+      this.dateRange = [new Date(new Date().setFullYear(new Date().getFullYear() - 1)), new Date()]
+      this.setQuery({ start_date: formatDate(this.dateRange[0], 'yyyy-MM-dd'), end_date: formatDate(this.dateRange[1], 'yyyy-MM-dd') })
+      this.isShowPopupDateRange = false
+      this.$fetch()
+    },
+    changeDateRangeHandle () {
+      this.isShowPopupDateRange = true
     }
   }
 }
@@ -372,6 +392,10 @@ export default {
 
 .icon-tab-selected path {
   stroke: #16a75c;
+}
+
+.jds-popover__content{
+  width: 225px !important;
 }
 
 </style>
