@@ -12,15 +12,14 @@
                 <div class="mt-1">
                   <textarea
                     v-model="fieldTextArea"
-                    :class="{ 'border border-red-600': isInputDirty && errors.length>0 }"
+                    :class="{ 'border border-red-600': (isInputDirty || isSubmit) && errors[0] }"
                     placeholder="Catatan Aduan"
                     maxlength="255"
                     class="w-[462px] h-[83px] border border-gray-300 rounded-lg focus:outline-none px-2 py-[10px] placeholder:text-[14px] placeholder:font-lato"
-                    @input="checkInputtextArea()"
                   />
                 </div>
 
-                <small v-show="isInputDirty" class="text-red-600">{{ errors[0] }}</small>
+                <small v-show="(isInputDirty || isSubmit) && errors[0]" class="text-red-600">{{ errors[0] }}</small>
               </ValidationProvider>
               <p class="text-xs text-gray-600">
                 Tersisa {{ 255 - fieldTextArea.length }} Karakter
@@ -29,7 +28,7 @@
           </form>
         </ValidationObserver>
       </div>
-      <BaseDialogFooter :label-button=" dataDialog.labelButton" @close="$emit('close')" @submit="submitConfirmationFaileComplaintdHandle()" />
+      <BaseDialogFooter :label-button=" dataDialog.labelButton" @close="closePopupHandle()" @submit="submitConfirmationFaileComplaintdHandle()" />
     </BaseDialogPanel>
   </BaseDialog>
 </template>
@@ -52,20 +51,33 @@ export default {
   data () {
     return {
       fieldTextArea: '',
-      isInputDirty: false // for check if user has typing something or no
+      isInputDirty: false, // for check if user has typing something or no
+      isSubmit: false
+    }
+  },
+  watch: {
+    fieldTextArea () {
+      if (this.fieldTextArea.length > 0) {
+        this.isInputDirty = true
+      }
     }
   },
   methods: {
-    checkInputtextArea () {
-      this.isInputDirty = true
-    },
     async submitConfirmationFaileComplaintdHandle () {
+      this.isSubmit = true
       const isDataValid = await this.$refs.form.validate()
       if (isDataValid) {
         this.$emit('submit', { ...this.dataDialog, note: this.fieldTextArea, status: 'failed' })
+        this.fieldTextArea = ''
+        this.isInputDirty = false
+        this.isSubmit = false
       }
-      this.fieldTextArea = ''
+    },
+    closePopupHandle () {
       this.isInputDirty = false
+      this.isSubmit = false
+      this.fieldTextArea = ''
+      this.$emit('close')
     }
   }
 }
