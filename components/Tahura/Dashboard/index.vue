@@ -12,9 +12,9 @@ export default {
   name: 'DashboardTahura',
   data () {
     return {
-      url: this.$config.linkTableau,
-      viewsTableu: this.$config.linkDashboardTableau,
-      tokenLinkTableu: '',
+      url: this.$config.urlTableauJabarProv,
+      viewsTableu: this.$config.urlDashboardTahura,
+      tokenurlTableauJabarProv: '',
       options: {
         hideTabs: true,
         width: '100%',
@@ -27,22 +27,21 @@ export default {
   },
   methods: {
     initViz () {
-      const viz = new tableau.Viz(
+      return new tableau.Viz(
         this.$refs.tableau,
-        `${this.url}${this.tokenLinkTableu}/${this.viewsTableu}`,
+        `${this.url}/trusted/${this.tokenurlTableauJabarProv}/${this.viewsTableu}`,
         this.options
       )
-      console.log(viz)
     },
     async getToken () {
       try {
         const response = await this.$axios.get(
-          `${this.$config.linkTokenTableau}${this.$config.usernameTableau}`
+          `${this.$config.urlGetTokenTableau}${this.$config.usernameTableau}`
         )
-        this.tokenLinkTableu = response.data.data.token
+        this.tokenurlTableauJabarProv = response.data.data.token
         this.initViz()
       } catch (error) {
-        console.log('failed get token')
+        console.error('failed get token')
       }
     }
   }

@@ -131,10 +131,10 @@ export default {
     googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID,
     tinymceApiKey: process.env.TINYMCE_API_KEY,
     googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
-    linkTableau: process.env.LINK_TABLEAU,
-    linkDashboardTableau: process.env.LINK_DASHBOARD_TABLEAU,
+    urlTableauJabarProv: process.env.URL_TABLEAU_JABARPROV,
+    urlDashboardTahura: process.env.URL_DASHBOARD_TAHURA,
     usernameTableau: process.env.USERNAME_TABLEAU,
-    linkTokenTableau: process.env.LINK_TOKEN_TABLEAU
+    urlGetTokenTableau: process.env.URL_GET_TOKEN_TABLEAU
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
