@@ -58,12 +58,12 @@
                       v-show="!detailComplaintDiverted?.sp4n_created_at"
                       :class="{' mr-2 h-2 w-2 rounded-full bg-[#FFB900]': !detailComplaintDiverted?.sp4n_created_at}"
                     />
-                    {{ detailComplaintDiverted?.diverted_to_span_at || 'Belum ada' }}
+                    {{ detailComplaintDiverted?.sp4n_created_at || 'Belum ada' }}
                   </div>
                 </td>
               </tr>
             </BaseTableDetail>
-            <BaseTableDetail v-show="detailComplaintDiverted?.sp4n_id" header="Status SPAN Lapor" class="mb-4">
+            <BaseTableDetail v-show="detailComplaintDiverted?.sp4n_id && detailComplaintDiverted?.sp4n_created_at" header="Status SPAN Lapor" class="mb-4">
               <tr>
                 <td class="px-2 w-[180px]">
                   Data Table
