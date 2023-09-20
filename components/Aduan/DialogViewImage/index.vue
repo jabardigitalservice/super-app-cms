@@ -1,6 +1,6 @@
 <template>
   <BaseDialog :show-popup="showPopup">
-    <BaseDialogPanel class="w-[1240px] px-10">
+    <BaseDialogPanel class="w-[1240px] h-[720px] px-10">
       <BaseDialogHeader title="Bukti Foto" />
       <swiper
         :slides-per-view="3"
@@ -11,7 +11,7 @@
         class="!pt-[50px]"
         @swiper="getSwipperRefHandle"
       >
-        <swiper-slide v-for="(item,index) in listPhoto" :key="index" class="!h-[520px]">
+        <swiper-slide v-for="(item,index) in listPhoto" :key="index" class="!h-[520px] w-[390px]">
           <img
             :src="item.url"
             alt="photo"
