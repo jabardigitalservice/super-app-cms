@@ -256,9 +256,12 @@ export default {
     try {
       const response = await this.$axios.get(`/warga/complaints/${this.$route.params.id}`)
       this.detailComplaintDiverted = response.data.data
-      this.detailComplaintDiverted.created_at = formatDate(this.detailComplaintDiverted?.created_at, 'dd/MM/yyyy - HH:mm')
-      this.detailComplaintDiverted.diverted_to_span_at = formatDate(this.detailComplaintDiverted?.diverted_to_span_at, 'dd/MM/yyyy - HH:mm')
-      this.detailComplaintDiverted.complaint_status = this.complaintStatus[this.detailComplaintDiverted.complaint_status_id]
+      this.setDetailComplaintDeverted({
+        created_at: this.detailComplaintDiverted?.created_at && formatDate(this.detailComplaintDiverted?.created_at, 'dd/MM/yyyy - HH:mm'),
+        diverted_to_span_at: this.detailComplaintDiverted?.diverted_to_span_at && formatDate(this.detailComplaintDiverted?.diverted_to_span_at, 'dd/MM/yyyy - HH:mm'),
+        complaint_status: this.complaintStatus[this.detailComplaintDiverted.complaint_status_id],
+        sp4n_created_at: this.detailComplaintDiverted?.sp4n_created_at && formatDate(this.detailComplaintDiverted?.created_at, 'dd/MM/yyyy - HH:mm')
+      })
       this.listPhoto = this.detailComplaintDiverted.photos
     } catch {
       this.detailComplaintDiverted = {}
@@ -289,6 +292,9 @@ export default {
       this.photo.showPopup = true
       this.photo.url = 'loading'
       this.photo.url = url
+    },
+    setDetailComplaintDeverted (newDetailComplaintDiverted) {
+      this.detailComplaintDiverted = { ...this.detailComplaintDiverted, ...newDetailComplaintDiverted }
     }
   }
 }
