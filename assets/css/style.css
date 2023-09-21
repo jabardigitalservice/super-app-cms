@@ -51,7 +51,12 @@
 }
 
 .mx-input{
-  @apply text-sm font-lato text-gray-800 !important;
+  @apply text-sm font-lato text-gray-700 !important;
+}
+
+
+.mx-input:hover, .mx-input:focus {
+  @apply border-green-600 !important
 }
 
 .mx-btn-text,.mx-calendar-header{
