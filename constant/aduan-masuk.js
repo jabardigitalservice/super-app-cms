@@ -22,9 +22,9 @@ export const aduanSpanHeader = [
 ]
 
 export const typeAduan = {
-  aduanMasuk: { props: 'aduan-masuk', label: 'Daftar Aduan Masuk', link: '/aduan/aduan-masuk' },
-  aduanDialihkanSpanLapor: { props: 'aduan-dialihkan-span-lapor', label: 'Daftar Aduan Dialihkan Ke SP4N Lapor', link: '/aduan/dialihkan-ke-span-lapor' },
-  penentuanKewenangan: { props: 'penentuan-kewenangan', label: 'Daftar Penentuan Kewenangan', link: '/aduan/penentuan-kewenangan' }
+  aduanMasuk: { props: 'aduan-masuk', label: 'Daftar Aduan Masuk', link: '/aduan/aduan-masuk', id: 'aduanMasuk' },
+  aduanDialihkanSpanLapor: { props: 'aduan-dialihkan-span-lapor', label: 'Daftar Aduan Dialihkan Ke SP4N Lapor', link: '/aduan/dialihkan-ke-span-lapor', id: 'aduanDialihkanSpanLapor' },
+  penentuanKewenangan: { props: 'penentuan-kewenangan', label: 'Daftar Penentuan Kewenangan', link: '/aduan/penentuan-kewenangan', id: 'penentuanKewenangan' }
 }
 
 export const complaintStatus = Object.freeze({
