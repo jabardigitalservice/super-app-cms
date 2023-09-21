@@ -1,20 +1,5 @@
 <template>
   <div>
-    <div class="flex justify-between mt-4 mb-8">
-      <jds-button variant="secondary" class="!w-[126px] !h-[38px] !py-1 !text-[14px] !font-bold" @click="goToBackHandle">
-        <div class="flex items-center">
-          <ArrowLeft class="mr-[10px] h-[12px] w-[14px]" />
-          Kembali
-        </div>
-      </jds-button>
-      <jds-button
-        v-show="!detailComplaintDiverted?.sp4n_id"
-        label="Tambahkan ID SP4N Lapor"
-        variant="primary"
-        class="!h-[38px] !py-1 !text-[14px] !font-bold"
-        @click="showPopupVerificationHandle(detailComplaint, 'verification')"
-      />
-    </div>
     <BaseTabGroup>
       <template #tab-list>
         <TabBarDetail :list-tab="listTab" />
@@ -27,12 +12,12 @@
           <div class="table-content">
             <BaseTableDetail header="Informasi Umum" class="mb-4">
               <tr>
-                <td class="w-[180px] text-lato">
+                <td class="w-[164px] text-lato">
                   <strong class="text-[10px]">ID Aduan </strong>
                 </td>
-                <td>{{ detailComplaintDiverted?.complaint_id || '-' }}</td>
+                <td>{{ detailComplaint?.complaint_id || '-' }}</td>
               </tr>
-              <tr>
+              <tr v-show="listTypeAduanSpanLapor.includes(typeAduanPage)">
                 <td class="text-lato">
                   <strong class="text-[10px]">ID SP4N Lapor </strong>
                 </td>
@@ -48,10 +33,12 @@
               </tr>
               <tr>
                 <td><strong>Tanggal Aduan Masuk</strong></td>
-                <td>{{ detailComplaintDiverted?.created_at }} </td>
+                <td>{{ detailComplaint?.created_at }} </td>
               </tr>
-              <tr>
-                <td><strong>Tanggal Diinput ke SP4N</strong></td>
+              <tr v-show="typeAduanPage===typeAduan.aduanDialihkanSpanLapor.id">
+                <td class="w-[175px]">
+                  <strong>Tanggal Diinput ke SP4N</strong>
+                </td>
                 <td>
                   <div class="flex items-center">
                     <div
@@ -62,8 +49,24 @@
                   </div>
                 </td>
               </tr>
+              <tr v-show="listTypeAduanStatusAduan.includes(typeAduanPage)">
+                <td><strong>Status</strong></td>
+                <td>
+                  <div class="flex items-center">
+                    <div
+                      v-show="detailComplaint?.complaint_status"
+                      :class="[' mr-2 h-2 w-2 rounded-full',getStatusColorHandle(detailComplaint?.complaint_status?.id)]"
+                    />
+                    {{ detailComplaint?.complaint_status?.name || '-' }}
+                  </div>
+                </td>
+              </tr>
+              <tr v-show="typeAduanPage===typeAduan.aduanMasuk.id && detailComplaint?.complaint_status_note">
+                <td><strong>Alasan</strong></td>
+                <td>{{ detailComplaint?.complaint_status_note }}</td>
+              </tr>
             </BaseTableDetail>
-            <BaseTableDetail v-show="detailComplaintDiverted?.sp4n_id && detailComplaintDiverted?.sp4n_created_at" header="Status SPAN Lapor" class="mb-4">
+            <BaseTableDetail v-show="typeAduanPage===typeAduan.aduanDialihkanSpanLapor.id && detailComplaint?.sp4n_id && detailComplaint?.sp4n_created_at" header="Status SPAN Lapor" class="mb-4">
               <tr>
                 <td class="px-2 w-[180px]">
                   Data Table
@@ -83,23 +86,23 @@
                 <td class="w-[180px]">
                   <strong class="text-[10px]">Nama Lengkap </strong>
                 </td>
-                <td>{{ detailComplaintDiverted?.user_name || "-" }}</td>
+                <td>{{ detailComplaint?.user_name || "-" }}</td>
               </tr>
               <tr>
                 <td><strong>No. Kontak</strong></td>
-                <td>{{ detailComplaintDiverted?.user_phone || "-" }}</td>
+                <td>{{ detailComplaint?.user_phone || "-" }}</td>
               </tr>
               <tr>
                 <td><strong>Email</strong></td>
-                <td>{{ detailComplaintDiverted?.user_email || '-' }}</td>
+                <td>{{ detailComplaint?.user_email || '-' }}</td>
               </tr>
               <tr>
                 <td><strong>Jenis Media Sosial</strong></td>
-                <td>{{ detailComplaintDiverted?.social_media?.name || "-" }}</td>
+                <td>{{ detailComplaint?.social_media?.name || "-" }}</td>
               </tr>
               <tr>
                 <td><strong>Link Akun Media Sosial</strong></td>
-                <td>{{ detailComplaintDiverted?.social_media_link || '-' }}</td>
+                <td>{{ detailComplaint?.social_media_link || '-' }}</td>
               </tr>
               <tr>
                 <td colspan="2">
@@ -116,38 +119,38 @@
                 <td class="w-[180px]">
                   <strong class="text-[10px]">Kategori Aduan </strong>
                 </td>
-                <td>{{ detailComplaintDiverted?.complaint_category?.name || '-' }}</td>
+                <td>{{ detailComplaint?.complaint_category?.name || '-' }}</td>
               </tr>
               <tr>
                 <td><strong>Sub Kategori Aduan</strong></td>
-                <td>{{ detailComplaintDiverted?.complaint_subcategory?.name || '-' }}</td>
+                <td>{{ detailComplaint?.complaint_subcategory?.name || '-' }}</td>
               </tr>
               <tr>
                 <td><strong>Judul Aduan</strong></td>
-                <td>{{ detailComplaintDiverted?.title || '-' }}</td>
+                <td>{{ detailComplaint?.title || '-' }}</td>
               </tr>
               <tr>
                 <td><strong>Detail Aduan</strong></td>
-                <td>{{ detailComplaintDiverted?.description || '-' }}</td>
+                <td>{{ detailComplaint?.description || '-' }}</td>
               </tr>
               <tr>
                 <td><strong>Lokasi Kejadian</strong></td>
               </tr>
               <tr>
                 <td>Kabupaten / Kota </td>
-                <td>{{ detailComplaintDiverted?.city?.name || '-' }}</td>
+                <td>{{ detailComplaint?.city?.name || '-' }}</td>
               </tr>
               <tr>
                 <td>Kecamatan</td>
-                <td>{{ detailComplaintDiverted?.district?.name || '-' }}</td>
+                <td>{{ detailComplaint?.district?.name || '-' }}</td>
               </tr>
               <tr>
                 <td>Kelurahan</td>
-                <td>{{ detailComplaintDiverted?.subdistrict?.name || '-' }}</td>
+                <td>{{ detailComplaint?.subdistrict?.name || '-' }}</td>
               </tr>
               <tr colspan="2">
                 <td>Detail Lokasi Kejadian</td>
-                <td>{{ detailComplaintDiverted?.address_detail || '-' }}</td>
+                <td>{{ detailComplaint?.address_detail || '-' }}</td>
               </tr>
               <tr>
                 <td colspan="2">
@@ -156,11 +159,11 @@
               </tr>
               <tr>
                 <td>Latitude</td>
-                <td>{{ detailComplaintDiverted?.latitude || '-' }}</td>
+                <td>{{ detailComplaint?.latitude || '-' }}</td>
               </tr>
               <tr>
                 <td>Longitude</td>
-                <td>{{ detailComplaintDiverted?.longitude || '-' }}</td>
+                <td>{{ detailComplaint?.longitude || '-' }}</td>
               </tr>
               <tr>
                 <td class="align-top">
@@ -168,14 +171,14 @@
                 </td>
                 <td>
                   <iframe
-                    v-if="detailComplaintDiverted?.latitude && detailComplaintDiverted?.longitude"
+                    v-if="detailComplaint?.latitude && detailComplaint?.longitude"
                     class="rounded-lg"
                     width="389"
                     height="245"
                     frameborder="0"
                     style="border:0"
                     referrerpolicy="no-referrer-when-downgrade"
-                    :src="`https://www.google.com/maps/embed/v1/place?key=${$config.googleMapsApiKey}&q=${detailComplaintDiverted?.latitude},${detailComplaintDiverted?.longitude}`"
+                    :src="`https://www.google.com/maps/embed/v1/place?key=${$config.googleMapsApiKey}&q=${detailComplaint?.latitude},${detailComplaint?.longitude}`"
                   />
                   <div v-else>
                     -
@@ -205,41 +208,26 @@
       </template>
     </basetabgroup>
     <DialogViewImage :list-photo="listPhoto" :show-popup="isShowPopupViewImage" @close="closePopupHandle()" />
-    <DialogConfirmation
-      :data-dialog="dataDialog"
-      :show-popup="isShowPopupConfirmationVerification"
-      @close="closePopupHandle()"
-      @submit="submitPopupVerificationHandle"
-    />
-    <DialogInformation
-      :data-dialog="dataDialog"
-      :show-popup="isShowPopupInformation"
-      :icon-popup="iconPopup"
-      @close="closePopupInformationHandle()"
-      @submit="submitPopupVerificationHandle"
-    />
-    <DialogInputTextArea
-      :data-dialog="dataDialog"
-      :show-popup="isShowPopupConfirmationFailedVerification"
-      @close="closePopupHandle()"
-      @submit="submitPopupVerificationHandle"
-    />
-    <DialogLoading :show-popup="isLoading" />
   </div>
 </template>
 
 <script>
-import ArrowLeft from '~/assets/icon/arrow-left.svg?inline'
-import { complaintStatus } from '~/constant/aduan-masuk'
+import { complaintStatus, typeAduan } from '~/constant/aduan-masuk'
 import { formatDate } from '~/utils'
 import DialogViewImage from '~/components/Aduan/DialogViewImage'
 import TabBarDetail from '~/components/Aduan/TabBar/Detail'
 import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
 
 export default {
-  name: 'DetailAduanDialihkanKeSpan',
-  components: { ArrowLeft, DialogViewImage, TabBarDetail },
+  name: 'DetailAduanMasuk',
+  components: { DialogViewImage, TabBarDetail },
   mixins: [popupAduanMasuk],
+  props: {
+    typeAduanPage: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     return {
       listTab: [{
@@ -247,24 +235,31 @@ export default {
         icon: '/icon/icon-aduan/complaint-detail.svg'
       }],
       selectedTabIndex: 0,
-      detailComplaintDiverted: {},
+      detailComplaint: {},
       complaintStatus,
-      listPhoto: []
+      listPhoto: [],
+      typeAduan
     }
   },
   async fetch () {
     try {
       const response = await this.$axios.get(`/warga/complaints/${this.$route.params.id}`)
-      this.detailComplaintDiverted = response.data.data
-      this.setDetailComplaintDeverted({
-        created_at: this.detailComplaintDiverted?.created_at && formatDate(this.detailComplaintDiverted?.created_at, 'dd/MM/yyyy - HH:mm'),
-        diverted_to_span_at: this.detailComplaintDiverted?.diverted_to_span_at && formatDate(this.detailComplaintDiverted?.diverted_to_span_at, 'dd/MM/yyyy - HH:mm'),
-        complaint_status: this.complaintStatus[this.detailComplaintDiverted.complaint_status_id],
-        sp4n_created_at: this.detailComplaintDiverted?.sp4n_created_at && formatDate(this.detailComplaintDiverted?.created_at, 'dd/MM/yyyy - HH:mm')
-      })
-      this.listPhoto = this.detailComplaintDiverted.photos
+      this.detailComplaint = response.data.data
+      this.detailComplaint.created_at = formatDate(this.detailComplaint?.created_at, 'dd/MM/yyyy - HH:mm')
+      this.detailComplaint.complaint_status = this.complaintStatus[this.detailComplaint.complaint_status_id]
+      this.listPhoto = this.detailComplaint.photos
     } catch {
-      this.detailComplaintDiverted = {}
+      this.detailComplaint = {}
+    }
+  },
+  computed: {
+    // to get type aduan which will show id span lapor && date input span lapor
+    listTypeAduanSpanLapor () {
+      return Object.keys(this.typeAduan).filter(item => item.includes(this.typeAduan.aduanDialihkanSpanLapor.id)) // key of object
+    },
+    // to get type aduan which will show status aduan
+    listTypeAduanStatusAduan () {
+      return Object.keys(this.typeAduan).filter(item => !this.listTypeAduanSpanLapor.includes(item) && item)
     }
   },
   mounted () {
@@ -274,27 +269,35 @@ export default {
     selectedTabHandle (index) {
       this.selectedTabIndex = index
     },
-    goToBackHandle () {
-      this.$router.push('/aduan/dialihkan-ke-span-lapor')
-    },
     getStatusHandle (id) {
       const result = this.complaintStatus.find(item => item.id === id)
       return result
     },
     getCoordinatHandle () {
-      if (this.detailComplaintDiverted?.longitude && this.detailComplaintDiverted?.latitude) {
-        return `${this.detailComplaintDiverted.latitude}, ${this.detailComplaintDiverted.longitude}`
+      if (this.detailComplaint?.longitude && this.detailComplaint?.latitude) {
+        return `${this.detailComplaint.latitude}, ${this.detailComplaint.longitude}`
       } else {
         return '-'
       }
+    },
+    getStatusColorHandle (id) {
+      let result = ''
+      switch (id) {
+        case 'unverified':
+          result = 'bg-[#FF7500]'
+          break
+        case 'verified':
+          result = 'bg-green-600'
+          break
+        case 'failed':
+          result = 'bg-red-400'
+      }
+      return result
     },
     showViewPhotoDialogHandle (url) {
       this.photo.showPopup = true
       this.photo.url = 'loading'
       this.photo.url = url
-    },
-    setDetailComplaintDeverted (newDetailComplaintDiverted) {
-      this.detailComplaintDiverted = { ...this.detailComplaintDiverted, ...newDetailComplaintDiverted }
     }
   }
 }
