@@ -3,7 +3,7 @@
     <BaseTabGroup>
       <template #tab-panel>
         <BaseTabPanel class="px-3 pt-6 pb-4">
-          <div class="mb-4 flex">
+          <div class="mb-4 flex w-full">
             <div class="ml-4 flex items-center">
               <div class="flex flex-col">
                 <h5
@@ -84,118 +84,122 @@
                   @change="filterCategoryHandle"
                 />
               </div>
+
+              <div class="flex">
+                <BaseButton
+                  class="mx-3 bg-green-700 text-white hover:bg-green-600"
+                >
+                  Download Laporan
+                </BaseButton>
+              </div>
             </div>
           </div>
 
           <div
             class="relative mx-6 overflow-x-auto rounded-lg border border-gray-300"
           >
-            <div class="my-4 flex justify-end">
-              <BaseButton
-                class="mx-3 w-fit bg-green-700 text-white hover:bg-green-600"
-              >
-                Download Laporan
-              </BaseButton>
-            </div>
-
-            <table class="w-full text-left text-sm text-gray-500">
-              <thead
-                class="bg-gray-200 font-roboto text-xs font-semibold uppercase text-gray-800"
-              >
-                <tr>
-                  <th scope="col" class="px-6 py-3">
-                    Tanggal Kunjungan
-                  </th>
-                  <th scope="col" class="px-6 py-3">
-                    No
-                  </th>
-                  <th scope="col" class="px-6 py-3">
-                    tipe wistawan
-                  </th>
-                  <th scope="col" class="px-6 py-3">
-                    tipe asuransi
-                  </th>
-                  <th scope="col" class="px-6 py-3">
-                    jumlah tiket
-                  </th>
-                  <th scope="col" class="px-6 py-3">
-                    tarif (rp)
-                  </th>
-                  <th scope="col" class="px-6 py-3">
-                    jumlah total (rp)
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <template v-for="(item, index) in listDataLaporan.data">
-                  <tr
-                    v-for="(itemCategories, indexCategory) in item.categories"
-                    :key="`${item.reservationDate}-${indexCategory}`"
-                    class="font-[14px] border-b bg-gray-50 font-lato font-medium text-gray-800"
-                  >
-                    <td scope="row" class="whitespace-nowrap px-6 py-4">
-                      {{
-                        formatDate(item.reservationDate, "dd MMMM yyyy") || "-"
-                      }}
-                    </td>
-                    <td class="px-6 py-4">
-                      {{ indexCategory + 1 }}
-                    </td>
-                    <td class="px-6 py-4">
-                      {{ itemCategories.name || "-" }}
-                    </td>
-                    <td class="px-6 py-4">
-                      {{ getTypeAssurance(selectAsurance) || "-" }}
-                    </td>
-                    <td class="px-6 py-4">
-                      {{ itemCategories.quantity || "-" }}
-                    </td>
-                    <td class="px-6 py-4">
-                      {{
-                        convertToRupiah(checkAsurance(itemCategories.price)) ||
-                          "-"
-                      }}
-                    </td>
-                    <td class="px-6 py-4">
-                      {{
-                        convertToRupiah(
-                          checkAsurance(itemCategories.price) *
-                            itemCategories.quantity
-                        ) || "-"
-                      }}
-                    </td>
+            <div class="max-h-96">
+              <table class="w-full text-left text-sm text-gray-500">
+                <thead
+                  class="sticky top-0 bg-gray-200 font-roboto text-xs font-semibold uppercase text-gray-800"
+                >
+                  <tr>
+                    <th scope="col" class="px-6 py-3">
+                      Tanggal Kunjungan
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                      No
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                      tipe wistawan
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                      tipe asuransi
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                      jumlah tiket
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                      tarif (rp)
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                      jumlah total (rp)
+                    </th>
                   </tr>
+                </thead>
+                <tbody class="h-96 overflow-y-auto">
+                  <template v-for="(item, index) in listDataLaporan.data">
+                    <tr
+                      v-for="(itemCategories, indexCategory) in item.categories"
+                      :key="`${item.reservationDate}-${indexCategory}`"
+                      class="font-[14px] border-b bg-gray-50 font-lato font-medium text-gray-800"
+                    >
+                      <td scope="row" class="whitespace-nowrap px-6 py-4">
+                        {{
+                          formatDate(item.reservationDate, "dd MMMM yyyy") ||
+                            "-"
+                        }}
+                      </td>
+                      <td class="px-6 py-4">
+                        {{ indexCategory + 1 }}
+                      </td>
+                      <td class="px-6 py-4">
+                        {{ itemCategories.name || "-" }}
+                      </td>
+                      <td class="px-6 py-4">
+                        {{ getTypeAssurance(selectAsurance) || "-" }}
+                      </td>
+                      <td class="px-6 py-4">
+                        {{ itemCategories.quantity || "-" }}
+                      </td>
+                      <td class="px-6 py-4">
+                        {{
+                          convertToRupiah(
+                            checkAsurance(itemCategories.price)
+                          ) || "-"
+                        }}
+                      </td>
+                      <td class="px-6 py-4">
+                        {{
+                          convertToRupiah(
+                            checkAsurance(itemCategories.price) *
+                              itemCategories.quantity
+                          ) || "-"
+                        }}
+                      </td>
+                    </tr>
+                    <tr
+                      :key="index"
+                      class="font-[14px] border-b bg-gray-100 font-lato font-bold text-gray-800"
+                    >
+                      <td colspan="5" />
+                      <td class="px-6 py-4">
+                        Total
+                      </td>
+                      <td class="px-6 py-4">
+                        {{
+                          convertToRupiah(calculateRowTotal(item.categories)) ||
+                            "-"
+                        }}
+                      </td>
+                    </tr>
+                  </template>
+                </tbody>
+                <tfoot class="sticky bottom-0 bg-gray-200">
                   <tr
-                    :key="index"
-                    class="font-[14px] border-b bg-gray-100 font-lato font-bold text-gray-800"
+                    class="font-[14px] border-b font-lato font-bold text-gray-800"
                   >
                     <td colspan="5" />
                     <td class="px-6 py-4">
-                      Total
+                      Grand Total
                     </td>
                     <td class="px-6 py-4">
-                      {{
-                        convertToRupiah(calculateRowTotal(item.categories)) ||
-                          "-"
-                      }}
+                      {{ convertToRupiah(grandTotal) }}
                     </td>
                   </tr>
-                </template>
-              </tbody>
-              <tfoot class="bg-gray-200">
-                <tr
-                  class="font-[14px] border-b font-lato font-bold text-gray-800"
-                >
-                  <td colspan="5" />
-                  <td class="px-6 py-4">
-                    Grand Total
-                  </td>
-                  <td class="px-6 py-4">
-                    {{ convertToRupiah(grandTotal) }}
-                  </td>
-                </tr>
-              </tfoot>
-            </table>
+                </tfoot>
+              </table>
+            </div>
           </div>
         </BaseTabPanel>
       </template>
@@ -212,6 +216,7 @@ export default {
   data () {
     return {
       search: '',
+      // TODO: changes dummy data from API, if API ready
       dataDummy: [
         {
           status: true,
