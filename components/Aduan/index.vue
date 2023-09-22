@@ -20,7 +20,7 @@
               <p class="ml-2 text-sm text-blue-gray-700">
                 Filter :
               </p>
-              <jds-select placeholder="Kategori Aduan" :options="listCategory" class="!ml-2 mr-2" @change="filterCategoryHandle" />
+              <jds-select v-model="query.complaint_category_id" placeholder="Kategori Aduan" :options="listCategory" class="!ml-2 mr-2 select-form-complaint !w-[260px]" @change="filterCategoryHandle" />
               <date-picker
                 ref="datepicker"
                 v-model="dateRange"
@@ -28,6 +28,8 @@
                 range
                 range-separator=" - "
                 @close="isShowPopupDate=false"
+                @clear="clearDateRangeHandle"
+                @change="changeDateRangeHandle"
               >
                 <template #icon-calendar>
                   <jds-icon name="calendar-date-outline" size="sm" fill="#069550" />
@@ -39,7 +41,7 @@
             </div>
           </div>
           <JdsDataTable
-            :headers="spanDivertedHeader"
+            :headers="checkTypeHeaderAduan(typeAduanPage)"
             :items="listData"
             :loading="$fetchState.pending"
             :pagination="pagination"
@@ -49,6 +51,28 @@
             @per-page-change="perPageChange"
             @change:sort="sortChange"
           >
+            <!-- eslint-disable-next-line vue/valid-v-slot -->
+            <template #item.status="{ item }">
+              <div v-show="!typeAduanPage==='aduan-dialihkan-span-lapor'" class="flex items-center">
+                <p
+                  v-show="item?.status"
+                  class="h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 text-xs font-semibold"
+                  :class="getColorText(item?.status_id)"
+                >
+                  {{ item.status }}
+                </p>
+              </div>
+            </template>
+            <!-- eslint-disable-next-line vue/valid-v-slot -->
+            <template #item.sp4n_created_at="{ item }">
+              <div class="flex items-center">
+                <p
+                  :class="{'bg-gray-100 text-[#FF7500] h-fit w-fit rounded-[32px] px-[10px] py-1 text-xs font-semibold':item.sp4n_created_at==='Belum ada'}"
+                >
+                  {{ item.sp4n_created_at }}
+                </p>
+              </div>
+            </template>
             <!-- eslint-disable-next-line vue/valid-v-slot -->
             <template #item.diverted_to_span_at="{ item }">
               <div class="flex items-center">
@@ -60,37 +84,46 @@
               </div>
             </template>
             <!-- eslint-disable-next-line vue/valid-v-slot -->
-            <template #item.span_id="{ item }">
+            <template #item.sp4n_id="{ item }">
               <div class="flex items-center">
                 <p
-                  :class="{'bg-gray-100 text-[#FF7500] h-fit w-fit rounded-[32px] px-[10px] py-1 text-xs font-semibold':item.span_id==='Belum ada'}"
+                  :class="{'bg-gray-100 text-[#FF7500] h-fit w-fit rounded-[32px] px-[10px] py-1 text-xs font-semibold':item.sp4n_id==='Belum ada'}"
                 >
-                  {{ item.span_id }}
+                  {{ item.sp4n_id }}
                 </p>
               </div>
             </template>
             <!-- eslint-disable-next-line vue/valid-v-slot -->
             <template #item.action="{item}">
               <BaseTableAction
-                :list-menu-pop-over="menuTableActionHandle(item)"
+                :list-menu-pop-over="menuTableActionHandle()"
                 @detail="goToPageDetailHandle(item)"
+                @verify="showPopupVerificationHandle(item,'verification')"
+                @failed="showPopupVerificationHandle(item,'failed')"
+                @add-span="showPopupInputIdSpanHandle(item)"
               />
             </template>
           </JdsDataTable>
         </BaseTabPanel>
       </template>
     </BaseTabGroup>
-    <DialogInputText title="=" />
+    <DialogConfirmation :data-dialog="dataDialog" :show-popup="isShowPopupConfirmationVerification" @close="closePopupHandle()" @submit="submitPopupVerificationHandle" />
+    <DialogInformation :data-dialog="dataDialog" :show-popup="isShowPopupInformation" :icon-popup="iconPopup" @close="closePopupInformationHandle()" @submit="submitPopupVerificationHandle" />
+    <DialogInputTextArea :data-dialog="dataDialog" :show-popup="isShowPopupConfirmationFailedVerification" @close="closePopupHandle()" @submit="submitPopupVerificationHandle" />
+    <DialogInputText :data-dialog="dataDialog" :show-popup="isShowPopupInputIdSpan" @close="closePopupHandle()" />
+    <DialogLoading :show-popup="isLoading" />
   </div>
 </template>
 
 <script>
 import debounce from 'lodash.debounce'
+
 import { formatDate, generateItemsPerPageOptions, formatNumberToUnit, convertToUnit } from '~/utils'
 import 'vue2-datepicker/index.css'
 import TabBarList from '~/components/Aduan/TabBar/List'
 
 import {
+  complaintHeader,
   complaintStatus,
   spanDivertedHeader,
   typeAduan
@@ -98,11 +131,15 @@ import {
 import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
 
 export default {
-  name: 'AduanDalihkanKeSpan',
+  name: 'AduanMasuk',
   components: { TabBarList },
   mixins: [popupAduanMasuk],
   props: {
     typeAduanPage: {
+      type: String,
+      default: ''
+    },
+    linkPageDetail: {
       type: String,
       default: ''
     }
@@ -110,8 +147,10 @@ export default {
   data () {
     return {
       menuTableAction: [
-        { menu: 'Lihat Detail Aduan', value: 'detail' },
-        { menu: 'Tambahkan ID SP4N Lapor', value: 'add-span' }
+        { menu: 'Lihat Detail Aduan', value: 'detail', typeAduan: ['all'] },
+        { menu: 'Terverifikasi', value: 'verify', typeAduan: [typeAduan.aduanMasuk.props] },
+        { menu: 'Gagal Diverifikasi', value: 'failed', typeAduan: [typeAduan.aduanMasuk.props] },
+        { menu: 'Tambahkan ID SP4N Lapor', value: 'add-span', typeAduan: [typeAduan.aduanDialihkanSpanLapor.props] }
       ],
       listDataComplaint: [],
       listDataCategory: [],
@@ -131,6 +170,7 @@ export default {
       sortBy: '',
       sortOrder: '',
       search: '',
+      complaintHeader,
       complaintStatus,
       selectedTabIndex: 0,
       spanDivertedHeader,
@@ -138,12 +178,16 @@ export default {
       isShowPopupDate: false,
       listValueStatusComplaint: [],
       listStatisticComplaint: [],
+      isShowPopupDateRange: false,
       dateRange: [new Date(new Date().setFullYear(new Date().getFullYear() - 1)), new Date()]
     }
   },
   async fetch () {
     try {
-      this.query['complaint_status_id[0]'] = 'diverted_to_span'
+      if (!JSON.stringify(Object.keys(this.query)).match('complaint_status_id')) {
+        this.query = this.addComplaintStatusFilterHandle()
+      }
+
       const responseListComplaint = await this.$axios.get('/warga/complaints', {
         params: this.query
       })
@@ -153,10 +197,9 @@ export default {
 
       this.listDataCategory = responseListCategoryComplaint.data.data
       const listDataStatisticComplaint = responseListStatisticComplaint.data.data
-      this.listStatisticComplaint = listDataStatisticComplaint.filter(item => item.id === this.complaintStatus.diverted_to_span.id)
+      this.listStatisticComplaint = listDataStatisticComplaint.filter(item => this.complaintStatus[item.id].typeAduan.includes(this.typeAduanPage) && item.id === this.complaintStatus[item.id].id)
       const { data } = responseListComplaint.data
       this.listDataComplaint = data?.data || []
-
       if (this.listDataComplaint.length) {
         this.pagination.disabled = false
       } else {
@@ -179,10 +222,12 @@ export default {
         return {
           ...item,
           category: item.complaint_category.name,
+          status: this.complaintStatus[item.complaint_status.id].name,
           created_at: formatDate(item.created_at || '', 'dd/MM/yyyy HH:mm'),
           status_id: item.complaint_status.id,
-          span_id: item.sp4n_id || 'Belum ada',
-          diverted_to_span_at: item.diverted_to_span_at ? formatDate(item.diverted_to_span_at || '', 'dd/MM/yyyy HH:mm') : 'Belum ada'
+          sp4n_id: item.sp4n_id || 'Belum ada',
+          diverted_to_span_at: item.diverted_to_span_at ? formatDate(item.diverted_to_span_at || '', 'dd/MM/yyyy HH:mm') : 'Belum ada',
+          sp4n_created_at: item.sp4n_created_at ? formatDate(item.sp4n_created_at || '', 'dd/MM/yyyy HH:mm') : 'Belum ada'
         }
       })
     },
@@ -213,7 +258,11 @@ export default {
       }
     },
     dateRange () {
-      this.$refs.datepicker.openPopup()
+      if (!this.isShowPopupDateRange) {
+        this.$refs.datepicker.closePopup()
+      } else {
+        this.$refs.datepicker.openPopup()
+      }
     },
     search: debounce(function (value) {
       if (value.length > 2 || value.length === 0) {
@@ -232,6 +281,16 @@ export default {
   methods: {
     selectedTabHandle (index) {
       this.selectedTabIndex = index
+    },
+    checkTypeHeaderAduan (type) {
+      switch (type) {
+        case typeAduan.aduanMasuk.props:
+          return this.complaintHeader
+        case typeAduan.aduanDialihkanSpanLapor.props:
+          return this.spanDivertedHeader
+        default:
+          return {}
+      }
     },
     getColor (statusId) {
       const status = complaintStatus.find(item => item.id === statusId)
@@ -255,18 +314,24 @@ export default {
     },
     sortChange (value) {
       const key = Object.keys(value)[0]
-      this.query = { limit: 5, page: 1 }
       if (key && value[key] !== 'no-sort') {
-        this.setQuery({ sort_by: key, sort_type: value[key] })
+        this.query.sort_by = key
+        this.query.sort_type = value[key]
         switch (key) {
           case 'category' :
-            this.setQuery({ sort_by: 'complaint_category_id' })
+            this.query.sort_by = 'complaint_category_id'
+            this.query.sort_type = value[key]
             break
           case 'status' :
-            this.setQuery({ sort_by: 'complaint_status_id' })
+            this.query.sort_by = 'complaint_status_id'
+            this.query.sort_type = value[key]
             break
         }
+      } else {
+        delete this.query.sort_by
+        delete this.query.sort_type
       }
+
       this.$fetch()
     },
     filterCategoryHandle (value) {
@@ -274,14 +339,22 @@ export default {
       this.$fetch()
     },
     goToPageDetailHandle (item) {
-      this.$router.push(`/aduan/dialihkan-ke-span-lapor/detail/${item.id}`)
+      this.$router.push(`${this.linkPageDetail}/${item.id}`)
     },
-    menuTableActionHandle (item) {
-      if (item?.diverted_to_span_at !== 'Belum ada' && item?.span_id !== 'Belum ada') {
-        return this.menuTableAction.filter(item => item.value === 'detail')
-      } else {
-        return this.menuTableAction
+    getColorText (statusId) {
+      switch (statusId) {
+        case complaintStatus.unverified.id:
+          return 'text-[#FF7500]'
+        case complaintStatus.verified.id:
+          return 'text-green-700'
+        case complaintStatus.failed.id:
+          return 'text-[#DD5E5E]'
+        default:
+          return 'text-gray-900'
       }
+    },
+    menuTableActionHandle () {
+      return this.menuTableAction.filter(item => item.typeAduan.includes('all') || item.typeAduan.includes(this.typeAduanPage))
     },
     getTotalStatistic () {
       const total = this.listStatisticComplaint.reduce((accumulator, object) => {
@@ -289,10 +362,22 @@ export default {
       }, 0)
       return total
     },
+    addComplaintStatusFilterHandle () {
+      this.listValueStatusComplaint = Object.values(this.complaintStatus)
+      for (let i = 0; i < this.listValueStatusComplaint.length; i++) {
+        if (this.listValueStatusComplaint[i].typeAduan.includes(this.typeAduanPage)) {
+          this.setQuery({ [`complaint_status_id[${i - 1}]`]: this.listValueStatusComplaint[i].id })
+        }
+      }
+      return this.query
+    },
     listTabHandle (status) {
       this.query = { page: 1, limit: 5 }
       if (status !== 'total') {
-        this.setQuery({ 'complaint_status_id[0]': status })
+        this.search = ''
+        this.dateRange = [new Date(new Date().setFullYear(new Date().getFullYear() - 1)), new Date()]
+        this.setQuery({ 'complaint_status_id[0]': status, search: null, complaint_category_id: null })
+        this.isShowPopupDateRange = false
       }
       this.$fetch()
     },
@@ -302,11 +387,53 @@ export default {
       this.$refs.datepicker.closePopup()
     },
     closePopupDateHandle () {
+      this.isShowPopupDateRange = false
       this.$refs.datepicker.closePopup()
     },
+
     setQuery (params) {
       this.query = { ...this.query, ...params }
+    },
+    clearDateRangeHandle () {
+      this.dateRange = [new Date(new Date().setFullYear(new Date().getFullYear() - 1)), new Date()]
+      this.setQuery({ start_date: formatDate(this.dateRange[0], 'yyyy-MM-dd'), end_date: formatDate(this.dateRange[1], 'yyyy-MM-dd') })
+      this.isShowPopupDateRange = false
+      this.$fetch()
+    },
+    changeDateRangeHandle () {
+      this.isShowPopupDateRange = true
     }
   }
 }
 </script>
+
+<style>
+  .icon-tab rect{
+    fill: #008444 !important;
+  }
+
+  .icon-tab path{
+    stroke: white;
+  }
+
+.icon-tab path {
+  stroke: white;
+}
+
+.icon-tab-selected rect {
+  fill: #f5f5f5;
+}
+
+.icon-tab-selected path {
+  stroke: #16a75c;
+}
+
+.select-form-complaint .jds-input-text{
+  width: 260px !important;
+}
+
+.select-form-complaint .jds-popover__content{
+  width: 260px !important;
+}
+
+</style>
