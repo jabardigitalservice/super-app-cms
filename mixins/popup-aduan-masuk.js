@@ -5,11 +5,14 @@ export default {
       isShowPopupConfirmationFailedVerification: false,
       isShowPopupInformation: false,
       isShowPopupViewImage: false,
+      isShowPopupInputIdSpan: false,
       dataDialog: {
         title: '',
         description: '',
         subDescription: '',
         labelButton: '',
+        labelInput: '',
+        placeholder: '',
         showCancelButton: true
       },
       iconPopup: {
@@ -26,6 +29,7 @@ export default {
       this.isShowPopupConfirmationVerification = false
       this.isShowPopupInformation = false
       this.isShowPopupViewImage = false
+      this.isShowPopupInputIdSpan = false
     },
     showPopupVerificationHandle (dataComplaint, typeConfirmation) {
       this.dataDialog.subDescription = dataComplaint.complaint_id
@@ -45,6 +49,10 @@ export default {
         })
         this.isShowPopupConfirmationFailedVerification = true
       }
+    },
+    showPopupInputIdSpanHandle (dataComplaint) {
+      this.setDataDialog({ title: 'Tambahkan ID SP4N Lapor', description: 'No.Aduan', subDescription: dataComplaint.complaint_id, labelInput: 'ID SP4N Lapor', placeholder: 'Masukkan ID SP4N Lapor', labelButton: 'Tambahkan' })
+      this.isShowPopupInputIdSpan = true
     },
     async submitPopupVerificationHandle (paramDialog) {
       this.isShowPopupConfirmationVerification = false
