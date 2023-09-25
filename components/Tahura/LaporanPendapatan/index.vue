@@ -84,45 +84,47 @@
                   @change="filterCategoryHandle"
                 />
               </div>
-
-              <div class="flex">
-                <BaseButton
-                  class="mx-3 bg-green-700 text-white hover:bg-green-600"
-                >
-                  Download Laporan
-                </BaseButton>
-              </div>
             </div>
           </div>
 
           <div
             class="relative mx-6 overflow-x-auto rounded-lg border border-gray-300"
           >
+            <div class="flex justify-end">
+              <BaseButtonDropdown
+                class="m-[12px]"
+                :list-menu-pop-over="actionDownloadLaporan"
+                @xls="downloadExcelReport"
+                @pdf="downloadPdfReport"
+              >
+                Download Laporan
+              </BaseButtonDropdown>
+            </div>
             <div class="max-h-96">
-              <table class="w-full text-left text-sm text-gray-500">
+              <table id="table-laporan-pendapatan" class="w-full text-left text-sm text-gray-500">
                 <thead
-                  class="sticky top-0 bg-gray-200 font-roboto text-xs font-semibold uppercase text-gray-800"
+                  class="bg-gray-200 font-roboto text-xs font-semibold uppercase text-gray-800"
                 >
                   <tr>
-                    <th scope="col" class="px-6 py-3">
+                    <th scope="col" class="px-6 py-3 font-bold">
                       Tanggal Kunjungan
                     </th>
-                    <th scope="col" class="px-6 py-3">
+                    <th scope="col" class="px-6 py-3 font-bold">
                       No
                     </th>
-                    <th scope="col" class="px-6 py-3">
+                    <th scope="col" class="px-6 py-3 font-bold">
                       tipe wistawan
                     </th>
-                    <th scope="col" class="px-6 py-3">
+                    <th scope="col" class="px-6 py-3 font-bold">
                       tipe asuransi
                     </th>
-                    <th scope="col" class="px-6 py-3">
+                    <th scope="col" class="px-6 py-3 font-bold">
                       jumlah tiket
                     </th>
-                    <th scope="col" class="px-6 py-3">
+                    <th scope="col" class="px-6 py-3 font-bold">
                       tarif (rp)
                     </th>
-                    <th scope="col" class="px-6 py-3">
+                    <th scope="col" class="px-6 py-3 font-bold">
                       jumlah total (rp)
                     </th>
                   </tr>
@@ -425,7 +427,11 @@ export default {
       listDataLaporan: [],
       assurancePrice: 0,
       selectAsurance: 'with-assurance',
-      grandTotal: 0
+      grandTotal: 0,
+      actionDownloadLaporan: [
+        { menu: 'Portable Data Format (.pdf)', value: 'pdf' },
+        { menu: 'Microsoft Excel (.xls)', value: 'xls' }
+      ]
     }
   },
   async fetch () {
@@ -536,7 +542,19 @@ export default {
       this.grandTotal = grandTotal
     },
     formatDate,
-    convertToRupiah
+    convertToRupiah,
+    downloadExcelReport () {
+      /*eslint-disable*/
+      const table = document.getElementById('table-laporan-pendapatan')
+      const ws = XLSX.utils.table_to_sheet(table)
+      const wb = XLSX.utils.book_new()
+      XLSX.utils.book_append_sheet(wb, ws, 'Sheet1')
+
+      XLSX.writeFile(wb, 'Laporan Pendatapan.xlsx')
+    },
+    downloadPdfReport () {
+      console.log('download pdf')
+    }
   }
 }
 </script>
