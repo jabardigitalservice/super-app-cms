@@ -9,9 +9,9 @@ export const complaintHeader = [
 
 export const spanDivertedHeader = [
   ...complaintHeader.filter(item => item.key !== 'status' && item.key !== 'action'),
-  { key: 'createdSpanAt', text: 'Tanggal Diinput SP4N', sortable: true },
+  { key: 'sp4n_created_at', text: 'Tanggal Diinput SP4N', sortable: true },
   { key: 'diverted_to_span_at', text: 'Tanggal Verifikasi SP4N', sortable: true },
-  { key: 'span_id', text: 'ID SP4N', sortable: true },
+  { key: 'sp4n_id', text: 'ID SP4N', sortable: true },
   { key: 'action', text: 'Aksi' }
 ]
 
@@ -33,6 +33,6 @@ export const complaintStatus = Object.freeze({
   verified: { id: 'verified', name: 'Terverifikasi', value: 0, statusColor: '[#1E88E5]', icon: '/icon/icon-aduan/complaint-verify-icon.svg', typeAduan: [typeAduan.aduanMasuk.props, typeAduan.penentuanKewenangan.props] },
   failed: { id: 'failed', name: 'Gagal Diverifikasi', value: 0, statusColor: '[#DD5E5E]', icon: '/icon/icon-aduan/complaint-failed-icon.svg', typeAduan: [typeAduan.aduanMasuk.props] },
   coordinated: { id: 'coordinated', name: 'Dikoordinasikan', value: 0, statusColor: '[#16A75C]', icon: '/icon/icon-aduan/complaint-coordination-icon.svg', typeAduan: [typeAduan.penentuanKewenangan.props] },
-  diverted_to_span: { id: 'diverted_to_span', name: 'Dialihkan ke SP4N Lapor', value: 0, statusColor: '[#16A75C]', icon: '/icon/icon-aduan/complaint-span-icon.svg', typeAduan: [typeAduan.penentuanKewenangan.props] },
+  diverted_to_span: { id: 'diverted_to_span', name: 'Dialihkan ke SP4N Lapor', value: 0, statusColor: '[#16A75C]', icon: '/icon/icon-aduan/complaint-span-icon.svg', typeAduan: [typeAduan.penentuanKewenangan.props, typeAduan.aduanDialihkanSpanLapor.props] },
   rejected: { id: 'rejected', name: 'Ditolak', value: 0, statusColor: '[#EF5350]', icon: '/icon/icon-aduan/complaint-failed-icon.svg', typeAduan: [typeAduan.penentuanKewenangan.props] }
 })
