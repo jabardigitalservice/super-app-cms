@@ -53,7 +53,7 @@
           >
             <!-- eslint-disable-next-line vue/valid-v-slot -->
             <template #item.status="{ item }">
-              <div v-show="!typeAduanPage==='aduan-dialihkan-span-lapor'" class="flex items-center">
+              <div class="flex items-center">
                 <p
                   v-show="item?.status"
                   class="h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 text-xs font-semibold"
