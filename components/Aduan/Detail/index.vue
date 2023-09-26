@@ -45,7 +45,6 @@
                 <td>
                   <div class="flex items-center">
                     <div
-                      v-show="!detailComplaint?.sp4n_id"
                       :class="{' mr-2 h-2 w-2 rounded-full bg-[#FFB900]': !detailComplaint?.sp4n_id}"
                     />
                     {{ detailComplaint?.sp4n_id || 'Belum ada' }}
@@ -56,14 +55,13 @@
                 <td><strong>Tanggal Aduan Masuk</strong></td>
                 <td>{{ detailComplaint?.created_at }} </td>
               </tr>
-              <tr v-show="typeAduanPage===typeAduan.aduanDialihkanSpanLapor.id">
+              <tr v-show="typeAduanPage === typeAduan.aduanDialihkanSpanLapor.id">
                 <td class="w-[175px]">
                   <strong>Tanggal Diinput ke SP4N</strong>
                 </td>
                 <td>
                   <div class="flex items-center">
                     <div
-                      v-show="!detailComplaint?.sp4n_created_at"
                       :class="{' mr-2 h-2 w-2 rounded-full bg-[#FFB900]': !detailComplaint?.sp4n_created_at}"
                     />
                     {{ detailComplaint?.sp4n_created_at || 'Belum ada' }}
@@ -87,7 +85,7 @@
                 <td>{{ detailComplaint?.complaint_status_note }}</td>
               </tr>
             </BaseTableDetail>
-            <BaseTableDetail v-show="typeAduan.aduanDialihkanSpanLapor.id===typeAduanPage && detailComplaint?.diverted_to_span_at && detailComplaint?.sp4n_created_at" header="Status SPAN Lapor" class="mb-4">
+            <BaseTableDetail v-show="typeAduan.aduanDialihkanSpanLapor.id === typeAduanPage && detailComplaint?.diverted_to_span_at && detailComplaint?.sp4n_created_at" header="Status SPAN Lapor" class="mb-4">
               <tr>
                 <td class="px-2 w-[180px]">
                   Data Table
