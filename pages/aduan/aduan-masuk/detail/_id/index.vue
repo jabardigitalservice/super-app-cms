@@ -1,13 +1,14 @@
 <template>
-  <DetailAduanMasuk />
+  <AduanDetail :type-aduan-page="typeAduan.aduanMasuk.id" :list-button="listButtonDetail" />
 </template>
 
 <script>
-import { typeAduan } from '~/constant/aduan-masuk'
-import DetailAduanMasuk from '~/components/Aduan/AduanMasuk/Detail'
+import { typeAduan, complaintButtonDetail } from '~/constant/aduan-masuk'
+import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
+
 export default {
   name: 'PageDetailAduanMasuk',
-  components: { DetailAduanMasuk },
+  mixins: [popupAduanMasuk],
   layout: 'Dashboard',
   data () {
     return {
@@ -22,7 +23,11 @@ export default {
         }
       ],
       descriptionPage: 'Berisi detail aduan dari masyarakat Jabar',
-      typeAduan
+      typeAduan,
+      listButtonDetail: [
+        complaintButtonDetail.verified,
+        complaintButtonDetail.failed
+      ]
     }
   },
   mounted () {
