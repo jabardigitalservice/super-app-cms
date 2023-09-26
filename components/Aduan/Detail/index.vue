@@ -1,5 +1,26 @@
 <template>
   <div>
+    <div class="flex justify-between mt-4 mb-8">
+      <jds-button variant="secondary" class="!text-[14px] !font-bold" @click="goToBackHandle()">
+        <div class="flex items-center">
+          <ArrowLeft class="mr-[10px] h-[12px] w-[14px]" />
+          Kembali
+        </div>
+      </jds-button>
+      <div class="flex">
+        <div v-for="(button,index) in listButton" v-show="button.complaintStatus===detailComplaint.complaint_status_id" :key="index">
+          <div :class="{'mr-3':listButton.length>1}">
+            <jds-button
+              :label="button.label"
+              :variant="button.variant"
+              class="!font-bold"
+              :class="button.classButton"
+              @click="clickButtonConfirmationHandle(button.idButton)"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
     <BaseTabGroup>
       <template #tab-list>
         <TabBarDetail :list-tab="listTab" />
@@ -24,10 +45,10 @@
                 <td>
                   <div class="flex items-center">
                     <div
-                      v-show="!detailComplaintDiverted?.sp4n_id"
-                      :class="{' mr-2 h-2 w-2 rounded-full bg-[#FFB900]': !detailComplaintDiverted?.sp4n_id}"
+                      v-show="!detailComplaint?.sp4n_id"
+                      :class="{' mr-2 h-2 w-2 rounded-full bg-[#FFB900]': !detailComplaint?.sp4n_id}"
                     />
-                    {{ detailComplaintDiverted?.sp4n_id || 'Belum ada' }}
+                    {{ detailComplaint?.sp4n_id || 'Belum ada' }}
                   </div>
                 </td>
               </tr>
@@ -42,10 +63,10 @@
                 <td>
                   <div class="flex items-center">
                     <div
-                      v-show="!detailComplaintDiverted?.sp4n_created_at"
-                      :class="{' mr-2 h-2 w-2 rounded-full bg-[#FFB900]': !detailComplaintDiverted?.sp4n_created_at}"
+                      v-show="!detailComplaint?.sp4n_created_at"
+                      :class="{' mr-2 h-2 w-2 rounded-full bg-[#FFB900]': !detailComplaint?.sp4n_created_at}"
                     />
-                    {{ detailComplaintDiverted?.sp4n_created_at || 'Belum ada' }}
+                    {{ detailComplaint?.sp4n_created_at || 'Belum ada' }}
                   </div>
                 </td>
               </tr>
@@ -66,7 +87,7 @@
                 <td>{{ detailComplaint?.complaint_status_note }}</td>
               </tr>
             </BaseTableDetail>
-            <BaseTableDetail v-show="typeAduanPage===typeAduan.aduanDialihkanSpanLapor.id && detailComplaint?.sp4n_id && detailComplaint?.sp4n_created_at" header="Status SPAN Lapor" class="mb-4">
+            <BaseTableDetail v-show="typeAduan.aduanDialihkanSpanLapor.id===typeAduanPage && detailComplaint?.diverted_to_span_at && detailComplaint?.sp4n_created_at" header="Status SPAN Lapor" class="mb-4">
               <tr>
                 <td class="px-2 w-[180px]">
                   Data Table
@@ -75,6 +96,7 @@
                   <jds-button
                     variant="secondary"
                     class="!font-medium !text-sm !border-green-600 !text-green-600"
+                    @click="showPopupDetailStatusComplaintHandle(detailComplaint)"
                   >
                     Lihat Semua Status
                   </jds-button>
@@ -207,25 +229,62 @@
         </BaseTabPanel>
       </template>
     </basetabgroup>
-    <DialogViewImage :list-photo="listPhoto" :show-popup="isShowPopupViewImage" @close="closePopupHandle()" />
+    <DialogViewImage :list-photo="listPhoto" :show-popup="isShowPopupViewImage" @close="isShowPopupViewImage=false" />
+    <DialogDetailStatusSpanLapor
+      :show-popup="isShowPopupDetailStatusComplaint"
+      :data-dialog="dataDialog"
+      :list-tracking-span-lapor="listTrackingSpanLapor"
+      @close="isShowPopupDetailStatusComplaint=false"
+    />
+    <DialogInputText
+      :data-dialog="dataDialog"
+      :show-popup="isShowPopupInputIdSpan"
+      @close="closePopupHandle()"
+    />
+    <DialogConfirmation
+      :data-dialog="dataDialog"
+      :show-popup="isShowPopupConfirmationVerification"
+      @close="closePopupHandle()"
+      @submit="submitPopupVerificationHandle"
+    />
+    <DialogInformation
+      :data-dialog="dataDialog"
+      :show-popup="isShowPopupInformation"
+      :icon-popup="iconPopup"
+      @close="closePopupInformationHandle()"
+      @submit="submitPopupVerificationHandle"
+    />
+    <DialogInputTextArea
+      :data-dialog="dataDialog"
+      :show-popup="isShowPopupConfirmationFailedVerification"
+      @close="closePopupHandle()"
+      @submit="submitPopupVerificationHandle"
+    />
+    <DialogLoading :show-popup="isLoading" />
   </div>
 </template>
 
 <script>
-import { complaintStatus, typeAduan } from '~/constant/aduan-masuk'
-import { formatDate } from '~/utils'
+import { complaintStatus, typeAduan, complaintButtonDetail } from '~/constant/aduan-masuk'
+import ArrowLeft from '~/assets/icon/arrow-left.svg?inline'
 import DialogViewImage from '~/components/Aduan/DialogViewImage'
 import TabBarDetail from '~/components/Aduan/TabBar/Detail'
 import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
+import DialogDetailStatusSpanLapor from '~/components/Aduan/Dialog/DetailStatusSpanLapor'
+import { formatDate } from '~/utils'
 
 export default {
   name: 'DetailAduanMasuk',
-  components: { DialogViewImage, TabBarDetail },
+  components: { DialogViewImage, TabBarDetail, DialogDetailStatusSpanLapor, ArrowLeft },
   mixins: [popupAduanMasuk],
   props: {
     typeAduanPage: {
       type: String,
       default: ''
+    },
+    listButton: {
+      type: Array,
+      default: () => ([])
     }
   },
   data () {
@@ -234,20 +293,47 @@ export default {
         name: 'Detail Aduan',
         icon: '/icon/icon-aduan/complaint-detail.svg'
       }],
-      selectedTabIndex: 0,
       detailComplaint: {},
+      selectedTabIndex: 0,
       complaintStatus,
       listPhoto: [],
-      typeAduan
+      complaintButtonDetail,
+      typeAduan,
+      isShowPopupViewImage: false,
+      isShowPopupDetailStatusComplaint: false,
+      listTrackingSpanLapor: [
+        {
+          dateSpanLapor: '22 November 2022',
+          deliverSpanLapor: 'Dinas Perhubungan Kota Bandung',
+          notes: 'Terima kasih atas saran pendapatnya, akan kami sampaikan pada pimpinan dan bidang terkait.'
+        },
+        {
+          dateSpanLapor: '22 November 2022',
+          deliverSpanLapor: 'Dinas Perhubungan Kota Bandung',
+          notes: 'Yth. Pelapor, Terima kasih atas laporan Anda. Terkait hal tersebut akan kami sampaikan ke unit yang bersangkutan dan akan segera kami tindaklanjuti sesuai batas waktu tindaklanjut di SP4N Lapor!'
+        },
+        {
+          dateSpanLapor: '22 November 2022',
+          deliverSpanLapor: 'Dinas Perhubungan Kota Bandung',
+          notes: 'Terima kasih atas saran pendapatnya, akan kami sampaikan pada pimpinan dan bidang terkait.'
+        }
+      ]
     }
   },
   async fetch () {
     try {
       const response = await this.$axios.get(`/warga/complaints/${this.$route.params.id}`)
-      this.detailComplaint = response.data.data
-      this.detailComplaint.created_at = formatDate(this.detailComplaint?.created_at, 'dd/MM/yyyy - HH:mm')
-      this.detailComplaint.complaint_status = this.complaintStatus[this.detailComplaint.complaint_status_id]
-      this.listPhoto = this.detailComplaint.photos
+      const dataDetailComplaint = response.data.data
+      if (this.typeAduan.aduanDialihkanSpanLapor.id === this.typeAduanPage) {
+        dataDetailComplaint.complaint_status_id = (!dataDetailComplaint.diverted_to_span_at && !dataDetailComplaint.sp4n_created_at) || 'no-id-span'
+      }
+      this.detailComplaint = {
+        ...dataDetailComplaint,
+        created_at: formatDate(dataDetailComplaint?.created_at, 'dd/MM/yyyy - HH:mm'),
+        complaint_status: this.complaintStatus[dataDetailComplaint?.complaint_status_id]
+      }
+
+      this.listPhoto = dataDetailComplaint?.photos
     } catch {
       this.detailComplaint = {}
     }
@@ -284,7 +370,7 @@ export default {
       let result = ''
       switch (id) {
         case 'unverified':
-          result = 'bg-[#FF7500]'
+          result = 'bg-[#FFB900]'
           break
         case 'verified':
           result = 'bg-green-600'
@@ -294,10 +380,29 @@ export default {
       }
       return result
     },
+    clickButtonConfirmationHandle (idButton) {
+      switch (idButton) {
+        case this.complaintButtonDetail.verified.idButton:
+          return this.showPopupVerificationHandle(this.detailComplaint, 'verification')
+        case this.complaintButtonDetail.failed.idButton:
+          return this.showPopupVerificationHandle(this.detailComplaint, 'failed')
+        case this.complaintButtonDetail.addIdSpan.idButton:
+          return this.showPopupInputIdSpanHandle(this.detailComplaint)
+      }
+    },
     showViewPhotoDialogHandle (url) {
       this.photo.showPopup = true
       this.photo.url = 'loading'
       this.photo.url = url
+    },
+    showPopupDetailStatusComplaintHandle (detailComplaint) {
+      this.isShowPopupDetailStatusComplaint = true
+      this.dataDialog = {
+        subDescription: detailComplaint.complaint_id
+      }
+    },
+    goToBackHandle () {
+      this.$router.back()
     }
   }
 }
