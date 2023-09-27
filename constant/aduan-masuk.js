@@ -36,3 +36,25 @@ export const complaintStatus = Object.freeze({
   diverted_to_span: { id: 'diverted_to_span', name: 'Dialihkan ke SP4N Lapor', value: 0, statusColor: '[#16A75C]', icon: '/icon/icon-aduan/complaint-span-icon.svg', typeAduan: [typeAduan.penentuanKewenangan.props, typeAduan.aduanDialihkanSpanLapor.props] },
   rejected: { id: 'rejected', name: 'Ditolak', value: 0, statusColor: '[#EF5350]', icon: '/icon/icon-aduan/complaint-failed-icon.svg', typeAduan: [typeAduan.penentuanKewenangan.props] }
 })
+
+export const complaintButtonDetail = {
+  verified: {
+    idButton: 'button-confirmation-failed',
+    label: 'Gagal Terverifikasi',
+    variant: 'secondary',
+    classButton: '!text-red-400 !border-2 !border-red-400',
+    complaintStatus: complaintStatus.unverified.id
+  },
+  failed: {
+    idButton: 'button-confirmation-verification',
+    label: 'Terverifikasi',
+    variant: 'primary',
+    complaintStatus: complaintStatus.unverified.id
+  },
+  addIdSpan: {
+    idButton: 'button-add-id-span',
+    label: 'Tambahkan ID SP4N Lapor',
+    variant: 'primary',
+    complaintStatus: 'no-id-span'
+  }
+}
