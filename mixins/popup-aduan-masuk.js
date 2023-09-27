@@ -4,7 +4,6 @@ export default {
       isShowPopupConfirmationVerification: false,
       isShowPopupConfirmationFailedVerification: false,
       isShowPopupInformation: false,
-      isShowPopupViewImage: false,
       isShowPopupInputIdSpan: false,
       dataDialog: {
         title: '',
@@ -91,6 +90,9 @@ export default {
     closePopupInformationHandle () {
       this.closePopupHandle()
       this.$fetch()
+    },
+    setQuery (params) {
+      this.query = { ...this.query, ...params }
     }
   }
 }
