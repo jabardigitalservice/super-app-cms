@@ -8,7 +8,7 @@
           :sub-description="dataDialog.subDescription"
           class="mt-2 pb-3"
         />
-        <div class="h-[412px] overflow-y-auto dialog-content mb-[25px]">
+        <div class="h-[412px] mb-[25px] overflow-y-auto dialog-content border border-gray-300 rounded-lg">
           <CardSpanLapor v-for="(itemSpanLapor,index) in listTrackingSpanLapor" :key="index" :data-span-lapor="itemSpanLapor" :is-last-index="index === listTrackingSpanLapor.length-1" />
         </div>
       </div>
@@ -41,14 +41,12 @@ export default {
 
 <style scoped>
 .dialog-content::-webkit-scrollbar {
-  @apply h-5 w-5;
+  display: none;
 }
 
-.dialog-content::-webkit-scrollbar-track {
-  @apply bg-transparent;
+.dialog-content {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
 
-.dialog-content::-webkit-scrollbar-thumb {
-  @apply rounded-xl border-[6px] border-solid border-transparent bg-gray-300 bg-clip-content;
-}
 </style>
