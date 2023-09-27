@@ -90,9 +90,6 @@ export default {
     closePopupInformationHandle () {
       this.closePopupHandle()
       this.$fetch()
-    },
-    setQuery (params) {
-      this.query = { ...this.query, ...params }
     }
   }
 }
