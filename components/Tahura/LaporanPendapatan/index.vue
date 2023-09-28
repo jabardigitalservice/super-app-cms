@@ -87,126 +87,156 @@
             </div>
           </div>
 
-          <div
-            v-if="listDataLaporan.length > 0"
-            class="relative mx-6 overflow-x-auto rounded-lg border border-gray-300"
-          >
-            <div class="flex justify-end">
-              <BaseButtonDropdown
-                class="m-[12px]"
-                :list-menu-pop-over="actionDownloadLaporan"
-                @xls="downloadExcelReport"
-                @pdf="downloadPdfReport"
-              >
-                Download Laporan
-              </BaseButtonDropdown>
-            </div>
-            <div class="max-h-96">
-              <table
-                id="table-laporan-pendapatan"
-                class="w-full text-left text-sm text-gray-500"
-              >
-                <thead
-                  class="bg-gray-200 font-roboto text-xs font-semibold uppercase text-gray-800"
+          <div v-if="loading" class="flex items-center justify-center p-4">
+            <jds-spinner size="24px" />
+          </div>
+
+          <template v-else>
+            <div
+              v-if="listDataLaporan.length > 0"
+              class="relative mx-6 overflow-x-auto rounded-lg border border-gray-300"
+            >
+              <div class="flex justify-end">
+                <BaseButtonDropdown
+                  class="m-[12px]"
+                  :list-menu-pop-over="actionDownloadLaporan"
+                  @xls="downloadExcelReport"
+                  @pdf="downloadPdfReport"
                 >
-                  <tr>
-                    <th scope="col" class="px-6 py-3 font-bold">
-                      Tanggal Kunjungan
-                    </th>
-                    <th scope="col" class="px-6 py-3 font-bold">
-                      No
-                    </th>
-                    <th scope="col" class="px-6 py-3 font-bold">
-                      tipe wistawan
-                    </th>
-                    <th scope="col" class="px-6 py-3 font-bold">
-                      tipe asuransi
-                    </th>
-                    <th scope="col" class="px-6 py-3 font-bold">
-                      jumlah tiket
-                    </th>
-                    <th scope="col" class="px-6 py-3 font-bold">
-                      tarif (rp)
-                    </th>
-                    <th scope="col" class="px-6 py-3 font-bold">
-                      jumlah total (rp)
-                    </th>
-                  </tr>
-                </thead>
-                <tbody class="h-96 overflow-y-auto">
-                  <template v-for="(item, index) in listDataLaporan">
-                    <tr
-                      v-for="(itemCategories, indexCategory) in item.categories"
-                      :key="`list-${index}-${indexCategory}`"
-                      class="font-[14px] border-b bg-gray-50 font-lato font-medium text-gray-800"
-                    >
-                      <td scope="row" class="whitespace-nowrap px-6 py-4">
-                        {{
-                          formatDate(item.reservationDate, "dd MMMM yyyy") ||
-                            "-"
-                        }}
-                      </td>
-                      <td class="px-6 py-4">
-                        {{ indexCategory + 1 }}
-                      </td>
-                      <td class="px-6 py-4">
-                        {{ itemCategories.name || "-" }}
-                      </td>
-                      <td class="px-6 py-4">
-                        {{ getTypeAssurance(selectAsurance) || "-" }}
-                      </td>
-                      <td class="px-6 py-4">
-                        {{ itemCategories.quantity || "-" }}
-                      </td>
-                      <td class="px-6 py-4">
-                        {{
-                          convertToRupiah(
-                            checkAsurance(itemCategories.price)
-                          ) || "-"
-                        }}
-                      </td>
-                      <td class="px-6 py-4">
-                        {{
-                          convertToRupiah(
-                            checkAsurance(itemCategories.price) *
-                              itemCategories.quantity
-                          ) || "-"
-                        }}
-                      </td>
+                  Download Laporan
+                </BaseButtonDropdown>
+              </div>
+              <div class="max-h-96">
+                <table
+                  id="table-laporan-pendapatan"
+                  class="w-full text-left text-sm text-gray-500"
+                >
+                  <thead
+                    class="bg-gray-200 font-roboto text-xs font-semibold uppercase text-gray-800"
+                  >
+                    <tr>
+                      <th scope="col" class="px-6 py-3 font-bold">
+                        Tanggal Kunjungan
+                      </th>
+                      <th scope="col" class="px-6 py-3 font-bold">
+                        No
+                      </th>
+                      <th scope="col" class="px-6 py-3 font-bold">
+                        tipe wistawan
+                      </th>
+                      <th scope="col" class="px-6 py-3 font-bold">
+                        tipe asuransi
+                      </th>
+                      <th scope="col" class="px-6 py-3 font-bold">
+                        jumlah tiket
+                      </th>
+                      <th scope="col" class="px-6 py-3 font-bold">
+                        tarif (rp)
+                      </th>
+                      <th scope="col" class="px-6 py-3 font-bold">
+                        jumlah total (rp)
+                      </th>
                     </tr>
+                  </thead>
+                  <tbody class="h-96 overflow-y-auto">
+                    <template v-for="(item, index) in listDataLaporan">
+                      <tr
+                        v-for="(itemCategories, indexCategory) in item.categories"
+                        :key="`list-${index}-${indexCategory}`"
+                        class="font-[14px] border-b bg-gray-50 font-lato font-medium text-gray-800"
+                      >
+                        <td scope="row" class="whitespace-nowrap px-6 py-4">
+                          {{
+                            formatDate(item.reservationDate, "dd MMMM yyyy") ||
+                              "-"
+                          }}
+                        </td>
+                        <td class="px-6 py-4">
+                          {{ indexCategory + 1 }}
+                        </td>
+                        <td class="px-6 py-4">
+                          {{ itemCategories.name || "-" }}
+                        </td>
+                        <td class="px-6 py-4">
+                          {{ getTypeAssurance(selectAsurance) || "-" }}
+                        </td>
+                        <td class="px-6 py-4">
+                          {{ itemCategories.quantity || "-" }}
+                        </td>
+                        <td class="px-6 py-4">
+                          {{
+                            convertToRupiah(
+                              checkAsurance(itemCategories.price)
+                            ) || "-"
+                          }}
+                        </td>
+                        <td class="px-6 py-4">
+                          {{
+                            convertToRupiah(
+                              checkAsurance(itemCategories.price) *
+                                itemCategories.quantity
+                            ) || "-"
+                          }}
+                        </td>
+                      </tr>
+                      <tr
+                        :key="`total-${index}`"
+                        class="font-[14px] border-b bg-gray-100 font-lato font-bold text-gray-800"
+                      >
+                        <td colspan="5" />
+                        <td class="px-6 py-4">
+                          Total
+                        </td>
+                        <td class="px-6 py-4">
+                          {{
+                            convertToRupiah(calculateRowTotal(item.categories)) ||
+                              "-"
+                          }}
+                        </td>
+                      </tr>
+                    </template>
+                  </tbody>
+                  <tfoot class="sticky bottom-0 bg-gray-200">
                     <tr
-                      :key="`total-${index}`"
-                      class="font-[14px] border-b bg-gray-100 font-lato font-bold text-gray-800"
+                      class="font-[14px] border-b font-lato font-bold text-gray-800"
                     >
                       <td colspan="5" />
                       <td class="px-6 py-4">
-                        Total
+                        Grand Total
                       </td>
                       <td class="px-6 py-4">
-                        {{
-                          convertToRupiah(calculateRowTotal(item.categories)) ||
-                            "-"
-                        }}
+                        {{ convertToRupiah(grandTotal) }}
                       </td>
                     </tr>
-                  </template>
-                </tbody>
-                <tfoot class="sticky bottom-0 bg-gray-200">
-                  <tr
-                    class="font-[14px] border-b font-lato font-bold text-gray-800"
-                  >
-                    <td colspan="5" />
-                    <td class="px-6 py-4">
-                      Grand Total
-                    </td>
-                    <td class="px-6 py-4">
-                      {{ convertToRupiah(grandTotal) }}
-                    </td>
-                  </tr>
-                </tfoot>
-              </table>
+                  </tfoot>
+                </table>
+              </div>
             </div>
-          </div>
+
+            <div v-else class="mx-6 rounded-lg border border-gray-300">
+              <div class="flex h-[556px] flex-col items-center justify-center">
+                <BaseIconSvg
+                  icon="/icon/no-data.png"
+                  mode="image"
+                  :width="160"
+                  :height="160"
+                  class="mt-[2px]"
+                />
+
+                <h3
+                  class="font-roboto text-[21px] font-medium leading-[34px] text-gray-900"
+                >
+                  Belum ada data!
+                </h3>
+                <h5
+                  class="font-lato text-[14px] font-normal leading-[23px] text-gray-700"
+                >
+                  Terapkan filter untuk dapat menampilkan data laporan yang
+                  sesuai.
+                </h5>
+              </div>
+            </div>
+          </template>
         </BaseTabPanel>
       </template>
     </BaseTabGroup>
@@ -269,10 +299,12 @@ export default {
         { menu: 'Portable Data Format (.pdf)', value: 'pdf' },
         { menu: 'Microsoft Excel (.xls)', value: 'xls' }
       ],
-      listDataCategoryWisatawan: []
+      listDataCategoryWisatawan: [],
+      loading: true
     }
   },
   async fetch () {
+    this.loading = true
     try {
       const responseDataLaporan = await this.$axios.get(
         '/ticket/tahura/income',
@@ -298,6 +330,8 @@ export default {
       ]
     } catch (error) {
       console.error(error)
+    } finally {
+      this.loading = false
     }
   },
   computed: {
