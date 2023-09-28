@@ -2,7 +2,7 @@
   <div>
     <BaseTabGroup>
       <template #tab-panel>
-        <BaseTabPanel class="px-3 pt-6 pb-4">
+        <BaseTabPanel class="px-3 pt-6 pb-4 !rounded-lg">
           <div class="mb-4 flex w-full">
             <div class="ml-4 flex items-center">
               <div class="flex flex-col">
