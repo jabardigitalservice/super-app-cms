@@ -88,6 +88,7 @@
           </div>
 
           <div
+            v-if="listDataLaporan.length > 0"
             class="relative mx-6 overflow-x-auto rounded-lg border border-gray-300"
           >
             <div class="flex justify-end">
@@ -101,7 +102,10 @@
               </BaseButtonDropdown>
             </div>
             <div class="max-h-96">
-              <table id="table-laporan-pendapatan" class="w-full text-left text-sm text-gray-500">
+              <table
+                id="table-laporan-pendapatan"
+                class="w-full text-left text-sm text-gray-500"
+              >
                 <thead
                   class="bg-gray-200 font-roboto text-xs font-semibold uppercase text-gray-800"
                 >
@@ -130,10 +134,10 @@
                   </tr>
                 </thead>
                 <tbody class="h-96 overflow-y-auto">
-                  <template v-for="(item, index) in listDataLaporan.data">
+                  <template v-for="(item, index) in listDataLaporan">
                     <tr
                       v-for="(itemCategories, indexCategory) in item.categories"
-                      :key="`${item.reservationDate}-${indexCategory}`"
+                      :key="`list-${index}-${indexCategory}`"
                       class="font-[14px] border-b bg-gray-50 font-lato font-medium text-gray-800"
                     >
                       <td scope="row" class="whitespace-nowrap px-6 py-4">
@@ -171,7 +175,7 @@
                       </td>
                     </tr>
                     <tr
-                      :key="index"
+                      :key="`total-${index}`"
                       class="font-[14px] border-b bg-gray-100 font-lato font-bold text-gray-800"
                     >
                       <td colspan="5" />
@@ -218,182 +222,10 @@ export default {
   data () {
     return {
       search: '',
-      // TODO: changes dummy data from API, if API ready
-      dataDummy: [
-        {
-          status: true,
-          message: 'Success',
-          code: '2000800',
-          data: {
-            assurancePrice: 2000,
-            data: [
-              {
-                reservationDate: '2023-09-14',
-                categories: [
-                  {
-                    code: 'wni',
-                    name: 'Wisatawan Lokal',
-                    quantity: 100,
-                    price: 17000
-                  },
-                  {
-                    code: 'wna',
-                    name: 'Wisatawan Asing',
-                    quantity: 40,
-                    price: 57000
-                  }
-                ]
-              },
-              {
-                reservationDate: '2023-09-14',
-                categories: [
-                  {
-                    code: 'wni',
-                    name: 'Wisatawan Lokal',
-                    quantity: 100,
-                    price: 17000
-                  },
-                  {
-                    code: 'wna',
-                    name: 'Wisatawan Asing',
-                    quantity: 40,
-                    price: 57000
-                  }
-                ]
-              },
-              {
-                reservationDate: '2023-09-14',
-                categories: [
-                  {
-                    code: 'wni',
-                    name: 'Wisatawan Lokal',
-                    quantity: 100,
-                    price: 17000
-                  },
-                  {
-                    code: 'wna',
-                    name: 'Wisatawan Asing',
-                    quantity: 40,
-                    price: 57000
-                  }
-                ]
-              },
-              {
-                reservationDate: '2023-09-14',
-                categories: [
-                  {
-                    code: 'wni',
-                    name: 'Wisatawan Lokal',
-                    quantity: 100,
-                    price: 17000
-                  },
-                  {
-                    code: 'wna',
-                    name: 'Wisatawan Asing',
-                    quantity: 40,
-                    price: 57000
-                  }
-                ]
-              },
-              {
-                reservationDate: '2023-09-14',
-                categories: [
-                  {
-                    code: 'wni',
-                    name: 'Wisatawan Lokal',
-                    quantity: 100,
-                    price: 17000
-                  },
-                  {
-                    code: 'wna',
-                    name: 'Wisatawan Asing',
-                    quantity: 40,
-                    price: 57000
-                  }
-                ]
-              },
-              {
-                reservationDate: '2023-09-14',
-                categories: [
-                  {
-                    code: 'wni',
-                    name: 'Wisatawan Lokal',
-                    quantity: 100,
-                    price: 17000
-                  },
-                  {
-                    code: 'wna',
-                    name: 'Wisatawan Asing',
-                    quantity: 40,
-                    price: 57000
-                  }
-                ]
-              },
-              {
-                reservationDate: '2023-09-14',
-                categories: [
-                  {
-                    code: 'wni',
-                    name: 'Wisatawan Lokal',
-                    quantity: 100,
-                    price: 17000
-                  },
-                  {
-                    code: 'wna',
-                    name: 'Wisatawan Asing',
-                    quantity: 40,
-                    price: 57000
-                  }
-                ]
-              },
-              {
-                reservationDate: '2023-09-13',
-                categories: [
-                  {
-                    code: 'wni',
-                    name: 'Wisatawan Lokal',
-                    quantity: 90,
-                    price: 17000
-                  },
-                  {
-                    code: 'wna',
-                    name: 'Wisatawan Asing',
-                    quantity: 34,
-                    price: 57000
-                  }
-                ]
-              },
-              {
-                reservationDate: '2023-09-12',
-                categories: [
-                  {
-                    code: 'wni',
-                    name: 'Wisatawan Lokal',
-                    quantity: 97,
-                    price: 17000
-                  },
-                  {
-                    code: 'wna',
-                    name: 'Wisatawan Asing',
-                    quantity: 12,
-                    price: 57000
-                  }
-                ]
-              }
-            ]
-          }
-        }
-      ],
-      listDataCategoryWisatawan: [
-        {
-          code: 'wni',
-          name: 'Wisatawan Lokal'
-        },
-        {
-          code: 'wna',
-          name: 'Wisatawan Asing'
-        }
-      ],
+      listDataCategoryWisatawanDefault: {
+        code: '',
+        name: 'Semua Wisatawan'
+      },
       listDataTypeAssurance: [
         {
           value: 'with-assurance',
@@ -404,7 +236,12 @@ export default {
           label: 'Tanpa Asuransi'
         }
       ],
+
       listDataStatus: [
+        {
+          value: '',
+          label: 'Semua Status'
+        },
         {
           value: 'scanned',
           label: 'Berhasil Scan'
@@ -431,7 +268,8 @@ export default {
       actionDownloadLaporan: [
         { menu: 'Portable Data Format (.pdf)', value: 'pdf' },
         { menu: 'Microsoft Excel (.xls)', value: 'xls' }
-      ]
+      ],
+      listDataCategoryWisatawan: []
     }
   },
   async fetch () {
@@ -445,11 +283,20 @@ export default {
 
       const { data } = responseDataLaporan.data
       this.listDataLaporan = data?.data || []
-      this.calculateGrandTotal(this.listDataLaporan.data)
+      this.assurancePrice = data?.assurancePrice
+      this.calculateGrandTotal(this.listDataLaporan)
+
+      const responseCategoryWisatawan = await this.$axios.get(
+        '/ticket/tahura/categories'
+      )
+
+      this.listDataCategoryWisatawan = responseCategoryWisatawan.data.data
+
+      this.listDataCategoryWisatawan = [
+        this.listDataCategoryWisatawanDefault,
+        ...this.listDataCategoryWisatawan
+      ]
     } catch (error) {
-      this.listDataLaporan = this.dataDummy[0].data
-      this.assurancePrice = this.listDataLaporan.assurancePrice
-      this.calculateGrandTotal(this.listDataLaporan.data)
       console.error(error)
     }
   },
@@ -488,8 +335,8 @@ export default {
         new Date()
       ]
       this.setDate({
-        start_date: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
-        end_date: formatDate(this.dateRange[1], 'yyyy-MM-dd')
+        startDate: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
+        endDate: formatDate(this.dateRange[1], 'yyyy-MM-dd')
       })
       this.isShowPopupDateRange = false
       this.$fetch()
@@ -503,8 +350,8 @@ export default {
     },
     filterDateHandle () {
       this.setDate({
-        start_date: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
-        end_date: formatDate(this.dateRange[1], 'yyyy-MM-dd')
+        startDate: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
+        endDate: formatDate(this.dateRange[1], 'yyyy-MM-dd')
       })
       this.$fetch()
       this.$refs.datepicker.closePopup()
@@ -545,18 +392,18 @@ export default {
     convertToRupiah,
     downloadExcelReport () {
       /*eslint-disable*/
-      const table = document.getElementById('table-laporan-pendapatan')
-      const ws = XLSX.utils.table_to_sheet(table)
-      const wb = XLSX.utils.book_new()
-      XLSX.utils.book_append_sheet(wb, ws, 'Sheet1')
+      const table = document.getElementById("table-laporan-pendapatan");
+      const ws = XLSX.utils.table_to_sheet(table);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
 
-      XLSX.writeFile(wb, 'Laporan Pendatapan.xlsx')
+      XLSX.writeFile(wb, "Laporan Pendatapan.xlsx");
     },
-    downloadPdfReport () {
-      console.log('download pdf')
-    }
-  }
-}
+    downloadPdfReport() {
+      console.log("download pdf");
+    },
+  },
+};
 </script>
 
 <style scoped>
