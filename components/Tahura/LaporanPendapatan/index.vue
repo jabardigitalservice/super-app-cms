@@ -2,7 +2,7 @@
   <div>
     <BaseTabGroup>
       <template #tab-panel>
-        <BaseTabPanel class="px-3 pt-6 pb-4 !rounded-lg">
+        <BaseTabPanel class="!rounded-lg px-3 pt-6 pb-4">
           <div class="mb-4 flex w-full">
             <div class="ml-4 flex items-center">
               <div class="flex flex-col">
@@ -118,37 +118,37 @@
                       <th scope="col" class="px-6 py-3 font-bold">
                         Tanggal Kunjungan
                       </th>
+                      <th scope="col" class="px-6 py-3 font-bold">No</th>
                       <th scope="col" class="px-6 py-3 font-bold">
-                        No
+                        Tipe Wisatawan
                       </th>
                       <th scope="col" class="px-6 py-3 font-bold">
-                        tipe wistawan
+                        Tipe Asuransi
                       </th>
                       <th scope="col" class="px-6 py-3 font-bold">
-                        tipe asuransi
+                        Jumlah Tiket
                       </th>
                       <th scope="col" class="px-6 py-3 font-bold">
-                        jumlah tiket
+                        Tarik (RP)
                       </th>
                       <th scope="col" class="px-6 py-3 font-bold">
-                        tarif (rp)
-                      </th>
-                      <th scope="col" class="px-6 py-3 font-bold">
-                        jumlah total (rp)
+                        Jumlah Total (RP)
                       </th>
                     </tr>
                   </thead>
                   <tbody class="h-96 overflow-y-auto">
                     <template v-for="(item, index) in listDataLaporan">
                       <tr
-                        v-for="(itemCategories, indexCategory) in item.categories"
+                        v-for="(
+                          itemCategories, indexCategory
+                        ) in item.categories"
                         :key="`list-${index}-${indexCategory}`"
                         class="font-[14px] border-b bg-gray-50 font-lato font-medium text-gray-800"
                       >
                         <td scope="row" class="whitespace-nowrap px-6 py-4">
                           {{
                             formatDate(item.reservationDate, "dd MMMM yyyy") ||
-                              "-"
+                            "-"
                           }}
                         </td>
                         <td class="px-6 py-4">
@@ -184,13 +184,12 @@
                         class="font-[14px] border-b bg-gray-100 font-lato font-bold text-gray-800"
                       >
                         <td colspan="5" />
-                        <td class="px-6 py-4">
-                          Total
-                        </td>
+                        <td class="px-6 py-4">Total</td>
                         <td class="px-6 py-4">
                           {{
-                            convertToRupiah(calculateRowTotal(item.categories)) ||
-                              "-"
+                            convertToRupiah(
+                              calculateRowTotal(item.categories)
+                            ) || "-"
                           }}
                         </td>
                       </tr>
@@ -201,9 +200,7 @@
                       class="font-[14px] border-b font-lato font-bold text-gray-800"
                     >
                       <td colspan="5" />
-                      <td class="px-6 py-4">
-                        Grand Total
-                      </td>
+                      <td class="px-6 py-4">Grand Total</td>
                       <td class="px-6 py-4">
                         {{ convertToRupiah(grandTotal) }}
                       </td>
@@ -244,194 +241,210 @@
 </template>
 
 <script>
-import { formatDate, convertToRupiah } from '~/utils'
-import 'vue2-datepicker/index.css'
+import { formatDate, convertToRupiah } from "~/utils";
+import "vue2-datepicker/index.css";
 
 export default {
-  name: 'LaporanPendapatanTahura',
-  data () {
+  name: "LaporanPendapatanTahura",
+  data() {
     return {
-      search: '',
-      listDataCategoryWisatawanDefault: {
-        code: '',
-        name: 'Semua Wisatawan'
-      },
+      search: "",
       listDataTypeAssurance: [
         {
-          value: 'with-assurance',
-          label: 'Dengan Asuransi'
+          value: "with-assurance",
+          label: "Dengan Asuransi",
         },
         {
-          value: 'without-assurance',
-          label: 'Tanpa Asuransi'
-        }
+          value: "without-assurance",
+          label: "Tanpa Asuransi",
+        },
       ],
 
       listDataStatus: [
         {
-          value: '',
-          label: 'Semua Status'
+          value: "",
+          label: "Semua Status",
         },
         {
-          value: 'scanned',
-          label: 'Berhasil Scan'
+          value: "scanned",
+          label: "Berhasil Scan",
         },
         {
-          value: 'paid',
-          label: 'Belum Scan'
-        }
+          value: "paid",
+          label: "Belum Scan",
+        },
       ],
       query: {
-        category: '',
-        status: ''
+        category: "",
+        status: "",
       },
       isShowPopupDate: false,
       isShowPopupDateRange: false,
       dateRange: [
         new Date(new Date().setFullYear(new Date().getFullYear())),
-        new Date()
+        new Date(),
       ],
       listDataLaporan: [],
       assurancePrice: 0,
-      selectAsurance: 'with-assurance',
+      selectAsurance: "with-assurance",
       grandTotal: 0,
       actionDownloadLaporan: [
-        { menu: 'Portable Data Format (.pdf)', value: 'pdf' },
-        { menu: 'Microsoft Excel (.xls)', value: 'xls' }
+        { menu: "Portable Data Format (.pdf)", value: "pdf" },
+        { menu: "Microsoft Excel (.xls)", value: "xls" },
       ],
       listDataCategoryWisatawan: [],
-      loading: true
-    }
+      loading: true,
+    };
   },
-  async fetch () {
-    this.loading = true
+  async fetch() {
+    this.loading = true;
     try {
       const responseDataLaporan = await this.$axios.get(
-        '/ticket/tahura/income',
+        "/ticket/tahura/income",
         {
-          params: this.query
+          params: this.query,
         }
-      )
+      );
 
-      const { data } = responseDataLaporan.data
-      this.listDataLaporan = data?.data || []
-      this.assurancePrice = data?.assurancePrice
-      this.calculateGrandTotal(this.listDataLaporan)
+      const { data } = responseDataLaporan.data;
+      this.listDataLaporan = data?.data || [];
+      this.assurancePrice = data?.assurancePrice;
+      this.calculateGrandTotal(this.listDataLaporan);
 
       const responseCategoryWisatawan = await this.$axios.get(
-        '/ticket/tahura/categories'
-      )
+        "/ticket/tahura/categories"
+      );
 
-      this.listDataCategoryWisatawan = responseCategoryWisatawan.data.data
+      this.listDataCategoryWisatawan = responseCategoryWisatawan.data.data;
 
       this.listDataCategoryWisatawan = [
-        this.listDataCategoryWisatawanDefault,
-        ...this.listDataCategoryWisatawan
-      ]
+        {
+          code: "",
+          name: "Semua Wisatawan",
+        },
+        ...this.listDataCategoryWisatawan,
+      ];
     } catch (error) {
-      console.error(error)
+      console.error(error);
     } finally {
-      this.loading = false
+      this.loading = false;
     }
   },
   computed: {
-    listCategoryWisatawan () {
+    listCategoryWisatawan() {
       return this.listDataCategoryWisatawan.map((item) => {
         return {
           value: item.code,
-          label: item.name
-        }
-      })
-    }
+          label: item.name,
+        };
+      });
+    },
   },
   watch: {
     query: {
       deep: true,
-      handler () {
-        this.$fetch()
+      handler() {
+        this.$fetch();
+      },
+    },
+    dateRange() {
+      if (!this.isShowPopupDateRange) {
+        this.$refs.datepicker.closePopup();
+      } else {
+        this.$refs.datepicker.openPopup();
       }
     },
-    dateRange () {
-      if (!this.isShowPopupDateRange) {
-        this.$refs.datepicker.closePopup()
-      } else {
-        this.$refs.datepicker.openPopup()
-      }
-    }
   },
   methods: {
-    filterCategoryHandle () {
-      this.$fetch()
+    filterCategoryHandle() {
+      this.$fetch();
     },
-    clearDateRangeHandle () {
+    clearDateRangeHandle() {
       this.dateRange = [
         new Date(new Date().setFullYear(new Date().getFullYear() - 1)),
-        new Date()
-      ]
+        new Date(),
+      ];
       this.setDate({
-        startDate: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
-        endDate: formatDate(this.dateRange[1], 'yyyy-MM-dd')
-      })
-      this.isShowPopupDateRange = false
-      this.$fetch()
+        startDate: formatDate(this.dateRange[0], "yyyy-MM-dd"),
+        endDate: formatDate(this.dateRange[1], "yyyy-MM-dd"),
+      });
+      this.isShowPopupDateRange = false;
+      this.$fetch();
     },
-    changeDateRangeHandle () {
-      this.isShowPopupDateRange = true
+    changeDateRangeHandle() {
+      this.isShowPopupDateRange = true;
     },
-    closePopupDateHandle () {
-      this.isShowPopupDateRange = false
-      this.$refs.datepicker.closePopup()
+    closePopupDateHandle() {
+      this.isShowPopupDateRange = false;
+      this.$refs.datepicker.closePopup();
     },
-    filterDateHandle () {
+    filterDateHandle() {
       this.setDate({
-        startDate: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
-        endDate: formatDate(this.dateRange[1], 'yyyy-MM-dd')
-      })
-      this.$fetch()
-      this.$refs.datepicker.closePopup()
+        startDate: formatDate(this.dateRange[0], "yyyy-MM-dd"),
+        endDate: formatDate(this.dateRange[1], "yyyy-MM-dd"),
+      });
+      this.$fetch();
+      this.$refs.datepicker.closePopup();
     },
-    setDate (params) {
-      this.query = { ...this.query, ...params }
+    setDate(params) {
+      this.query = { ...this.query, ...params };
     },
-    calculateRowTotal (categories) {
-      let total = 0
+    calculateRowTotal(categories) {
+      let total = 0;
       categories.forEach((category) => {
-        total += category.quantity * this.checkAsurance(category.price)
-      })
-      return total || '-'
+        total += category.quantity * this.checkAsurance(category.price);
+      });
+      return total || "-";
     },
-    getTypeAssurance (selectedType) {
+    getTypeAssurance(selectedType) {
       const selectedOption = this.listDataTypeAssurance.find(
-        option => option.value === selectedType
-      )
-      return selectedOption ? selectedOption.label : '-'
+        (option) => option.value === selectedType
+      );
+      return selectedOption ? selectedOption.label : "-";
     },
-    checkAsurance (price) {
-      return this.selectAsurance === 'with-assurance'
+    checkAsurance(price) {
+      return this.selectAsurance === "with-assurance"
         ? price
-        : price - this.assurancePrice
+        : price - this.assurancePrice;
     },
-    calculateGrandTotal (dataLaporan) {
-      let grandTotal = 0
+    calculateGrandTotal(dataLaporan) {
+      let grandTotal = 0;
 
       for (const item of dataLaporan) {
         for (const category of item.categories) {
-          grandTotal += category.quantity * this.checkAsurance(category.price)
+          grandTotal += category.quantity * this.checkAsurance(category.price);
         }
       }
 
-      this.grandTotal = grandTotal
+      this.grandTotal = grandTotal;
     },
     formatDate,
     convertToRupiah,
-    downloadExcelReport () {
+    downloadExcelReport() {
       /*eslint-disable*/
       const table = document.getElementById("table-laporan-pendapatan");
       const ws = XLSX.utils.table_to_sheet(table);
       const wb = XLSX.utils.book_new();
+      const wscols = [
+        { wch: 20 },
+        { wch: 5 },
+        { wch: 20 },
+        { wch: 20 },
+        { wch: 10 },
+        { wch: 20 },
+        { wch: 20 },
+      ];
+      ws["!cols"] = wscols;
+
       XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
 
-      XLSX.writeFile(wb, "Laporan Pendatapan.xlsx");
+      XLSX.writeFile(
+        wb,
+        `Laporan Pendatapan Tahura Tanggal ${formatDate(
+          this.query.startDate,
+          "dd MMMM yyyy"
+        )} - ${formatDate(this.query.endDate, "dd MMMM yyyy")}.xlsx`
+      );
     },
     downloadPdfReport() {
       console.log("download pdf");
