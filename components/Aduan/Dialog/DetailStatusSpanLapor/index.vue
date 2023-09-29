@@ -9,7 +9,7 @@
           class="mt-2 pb-3"
         />
         <div class="h-[412px] mb-[25px] overflow-y-auto dialog-content border border-gray-300 rounded-lg">
-          <CardSpanLapor v-for="(itemSpanLapor,index) in listTrackingSpanLapor" :key="index" :data-span-lapor="itemSpanLapor" :is-last-index="index === listTrackingSpanLapor.length-1" />
+          <CardSpanLapor v-for="(itemSpanLapor,index) in listTrackingSpanLapor" :key="index" :data-span-lapor="itemSpanLapor" />
         </div>
       </div>
       <BaseDialogFooter label-button="Tutup" :show-cancel-button="false" @close="$emit('close')" />

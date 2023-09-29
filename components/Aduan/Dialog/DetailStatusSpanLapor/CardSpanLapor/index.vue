@@ -27,10 +27,6 @@ export default {
     dataSpanLapor: {
       type: Object,
       default: () => ({})
-    },
-    isLastIndex: {
-      type: Boolean,
-      default: false
     }
   }
 }
