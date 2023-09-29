@@ -1,5 +1,5 @@
 <template>
-  <div class="border border-b-0 border-x-gray-300 rounded-t-lg" :class="{'border !border-b border-b-gray-300 rounded-b-lg':isLastIndex}">
+  <div class="border border-b-0 border-x-gray-300 rounded-t-lg last:!border-b last:border-b-gray-300 last:rounded-b-lg">
     <div class="bg-[#F4F6F6] h-11 rounded-t-lg flex items-center p-3">
       <jds-icon name="calendar-date-outline" size="sm" fill="#9E9E9E" />
       <p class="text-gray-800 text-xs font-roboto ml-2">
