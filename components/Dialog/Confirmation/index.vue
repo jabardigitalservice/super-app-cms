@@ -7,7 +7,7 @@
         :sub-description="dataDialog.subDescription"
         class="p-6"
       />
-      <BaseDialogFooter :label-button="dataDialog.labelButton" @close="$emit('close')" @submit="$emit('submit',{...dataDialog,status:'verified'})" />
+      <BaseDialogFooter :label-button="dataDialog.labelButton" @close="$emit('close')" @submit="$emit('submit',dataDialog)" />
     </BaseDialogPanel>
   </BaseDialog>
 </template>
