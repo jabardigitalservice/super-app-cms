@@ -118,7 +118,9 @@
                       <th scope="col" class="px-6 py-3 font-bold">
                         Tanggal Kunjungan
                       </th>
-                      <th scope="col" class="px-6 py-3 font-bold">No</th>
+                      <th scope="col" class="px-6 py-3 font-bold">
+                        No
+                      </th>
                       <th scope="col" class="px-6 py-3 font-bold">
                         Tipe Wisatawan
                       </th>
@@ -148,7 +150,7 @@
                         <td scope="row" class="whitespace-nowrap px-6 py-4">
                           {{
                             formatDate(item.reservationDate, "dd MMMM yyyy") ||
-                            "-"
+                              "-"
                           }}
                         </td>
                         <td class="px-6 py-4">
@@ -184,7 +186,9 @@
                         class="font-[14px] border-b bg-gray-100 font-lato font-bold text-gray-800"
                       >
                         <td colspan="5" />
-                        <td class="px-6 py-4">Total</td>
+                        <td class="px-6 py-4">
+                          Total
+                        </td>
                         <td class="px-6 py-4">
                           {{
                             convertToRupiah(
@@ -200,7 +204,9 @@
                       class="font-[14px] border-b font-lato font-bold text-gray-800"
                     >
                       <td colspan="5" />
-                      <td class="px-6 py-4">Grand Total</td>
+                      <td class="px-6 py-4">
+                        Grand Total
+                      </td>
                       <td class="px-6 py-4">
                         {{ convertToRupiah(grandTotal) }}
                       </td>
@@ -241,186 +247,185 @@
 </template>
 
 <script>
-import { formatDate, convertToRupiah } from "~/utils";
-import "vue2-datepicker/index.css";
+import { formatDate, convertToRupiah } from '~/utils'
+import 'vue2-datepicker/index.css'
 
 export default {
-  name: "LaporanPendapatanTahura",
-  data() {
+  name: 'LaporanPendapatanTahura',
+  data () {
     return {
-      search: "",
       listDataTypeAssurance: [
         {
-          value: "with-assurance",
-          label: "Dengan Asuransi",
+          value: 'with-assurance',
+          label: 'Dengan Asuransi'
         },
         {
-          value: "without-assurance",
-          label: "Tanpa Asuransi",
-        },
+          value: 'without-assurance',
+          label: 'Tanpa Asuransi'
+        }
       ],
 
       listDataStatus: [
         {
-          value: "",
-          label: "Semua Status",
+          value: '',
+          label: 'Semua Status'
         },
         {
-          value: "scanned",
-          label: "Berhasil Scan",
+          value: 'scanned',
+          label: 'Berhasil Scan'
         },
         {
-          value: "paid",
-          label: "Belum Scan",
-        },
+          value: 'paid',
+          label: 'Belum Scan'
+        }
       ],
       query: {
-        category: "",
-        status: "",
+        category: '',
+        status: ''
       },
       isShowPopupDate: false,
       isShowPopupDateRange: false,
       dateRange: [
         new Date(new Date().setFullYear(new Date().getFullYear())),
-        new Date(),
+        new Date()
       ],
       listDataLaporan: [],
       assurancePrice: 0,
-      selectAsurance: "with-assurance",
       grandTotal: 0,
+      selectAsurance: 'with-assurance',
       actionDownloadLaporan: [
-        { menu: "Portable Data Format (.pdf)", value: "pdf" },
-        { menu: "Microsoft Excel (.xls)", value: "xls" },
+        { menu: 'Portable Data Format (.pdf)', value: 'pdf' },
+        { menu: 'Microsoft Excel (.xls)', value: 'xls' }
       ],
       listDataCategoryWisatawan: [],
-      loading: true,
-    };
+      loading: true
+    }
   },
-  async fetch() {
-    this.loading = true;
+  async fetch () {
+    this.loading = true
     try {
       const responseDataLaporan = await this.$axios.get(
-        "/ticket/tahura/income",
+        '/ticket/tahura/income',
         {
-          params: this.query,
+          params: this.query
         }
-      );
+      )
 
-      const { data } = responseDataLaporan.data;
-      this.listDataLaporan = data?.data || [];
-      this.assurancePrice = data?.assurancePrice;
-      this.calculateGrandTotal(this.listDataLaporan);
+      const { data } = responseDataLaporan.data
+      this.listDataLaporan = data?.data || []
+      this.assurancePrice = data?.assurancePrice
+      this.calculateGrandTotal(this.listDataLaporan)
 
       const responseCategoryWisatawan = await this.$axios.get(
-        "/ticket/tahura/categories"
-      );
+        '/ticket/tahura/categories'
+      )
 
-      this.listDataCategoryWisatawan = responseCategoryWisatawan.data.data;
+      this.listDataCategoryWisatawan = responseCategoryWisatawan.data.data
 
       this.listDataCategoryWisatawan = [
         {
-          code: "",
-          name: "Semua Wisatawan",
+          code: '',
+          name: 'Semua Wisatawan'
         },
-        ...this.listDataCategoryWisatawan,
-      ];
+        ...this.listDataCategoryWisatawan
+      ]
     } catch (error) {
-      console.error(error);
+      console.error(error)
     } finally {
-      this.loading = false;
+      this.loading = false
     }
   },
   computed: {
-    listCategoryWisatawan() {
+    listCategoryWisatawan () {
       return this.listDataCategoryWisatawan.map((item) => {
         return {
           value: item.code,
-          label: item.name,
-        };
-      });
-    },
+          label: item.name
+        }
+      })
+    }
   },
   watch: {
     query: {
       deep: true,
-      handler() {
-        this.$fetch();
-      },
-    },
-    dateRange() {
-      if (!this.isShowPopupDateRange) {
-        this.$refs.datepicker.closePopup();
-      } else {
-        this.$refs.datepicker.openPopup();
+      handler () {
+        this.$fetch()
       }
     },
+    dateRange () {
+      if (!this.isShowPopupDateRange) {
+        this.$refs.datepicker.closePopup()
+      } else {
+        this.$refs.datepicker.openPopup()
+      }
+    }
   },
   methods: {
-    filterCategoryHandle() {
-      this.$fetch();
+    filterCategoryHandle () {
+      this.$fetch()
     },
-    clearDateRangeHandle() {
+    clearDateRangeHandle () {
       this.dateRange = [
         new Date(new Date().setFullYear(new Date().getFullYear() - 1)),
-        new Date(),
-      ];
+        new Date()
+      ]
       this.setDate({
-        startDate: formatDate(this.dateRange[0], "yyyy-MM-dd"),
-        endDate: formatDate(this.dateRange[1], "yyyy-MM-dd"),
-      });
-      this.isShowPopupDateRange = false;
-      this.$fetch();
+        startDate: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
+        endDate: formatDate(this.dateRange[1], 'yyyy-MM-dd')
+      })
+      this.isShowPopupDateRange = false
+      this.$fetch()
     },
-    changeDateRangeHandle() {
-      this.isShowPopupDateRange = true;
+    changeDateRangeHandle () {
+      this.isShowPopupDateRange = true
     },
-    closePopupDateHandle() {
-      this.isShowPopupDateRange = false;
-      this.$refs.datepicker.closePopup();
+    closePopupDateHandle () {
+      this.isShowPopupDateRange = false
+      this.$refs.datepicker.closePopup()
     },
-    filterDateHandle() {
+    filterDateHandle () {
       this.setDate({
-        startDate: formatDate(this.dateRange[0], "yyyy-MM-dd"),
-        endDate: formatDate(this.dateRange[1], "yyyy-MM-dd"),
-      });
-      this.$fetch();
-      this.$refs.datepicker.closePopup();
+        startDate: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
+        endDate: formatDate(this.dateRange[1], 'yyyy-MM-dd')
+      })
+      this.$fetch()
+      this.$refs.datepicker.closePopup()
     },
-    setDate(params) {
-      this.query = { ...this.query, ...params };
+    setDate (params) {
+      this.query = { ...this.query, ...params }
     },
-    calculateRowTotal(categories) {
-      let total = 0;
+    calculateRowTotal (categories) {
+      let total = 0
       categories.forEach((category) => {
-        total += category.quantity * this.checkAsurance(category.price);
-      });
-      return total || "-";
+        total += category.quantity * this.checkAsurance(category.price)
+      })
+      return total || '-'
     },
-    getTypeAssurance(selectedType) {
+    getTypeAssurance (selectedType) {
       const selectedOption = this.listDataTypeAssurance.find(
-        (option) => option.value === selectedType
-      );
-      return selectedOption ? selectedOption.label : "-";
+        option => option.value === selectedType
+      )
+      return selectedOption ? selectedOption.label : '-'
     },
-    checkAsurance(price) {
-      return this.selectAsurance === "with-assurance"
+    checkAsurance (price) {
+      return this.selectAsurance === 'with-assurance'
         ? price
-        : price - this.assurancePrice;
+        : price - this.assurancePrice
     },
-    calculateGrandTotal(dataLaporan) {
-      let grandTotal = 0;
+    calculateGrandTotal (dataLaporan) {
+      let grandTotal = 0
 
       for (const item of dataLaporan) {
         for (const category of item.categories) {
-          grandTotal += category.quantity * this.checkAsurance(category.price);
+          grandTotal += category.quantity * this.checkAsurance(category.price)
         }
       }
 
-      this.grandTotal = grandTotal;
+      this.grandTotal = grandTotal
     },
     formatDate,
     convertToRupiah,
-    downloadExcelReport() {
+    downloadExcelReport () {
       /*eslint-disable*/
       const table = document.getElementById("table-laporan-pendapatan");
       const ws = XLSX.utils.table_to_sheet(table);
@@ -447,7 +452,11 @@ export default {
       );
     },
     downloadPdfReport() {
-      console.log("download pdf");
+     this.query.assurance = this.selectAsurance
+     this.$store.commit('setQueryLaporanPendapatan', { ...this.query })
+     console.log(this.query)
+     this.$router.push(`/tahura/preview-pdf`)
+  
     },
   },
 };
