@@ -98,8 +98,8 @@
               <BaseTableAction
                 :list-menu-pop-over="menuTableActionHandle(item?.status_id)"
                 @detail="goToPageDetailHandle(item)"
-                @verify="showPopupVerificationHandle(item,'verification')"
-                @failed="showPopupVerificationHandle(item,'failed')"
+                @verify="showPopupConfirmationVerificationComplaintHandle (item)"
+                @failed="showPopupConfirmationFailedComplaintHandle(item)"
                 @add-span="showPopupInputIdSpanHandle(item)"
               />
             </template>
@@ -107,9 +107,9 @@
         </BaseTabPanel>
       </template>
     </BaseTabGroup>
-    <DialogConfirmation :data-dialog="dataDialog" :show-popup="isShowPopupConfirmationVerification" @close="closePopupHandle()" @submit="submitPopupVerificationHandle" />
+    <DialogConfirmation :data-dialog="dataDialog" :show-popup="isShowPopupConfirmationVerification" @close="closePopupHandle()" @submit="submitPopupComplaintHandle" />
     <DialogInformation :data-dialog="dataDialog" :show-popup="isShowPopupInformation" :icon-popup="iconPopup" @close="closePopupInformationHandle()" @submit="submitRetryHandle" />
-    <DialogInputTextArea :data-dialog="dataDialog" :show-popup="isShowPopupConfirmationFailedVerification" @close="closePopupHandle()" @submit="submitPopupVerificationHandle" />
+    <DialogInputTextArea :data-dialog="dataDialog" :show-popup="isShowPopupConfirmationFailedVerification" @close="closePopupHandle()" @submit="submitPopupComplaintHandle" />
     <DialogInputText :data-dialog="dataDialog" :show-popup="isShowPopupInputIdSpan" @close="closePopupHandle()" @submit="submitInputIdSpanHandle" />
     <DialogLoading :show-popup="isLoading" />
   </div>

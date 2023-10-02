@@ -244,20 +244,20 @@
       :data-dialog="dataDialog"
       :show-popup="isShowPopupConfirmationVerification"
       @close="closePopupHandle()"
-      @submit="submitPopupVerificationHandle"
+      @submit="submitPopupComplaintHandle"
     />
     <DialogInformation
       :data-dialog="dataDialog"
       :show-popup="isShowPopupInformation"
       :icon-popup="iconPopup"
       @close="closePopupInformationHandle()"
-      @submit="submitPopupVerificationHandle"
+      @submit="submitRetryHandle"
     />
     <DialogInputTextArea
       :data-dialog="dataDialog"
       :show-popup="isShowPopupConfirmationFailedVerification"
       @close="closePopupHandle()"
-      @submit="submitPopupVerificationHandle"
+      @submit="submitPopupComplaintHandle"
     />
     <DialogLoading :show-popup="isLoading" />
   </div>
@@ -382,9 +382,9 @@ export default {
     clickButtonConfirmationHandle (idButton) {
       switch (idButton) {
         case this.complaintButtonDetail.verified.idButton:
-          return this.showPopupVerificationHandle(this.detailComplaint, 'verification')
+          return this.showPopupConfirmationVerificationComplaintHandle(this.detailComplaint)
         case this.complaintButtonDetail.failed.idButton:
-          return this.showPopupVerificationHandle(this.detailComplaint, 'failed')
+          return this.showPopupConfirmationFailedComplaintHandle(this.detailComplaint)
         case this.complaintButtonDetail.addIdSpan.idButton:
           return this.showPopupInputIdSpanHandle(this.detailComplaint)
       }
