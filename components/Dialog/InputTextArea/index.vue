@@ -7,13 +7,13 @@
           <form>
             <BaseDialogDescription :description="dataDialog.description" :sub-description="dataDialog.subDescription" />
             <div class="mt-4">
-              <ValidationProvider v-slot="{errors}" name="Catatan Aduan" rules="required">
-                <label class="text-[15px] text-gray-800 font-lato">Catatan Aduan Gagal Diverifikasi</label><br>
+              <ValidationProvider v-slot="{errors}" :name="dataDialog.labelTextArea" rules="required">
+                <label class="text-[15px] text-gray-800 font-lato">{{ dataDialog.labelTextArea }}</label><br>
                 <div class="mt-1">
                   <textarea
                     v-model="fieldTextArea"
                     :class="{ 'border border-red-600': (isInputDirty || isSubmit) && errors[0] }"
-                    placeholder="Catatan Aduan"
+                    :placeholder="dataDialog.placeholder"
                     maxlength="255"
                     class="w-[462px] h-[83px] border border-gray-300 rounded-lg focus:outline-none px-2 py-[10px] placeholder:text-[14px] placeholder:font-lato"
                   />
@@ -67,7 +67,7 @@ export default {
       this.isSubmit = true
       const isDataValid = await this.$refs.form.validate()
       if (isDataValid) {
-        this.$emit('submit', { ...this.dataDialog, note: this.fieldTextArea, status: 'failed' })
+        this.$emit('submit', { ...this.dataDialog, note: this.fieldTextArea })
         this.fieldTextArea = ''
         this.isInputDirty = false
         this.isSubmit = false
