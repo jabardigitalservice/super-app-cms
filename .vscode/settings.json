@@ -1,10 +1,6 @@
-// .vscode/settings.json
 {
-  // Allow VSCode to format file on save
-  "editor.formatOnSave": true,
-
-  // Allow VSCode to run ESLint on save
   "editor.codeActionsOnSave": {
+    "source.fixAll": false,
     "source.fixAll.eslint": true
   },
 
