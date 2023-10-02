@@ -30,11 +30,11 @@ export default {
     }
   },
   methods: {
-    submitButtonHandle (dataDialog = null) {
+    submitButtonHandle () {
       if (!this.showCancelButton) {
         this.$emit('close')
       } else {
-        this.$emit('submit', dataDialog)
+        this.$emit('submit')
       }
     }
   }
