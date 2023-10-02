@@ -21,6 +21,11 @@ export const aduanSpanHeader = [
   { key: 'action', text: 'Aksi' }
 ]
 
+export const determiningAuthorityHeader = [
+  ...complaintHeader
+]
+determiningAuthorityHeader.splice(1, 0, { key: 'complaint_source', text: 'Sumber Aduan' })
+
 export const typeAduan = {
   aduanMasuk: { props: 'aduan-masuk', label: 'Daftar Aduan Masuk', link: '/aduan/aduan-masuk', id: 'aduanMasuk' },
   aduanDialihkanSpanLapor: { props: 'aduan-dialihkan-span-lapor', label: 'Daftar Aduan Dialihkan Ke SP4N Lapor', link: '/aduan/dialihkan-ke-span-lapor', id: 'aduanDialihkanSpanLapor' },
@@ -29,23 +34,23 @@ export const typeAduan = {
 
 export const complaintStatus = Object.freeze({
   total: { id: 'total', name: 'Semua Aduan', value: 0, statusColor: '', icon: '/icon/icon-aduan/complaint-icon.svg', typeAduan: ['all'] },
-  unverified: { id: 'unverified', name: 'Menunggu Verifikasi', value: 0, statusColor: '[#FF9500]', icon: '/icon/icon-aduan/complaint-wait-verify-icon.svg', typeAduan: [typeAduan.aduanMasuk.props] },
-  verified: { id: 'verified', name: 'Terverifikasi', value: 0, statusColor: '[#1E88E5]', icon: '/icon/icon-aduan/complaint-verify-icon.svg', typeAduan: [typeAduan.aduanMasuk.props, typeAduan.penentuanKewenangan.props] },
-  failed: { id: 'failed', name: 'Gagal Diverifikasi', value: 0, statusColor: '[#DD5E5E]', icon: '/icon/icon-aduan/complaint-failed-icon.svg', typeAduan: [typeAduan.aduanMasuk.props] },
-  coordinated: { id: 'coordinated', name: 'Dikoordinasikan', value: 0, statusColor: '[#16A75C]', icon: '/icon/icon-aduan/complaint-coordination-icon.svg', typeAduan: [typeAduan.penentuanKewenangan.props] },
-  diverted_to_span: { id: 'diverted_to_span', name: 'Dialihkan ke SP4N Lapor', value: 0, statusColor: '[#16A75C]', icon: '/icon/icon-aduan/complaint-span-icon.svg', typeAduan: [typeAduan.penentuanKewenangan.props, typeAduan.aduanDialihkanSpanLapor.props] },
-  rejected: { id: 'rejected', name: 'Ditolak', value: 0, statusColor: '[#EF5350]', icon: '/icon/icon-aduan/complaint-failed-icon.svg', typeAduan: [typeAduan.penentuanKewenangan.props] }
+  unverified: { id: 'unverified', name: 'Menunggu Verifikasi', value: 0, statusColor: [{ color: 'yellow', typeAduan: typeAduan.aduanMasuk.props }], icon: '/icon/icon-aduan/complaint-wait-verify-icon.svg', typeAduan: [typeAduan.aduanMasuk.props] },
+  verified: { id: 'verified', name: 'Terverifikasi', value: 0, statusColor: [{ color: 'yellow', typeAduan: typeAduan.penentuanKewenangan.props }, { color: 'green', typeAduan: typeAduan.aduanMasuk.props }], icon: '/icon/icon-aduan/complaint-verify-icon.svg', typeAduan: [typeAduan.aduanMasuk.props, typeAduan.penentuanKewenangan.props] },
+  failed: { id: 'failed', name: 'Gagal Diverifikasi', value: 0, statusColor: [{ color: 'red', typeAduan: typeAduan.aduanMasuk.props }], icon: '/icon/icon-aduan/complaint-failed-icon.svg', typeAduan: [typeAduan.aduanMasuk.props] },
+  coordinated: { id: 'coordinated', name: 'Dikoordinasikan', value: 0, statusColor: [{ color: 'green', typeAduan: typeAduan.penentuanKewenangan.props }], icon: '/icon/icon-aduan/complaint-coordination-icon.svg', typeAduan: [typeAduan.penentuanKewenangan.props] },
+  diverted_to_span: { id: 'diverted_to_span', name: 'Dialihkan ke SP4N Lapor', value: 0, statusColor: [{ color: 'green', typeAduan: typeAduan.penentuanKewenangan.props }], icon: '/icon/icon-aduan/complaint-span-icon.svg', typeAduan: [typeAduan.penentuanKewenangan.props, typeAduan.aduanDialihkanSpanLapor.props] },
+  rejected: { id: 'rejected', name: 'Ditolak', value: 0, statusColor: [{ color: 'red', typeAduan: typeAduan.penentuanKewenangan.props }], icon: '/icon/icon-aduan/complaint-failed-icon.svg', typeAduan: [typeAduan.penentuanKewenangan.props] }
 })
 
 export const complaintButtonDetail = {
-  verified: {
+  failed: {
     idButton: 'button-confirmation-failed',
     label: 'Gagal Terverifikasi',
     variant: 'secondary',
     classButton: '!text-red-400 !border-2 !border-red-400',
     complaintStatus: complaintStatus.unverified.id
   },
-  failed: {
+  verified: {
     idButton: 'button-confirmation-verification',
     label: 'Terverifikasi',
     variant: 'primary',

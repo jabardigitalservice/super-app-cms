@@ -25,8 +25,8 @@ export default {
       descriptionPage: 'Berisi detail aduan dari masyarakat Jabar',
       typeAduan,
       listButtonDetail: [
-        complaintButtonDetail.verified,
-        complaintButtonDetail.failed
+        complaintButtonDetail.failed,
+        complaintButtonDetail.verified
       ]
     }
   },
