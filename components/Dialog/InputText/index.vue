@@ -60,7 +60,7 @@ export default {
       this.isSubmit = true
       const isDataValid = await this.$refs.form.validate()
       if (isDataValid) {
-        this.$emit('submit', { ...this.dataDialog, note: this.fieldInputText, status: 'failed' })
+        this.$emit('submit', { subDescription: this.dataDialog.subDescription, valueText: this.fieldInputText })
         this.fieldInputText = ''
         this.isInputDirty = false
         this.isSubmit = false

@@ -96,7 +96,7 @@
             <!-- eslint-disable-next-line vue/valid-v-slot -->
             <template #item.action="{item}">
               <BaseTableAction
-                :list-menu-pop-over="menuTableActionHandle()"
+                :list-menu-pop-over="menuTableActionHandle(item?.status_id)"
                 @detail="goToPageDetailHandle(item)"
                 @verify="showPopupVerificationHandle(item,'verification')"
                 @failed="showPopupVerificationHandle(item,'failed')"
@@ -108,9 +108,9 @@
       </template>
     </BaseTabGroup>
     <DialogConfirmation :data-dialog="dataDialog" :show-popup="isShowPopupConfirmationVerification" @close="closePopupHandle()" @submit="submitPopupVerificationHandle" />
-    <DialogInformation :data-dialog="dataDialog" :show-popup="isShowPopupInformation" :icon-popup="iconPopup" @close="closePopupInformationHandle()" @submit="submitPopupVerificationHandle" />
+    <DialogInformation :data-dialog="dataDialog" :show-popup="isShowPopupInformation" :icon-popup="iconPopup" @close="closePopupInformationHandle()" @submit="submitRetryHandle" />
     <DialogInputTextArea :data-dialog="dataDialog" :show-popup="isShowPopupConfirmationFailedVerification" @close="closePopupHandle()" @submit="submitPopupVerificationHandle" />
-    <DialogInputText :data-dialog="dataDialog" :show-popup="isShowPopupInputIdSpan" @close="closePopupHandle()" />
+    <DialogInputText :data-dialog="dataDialog" :show-popup="isShowPopupInputIdSpan" @close="closePopupHandle()" @submit="submitInputIdSpanHandle" />
     <DialogLoading :show-popup="isLoading" />
   </div>
 </template>
@@ -148,9 +148,9 @@ export default {
     return {
       menuTableAction: [
         { menu: 'Lihat Detail Aduan', value: 'detail', typeAduan: ['all'] },
-        { menu: 'Terverifikasi', value: 'verify', typeAduan: [typeAduan.aduanMasuk.props] },
-        { menu: 'Gagal Diverifikasi', value: 'failed', typeAduan: [typeAduan.aduanMasuk.props] },
-        { menu: 'Tambahkan ID SP4N Lapor', value: 'add-span', typeAduan: [typeAduan.aduanDialihkanSpanLapor.props] }
+        { menu: 'Terverifikasi', value: 'verify', typeAduan: [typeAduan.aduanMasuk.props], complaintStatus: 'unverified' },
+        { menu: 'Gagal Diverifikasi', value: 'failed', typeAduan: [typeAduan.aduanMasuk.props], complaintStatus: 'unverified' },
+        { menu: 'Tambahkan ID SP4N Lapor', value: 'add-span', typeAduan: [typeAduan.aduanDialihkanSpanLapor.props], complaintStatus: 'no-id-span' }
       ],
       listDataComplaint: [],
       listDataCategory: [],
@@ -199,6 +199,7 @@ export default {
       const listDataStatisticComplaint = responseListStatisticComplaint.data.data
       this.listStatisticComplaint = listDataStatisticComplaint.filter(item => this.complaintStatus[item.id].typeAduan.includes(this.typeAduanPage) && item.id === this.complaintStatus[item.id].id)
       const { data } = responseListComplaint.data
+
       this.listDataComplaint = data?.data || []
       if (this.listDataComplaint.length) {
         this.pagination.disabled = false
@@ -219,12 +220,15 @@ export default {
   computed: {
     listData () {
       return this.listDataComplaint.map((item) => {
+        if (this.typeAduan.aduanDialihkanSpanLapor.props === this.typeAduanPage) {
+          item.complaint_status_id = !item.sp4n_id ? 'no-id-span' : item.complaint_status_id
+        }
         return {
           ...item,
           category: item.complaint_category.name,
           status: this.complaintStatus[item.complaint_status.id].name,
           created_at: formatDate(item.created_at || '', 'dd/MM/yyyy HH:mm'),
-          status_id: item.complaint_status.id,
+          status_id: item.complaint_status_id,
           sp4n_id: item.sp4n_id || 'Belum ada',
           diverted_to_span_at: item.diverted_to_span_at ? formatDate(item.diverted_to_span_at || '', 'dd/MM/yyyy HH:mm') : 'Belum ada',
           sp4n_created_at: item.sp4n_created_at ? formatDate(item.sp4n_created_at || '', 'dd/MM/yyyy HH:mm') : 'Belum ada'
@@ -353,8 +357,8 @@ export default {
           return 'text-gray-900'
       }
     },
-    menuTableActionHandle () {
-      return this.menuTableAction.filter(item => item.typeAduan.includes('all') || item.typeAduan.includes(this.typeAduanPage))
+    menuTableActionHandle (complaintStatus) {
+      return this.menuTableAction.filter(item => item.typeAduan.includes('all') || (item.typeAduan.includes(this.typeAduanPage) && complaintStatus === item.complaintStatus))
     },
     getTotalStatistic () {
       const total = this.listStatisticComplaint.reduce((accumulator, object) => {

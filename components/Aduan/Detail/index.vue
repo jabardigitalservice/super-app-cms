@@ -238,6 +238,7 @@
       :data-dialog="dataDialog"
       :show-popup="isShowPopupInputIdSpan"
       @close="closePopupHandle()"
+      @submit="submitInputIdSpanHandle"
     />
     <DialogConfirmation
       :data-dialog="dataDialog"
@@ -322,13 +323,13 @@ export default {
     try {
       const response = await this.$axios.get(`/warga/complaints/${this.$route.params.id}`)
       const dataDetailComplaint = response.data.data
+      dataDetailComplaint.complaint_status = this.complaintStatus[dataDetailComplaint?.complaint_status_id]
       if (this.typeAduan.aduanDialihkanSpanLapor.id === this.typeAduanPage) {
-        dataDetailComplaint.complaint_status_id = (!dataDetailComplaint.diverted_to_span_at && !dataDetailComplaint.sp4n_created_at) || 'no-id-span'
+        dataDetailComplaint.complaint_status_id = !dataDetailComplaint.sp4n_id ? 'no-id-span' : dataDetailComplaint.complaint_status_id
       }
       this.detailComplaint = {
         ...dataDetailComplaint,
-        created_at: formatDate(dataDetailComplaint?.created_at, 'dd/MM/yyyy - HH:mm'),
-        complaint_status: this.complaintStatus[dataDetailComplaint?.complaint_status_id]
+        created_at: formatDate(dataDetailComplaint?.created_at, 'dd/MM/yyyy - HH:mm')
       }
 
       this.listPhoto = dataDetailComplaint?.photos
