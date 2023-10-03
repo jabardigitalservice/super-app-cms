@@ -312,10 +312,9 @@ export default {
       }
       this.detailComplaint = {
         ...dataDetailComplaint,
-        created_at: formatDate(dataDetailComplaint?.created_at, 'dd/MM/yyyy - HH:mm'),
-        sp4n_created_at: formatDate(dataDetailComplaint?.sp4n_created_at, 'dd/MM/yyyy - HH:mm')
+        created_at: dataDetailComplaint?.created_at && formatDate(dataDetailComplaint?.created_at, 'dd/MM/yyyy - HH:mm'),
+        sp4n_created_at: dataDetailComplaint?.sp4n_created_at && formatDate(dataDetailComplaint?.sp4n_created_at || '', 'dd/MM/yyyy - HH:mm')
       }
-
       this.listPhoto = dataDetailComplaint?.photos
     } catch {
       this.detailComplaint = {}
