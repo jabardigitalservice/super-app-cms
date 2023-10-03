@@ -38,10 +38,6 @@ export default {
       type: Boolean,
       default: true
     },
-    idApi: {
-      type: String,
-      default: ''
-    },
     dataDialog: {
       type: Object,
       default: () => ({})

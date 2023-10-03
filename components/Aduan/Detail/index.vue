@@ -231,7 +231,6 @@
     <DialogTrackingSpanLapor
       :show-popup="isShowPopupDetailStatusComplaint"
       :data-dialog="dataDialog"
-      :id-api="$route.params.id"
       @close="isShowPopupDetailStatusComplaint=false"
     />
     <DialogInputText
