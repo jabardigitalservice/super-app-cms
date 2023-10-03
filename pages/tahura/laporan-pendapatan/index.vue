@@ -1,5 +1,5 @@
 <template>
-  <div>Laporan Pendapatan Tahura</div>
+  <TahuraLaporanPendapatan />
 </template>
 
 <script>
@@ -13,7 +13,9 @@ export default {
           label: 'Laporan Pendapatan',
           link: '/tahura/laporan-pendapatan'
         }
-      ]
+      ],
+      descriptionPage:
+        'Laporan Pendapatan Taman Hutan Raya.'
 
     }
   },

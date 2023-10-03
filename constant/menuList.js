@@ -120,6 +120,12 @@ const tahuraMenu = {
       showMenuAndAccessForRoles: ['admin'],
       icon: 'news-paper.svg'
     }
+  ],
+  childRoute: [
+    {
+      path: 'tahura/preview-pdf',
+      accessChildRouteForRoles: ['admin']
+    }
   ]
 }
 

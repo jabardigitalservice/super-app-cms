@@ -2,5 +2,15 @@
   "editor.codeActionsOnSave": {
     "source.fixAll": false,
     "source.fixAll.eslint": true
+  },
+
+  // Use Prettier as default formatter for .vue file
+  "[vue]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  // Use Prettier as default formatter for .js file
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
 }

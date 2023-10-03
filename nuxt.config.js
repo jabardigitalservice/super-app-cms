@@ -23,6 +23,10 @@ export default {
         'data-application-id': `${process.env.APPLICATION_ID_NEW_RELIC}`
       },
       {
+        src: '/xlsx-script.js',
+        async: true
+      },
+      {
         src: 'https://public.tableau.com/javascripts/api/tableau-2.min.js'
       }
     ]
