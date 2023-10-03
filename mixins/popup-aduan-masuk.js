@@ -32,26 +32,26 @@ export default {
       this.isShowPopupViewImage = false
       this.isShowPopupInputIdSpan = false
     },
-    showPopupVerificationHandle (dataComplaint, typeConfirmation) {
-      this.dataDialog.subDescription = dataComplaint.complaint_id
-      this.dataDialog.idApi = dataComplaint.id
-      if (typeConfirmation === 'verification') {
-        this.setDataDialog({
-          title: 'Konfirmasi Verifikasi Aduan',
-          description: 'Apakah Anda yakin ingin mengkonfirmasi aduan ini?',
-          labelButton: 'Verifikasi Aduan Ini'
-        })
-        this.isShowPopupConfirmationVerification = true
-        this.typeDialog = 'verificationComplaint'
-      } else {
-        this.setDataDialog({
-          title: 'Konfirmasi Gagal Diverifikasi',
-          description: 'No. Aduan',
-          labelButton: 'Konfirmasi'
-        })
-        this.isShowPopupConfirmationFailedVerification = true
-        this.typeDialog = 'failedComplaint'
-      }
+
+    showPopupConfirmationVerificationComplaintHandle (dataComplaint) {
+      this.idApi = dataComplaint.id
+      this.typeDialog = 'verificationComplaint'
+      this.setDataDialog({
+        ...this.setDataDialogConfirmation('Konfirmasi Verifikasi Aduan',
+          'Apakah Anda yakin ingin mengkonfirmasi aduan ini?', dataComplaint.complaint_id, 'Verifikasi Aduan Ini')
+      })
+      this.isShowPopupConfirmationVerification = true
+    },
+    showPopupConfirmationFailedComplaintHandle (dataComplaint) {
+      this.idApi = dataComplaint.id
+      this.typeDialog = 'failedComplaint'
+      this.setDataDialog({
+        ...this.setDataDialogConfirmation('Konfirmasi Gagal Diverifikasi',
+          'No.Aduan', dataComplaint.complaint_id, 'Konfirmasi'),
+        labelTextArea: 'Catatan Aduan Gagal Diverifikasi',
+        placeholder: 'Detail Aduan tidak lengkap : contoh (foto tidak jelas)'
+      })
+      this.isShowPopupConfirmationFailedVerification = true
     },
     showPopupInputIdSpanHandle (dataComplaint) {
       this.idApi = dataComplaint.id
@@ -64,6 +64,31 @@ export default {
       })
       this.isShowPopupInputIdSpan = true
     },
+
+    submitPopupComplaintHandle (item) {
+      let dataDialogInformation = { }
+      const paramRequest = {}
+      if (this.typeDialog === 'verificationComplaint') {
+        this.isShowPopupConfirmationVerification = false
+        dataDialogInformation = {
+          ...this.setDataDialogInformation('Verifikasi Aduan', item.subDescription),
+          success: this.setSucessFailedInformationHandle('Aduan berhasil diverifikasi', true),
+          failed: this.setSucessFailedInformationHandle('Aduan gagal diverifikasi', false)
+        }
+        paramRequest.complaint_status_id = 'verified'
+      } else {
+        this.isShowPopupConfirmationFailedVerification = false
+        dataDialogInformation = {
+          ...this.setDataDialogInformation('Aduan Gagal Diverifikasi', item.subDescription),
+          success: this.setSucessFailedInformationHandle('Konfirmasi Aduan Gagal Diverifikasi berhasil dilakukan', true),
+          failed: this.setSucessFailedInformationHandle('Konfirmasi Aduan Gagal Diverifikasi gagal dilakukan', false)
+        }
+        paramRequest.complaint_status_id = 'failed'
+      }
+
+      this.integrationPopupHandle(dataDialogInformation, { ...paramRequest, complaint_status_note: item?.note }, 'change-status')
+    },
+
     submitInputIdSpanHandle (item) {
       this.isShowPopupInputIdSpan = false
       let dataDialogInformation = { }
@@ -87,34 +112,6 @@ export default {
         return { description, labelButton: 'Coba Lagi' }
       }
     },
-    async submitPopupVerificationHandle (paramDialog) {
-      this.isShowPopupConfirmationVerification = false
-      this.isShowPopupConfirmationFailedVerification = false
-      this.dataDialog.title = paramDialog.status === 'verified' ? 'Verifikasi Aduan' : 'Aduan Gagal Diverifikasi'
-      this.dataDialog.subDescription = paramDialog.subDescription
-      this.isLoading = true
-      const paramsInputRequest = { complaint_status_id: paramDialog.status, complaint_status_note: paramDialog?.note, user_id: this.$auth?.user?.identifier }
-
-      try {
-        await this.$axios.patch(`/warga/complaints/${paramDialog.idApi}/change-status`, paramsInputRequest)
-        this.setDataDialog({
-          description: paramDialog.status === 'verified' ? 'Aduan berhasil diverifikasi' : 'Konfirmasi Aduan Gagal Diverifikasi berhasil dilakukan',
-          labelButton: 'Saya mengerti',
-          showCancelButton: false
-        })
-        this.setIconPopup({ name: 'check-mark-circle', fill: '#069550' })
-      } catch {
-        this.setDataDialog({
-          description: paramDialog.status === 'verified' ? 'Aduan gagal diverifikasi' : 'Konfirmasi Aduan Gagal Diverifikasi gagal dilakukan',
-          status: paramDialog.status,
-          labelButton: 'Coba lagi'
-        })
-        this.setIconPopup({ name: 'times-circle', fill: '#EF5350' })
-      } finally {
-        this.isLoading = false
-      }
-      this.isShowPopupInformation = true
-    },
     async integrationPopupHandle (paramDialog, paramsInputRequest, pathApi) {
       this.dataDialog.title = paramDialog.title
       this.dataDialog.subDescription = paramDialog.subDescription
@@ -134,9 +131,9 @@ export default {
     submitRetryHandle () {
       switch (this.typeDialog) {
         case 'verificationComplaint':
-          return this.submitPopupVerificationHandle(this.dataDialog)
+          return this.submitPopupComplaintHandle(this.dataDialog)
         case 'failedComplaint':
-          return this.submitPopupVerificationHandle(this.dataDialog)
+          return this.submitPopupComplaintHandle(this.dataDialog)
         case 'addIdSpan' : {
           return this.submitInputIdSpanHandle(this.dataDialog)
         }
