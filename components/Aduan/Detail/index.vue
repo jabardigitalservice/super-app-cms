@@ -228,7 +228,7 @@
       </template>
     </basetabgroup>
     <DialogViewImage :list-photo="listPhoto" :show-popup="isShowPopupViewImage" @close="isShowPopupViewImage=false" />
-    <DialogDetailStatusSpanLapor
+    <DialogTrackingSpanLapor
       :show-popup="isShowPopupDetailStatusComplaint"
       :data-dialog="dataDialog"
       :id-api="$route.params.id"
@@ -269,12 +269,12 @@ import ArrowLeft from '~/assets/icon/arrow-left.svg?inline'
 import DialogViewImage from '~/components/Aduan/DialogViewImage'
 import TabBarDetail from '~/components/Aduan/TabBar/Detail'
 import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
-import DialogDetailStatusSpanLapor from '~/components/Aduan/Dialog/DetailStatusSpanLapor'
+import DialogTrackingSpanLapor from '~/components/Aduan/Dialog/TrackingSpanLapor'
 import { formatDate } from '~/utils'
 
 export default {
   name: 'DetailAduanMasuk',
-  components: { DialogViewImage, TabBarDetail, DialogDetailStatusSpanLapor, ArrowLeft },
+  components: { DialogViewImage, TabBarDetail, DialogTrackingSpanLapor, ArrowLeft },
   mixins: [popupAduanMasuk],
   props: {
     typeAduanPage: {
