@@ -228,10 +228,9 @@
       </template>
     </basetabgroup>
     <DialogViewImage :list-photo="listPhoto" :show-popup="isShowPopupViewImage" @close="isShowPopupViewImage=false" />
-    <DialogDetailStatusSpanLapor
+    <DialogTrackingSpanLapor
       :show-popup="isShowPopupDetailStatusComplaint"
       :data-dialog="dataDialog"
-      :list-tracking-span-lapor="listTrackingSpanLapor"
       @close="isShowPopupDetailStatusComplaint=false"
     />
     <DialogInputText
@@ -269,12 +268,12 @@ import ArrowLeft from '~/assets/icon/arrow-left.svg?inline'
 import DialogViewImage from '~/components/Aduan/DialogViewImage'
 import TabBarDetail from '~/components/Aduan/TabBar/Detail'
 import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
-import DialogDetailStatusSpanLapor from '~/components/Aduan/Dialog/DetailStatusSpanLapor'
+import DialogTrackingSpanLapor from '~/components/Aduan/Dialog/TrackingSpanLapor'
 import { formatDate } from '~/utils'
 
 export default {
   name: 'DetailAduanMasuk',
-  components: { DialogViewImage, TabBarDetail, DialogDetailStatusSpanLapor, ArrowLeft },
+  components: { DialogViewImage, TabBarDetail, DialogTrackingSpanLapor, ArrowLeft },
   mixins: [popupAduanMasuk],
   props: {
     typeAduanPage: {
@@ -299,24 +298,7 @@ export default {
       complaintButtonDetail,
       typeAduan,
       isShowPopupViewImage: false,
-      isShowPopupDetailStatusComplaint: false,
-      listTrackingSpanLapor: [
-        {
-          dateSpanLapor: '22 November 2022',
-          deliverSpanLapor: 'Dinas Perhubungan Kota Bandung',
-          notes: 'Terima kasih atas saran pendapatnya, akan kami sampaikan pada pimpinan dan bidang terkait.'
-        },
-        {
-          dateSpanLapor: '22 November 2022',
-          deliverSpanLapor: 'Dinas Perhubungan Kota Bandung',
-          notes: 'Yth. Pelapor, Terima kasih atas laporan Anda. Terkait hal tersebut akan kami sampaikan ke unit yang bersangkutan dan akan segera kami tindaklanjuti sesuai batas waktu tindaklanjut di SP4N Lapor!'
-        },
-        {
-          dateSpanLapor: '22 November 2022',
-          deliverSpanLapor: 'Dinas Perhubungan Kota Bandung',
-          notes: 'Terima kasih atas saran pendapatnya, akan kami sampaikan pada pimpinan dan bidang terkait.'
-        }
-      ]
+      isShowPopupDetailStatusComplaint: false
     }
   },
   async fetch () {
@@ -329,9 +311,9 @@ export default {
       }
       this.detailComplaint = {
         ...dataDetailComplaint,
-        created_at: formatDate(dataDetailComplaint?.created_at, 'dd/MM/yyyy - HH:mm')
+        created_at: dataDetailComplaint?.created_at && formatDate(dataDetailComplaint?.created_at, 'dd/MM/yyyy - HH:mm'),
+        sp4n_created_at: dataDetailComplaint?.sp4n_created_at && formatDate(dataDetailComplaint?.sp4n_created_at || '', 'dd/MM/yyyy - HH:mm')
       }
-
       this.listPhoto = dataDetailComplaint?.photos
     } catch {
       this.detailComplaint = {}
