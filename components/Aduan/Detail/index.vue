@@ -231,7 +231,7 @@
     <DialogDetailStatusSpanLapor
       :show-popup="isShowPopupDetailStatusComplaint"
       :data-dialog="dataDialog"
-      :list-tracking-span-lapor="listTrackingSpanLapor"
+      :id-api="$route.params.id"
       @close="isShowPopupDetailStatusComplaint=false"
     />
     <DialogInputText
@@ -299,24 +299,7 @@ export default {
       complaintButtonDetail,
       typeAduan,
       isShowPopupViewImage: false,
-      isShowPopupDetailStatusComplaint: false,
-      listTrackingSpanLapor: [
-        {
-          dateSpanLapor: '22 November 2022',
-          deliverSpanLapor: 'Dinas Perhubungan Kota Bandung',
-          notes: 'Terima kasih atas saran pendapatnya, akan kami sampaikan pada pimpinan dan bidang terkait.'
-        },
-        {
-          dateSpanLapor: '22 November 2022',
-          deliverSpanLapor: 'Dinas Perhubungan Kota Bandung',
-          notes: 'Yth. Pelapor, Terima kasih atas laporan Anda. Terkait hal tersebut akan kami sampaikan ke unit yang bersangkutan dan akan segera kami tindaklanjuti sesuai batas waktu tindaklanjut di SP4N Lapor!'
-        },
-        {
-          dateSpanLapor: '22 November 2022',
-          deliverSpanLapor: 'Dinas Perhubungan Kota Bandung',
-          notes: 'Terima kasih atas saran pendapatnya, akan kami sampaikan pada pimpinan dan bidang terkait.'
-        }
-      ]
+      isShowPopupDetailStatusComplaint: false
     }
   },
   async fetch () {
@@ -329,7 +312,8 @@ export default {
       }
       this.detailComplaint = {
         ...dataDetailComplaint,
-        created_at: formatDate(dataDetailComplaint?.created_at, 'dd/MM/yyyy - HH:mm')
+        created_at: formatDate(dataDetailComplaint?.created_at, 'dd/MM/yyyy - HH:mm'),
+        sp4n_created_at: formatDate(dataDetailComplaint?.sp4n_created_at, 'dd/MM/yyyy - HH:mm')
       }
 
       this.listPhoto = dataDetailComplaint?.photos
