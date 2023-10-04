@@ -189,7 +189,7 @@ export default {
       }
 
       const responseListComplaint = await this.$axios.get('/warga/complaints', {
-        params: this.query
+        params: { ...this.query, is_admin: 1 }
       })
 
       const responseListCategoryComplaint = await this.$axios.get('/warga/complaints/categories')
@@ -380,7 +380,7 @@ export default {
       if (status !== 'total') {
         this.search = ''
         this.dateRange = [new Date(new Date().setFullYear(new Date().getFullYear() - 1)), new Date()]
-        this.setQuery({ 'complaint_status_id[0]': status, search: null, complaint_category_id: null })
+        this.setQuery({ 'complaint_status_id[0]': status, search: null, complaint_category_id: null, sort_by: 'updated_at', sort_type: 'desc' })
         this.isShowPopupDateRange = false
       }
       this.$fetch()
