@@ -11,24 +11,14 @@
   >
     <div
       v-show="showPopup"
-      class="
-          fixed
-          inset-0
-          bg-black bg-opacity-75
-          transition-opacity
-          flex
-          justify-center
-          items-center
-          w-full
-          z-10
-        "
+      class="fixed inset-0 z-10 flex w-full items-center justify-center bg-black bg-opacity-75 transition-opacity"
     >
-      <div class="bg-white w-[510px] h-fit rounded-lg">
-        <!-- HEADER -->
-        <div class="h-[50px] bg-white py-[8px] px-[24px] rounded-t-lg">
+      <div class="h-fit w-[510px] rounded-lg bg-white">
+        <!-- HEADER  -->
+        <div class="h-[50px] rounded-t-lg bg-white py-[8px] px-[24px]">
           <h1
             class="font-roboto text-[21px] font-bold text-green-800"
-            :class="{'text-center' : confirmationType=='logout'} "
+            :class="{ 'text-center': confirmationType == 'logout' }"
           >
             {{ title }}
           </h1>
@@ -40,22 +30,49 @@
           <slot name="reject-content" />
         </div>
         <!-- FOOTER -->
-        <div class="h-fit px-[24px] flex justify-end bg-gray-50 py-[16px]" :class="{'justify-center' : dialogType==='information' || confirmationType==='logout'}">
+        <div
+          class="flex h-fit justify-end bg-gray-50 px-[24px] py-[16px]"
+          :class="{
+            'justify-center':
+              dialogType === 'information' || confirmationType === 'logout',
+          }"
+        >
           <div class="mr-[16px]">
-            <BaseButton v-show="dialogType=='confirmation'" class="border border-green-700 text-green-700 hover:bg-green-50" :class="{'w-[117px]':confirmationType==='logout'}" @click="closeHandle">
+            <BaseButton
+              v-show="dialogType == 'confirmation'"
+              class="border border-green-700 text-green-700 hover:bg-green-50"
+              :class="{ 'w-[117px]': confirmationType === 'logout' }"
+              @click="closeHandle"
+            >
               Batal
             </BaseButton>
           </div>
-          <BaseButton v-show="(dialogType==='confirmation' && confirmationType!=='reject') || dialogType== 'information'" class="bg-green-700 w-fit text-white hover:bg-green-600" :class="disabledButton ? 'disabled:opacity-25' : ''" :disabled="disabledButton" @click="submitHandle">
+          <BaseButton
+            v-show="
+              (dialogType === 'confirmation' &&
+                confirmationType !== 'reject') ||
+                dialogType == 'information'
+            "
+            class="w-fit bg-green-700 text-white hover:bg-green-600"
+            :class="disabledButton ? 'disabled:opacity-25' : ''"
+            :disabled="disabledButton"
+            @click="submitHandle"
+          >
             <template #default>
-              <div class="text-[14px] font-bold font-lato">
+              <div class="font-lato text-[14px] font-bold">
                 {{ labelButton }}
               </div>
             </template>
           </BaseButton>
-          <BaseButton v-show="dialogType=='confirmation' && confirmationType==='reject'" class="bg-[#EF5350] w-fit text-white hover:bg-red-500" @click="submitHandle">
+          <BaseButton
+            v-show="
+              dialogType == 'confirmation' && confirmationType === 'reject'
+            "
+            class="w-fit bg-[#EF5350] text-white hover:bg-red-500"
+            @click="submitHandle"
+          >
             <template #default>
-              <div class="text-[14px] font-bold font-lato">
+              <div class="font-lato text-[14px] font-bold">
                 {{ labelButton }}
               </div>
             </template>
@@ -67,7 +84,6 @@
 </template>
 
 <script>
-
 export default {
   name: 'BaseDialog',
   props: {
