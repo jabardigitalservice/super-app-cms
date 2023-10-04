@@ -88,17 +88,20 @@ const aduanMenu = {
     name: 'Daftar Aduan Masuk',
     path: 'aduan/aduan-masuk',
     arrow: false,
-    showMenuAndAccessForRoles: ['admin']
-  }, {
-    name: 'Daftar Penentuan Kewenangan',
-    path: 'aduan/penentuan-kewenangan',
-    arrow: false,
-    showMenuAndAccessForRoles: ['admin']
+    showMenuAndAccessForRoles: ['admin'],
+    icon: 'clipboard-list.svg'
   }, {
     name: 'Dialihkan ke SP4N',
     path: 'aduan/dialihkan-ke-span-lapor',
     arrow: false,
-    showMenuAndAccessForRoles: ['admin']
+    showMenuAndAccessForRoles: ['admin'],
+    icon: 'clipboard-arrow-left.svg'
+  }, {
+    name: 'Daftar Aduan dari SP4N',
+    path: 'aduan/daftar-aduan-dari-span',
+    arrow: false,
+    showMenuAndAccessForRoles: ['admin'],
+    icon: 'clipboard-pencil.svg'
   }]
 }
 
