@@ -3,7 +3,7 @@ export const complaintHeader = [
   { key: 'user_name', text: 'Nama Lengkap', sortable: true },
   { key: 'category', text: 'Kategori Aduan', sortable: false },
   { key: 'created_at', text: 'Tanggal Aduan Masuk', sortable: true },
-  { key: 'status', text: 'Status', sortable: false },
+  { key: 'status', text: 'Status' },
   { key: 'action', text: 'Aksi' }
 ]
 
@@ -12,7 +12,7 @@ export const spanDivertedHeader = [
 ]
 spanDivertedHeader.splice(4, 1, { key: 'sp4n_created_at', text: 'Tanggal Diinput SP4N', sortable: true },
   { key: 'diverted_to_span_at', text: 'Tanggal Verifikasi SP4N', sortable: true },
-  { key: 'sp4n_id', text: 'ID SP4N', sortable: false })
+  { key: 'sp4n_id', text: 'ID SP4N' })
 
 export const aduanSpanHeader = [
   ...complaintHeader.filter(item => item.key !== 'action'),
