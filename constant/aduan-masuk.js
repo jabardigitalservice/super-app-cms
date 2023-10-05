@@ -1,7 +1,7 @@
 export const complaintHeader = [
   { key: 'complaint_id', text: 'ID Aduan', sortable: true },
   { key: 'user_name', text: 'Nama Lengkap', sortable: true },
-  { key: 'category', text: 'Kategori Aduan', sortable: false },
+  { key: 'category', text: 'Kategori Aduan' },
   { key: 'created_at', text: 'Tanggal Aduan Masuk', sortable: true },
   { key: 'status', text: 'Status' },
   { key: 'action', text: 'Aksi' }
