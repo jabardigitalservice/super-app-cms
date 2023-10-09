@@ -95,7 +95,7 @@ export default {
   },
 
   router: {
-    middleware: ['auth', 'guardRoutes']
+    middleware: ['auth']
   },
 
   googleFonts: {
