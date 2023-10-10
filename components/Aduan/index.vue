@@ -115,7 +115,6 @@
     <DialogInformation :data-dialog="dataDialog" :show-popup="isShowPopupInformation" :icon-popup="iconPopup" @close="closePopupInformationHandle()" @submit="submitRetryHandle" />
     <DialogInputTextArea :data-dialog="dataDialog" :show-popup="isShowPopupConfirmationFailedVerification" @close="closePopupHandle()" @submit="submitPopupComplaintHandle" />
     <DialogInputText :data-dialog="dataDialog" :show-popup="isShowPopupInputIdSpan" @close="closePopupHandle()" @submit="submitInputIdSpanHandle" />
-    <DialogAddComplaint :show-popup="isShowPopupAddComplaint" />
     <DialogLoading :show-popup="isLoading" />
   </div>
 </template>
@@ -126,7 +125,6 @@ import debounce from 'lodash.debounce'
 import { formatDate, generateItemsPerPageOptions, formatNumberToUnit, convertToUnit } from '~/utils'
 import 'vue2-datepicker/index.css'
 import TabBarList from '~/components/Aduan/TabBar/List'
-import DialogAddComplaint from '~/components/Aduan/Dialog/AddComplaint/Form/OthersComplaint'
 
 import {
   complaintHeader,
@@ -139,7 +137,7 @@ import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
 
 export default {
   name: 'AduanMasuk',
-  components: { TabBarList, DialogAddComplaint },
+  components: { TabBarList },
   mixins: [popupAduanMasuk],
   props: {
     typeAduanPage: {
