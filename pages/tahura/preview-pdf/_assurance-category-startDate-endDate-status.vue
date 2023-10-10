@@ -300,9 +300,8 @@ export default {
         await this.$axios.post('/ticket/tahura/income/report', {
           url: window.location.href
         })
-        console.log('generate pdf success')
-      } catch {
-        console.error('generate pdf gagal')
+      } catch (error) {
+        console.error(error)
       }
     }
   }
