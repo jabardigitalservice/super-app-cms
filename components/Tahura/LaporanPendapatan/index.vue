@@ -303,6 +303,10 @@ export default {
   },
   async fetch () {
     this.loading = true
+    this.setDate({
+      startDate: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
+      endDate: formatDate(this.dateRange[1], 'yyyy-MM-dd')
+    })
     try {
       const responseDataLaporan = await this.$axios.get(
         '/ticket/tahura/income',
@@ -365,10 +369,13 @@ export default {
       this.$fetch()
     },
     clearDateRangeHandle () {
+      console.log('clear data')
       this.dateRange = [
-        new Date(new Date().setFullYear(new Date().getFullYear() - 1)),
+        new Date(),
         new Date()
       ]
+
+      console.log(this.dateRange)
       this.setDate({
         startDate: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
         endDate: formatDate(this.dateRange[1], 'yyyy-MM-dd')
@@ -452,11 +459,9 @@ export default {
       );
     },
     downloadPdfReport() {
-     this.query.assurance = this.selectAsurance
-     this.$store.commit('setQueryLaporanPendapatan', { ...this.query })
-     console.log(this.query)
-     this.$router.push(`/tahura/preview-pdf`)
-  
+    this.query.assurance = this.selectAsurance
+    console.log(this.query)
+    window.open(`/preview-pdf/tahura/${this.query.assurance}/${this.query.category || '-'}/${this.query.startDate}/${this.query.endDate}/${this.query.status || '-'}`, '_blank');
     },
   },
 };
