@@ -11,7 +11,7 @@ const rwMenu = {
     },
     {
       name: 'Kegiatan RW',
-      path: 'activities',
+      path: '/activities',
       arrow: false,
       showMenuAndAccessForRoles: ['admin'],
       icon: 'item.svg'
@@ -19,7 +19,7 @@ const rwMenu = {
   ],
   childRoute: [
     {
-      path: 'detail',
+      path: '/detail',
       accessChildRouteForRoles: ['admin']
     }
   ]
@@ -31,7 +31,7 @@ const messageNotifMenu = {
   menu: [
     {
       name: 'Pesan',
-      path: 'message-notif',
+      path: '/message-notif',
       arrow: false,
       showMenuAndAccessForRoles: ['admin'],
       icon: 'item.svg'
@@ -45,7 +45,7 @@ const tiketMuseumMenu = {
   menu: [
     {
       name: 'Tiket Museum',
-      path: 'ticket-museum',
+      path: '/ticket-museum',
       arrow: false,
       showMenuAndAccessForRoles: ['admin_ticket'],
       icon: 'item.svg'
@@ -66,7 +66,7 @@ const masterDataMenu = {
     // }
     {
       name: 'Konfigurasi',
-      path: 'configuration',
+      path: '/configuration',
       arrow: true,
       showMenuAndAccessForRoles: ['admin'],
       icon: 'item.svg'
@@ -86,19 +86,19 @@ const aduanMenu = {
   showTitleMenuForRoles: ['admin'],
   menu: [{
     name: 'Daftar Aduan Masuk',
-    path: 'aduan/aduan-masuk',
+    path: '/aduan/aduan-masuk',
     arrow: false,
     showMenuAndAccessForRoles: ['admin'],
     icon: 'clipboard-list.svg'
   }, {
     name: 'Dialihkan ke SP4N',
-    path: 'aduan/dialihkan-ke-span-lapor',
+    path: '/aduan/dialihkan-ke-span-lapor',
     arrow: false,
     showMenuAndAccessForRoles: ['admin'],
     icon: 'clipboard-arrow-left.svg'
   }, {
     name: 'Daftar Aduan dari SP4N',
-    path: 'aduan/aduan-dari-span-lapor',
+    path: '/aduan/daftar-aduan-dari-span',
     arrow: false,
     showMenuAndAccessForRoles: ['admin'],
     icon: 'clipboard-pencil.svg'
@@ -111,14 +111,14 @@ const tahuraMenu = {
   menu: [
     {
       name: 'Dashboard',
-      path: 'tahura/dashboard',
+      path: '/tahura/dashboard',
       arrow: false,
       showMenuAndAccessForRoles: ['admin'],
       icon: 'speedo-meter.svg'
     },
     {
       name: 'Laporan Pendapatan',
-      path: 'tahura/laporan-pendapatan',
+      path: '/tahura/laporan-pendapatan',
       arrow: false,
       showMenuAndAccessForRoles: ['admin'],
       icon: 'news-paper.svg'
@@ -126,7 +126,7 @@ const tahuraMenu = {
   ],
   childRoute: [
     {
-      path: 'tahura/preview-pdf',
+      path: '/tahura/preview-pdf',
       accessChildRouteForRoles: ['admin']
     }
   ]

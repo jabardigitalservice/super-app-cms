@@ -1,4 +1,3 @@
-
 import { menu } from '@/constant/menuList.js'
 
 export default function ({ $role, route, redirect, $auth, params }) {
@@ -29,7 +28,7 @@ export default function ({ $role, route, redirect, $auth, params }) {
     const allowedRoutesByRoles = [...allowedRoutesMenu, ...allowedRoutesChild]
 
     const hasMatchingRoute = allowedRoutesByRoles.some(routePattern =>
-      route.path.startsWith(`/${routePattern}`)
+      route.path.startsWith(`${routePattern}`)
     )
 
     if (!hasMatchingRoute && !allowedRoutesForAllRoles.includes(route.path)) {

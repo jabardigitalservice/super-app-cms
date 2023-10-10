@@ -138,7 +138,7 @@
                       </th>
                     </tr>
                   </thead>
-                  <tbody class="h-96 overflow-y-auto">
+                  <tbody class="overflow-y-auto">
                     <template v-for="(item, index) in listDataLaporan">
                       <tr
                         v-for="(
