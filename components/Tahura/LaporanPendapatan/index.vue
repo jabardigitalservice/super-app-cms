@@ -48,9 +48,11 @@
                   format="DD/MM/YYYY"
                   range
                   range-separator=" - "
+                  :disabled-date="disabledRange"
                   @close="isShowPopupDate = false"
                   @clear="clearDateRangeHandle"
                   @change="changeDateRangeHandle"
+                  @input="checkMaxDate"
                 >
                   <template #icon-calendar>
                     <jds-icon
@@ -361,6 +363,16 @@ export default {
     }
   },
   methods: {
+    disabledRange: function (date) {
+      return date > new Date()
+    },
+    checkMaxDate (date) {
+      const endDate = new Date(date[1])
+      endDate.setMonth(endDate.getMonth() - 3)
+      if (date[0] < endDate) {
+        date[0] = endDate
+      }
+    },
     filterCategoryHandle () {
       this.$fetch()
     },
