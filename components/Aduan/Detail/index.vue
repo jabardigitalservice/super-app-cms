@@ -30,7 +30,7 @@
           <h1 class="font-roboto text-[16px] font-bold text-blue-gray-800 my-4">
             Detail Aduan Warga
           </h1>
-          <div class="table-content">
+          <div v-if="typeAduan.aduanDariSpanLapor.id!==typeAduanPage" class="table-content">
             <BaseTableDetail header="Informasi Umum" class="mb-4">
               <tr>
                 <td class="w-[164px] text-lato">
@@ -221,6 +221,79 @@
                     Lihat Foto
                   </jds-button>
                 </td>
+              </tr>
+            </BaseTableDetail>
+          </div>
+          <div v-else class="table-content">
+            <BaseTableDetail header="Informasi Aduan">
+              <tr>
+                <td><strong>ID Aduan Sapawarga</strong></td>
+                <td>{{ detailComplaint?.complaint_id || '-' }}</td>
+              </tr>
+              <tr>
+                <td><strong>ID SP4N Lapor</strong></td>
+                <td>{{ detailComplaint?.sp4n_id || '-' }}</td>
+              </tr>
+              <tr>
+                <td><strong>Tanggal Laporan Masuk</strong></td>
+                <td>{{ detailComplaint?.created_at || '-' }}</td>
+              </tr>
+              <tr>
+                <td><strong>Tanggal Diinput ke Sapawarga</strong></td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td><strong>Nama Lengkap</strong></td>
+                <td>{{ detailComplaint?.user_name || '-' }}</td>
+              </tr>
+              <tr>
+                <td><strong>Judul Aduan</strong></td>
+                <td>{{ detailComplaint?.title || '-' }}</td>
+              </tr>
+              <tr>
+                <td><strong>Detail Aduan</strong></td>
+                <td>{{ detailComplaint?.description || '-' }}</td>
+              </tr>
+            </BaseTableDetail>
+            <BaseTableDetail header="Lokasi Aduan">
+              <tr>
+                <td>Kabupaten / Kota </td>
+                <td>{{ detailComplaint?.city?.name || '-' }}</td>
+              </tr>
+              <tr>
+                <td>Kecamatan</td>
+                <td>{{ detailComplaint?.district?.name || '-' }}</td>
+              </tr>
+              <tr>
+                <td>Kelurahan</td>
+                <td>{{ detailComplaint?.subdistrict?.name || '-' }}</td>
+              </tr>
+              <tr colspan="2">
+                <td>Detail Lokasi Kejadian</td>
+                <td>{{ detailComplaint?.address_detail || '-' }}</td>
+              </tr>
+            </BaseTableDetail>
+            <BaseTableDetail header="Lainnya">
+              <tr>
+                <td class="w-[180px]">
+                  <strong class="text-[10px]">Kategori Aduan </strong>
+                </td>
+                <td>{{ detailComplaint?.complaint_category?.name || '-' }}</td>
+              </tr>
+              <tr>
+                <td><strong>Sub Kategori Aduan</strong></td>
+                <td>{{ detailComplaint?.complaint_subcategory?.name || '-' }}</td>
+              </tr>
+              <tr>
+                <td><strong>Disposisi & Kewenangan</strong></td>
+              </tr>
+              <tr>
+                <td><strong>Disposisi</strong></td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td><strong>Kewenangan</strong></td>
+                <td>-</td>
               </tr>
             </BaseTableDetail>
           </div>
