@@ -145,7 +145,7 @@
           </h5>
 
           <h5 class="mt-5 text-[16px] text-black">
-            Di<i>export</i> oleh: Sistem <i>E-Ticketing</i> Sapawarga
+            Di<em>export</em> oleh: Sistem <em>E-Ticketing</em> Sapawarga
           </h5>
 
           <div class="mt-[50px]">
