@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="$auth?.user?.name">
+    <div v-if="$route.params.token">
       <div v-if="loading">
         <div class="flex h-[300px] flex-col items-center justify-center">
           <jds-spinner class="mb-4" size="56" />
@@ -235,7 +235,7 @@ export default {
   },
   async fetch () {
     this.loading = true
-    if (this.$auth.strategy.token.get()) {
+    if (this.$route.params.token) {
       try {
         const responseDataLaporan = await this.$axios.get(
           '/ticket/tahura/income',
