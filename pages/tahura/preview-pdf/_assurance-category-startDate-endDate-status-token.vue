@@ -148,7 +148,7 @@
             Di<em>export</em> oleh: Sistem <em>E-Ticketing</em> Sapawarga
           </h5>
 
-          <div class="mt-[50px]">
+          <div class="mt-[50px] break-inside-avoid">
             <div class="flex flex-row">
               <div class="flex flex-1 flex-col text-center">
                 <h5 class="mb-5">Mengetahui</h5>
