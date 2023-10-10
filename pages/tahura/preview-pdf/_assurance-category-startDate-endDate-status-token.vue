@@ -235,7 +235,7 @@ export default {
   },
   async fetch () {
     this.loading = true
-    if (this.$auth?.user?.name) {
+    if (this.$auth.strategy.token.get()) {
       try {
         const responseDataLaporan = await this.$axios.get(
           '/ticket/tahura/income',
@@ -246,7 +246,11 @@ export default {
               endDate: this.$route.params.endDate,
               status: this.$route.params.status,
               category: this.$route.params.category
+            },
+            headers: {
+              Authorization: this.$route.params.token
             }
+
           }
         )
 
