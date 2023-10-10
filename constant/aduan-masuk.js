@@ -42,8 +42,7 @@ export const complaintStatus = Object.freeze({
   failed: { id: 'failed', name: 'Gagal Diverifikasi', value: 0, statusColor: [{ color: 'red', typeAduan: typeAduan.aduanMasuk.props }], icon: '/icon/icon-aduan/complaint-failed-icon.svg', typeAduan: [typeAduan.aduanMasuk.props] },
   coordinated: { id: 'coordinated', name: 'Dikoordinasikan', value: 0, statusColor: [{ color: 'green', typeAduan: typeAduan.penentuanKewenangan.props }], icon: '/icon/icon-aduan/complaint-coordination-icon.svg', typeAduan: [typeAduan.penentuanKewenangan.props] },
   diverted_to_span: { id: 'diverted_to_span', name: 'Dialihkan ke SP4N Lapor', value: 0, statusColor: [{ color: 'green', typeAduan: typeAduan.penentuanKewenangan.props }], icon: '/icon/icon-aduan/complaint-span-icon.svg', typeAduan: [typeAduan.penentuanKewenangan.props, typeAduan.aduanDialihkanSpanLapor.props] },
-  rejected: { id: 'rejected', name: 'Ditolak', value: 0, statusColor: [{ color: 'red', typeAduan: typeAduan.penentuanKewenangan.props }], icon: '/icon/icon-aduan/complaint-failed-icon.svg', typeAduan: [typeAduan.penentuanKewenangan.props] },
-  from_span: { id: 'from_span', value: 0, statusColor: '', icon: '', typeAduan: [typeAduan.aduanDariSpanLapor.props] }
+  rejected: { id: 'rejected', name: 'Ditolak', value: 0, statusColor: [{ color: 'red', typeAduan: typeAduan.penentuanKewenangan.props }], icon: '/icon/icon-aduan/complaint-failed-icon.svg', typeAduan: [typeAduan.penentuanKewenangan.props] }
 })
 
 export const complaintButtonDetail = {
