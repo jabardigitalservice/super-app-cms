@@ -1,6 +1,6 @@
 <template>
-  <div class="bg-gray-100 font-serif">
-    <div class="w-full rounded-lg bg-white p-6 shadow-md">
+  <div class="font-serif my-5">
+    <div class="w-full rounded-lg bg-white">
       <div class="container">
         <div class="mb-6">
           <h1 class="text-3xl font-bold">

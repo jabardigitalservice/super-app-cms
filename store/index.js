@@ -4,8 +4,7 @@ export const state = () => ({
     navigations: [],
     descriptionPage: ''
   },
-  dataImage: {},
-  queryLaporanPendapatan: {}
+  dataImage: {}
 })
 
 export const mutations = {
@@ -18,8 +17,5 @@ export const mutations = {
   },
   setDataImage (state, image) {
     state.dataImage = image
-  },
-  setQueryLaporanPendapatan (state, query) {
-    state.queryLaporanPendapatan = query
   }
 }
