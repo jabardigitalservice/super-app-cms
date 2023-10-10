@@ -12,5 +12,6 @@
   // Use Prettier as default formatter for .js file
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  },
+  "vue.codeActions.enabled": false
 }
