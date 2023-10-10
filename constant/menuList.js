@@ -98,7 +98,7 @@ const aduanMenu = {
     icon: 'clipboard-arrow-left.svg'
   }, {
     name: 'Daftar Aduan dari SP4N',
-    path: '/aduan/daftar-aduan-dari-span',
+    path: '/aduan/aduan-dari-span-lapor',
     arrow: false,
     showMenuAndAccessForRoles: ['admin'],
     icon: 'clipboard-pencil.svg'
