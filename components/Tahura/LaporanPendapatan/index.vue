@@ -458,7 +458,6 @@ export default {
     },
     downloadPdfReport() {
     this.query.assurance = this.selectAsurance
-    console.log(this.$auth.strategy.token)
     window.open(`/preview-pdf/tahura/${this.query.assurance}/${this.query.category || '-'}/${this.query.startDate}/${this.query.endDate}/${this.query.status || '-'}/${this.$auth.strategy.token.get()}`, '_blank');
     },
   },
