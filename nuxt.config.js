@@ -95,7 +95,14 @@ export default {
   },
 
   router: {
-    middleware: ['auth', 'guardRoutes']
+    middleware: ['auth', 'guardRoutes'],
+    extendRoutes (routes, resolve) {
+      routes.push({
+        name: 'preview-pdf',
+        path: '/preview-pdf/tahura/:assurance/:category/:startDate/:endDate/:status',
+        component: resolve(__dirname, '~/pages/tahura/preview-pdf/_assurance-category-startDate-endDate-status.vue')
+      })
+    }
   },
 
   googleFonts: {
