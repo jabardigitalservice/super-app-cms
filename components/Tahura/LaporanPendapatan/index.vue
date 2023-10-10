@@ -363,8 +363,10 @@ export default {
     }
   },
   methods: {
-    disabledRange: function (date) {
-      return date > new Date()
+    disabledRange: function (date, inputDate) {
+      const endDate = new Date(inputDate[1] === undefined ? inputDate[0] : inputDate[1])
+      endDate.setMonth(endDate.getMonth() - 3)
+      return date > new Date() || date < endDate
     },
     checkMaxDate (date) {
       const endDate = new Date(date[1])
