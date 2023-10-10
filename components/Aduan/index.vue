@@ -332,16 +332,6 @@ export default {
       if (key && value[key] !== 'no-sort') {
         this.query.sort_by = key
         this.query.sort_type = value[key]
-        switch (key) {
-          case 'category' :
-            this.query.sort_by = 'complaint_category_id'
-            this.query.sort_type = value[key]
-            break
-          case 'status' :
-            this.query.sort_by = 'complaint_status_id'
-            this.query.sort_type = value[key]
-            break
-        }
       } else {
         delete this.query.sort_by
         delete this.query.sort_type
@@ -350,7 +340,7 @@ export default {
       this.$fetch()
     },
     filterCategoryHandle (value) {
-      this.query.complaint_category_id = value
+      this.query['complaint_category_id[0]'] = value
       this.$fetch()
     },
     goToPageDetailHandle (item) {
