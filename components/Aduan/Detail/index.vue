@@ -8,7 +8,7 @@
         </div>
       </jds-button>
       <div class="flex">
-        <div v-for="(button,index) in listButton" v-show="button.complaintStatus===detailComplaint.complaint_status_id" :key="index">
+        <div v-for="(button,index) in listButton" v-show="button.complaintStatus === detailComplaint.complaint_status_id" :key="index">
           <div :class="{'mr-3':listButton.length>1}">
             <jds-button
               :label="button.label"
@@ -30,7 +30,7 @@
           <h1 class="font-roboto text-[16px] font-bold text-blue-gray-800 my-4">
             Detail Aduan Warga
           </h1>
-          <div v-if="typeAduan.aduanDariSpanLapor.id!==typeAduanPage" class="table-content">
+          <div v-if="typeAduan.aduanDariSpanLapor.id !== typeAduanPage" class="table-content">
             <BaseTableDetail header="Informasi Umum" class="mb-4">
               <tr>
                 <td class="w-[164px] text-lato">
@@ -80,7 +80,7 @@
                   </div>
                 </td>
               </tr>
-              <tr v-show="typeAduanPage===typeAduan.aduanMasuk.id && detailComplaint?.complaint_status_note">
+              <tr v-show="typeAduanPage === typeAduan.aduanMasuk.id && detailComplaint?.complaint_status_note">
                 <td><strong>Alasan</strong></td>
                 <td>{{ detailComplaint?.complaint_status_note }}</td>
               </tr>
