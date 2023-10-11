@@ -6,39 +6,43 @@
       </template>
       <template #tab-panel>
         <BaseTabPanel class="px-3 pt-6 pb-4">
-          <div class="mb-4 flex">
-            <jds-search
-              v-model="search"
-              placeholder="Cari ID atau nama lengkap"
-              small
-              icon
-              :button="false"
-              class="w-[280px]"
-            />
-            <div class="ml-4 flex items-center">
-              <jds-icon name="filter-outline" size="sm" fill="#022B55" />
-              <p class="ml-2 text-sm text-blue-gray-700">
-                Filter :
-              </p>
-              <jds-select v-model="query.complaint_category_id" placeholder="Kategori Aduan" :options="listCategory" class="!ml-2 mr-2 select-form-complaint !w-[260px]" @change="filterCategoryHandle" />
-              <date-picker
-                ref="datepicker"
-                v-model="dateRange"
-                format="DD/MM/YYYY"
-                range
-                range-separator=" - "
-                @close="isShowPopupDate=false"
-                @clear="clearDateRangeHandle"
-                @change="changeDateRangeHandle"
-              >
-                <template #icon-calendar>
-                  <jds-icon name="calendar-date-outline" size="sm" fill="#069550" />
-                </template>
-                <template #footer="{emit}">
-                  <BaseDialogFooter label-button="Pilih" :show-cancel-button="true" @close="closePopupDateHandle()" @submit="filterDateHandle(emit)" />
-                </template>
-              </date-picker>
+          <div class="mb-4 flex justify-between">
+            <div class="flex">
+              <jds-search
+                v-model="search"
+                placeholder="Cari ID atau nama lengkap"
+                small
+                icon
+                :button="false"
+                class="w-[280px]"
+              />
+              <div class="ml-4 flex items-center">
+                <jds-icon name="filter-outline" size="sm" fill="#022B55" />
+                <p class="ml-2 text-sm text-blue-gray-700">
+                  Filter :
+                </p>
+                <jds-select v-model="query.complaint_category_id" placeholder="Kategori Aduan" :options="listCategory" class="!ml-2 mr-2 select-form-complaint !w-[260px]" @change="filterCategoryHandle" />
+                <date-picker
+                  ref="datepicker"
+                  v-model="dateRange"
+                  format="DD/MM/YYYY"
+                  range
+                  range-separator=" - "
+                  @close="isShowPopupDate=false"
+                  @clear="clearDateRangeHandle"
+                  @change="changeDateRangeHandle"
+                >
+                  <template #icon-calendar>
+                    <jds-icon name="calendar-date-outline" size="sm" fill="#069550" />
+                  </template>
+                  <template #footer="{emit}">
+                    <BaseDialogFooter label-button="Pilih" :show-cancel-button="true" @close="closePopupDateHandle()" @submit="filterDateHandle(emit)" />
+                  </template>
+                </date-picker>
+              </div>
             </div>
+
+            <jds-button v-show="typeAduan.aduanDariSpanLapor.props===typeAduanPage" label="Tambah Aduan" variant="primary" @click="isShowPopupAddComplaint=true" />
           </div>
           <JdsDataTable
             :headers="checkTypeHeaderAduan(typeAduanPage)"
@@ -125,7 +129,8 @@ import TabBarList from '~/components/Aduan/TabBar/List'
 import {
   complaintHeader,
   complaintStatus,
-  spanDivertedHeader,
+  complaintDivertedToSpanHeader,
+  complaintFromSpanHeader,
   typeAduan
 } from '~/constant/aduan-masuk'
 import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
@@ -173,9 +178,11 @@ export default {
       complaintHeader,
       complaintStatus,
       selectedTabIndex: 0,
-      spanDivertedHeader,
+      complaintDivertedToSpanHeader,
+      complaintFromSpanHeader,
       typeAduan,
       isShowPopupDate: false,
+      isShowPopupAddComplaint: false,
       listValueStatusComplaint: [],
       listStatisticComplaint: [],
       isShowPopupDateRange: false,
@@ -291,7 +298,9 @@ export default {
         case typeAduan.aduanMasuk.props:
           return this.complaintHeader
         case typeAduan.aduanDialihkanSpanLapor.props:
-          return this.spanDivertedHeader
+          return this.complaintDivertedToSpanHeader
+        case typeAduan.aduanDariSpanLapor.props:
+          return this.complaintFromSpanHeader
         default:
           return {}
       }
@@ -321,16 +330,6 @@ export default {
       if (key && value[key] !== 'no-sort') {
         this.query.sort_by = key
         this.query.sort_type = value[key]
-        switch (key) {
-          case 'category' :
-            this.query.sort_by = 'complaint_category_id'
-            this.query.sort_type = value[key]
-            break
-          case 'status' :
-            this.query.sort_by = 'complaint_status_id'
-            this.query.sort_type = value[key]
-            break
-        }
       } else {
         delete this.query.sort_by
         delete this.query.sort_type
@@ -339,7 +338,7 @@ export default {
       this.$fetch()
     },
     filterCategoryHandle (value) {
-      this.query.complaint_category_id = value
+      this.query['complaint_category_id[0]'] = value
       this.$fetch()
     },
     goToPageDetailHandle (item) {
