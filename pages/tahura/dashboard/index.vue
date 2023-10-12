@@ -13,19 +13,14 @@ export default {
           label: 'Dashboard',
           link: '/tahura/dashboard'
         }
-      ],
-      descriptionPage:
-        'Dashboard Taman Hutan Raya.'
+      ]
     }
   },
   mounted () {
     this.$store.commit('setActivePage', 'Dashboard')
     this.$store.commit('setHeader', {
-      navigations: this.navigations,
-      descriptionPage: this.descriptionPage
+      navigations: this.navigations
     })
   }
 }
 </script>
-
-<style></style>
