@@ -117,6 +117,13 @@ const tahuraMenu = {
       icon: 'speedo-meter.svg'
     },
     {
+      name: 'Daftar Pesanan',
+      path: '/tahura/daftar-pesanan',
+      arrow: false,
+      showMenuAndAccessForRoles: ['admin'],
+      icon: 'ticket.svg'
+    },
+    {
       name: 'Laporan Pendapatan',
       path: '/tahura/laporan-pendapatan',
       arrow: false,
