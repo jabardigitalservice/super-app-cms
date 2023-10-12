@@ -3,12 +3,16 @@
     <div id="loader" :class="{hidden: !loading}">
       <div class="flex h-[300px] flex-col items-center justify-center">
         <jds-spinner class="mb-4" size="56" />
-        <p class="font-lato text-2xl font-bold text-green-700">Loading....</p>
+        <p class="font-lato text-2xl font-bold text-green-700">
+          Loading....
+        </p>
       </div>
     </div>
 
     <BasePreviewPdf :class="{hidden: loading}">
-      <template #title> Laporan Pendapatan Tiket Masuk Wisata </template>
+      <template #title>
+        Laporan Pendapatan Tiket Masuk Wisata
+      </template>
       <template #header>
         <div class="mt-5">
           <table>
@@ -151,9 +155,13 @@
           <div class="mt-[50px] break-inside-avoid">
             <div class="flex flex-row">
               <div class="flex flex-1 flex-col text-center">
-                <h5 class="mb-5">Mengetahui</h5>
+                <h5 class="mb-5">
+                  Mengetahui
+                </h5>
                 <h5>KEPALA BLUD TAHURA</h5>
-                <h5 class="mt-[150px]">Lutfi Erizka, S.I.Kom</h5>
+                <h5 class="mt-[150px]">
+                  Lutfi Erizka, S.I.Kom
+                </h5>
                 <h5>NIP. 198309222009011001</h5>
               </div>
               <div class="flex flex-1 flex-col text-center">
@@ -161,7 +169,9 @@
                   {{ formatDate(Date.now(), "dd MMMM yyyy") }}
                 </h5>
                 <h5>Pembuat Daftar</h5>
-                <h5 class="mt-[150px]">Reni Herlina B, S.H</h5>
+                <h5 class="mt-[150px]">
+                  Reni Herlina B, S.H
+                </h5>
                 <h5>NIP. 196510012007012008</h5>
               </div>
             </div>
@@ -272,6 +282,10 @@ export default {
       try {
         await this.$axios.post('/ticket/tahura/income/report', {
           url: window.location.href
+        }, {
+          headers: {
+            Authorization: this.$route.params.token
+          }
         })
       } catch (error) {
         console.error(error)
