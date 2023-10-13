@@ -1,23 +1,23 @@
 <template>
-  <TahuraDashboard />
+  <TahuraDaftarPesanan />
 </template>
 
 <script>
 export default {
-  name: 'PageDashboardTahura',
+  name: 'PageDaftarPesanan',
   layout: 'Dashboard',
   data () {
     return {
       navigations: [
         {
-          label: 'Dashboard',
-          link: '/tahura/dashboard'
+          label: 'Daftar Pesanan',
+          link: '/tahura/daftar-pesanan'
         }
       ]
     }
   },
   mounted () {
-    this.$store.commit('setActivePage', 'Dashboard')
+    this.$store.commit('setActivePage', 'Daftar Pesanan')
     this.$store.commit('setHeader', {
       navigations: this.navigations
     })
