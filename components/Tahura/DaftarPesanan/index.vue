@@ -1,9 +1,10 @@
 <template>
   <div>
     <BaseTabGroup>
-      <template #tab-list>
-        <div>dasa</div>
-      </template>
+      <!-- TODO: add component tablist -->
+      <!-- <template #tab-list>
+      </template> -->
+      <!-- TODO: add component tablist -->
       <template #tab-panel>
         <BaseTabPanel class="px-3 pt-6 pb-4">
           <div class="mb-4 flex justify-between">
