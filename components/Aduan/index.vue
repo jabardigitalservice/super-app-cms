@@ -186,7 +186,8 @@ export default {
       listValueStatusComplaint: [],
       listStatisticComplaint: [],
       isShowPopupDateRange: false,
-      dateRange: [new Date(new Date().setFullYear(new Date().getFullYear() - 1)), new Date()]
+      dateRange: [new Date(new Date().setFullYear(new Date().getFullYear() - 1)), new Date()],
+      statusTab: false
     }
   },
   async fetch () {
@@ -312,16 +313,20 @@ export default {
     },
     nextPage (value) {
       this.query.page = value
+      this.$store.commit('setDataTabAduanPage', value)
     },
     previousPage (value) {
       this.query.page = value
+      this.$store.commit('setDataTabAduanPage', value)
     },
     pageChange (value) {
       this.query.page = value
+      this.$store.commit('setDataTabAduanPage', value)
     },
     perPageChange (value) {
       if (value) {
         this.query.limit = value
+        this.$store.commit('setDataTabAduanLimit', value)
       }
       this.query.page = 1
     },
@@ -366,20 +371,37 @@ export default {
       return total
     },
     addComplaintStatusFilterHandle () {
+      this.statusTab = false
       this.listValueStatusComplaint = Object.values(this.complaintStatus)
       for (let i = 0; i < this.listValueStatusComplaint.length; i++) {
         if (this.listValueStatusComplaint[i].typeAduan.includes(this.typeAduanPage)) {
-          this.setQuery({ [`complaint_status_id[${i - 1}]`]: this.listValueStatusComplaint[i].id })
+          if (this.$store.state.dataTabAduanStatus === this.listValueStatusComplaint[i].id) {
+            this.statusTab = true
+          }
+        }
+      }
+      if (this.statusTab) {
+        this.search = ''
+        this.dateRange = [new Date(new Date().setFullYear(new Date().getFullYear() - 1)), new Date()]
+        this.setQuery({ 'complaint_status_id[0]': this.$store.state.dataTabAduanStatus, search: null, complaint_category_id: null, sort_by: 'updated_at', sort_type: 'desc', page: this.$store.state.dataTabAduanPage, limit: this.$store.state.dataTabAduanLimit })
+      } else {
+        for (let i = 0; i < this.listValueStatusComplaint.length; i++) {
+          if (this.listValueStatusComplaint[i].typeAduan.includes(this.typeAduanPage)) {
+            this.setQuery({ [`complaint_status_id[${i - 1}]`]: this.listValueStatusComplaint[i].id, page: this.$store.state.dataTabAduanPage, limit: this.$store.state.dataTabAduanLimit })
+          }
         }
       }
       return this.query
     },
     listTabHandle (status) {
+      this.$store.commit('setDataTabAduanStatus', status)
+      this.$store.commit('setDataTabAduanPage', 1)
+      this.$store.commit('setDataTabAduanLimit', 5)
       this.query = { page: 1, limit: 5 }
       if (status !== 'total') {
         this.search = ''
         this.dateRange = [new Date(new Date().setFullYear(new Date().getFullYear() - 1)), new Date()]
-        this.setQuery({ 'complaint_status_id[0]': status, search: null, complaint_category_id: null, sort_by: 'updated_at', sort_type: 'desc' })
+        this.setQuery({ 'complaint_status_id[0]': this.$store.state.dataTabAduanStatus, search: null, complaint_category_id: null, sort_by: 'updated_at', sort_type: 'desc' })
         this.isShowPopupDateRange = false
       }
       this.$fetch()

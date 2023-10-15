@@ -66,3 +66,21 @@ export const complaintButtonDetail = {
     complaintStatus: 'no-id-span'
   }
 }
+
+export const complaintTab = [
+  {
+    title: 'aduan-masuk',
+    total: { value: 0 },
+    unverified: { value: 1 },
+    verified: { value: 2 },
+    failed: { value: 3 }
+  },
+  {
+    title: 'aduan-dialihkan-span-lapor',
+    diverted_to_span: { value: 0 }
+  },
+  {
+    title: 'aduan-dari-soab-lapor',
+    diverted_to_span: { value: 0 }
+  }
+]

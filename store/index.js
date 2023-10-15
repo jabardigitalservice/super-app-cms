@@ -4,7 +4,10 @@ export const state = () => ({
     navigations: [],
     descriptionPage: ''
   },
-  dataImage: {}
+  dataImage: {},
+  dataTabAduanStatus: '',
+  dataTabAduanLimit: 5,
+  dataTabAduanPage: 1
 })
 
 export const mutations = {
@@ -17,5 +20,14 @@ export const mutations = {
   },
   setDataImage (state, image) {
     state.dataImage = image
+  },
+  setDataTabAduanStatus (state, status) {
+    state.dataTabAduanStatus = status
+  },
+  setDataTabAduanLimit (state, limit) {
+    state.dataTabAduanLimit = limit
+  },
+  setDataTabAduanPage (state, page) {
+    state.dataTabAduanPage = page
   }
 }
