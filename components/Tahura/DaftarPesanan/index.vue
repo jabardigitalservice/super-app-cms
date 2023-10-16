@@ -110,6 +110,7 @@ export default {
   },
   data () {
     return {
+      // remove dummy data after API read or integration with API finished
       dummyData: {
         status: true,
         message: 'Success',
