@@ -395,6 +395,8 @@ export default {
     },
 
     setQuery (params) {
+      console.log(params)
+      console.log({ ...this.query, ...params })
       this.query = { ...this.query, ...params }
     },
     clearDateRangeHandle () {

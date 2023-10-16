@@ -1,10 +1,13 @@
 <template>
   <div>
     <BaseTabGroup>
-      <!-- TODO: add component tablist -->
-      <!-- <template #tab-list>
-      </template> -->
-      <!-- TODO: add component tablist -->
+      <template #tab-list>
+        <TabBarListTahura
+          :list-tab="listTab"
+          @selected="selectedTabHandle"
+          @button-tab="listTabHandle"
+        />
+      </template>
       <template #tab-panel>
         <BaseTabPanel class="px-3 pt-6 pb-4">
           <div class="mb-4 flex justify-between">
@@ -72,15 +75,9 @@
                 <p
                   v-show="item?.statusCode"
                   class="h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 text-xs font-semibold"
-                  :class="
-                    item.statusCode === 'scanned'
-                      ? 'text-green-700'
-                      : 'text-[#FF7500]'
-                  "
+                  :class="statusTahura[item.statusCode].color"
                 >
-                  {{
-                    item.statusCode === "scanned" ? "Sudah Scan" : "Belum Scan"
-                  }}
+                  {{ statusTahura[item.statusCode].label }}
                 </p>
               </div>
             </template>
@@ -103,10 +100,13 @@ import debounce from 'lodash.debounce'
 import { formatDate, generateItemsPerPageOptions } from '~/utils'
 import 'vue2-datepicker/index.css'
 import EyesIcon from '~/assets/icon/eyes.svg?inline'
+import TabBarListTahura from '~/components/Tahura/TabBar/index.vue'
+import { statusTahura } from '@/constant/tahura.js'
 export default {
   name: 'DaftarPesananTahura',
   components: {
-    EyesIcon
+    EyesIcon,
+    TabBarListTahura
   },
   data () {
     return {
@@ -201,7 +201,7 @@ export default {
         code: '2000800',
         data: [
           {
-            statusCode: '',
+            statusCode: 'all',
             quantity: 500
           },
           {
@@ -261,21 +261,21 @@ export default {
       query: {
         forScan: true,
         page: 1,
-        q: '',
+        q: null,
         pageSize: 5,
         sortType: 'desc',
-        sortBy: 'orderedAt'
+        sortBy: 'orderedAt',
+        status: ''
       },
       sortBy: '',
       sortOrder: '',
       q: '',
       selectedTabIndex: 0,
-      dateRange: [
-        new Date(new Date().setFullYear(new Date().getFullYear())),
-        new Date()
-      ],
+      dateRange: [new Date(), new Date()],
       isShowPopupDate: false,
-      isShowPopupDateRange: false
+      isShowPopupDateRange: false,
+      listTab: [],
+      statusTahura
     }
   },
   async fetch () {
@@ -295,10 +295,15 @@ export default {
       this.pagination.currentPage = data?.page || 1
       this.pagination.totalRows = data?.totalData || 0
       this.pagination.itemsPerPage = data?.pageSize || this.query.pageSize
+
+      const responseCountDaftarpesanan = await this.$axios.get(
+        '/ticket/tahura/order/count'
+      )
+      this.listTab = responseCountDaftarpesanan.data
     } catch {
       // TODO : used dummy data, remove after API ready
       this.daftarPesananList = this.dummyData.data
-
+      this.listTab = this.dummydataTab.data
       //   this.this.pagination.disabled = true
     }
   },
@@ -368,7 +373,7 @@ export default {
       this.$refs.datepicker.closePopup()
     },
     filterDateHandle () {
-      this.setDate({
+      this.setQuery({
         startDate: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
         endDate: formatDate(this.dateRange[1], 'yyyy-MM-dd')
       })
@@ -378,7 +383,7 @@ export default {
     clearDateRangeHandle () {
       this.dateRange = [new Date(), new Date()]
 
-      this.setDate({
+      this.setQuery({
         startDate: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
         endDate: formatDate(this.dateRange[1], 'yyyy-MM-dd')
       })
@@ -388,7 +393,7 @@ export default {
     changeDateRangeHandle () {
       this.isShowPopupDateRange = true
     },
-    setDate (params) {
+    setQuery (params) {
       this.query = { ...this.query, ...params }
     },
     nextPage (value) {
@@ -416,6 +421,23 @@ export default {
         this.query.sortBy = 'orderedAt'
       }
 
+      this.$fetch()
+    },
+    listTabHandle (status) {
+      this.q = ''
+      this.dateRange = [new Date(), new Date()]
+      const query = {
+        forScan: true,
+        page: 1,
+        q: null,
+        pageSize: 5,
+        sortType: 'desc',
+        sortBy: 'orderedAt',
+        status: status === 'all' ? '' : status
+      }
+
+      this.isShowPopupDateRange = false
+      this.setQuery(query)
       this.$fetch()
     }
   }
