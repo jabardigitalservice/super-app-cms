@@ -195,6 +195,25 @@ export default {
           }
         ]
       },
+      dummydataTab: {
+        status: true,
+        message: 'Success',
+        code: '2000800',
+        data: [
+          {
+            statusCode: '',
+            quantity: 500
+          },
+          {
+            statusCode: 'scanned',
+            quantity: 300
+          },
+          {
+            statusCode: 'paid',
+            quantity: 200
+          }
+        ]
+      },
       headerTableList: [
         {
           text: 'no. order',
