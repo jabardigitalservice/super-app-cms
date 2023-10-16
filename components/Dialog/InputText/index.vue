@@ -7,7 +7,7 @@
           <form>
             <BaseDialogDescription :description="dataDialog.description" :sub-description="dataDialog.subDescription" />
             <div class="mt-4">
-              <ValidationProvider v-slot="{errors}" :name="dataDialog.labelInput" rules="required">
+              <ValidationProvider v-slot="{errors}" :name="dataDialog.labelInput" :rules="dataDialog.dataRules != '' ? 'required|' + dataDialog.dataRules : 'required'">
                 <jds-input-text
                   v-model="fieldInputText"
                   :placeholder="dataDialog.placeholder"

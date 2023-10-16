@@ -12,7 +12,8 @@ export default {
         labelButton: '',
         labelInput: '',
         placeholder: '',
-        showCancelButton: true
+        showCancelButton: true,
+        dataRules: ''
       },
       iconPopup: {
         fill: '',
@@ -60,7 +61,8 @@ export default {
         ...this.setDataDialogConfirmation('Tambahkan ID SP4N Lapor',
           'No.Aduan', dataComplaint.complaint_id, 'Tambahkan'),
         labelInput: 'ID SP4N Lapor',
-        placeholder: 'Masukkan ID SP4N Lapor'
+        placeholder: 'Masukkan ID SP4N Lapor',
+        dataRules: 'maxTenDigitsInt'
       })
       this.isShowPopupInputIdSpan = true
     },
