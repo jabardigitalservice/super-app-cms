@@ -81,7 +81,7 @@
                 <jds-select
                   v-model="query.status"
                   placeholder="Semua Status"
-                  :options="listDataStatus"
+                  :options="listStatusTahura"
                   class="!ml-2 mr-2"
                   @change="filterCategoryHandle"
                 />
@@ -250,6 +250,7 @@
 
 <script>
 import { formatDate, convertToRupiah } from '~/utils'
+import { listStatusTahura } from '@/constant/tahura.js'
 import 'vue2-datepicker/index.css'
 
 export default {
@@ -266,31 +267,14 @@ export default {
           label: 'Tanpa Asuransi'
         }
       ],
-
-      listDataStatus: [
-        {
-          value: '',
-          label: 'Semua Status'
-        },
-        {
-          value: 'scanned',
-          label: 'Berhasil Scan'
-        },
-        {
-          value: 'paid',
-          label: 'Belum Scan'
-        }
-      ],
+      listStatusTahura,
       query: {
         category: '',
         status: ''
       },
       isShowPopupDate: false,
       isShowPopupDateRange: false,
-      dateRange: [
-        new Date(new Date().setFullYear(new Date().getFullYear())),
-        new Date()
-      ],
+      dateRange: [new Date(), new Date()],
       listDataLaporan: [],
       assurancePrice: 0,
       grandTotal: 0,
@@ -305,7 +289,7 @@ export default {
   },
   async fetch () {
     this.loading = true
-    this.setDate({
+    this.setQuery({
       startDate: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
       endDate: formatDate(this.dateRange[1], 'yyyy-MM-dd')
     })
@@ -368,7 +352,9 @@ export default {
   },
   methods: {
     disabledRange: function (date, inputDate) {
-      const endDate = new Date(inputDate[1] === undefined ? inputDate[0] : inputDate[1])
+      const endDate = new Date(
+        inputDate[1] === undefined ? inputDate[0] : inputDate[1]
+      )
       endDate.setMonth(endDate.getMonth() - 3)
       return date > new Date() || date < endDate
     },
@@ -383,12 +369,9 @@ export default {
       this.$fetch()
     },
     clearDateRangeHandle () {
-      this.dateRange = [
-        new Date(),
-        new Date()
-      ]
+      this.dateRange = [new Date(), new Date()]
 
-      this.setDate({
+      this.setQuery({
         startDate: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
         endDate: formatDate(this.dateRange[1], 'yyyy-MM-dd')
       })
@@ -403,14 +386,14 @@ export default {
       this.$refs.datepicker.closePopup()
     },
     filterDateHandle () {
-      this.setDate({
+      this.setQuery({
         startDate: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
         endDate: formatDate(this.dateRange[1], 'yyyy-MM-dd')
       })
       this.$fetch()
       this.$refs.datepicker.closePopup()
     },
-    setDate (params) {
+    setQuery (params) {
       this.query = { ...this.query, ...params }
     },
     calculateRowTotal (categories) {
@@ -471,17 +454,22 @@ export default {
       );
     },
     downloadPdfReport() {
-    this.query.assurance = this.selectAsurance
-    window.open(`/preview-pdf/tahura/${this.query.assurance}/${this.query.category || '-'}/${this.query.startDate}/${this.query.endDate}/${this.query.status || '-'}/${this.$auth.strategy.token.get()}`, '_blank');
+      this.query.assurance = this.selectAsurance;
+      window.open(
+        `/preview-pdf/tahura/${this.query.assurance}/${
+          this.query.category || "-"
+        }/${this.query.startDate}/${this.query.endDate}/${
+          this.query.status || "-"
+        }/${this.$auth.strategy.token.get()}`,
+        "_blank"
+      );
     },
   },
 };
 </script>
 
 <style scoped>
-
 .jds-input-text {
   @apply border-gray-300 !important;
 }
-
 </style>
