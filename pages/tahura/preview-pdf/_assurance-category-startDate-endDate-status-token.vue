@@ -281,7 +281,7 @@ export default {
     async generatePdf () {
       try {
         await this.$axios.post('/ticket/tahura/income/report', {
-          url: window.location.href
+          previewUrl: window.location.href
         }, {
           headers: {
             Authorization: this.$route.params.token
