@@ -8,11 +8,11 @@
         <div class="mb-4">
           <ValidationProvider v-slot="{ errors }" name="Kota/Kabupaten" rules="requiredSelectForm">
             <jds-select
-              v-model="payloadLocationComplaint.city_id"
+              v-model="dataLocationComplaint.city_id.value"
               name="Kota/Kabupaten"
               label="Kota/Kabupaten"
               placeholder="Pilih Kota/Kabupaten"
-              :error-message="(isChooseDirty || isSubmit) ? errors[0] : ''"
+              :error-message="(dataLocationComplaint.city_id.isChooseDirty || isSubmit) ? errors[0] : ''"
               :options="listCity"
             />
           </ValidationProvider>
@@ -20,11 +20,11 @@
         <div class="mb-4">
           <ValidationProvider v-slot="{ errors }" name="Kecamatan" rules="requiredSelectForm">
             <jds-select
-              v-model="payloadLocationComplaint.district_id"
+              v-model="dataLocationComplaint.district_id.value"
               name="Kecamatan"
               label="Kecamatan"
               placeholder="Pilih Kecamatan"
-              :error-message="(isChooseDirty || isSubmit) ? errors[0] : ''"
+              :error-message="(dataLocationComplaint.district_id.isChooseDirty || isSubmit) ? errors[0] : ''"
               :options="listDistrict"
             />
           </ValidationProvider>
@@ -32,31 +32,28 @@
         <div class="mb-4">
           <ValidationProvider v-slot="{ errors }" name="Kelurahan" rules="requiredSelectForm">
             <jds-select
-              v-model="payloadLocationComplaint.subdistrict_id"
+              v-model="dataLocationComplaint.subdistrict_id.value"
               name="Kelurahan"
               label="Kelurahan"
               placeholder="Pilih Kelurahan"
-              :error-message="(isChooseDirty || isSubmit) ? errors[0] : ''"
-              :options="listSubDistrict"
+              :error-message="(dataLocationComplaint.subdistrict_id.isChooseDirty || isSubmit) ? errors[0] : ''"
+              :options="listVillage"
             />
           </ValidationProvider>
         </div>
         <div>
           <ValidationProvider v-slot="{ errors }" name="Detail Lokasi" rules="required">
-            <label class="text-[15px] text-gray-800">Detail Lokasi</label>
-            <div class="mt-1">
-              <textarea
-                v-model="payloadLocationComplaint.address_detail"
-                maxlength="255"
-                placeholder="Masukkan Detail Lokasi"
-                class="h-[83px] w-full resize-none rounded-lg bg-gray-50 border border-gray-400 py-[10px] px-2 font-lato text-gray-600 placeholder:text-sm placeholder:text-gray-600 focus:outline-none"
-                :class="{ 'border border-red-600': (isInputDirty || isSubmit) ? errors[0] : '' }"
-              />
-            </div>
-            <small class="text-red-600">{{ (isInputDirty || isSubmit) ? errors[0] : '' }}</small>
+            <BaseTextArea
+              v-model="addressDetail"
+              placeholder="Masukkan Detail Lokasi"
+              label="Detail Lokasi"
+              name="Detail Lokasi"
+              maxlength="255"
+              :error-message="(isInputDirty || isSubmit) ? errors[0] : ''"
+            />
           </ValidationProvider>
           <p class="text-sm text-gray-600">
-            Tersisa {{ 255-payloadLocationComplaint.address_detail.length }} karakter
+            Tersisa {{ 255-addressDetail.length }} karakter
           </p>
         </div>
       </form>
@@ -77,68 +74,115 @@ export default {
   },
   data () {
     return {
-      listCity: [{
-        value: 'bandung',
-        label: 'Bandung'
+      listDataCity: [],
+      listDataDistrict: [],
+      listDataVillage: [],
+      dataLocationComplaint: {
+        city_id: {
+          value: '',
+          isChooseDirty: false
+        },
+        district_id: {
+          value: '',
+          isChooseDirty: false
+        },
+        subdistrict_id: {
+          value: '',
+          isChooseDirty: false
+        }
       },
-      {
-        value: 'tasikmalaya',
-        label: 'Tasikmalaya'
-      }],
-      listDistrict: [{
-        value: 'margahayu',
-        label: 'Margahayu'
-      }],
-      listSubDistrict: [{
-        value: 'jatihandap',
-        label: 'Jatihandap'
-      }],
-      payloadLocationComplaint: {
-        city_id: '',
-        district_id: '',
-        subdistrict_id: '',
-        address_detail: ''
-      },
+      addressDetail: '',
       isInputDirty: false,
-      isChooseDirty: false,
+      payloadLocationComplaint: {},
       isSubmit: false
     }
   },
+  async fetch () {
+    try {
+      const responseDataCity = await this.$axios.get('/area/city', { params: { provinceId: 32 } })
+      const dataCity = responseDataCity.data.data
+      this.listDataCity = dataCity
+      if (this.payloadLocationComplaint.city_id) {
+        const responseDataDistrict = await this.$axios.get('/area/district', { params: { cityId: this.payloadLocationComplaint.city_id } })
+        const dataDistrict = responseDataDistrict.data.data
+        this.listDataDistrict = dataDistrict
+      }
+      if (this.payloadLocationComplaint.district_id) {
+        const responseDataVillage = await this.$axios.get('/area/village', { params: { districtId: this.payloadLocationComplaint.district_id } })
+        const dataVillage = responseDataVillage.data.data
+        this.listDataVillage = dataVillage
+      }
+    } catch {
+      this.listDataCity = []
+      this.listDataDistrict = []
+      this.listDataVillage = []
+    }
+  },
+  computed: {
+    listCity () {
+      return this.listDataCity.map((item) => {
+        return { value: item.id, label: item.name }
+      })
+    },
+    listDistrict () {
+      return this.listDataDistrict.map((item) => {
+        return { value: item.id, label: item.name }
+      })
+    },
+    listVillage () {
+      return this.listDataVillage.map((item) => {
+        return { value: item.id, label: item.name }
+      })
+    }
+  },
   watch: {
-    payloadLocationComplaint: {
+    dataLocationComplaint: {
       deep: true,
       handler () {
-        if (this.payloadLocationComplaint.city_id || this.payloadLocationComplaint.district_id || this.payloadLocationComplaint.subdistrict_id) {
-          this.isChooseDirty = true
-        }
-        if (this.payloadLocationComplaint.address_detail) {
-          this.isInputDirty = true
-        }
+        this.changeDataLocationComplaint('input-choose')
+        this.$fetch()
       }
+    },
+    addressDetail () {
+      this.isInputDirty = true
+      this.payloadLocationComplaint.address_detail = this.addressDetail
     }
   },
   methods: {
+    changeDataLocationComplaint (typeChange) {
+      Object.keys(this.dataLocationComplaint).forEach((item) => {
+        switch (typeChange) {
+          case 'input-choose': // this type for change when user choose & input data
+            if (this.dataLocationComplaint[item].value) {
+              this.dataLocationComplaint[item].isChooseDirty = true
+              this.payloadLocationComplaint[item] = this.dataLocationComplaint[item].value
+            }
+            break
+          case 'clear': // this type for clear form
+            this.dataLocationComplaint[item].isChooseDirty = false
+            this.dataLocationComplaint[item].value = ''
+            break
+          default:
+            this.dataLocationComplaint[item].isChooseDirty = false
+        }
+      })
+    },
     async inputDataLocationComplaintHandle () {
       this.isSubmit = true
       const isValid = await this.$refs.formLocationComplaint.validate()
       this.$store.commit('add-complaint/setIsValidFormLocationComplaint', isValid)
       if (isValid) {
         this.$store.commit('add-complaint/setDataLocationComplaint', { ...this.payloadLocationComplaint })
-        this.isChooseDirty = false
-        this.isInputDirty = false
+        this.changeDataLocationComplaint('submit')
         this.isSubmit = false
       }
     },
     clearFormLocationComplaintHandle () {
-      this.payloadLocationComplaint = {
-        city_id: '',
-        district_id: '',
-        subdistrict_id: '',
-        address_detail: ''
-      }
-      this.isChooseDirty = false
-      this.isInputDirty = false
+      this.changeDataLocationComplaint('clear')
+      this.payloadLocationComplaint = {}
       this.isSubmit = false
+      this.isInputDirty = false
+      this.addressDetail = ''
     }
   }
 }
