@@ -30,3 +30,8 @@ extend('numeric', {
   ...numeric,
   message: (_, values) => `${values._field_} harus diisi angka`
 })
+
+extend('maxTenDigitsInt', {
+  validate: value => /^\d{1,10}$/.test(value),
+  message: (_, values) => `${values._field_} harus diisi angka & maksimal 10 karakter`
+})

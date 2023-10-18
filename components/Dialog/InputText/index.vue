@@ -5,15 +5,22 @@
       <div class="px-6 pb-6">
         <ValidationObserver ref="form">
           <form>
-            <BaseDialogDescription :description="dataDialog.description" :sub-description="dataDialog.subDescription" />
+            <BaseDialogDescription
+              :description="dataDialog.description"
+              :sub-description="dataDialog.subDescription"
+            />
             <div class="mt-4">
-              <ValidationProvider v-slot="{errors}" :name="dataDialog.labelInput" rules="required">
+              <ValidationProvider
+                v-slot="{ errors }"
+                :name="dataDialog.labelInput"
+                :rules="'required|' + dataDialog.dataRules"
+              >
                 <jds-input-text
                   v-model="fieldInputText"
                   :placeholder="dataDialog.placeholder"
                   :name="dataDialog.labelInput"
                   :label="dataDialog.labelInput"
-                  :error-message="(isInputDirty || isSubmit) ? errors[0] : '' "
+                  :error-message="isInputDirty || isSubmit ? errors[0] : ''"
                   class="!w-full"
                 />
               </ValidationProvider>
@@ -21,7 +28,11 @@
           </form>
         </ValidationObserver>
       </div>
-      <BaseDialogFooter :label-button=" dataDialog.labelButton" @close="closePopupHandle()" @submit="submitDialogInputTextHandle" />
+      <BaseDialogFooter
+        :label-button="dataDialog.labelButton"
+        @close="closePopupHandle()"
+        @submit="submitDialogInputTextHandle"
+      />
     </BaseDialogPanel>
   </BaseDialog>
 </template>
@@ -60,7 +71,10 @@ export default {
       this.isSubmit = true
       const isDataValid = await this.$refs.form.validate()
       if (isDataValid) {
-        this.$emit('submit', { subDescription: this.dataDialog.subDescription, valueText: this.fieldInputText })
+        this.$emit('submit', {
+          subDescription: this.dataDialog.subDescription,
+          valueText: this.fieldInputText
+        })
         this.fieldInputText = ''
         this.isInputDirty = false
         this.isSubmit = false

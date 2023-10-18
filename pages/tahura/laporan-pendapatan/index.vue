@@ -13,22 +13,15 @@ export default {
           label: 'Laporan Pendapatan',
           link: '/tahura/laporan-pendapatan'
         }
-      ],
-      descriptionPage:
-        'Laporan Pendapatan Taman Hutan Raya.'
+      ]
 
     }
   },
   mounted () {
     this.$store.commit('setActivePage', 'Laporan Pendapatan')
     this.$store.commit('setHeader', {
-      navigations: this.navigations,
-      descriptionPage: this.descriptionPage
+      navigations: this.navigations
     })
   }
 }
 </script>
-
-  <style>
-
-  </style>
