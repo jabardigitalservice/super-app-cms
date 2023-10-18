@@ -8,11 +8,11 @@
         <div class="mb-4">
           <ValidationProvider v-slot="{ errors }" name="Kategori" rules="requiredSelectForm">
             <jds-select
-              v-model="payloadOtherComplaint.complaint_category_id"
+              v-model="dataOtherComplaint.complaint_category_id.value"
               name="Kategori"
               label="Kategori"
               placeholder="Pilih Kategori"
-              :error-message="(isChooseDirty || isSubmit) ? errors[0] : ''"
+              :error-message="(dataOtherComplaint.complaint_category_id.isChooseDirty || isSubmit) ? errors[0] : ''"
               :options="listCategoryComplaint"
             />
           </ValidationProvider>
@@ -20,11 +20,11 @@
         <div class="mb-4">
           <ValidationProvider v-slot="{ errors }" name="Sub Kategori" rules="requiredSelectForm">
             <jds-select
-              v-model="payloadOtherComplaint.complaint_subcategory_id"
+              v-model="dataOtherComplaint.complaint_subcategory_id.value"
               name="Sub Kategori"
               label="Kategori"
               placeholder="Pilih Sub Kategori"
-              :error-message="(isChooseDirty || isSubmit) ? errors[0] : '' "
+              :error-message="(dataOtherComplaint.complaint_subcategory_id.isChooseDirty || isSubmit) ? errors[0] : '' "
               :options="listSubCategoryComplaint"
             />
           </ValidationProvider>
@@ -35,17 +35,17 @@
         <div class="mb-4">
           <ValidationProvider v-slot="{ errors }" name="Disposisi" rules="requiredSelectForm">
             <jds-select
-              v-model="payloadOtherComplaint.disposition"
+              v-model="dataOtherComplaint.disposition.value"
               name="Disposisi"
               label="Disposisi"
               placeholder="Pilih Dinas Untuk Disposisi"
-              :error-message="(isChooseDirty || isSubmit) ? errors[0] : '' "
+              :error-message="(dataOtherComplaint.disposition.isChooseDirty || isSubmit) ? errors[0] : '' "
               :options="listDisposition"
             />
           </ValidationProvider>
         </div>
         <div class="mb-4">
-          <jds-input-text v-model="payloadOtherComplaint.authority" name="Kewenangan" label="Kewenangan" disabled class="!w-full" />
+          <jds-input-text v-model="dataOtherComplaint.authority" name="Kewenangan" label="Kewenangan" disabled class="!w-full" />
         </div>
       </form>
     </ValidationObserver>
@@ -69,13 +69,22 @@ export default {
       listDataCategoryComplaint: [],
       listDataSubCategoryComplaint: [],
       listDataDisposition: [],
-      payloadOtherComplaint: {
-        complaint_category_id: '',
-        complaint_subcategory_id: '',
-        disposition: '',
+      dataOtherComplaint: {
+        complaint_category_id: {
+          value: '',
+          isChooseDirty: false
+        },
+        complaint_subcategory_id: {
+          value: '',
+          isChooseDirty: false
+        },
+        disposition: {
+          value: '',
+          isChooseDirty: false
+        },
         authority: 'Pemerintah Provinsi Jawa Barat'
       },
-      isChooseDirty: false,
+      payloadOtherComplaint: {},
       isSubmit: false
     }
   },
@@ -114,41 +123,54 @@ export default {
     }
   },
   watch: {
-    payloadOtherComplaint: {
+    dataOtherComplaint: {
       deep: true,
       handler () {
-        if (this.payloadOtherComplaint.complaint_category_id) {
-          this.$fetch()
-          this.isChooseDirty = true
-        }
-        if (this.payloadOtherComplaint.complaint_subcategory_id || this.payloadOtherComplaint.disposition) {
-          this.isChooseDirty = true
-        }
+        this.changeDataOtherComplaint('choose')
+        this.$fetch()
       }
     }
   },
   methods: {
+    changeDataOtherComplaint (typeChange) {
+      Object.keys(this.dataOtherComplaint).forEach((item) => {
+        switch (typeChange) {
+          case 'choose': // this type for change when user choose data
+            if (this.dataOtherComplaint[item].value && item !== 'authority') {
+              this.dataOtherComplaint[item].isChooseDirty = true
+            }
+            this.payloadOtherComplaint[item] = this.dataOtherComplaint[item].value
+            break
+          case 'clear': // this type for clear form
+            if (item !== 'authority') {
+              this.dataOtherComplaint[item].isChooseDirty = false
+              this.dataOtherComplaint[item].value = ''
+            }
+            break
+          default:
+            if (item !== 'authority') {
+              this.dataOtherComplaint[item].isChooseDirty = false
+            }
+        }
+      })
+    },
     async inputDataOtherComplaintHandle () {
       this.isSubmit = true
       const isValid = await this.$refs.formOtherComplaint.validate()
       this.$store.commit('add-complaint/setIsValidFormOtherComplaint', isValid)
       if (isValid) {
         this.$store.commit('add-complaint/setDataOtherComplaint', { ...this.payloadOtherComplaint })
-        this.isChooseDirty = false
+        this.changeDataOtherComplaint('submit')
         this.isSubmit = false
       }
+    },
+    clearFormOtherComplaintHandle () {
+      this.changeDataOtherComplaint('clear')
+      this.payloadOtherComplaint = {}
+      this.isSubmit = false
     }
-  },
-  clearFormOtherComplaintHandle () {
-    this.payloadOtherComplaint = {
-      complaint_category_id: '',
-      complaint_subcategory_id: '',
-      disposition: '',
-      authority: 'Pemerintah Provinsi Jawa Barat'
-    }
-    this.isChooseDirty = false
-    this.isSubmit = false
   }
+
 }
 </script>
 
