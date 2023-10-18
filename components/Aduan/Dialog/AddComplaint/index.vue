@@ -16,21 +16,6 @@
           <FormOtherComplaint v-show="indexCurrentActive === 3" ref="formOtherComplaint" />
         </div>
       </template>
-      <!-- <template #footer>
-        <BaseDialogFooter>
-          <template #default>
-            <div class="flex justify-between">
-              <jds-button label="Batal" variant="tertiary" class="!font-bold !text-green-700" @click="showPopupConfirmationAddComplaint()" />
-              <div class="flex">
-                <div class="mr-3">
-                  <jds-button label="Kembali" variant="secondary" class="!font-bold !border-green-700 !text-green-700" @click="prevToFormHandle()" />
-                </div>
-                <jds-button :label="labelButton" variant="primary" @click="submitFormAddComplaint()" />
-              </div>
-            </div>
-          </template>
-        </BaseDialogFooter>
-      </template> -->
     </DialogWithStepper>
     <DialogConfirmation :show-popup="isShowPopupConfirmation" :data-dialog="dataDialog" @submit="submitPopupConfirmationHandle()" @close="closePopupConfirmationHandle()" />
     <DialogLoading :show-popup="getIsLoading" />
