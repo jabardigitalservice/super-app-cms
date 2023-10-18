@@ -138,8 +138,11 @@ export default {
           case 'choose': // this type for change when user choose data
             if (this.dataOtherComplaint[item].value && item !== 'authority') {
               this.dataOtherComplaint[item].isChooseDirty = true
+              this.payloadOtherComplaint[item] = this.dataOtherComplaint[item].value
+            } else {
+              this.payloadOtherComplaint[item] = this.dataOtherComplaint[item]
             }
-            this.payloadOtherComplaint[item] = this.dataOtherComplaint[item].value
+
             break
           case 'clear': // this type for clear form
             if (item !== 'authority') {
