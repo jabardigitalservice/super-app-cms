@@ -1,6 +1,14 @@
 <template>
   <div>
-    <DialogWithStepper :show-popup="showPopup" title="Tambah Aduan" :index-current-active="indexCurrentActive">
+    <DialogWithStepper
+      :show-popup="showPopup"
+      title="Tambah Aduan"
+      :index-current-active="indexCurrentActive"
+      :label-button="labelButton"
+      @close="showPopupConfirmationAddComplaint()"
+      @prev="prevToFormHandle()"
+      @submit="submitFormAddComplaint()"
+    >
       <template #form-complaint>
         <div class="mt-8">
           <FormInformationComplaint v-show="indexCurrentActive === 1" ref="formInformationComplaint" />
@@ -8,23 +16,25 @@
           <FormOtherComplaint v-show="indexCurrentActive === 3" ref="formOtherComplaint" />
         </div>
       </template>
-      <template #footer>
+      <!-- <template #footer>
         <BaseDialogFooter>
           <template #default>
             <div class="flex justify-between">
-              <jds-button label="Batal" variant="tertiary" class="!font-bold !text-green-700" @click="closePopupAddComplaintHandle()" />
+              <jds-button label="Batal" variant="tertiary" class="!font-bold !text-green-700" @click="showPopupConfirmationAddComplaint()" />
               <div class="flex">
                 <div class="mr-3">
                   <jds-button label="Kembali" variant="secondary" class="!font-bold !border-green-700 !text-green-700" @click="prevToFormHandle()" />
                 </div>
-                <jds-button :label="labelButton" variant="primary" @click="showPopupConfirmationAddComplaint()" />
+                <jds-button :label="labelButton" variant="primary" @click="submitFormAddComplaint()" />
               </div>
             </div>
           </template>
         </BaseDialogFooter>
-      </template>
+      </template> -->
     </DialogWithStepper>
-    <DialogConfirmation :show-popup="isShowPopupConfirmation" :data-dialog="dataDialog" />
+    <DialogConfirmation :show-popup="isShowPopupConfirmation" :data-dialog="dataDialog" @submit="submitPopupConfirmationHandle()" @close="closePopupConfirmationHandle()" />
+    <DialogLoading :show-popup="getIsLoading" />
+    <DialogInformation :show-popup="isShowPopupInformation" :data-dialog="dataDialog" :icon-popup="iconPopup" @close="closePopupAddComplaintHandle ()" @submit="saveDataComplaintHandle()" />
   </div>
 </template>
 
@@ -33,10 +43,12 @@ import { mapGetters } from 'vuex'
 import FormInformationComplaint from '~/components/Aduan/Dialog/AddComplaint/Form/InformationComplaint'
 import FormLocationComplaint from '~/components/Aduan/Dialog/AddComplaint/Form/LocationComplaint'
 import FormOtherComplaint from '~/components/Aduan/Dialog/AddComplaint/Form/OthersComplaint'
+import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
 
 export default {
   name: 'DialogAddComplaint',
   components: { FormInformationComplaint, FormLocationComplaint, FormOtherComplaint },
+  mixins: [popupAduanMasuk],
   props: {
     showPopup: {
       type: Boolean,
@@ -47,15 +59,18 @@ export default {
     return {
       indexCurrentActive: 1,
       labelButton: 'Lanjutkan',
-      dataDialog: {},
-      isShowPopupConfirmation: false
+      isShowPopupConfirmation: false,
+      isShowPopupInformation: false,
+      typeConfirmation: 'cancel'
     }
   },
   computed: {
     ...mapGetters('add-complaint', [
       'getIsValidFormInformationComplaint',
       'getIsValidFormLocationComplaint',
-      'getIsValidFormOtherComplaint'
+      'getIsValidFormOtherComplaint',
+      'getIsLoading',
+      'getIsError'
     ])
   },
   methods: {
@@ -85,7 +100,9 @@ export default {
     async submitFormOtherComplaintHandle () {
       await this.$refs.formOtherComplaint.inputDataOtherComplaintHandle()
       if (this.getIsValidFormOtherComplaint) {
-        this.$store.dispatch('add-complaint/submitDataAddComplaint')
+        this.typeConfirmation = 'submit'
+        this.showPopupConfirmationAddComplaint()
+        // this.$store.dispatch('add-complaint/submitDataAddComplaint')
       }
     },
     prevToFormHandle () {
@@ -99,21 +116,63 @@ export default {
     },
     showPopupConfirmationAddComplaint () {
       this.isShowPopupConfirmation = true
-      this.$emit('close')
       this.dataDialog = {
-        title: 'Konfirmasi Pembatalan',
-        description: 'Apakah Anda yakin ingin membatalkan aduan ini?',
-        showButtonCancel: true,
-        labelButtonCancel: 'Ya, Batalkan Aduan',
-        labelButtonSubmit: 'Tetap Lanjutkan Aduan'
+        showButtonCancel: true
+      }
+
+      if (this.typeConfirmation === 'submit') {
+        this.setDataDialog({ title: 'Konfirmasi Tambah Aduan', description: 'Apakah Anda yakin ingin menyimpan data ini?', labelButtonSubmit: 'Ya Simpan' })
+      } else {
+        this.setDataDialog({
+          title: 'Konfirmasi Pembatalan',
+          description: 'Apakah Anda yakin ingin membatalkan aduan ini?',
+          labelButtonCancel: 'Ya, Batalkan Aduan',
+          labelButtonSubmit: 'Tetap Lanjutkan Aduan'
+        })
+      }
+    },
+    submitPopupConfirmationHandle () {
+      if (this.typeConfirmation === 'submit') {
+        this.saveDataComplaintHandle()
+        this.$emit('close')
+      } else {
+        this.isShowPopupConfirmation = false
+      }
+    },
+    async saveDataComplaintHandle () {
+      this.$emit('close')
+      this.isShowPopupConfirmation = false
+      await this.$store.dispatch('add-complaint/submitDataAddComplaint')
+      this.isShowPopupInformation = true
+      this.typeConfirmation = 'information'
+      const dataDialogInformation = {
+        success: this.setSucessFailedInformationHandle('Tambah Data Aduan berhasil dilakukan', true),
+        failed: this.setSucessFailedInformationHandle('Tambah Data Aduan gagal dilakukan', false)
+      }
+      this.dataDialog.title = 'Informasi Tambah Aduan'
+      if (this.getIsError) {
+        this.setDataDialog({ ...dataDialogInformation.failed })
+        this.setIconPopup({ ...dataDialogInformation.failed.icon })
+      } else {
+        this.setDataDialog({ ...dataDialogInformation.success })
+        this.setIconPopup({ ...dataDialogInformation.success.icon })
       }
     },
     closePopupAddComplaintHandle () {
       this.indexCurrentActive = 1
+      this.isShowPopupConfirmation = false
+      this.isShowPopupInformation = false
       this.$refs.formInformationComplaint.clearFormInformationComplaintHandle()
       this.$refs.formLocationComplaint.clearFormLocationComplaintHandle()
       this.$refs.formOtherComplaint.clearFormOtherComplaintHandle()
       this.$emit('close')
+    },
+    closePopupConfirmationHandle () {
+      if (this.typeConfirmation === 'submit') {
+        this.isShowPopupConfirmation = false
+      } else {
+        this.closePopupAddComplaintHandle()
+      }
     }
   }
 }
