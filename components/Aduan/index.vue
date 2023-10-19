@@ -224,7 +224,7 @@ export default {
       this.pagination.totalRows = data?.total_data || 0
       this.pagination.itemsPerPage = data?.page_size || this.query.limit
 
-      this.complaintStatus.total.value = this.typeAduan.aduanDariSpanLapor.props === this.typeAduanPage ? this.listDataComplaint.length : this.getTotalStatistic()
+      this.complaintStatus.total.value = this.typeAduan.aduanDariSpanLapor.props === this.typeAduanPage ? this.pagination.totalRows : this.getTotalStatistic()
       this.listStatisticComplaint.unshift(this.complaintStatus.total)
     } catch {
       this.pagination.disabled = true
