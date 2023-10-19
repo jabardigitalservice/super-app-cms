@@ -133,7 +133,7 @@
                         Jumlah Tiket
                       </th>
                       <th scope="col" class="px-6 py-3 font-bold">
-                        Tarik (RP)
+                        Tarif (RP)
                       </th>
                       <th scope="col" class="px-6 py-3 font-bold">
                         Jumlah Total (RP)
