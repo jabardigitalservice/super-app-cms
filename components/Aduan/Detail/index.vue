@@ -225,9 +225,11 @@
             </BaseTableDetail>
           </div>
           <div v-else class="table-content">
-            <BaseTableDetail header="Informasi Aduan">
+            <BaseTableDetail header="Informasi Aduan" class="mb-4">
               <tr>
-                <td><strong>ID Aduan Sapawarga</strong></td>
+                <td class="w-[205px]">
+                  <strong>ID Aduan Sapawarga</strong>
+                </td>
                 <td>{{ detailComplaint?.complaint_id || '-' }}</td>
               </tr>
               <tr>
@@ -255,9 +257,11 @@
                 <td>{{ detailComplaint?.description || '-' }}</td>
               </tr>
             </BaseTableDetail>
-            <BaseTableDetail header="Lokasi Aduan">
+            <BaseTableDetail header="Lokasi Aduan" class="mb-4">
               <tr>
-                <td>Kabupaten / Kota </td>
+                <td class="w-[205px]">
+                  Kabupaten / Kota
+                </td>
                 <td>{{ detailComplaint?.city?.name || '-' }}</td>
               </tr>
               <tr>
@@ -275,7 +279,7 @@
             </BaseTableDetail>
             <BaseTableDetail header="Lainnya">
               <tr>
-                <td class="w-[180px]">
+                <td class="w-[205px]">
                   <strong class="text-[10px]">Kategori Aduan </strong>
                 </td>
                 <td>{{ detailComplaint?.complaint_category?.name || '-' }}</td>
@@ -289,11 +293,11 @@
               </tr>
               <tr>
                 <td><strong>Disposisi</strong></td>
-                <td>-</td>
+                <td>{{ detailComplaint?.disposition }}</td>
               </tr>
               <tr>
                 <td><strong>Kewenangan</strong></td>
-                <td>-</td>
+                <td>{{ detailComplaint?.authority }}</td>
               </tr>
             </BaseTableDetail>
           </div>
