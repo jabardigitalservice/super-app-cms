@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="loader" :class="{hidden: !loading}">
+    <div id="loader" :class="{ hidden: !loading }">
       <div class="flex h-[300px] flex-col items-center justify-center">
         <jds-spinner class="mb-4" size="56" />
         <p class="font-lato text-2xl font-bold text-green-700">
@@ -9,7 +9,7 @@
       </div>
     </div>
 
-    <BasePreviewPdf :class="{hidden: loading}">
+    <BasePreviewPdf :class="{ hidden: loading }">
       <template #title>
         Laporan Pendapatan Tiket Masuk Wisata
       </template>
@@ -110,7 +110,10 @@
                     {{ itemCategories.quantity || "-" }}
                   </td>
                   <td class="border border-black px-6 py-4">
-                    {{ convertToRupiah(checkAsurance(itemCategories.price)) || "-" }}
+                    {{
+                      convertToRupiah(checkAsurance(itemCategories.price)) ||
+                        "-"
+                    }}
                   </td>
                   <td class="border border-black px-6 py-4">
                     {{
@@ -229,7 +232,6 @@ export default {
             headers: {
               Authorization: this.$route.params.token
             }
-
           }
         )
 
@@ -258,8 +260,7 @@ export default {
       this.grandTotal = grandTotal
     },
     checkAsurance (price) {
-      return this.$route.params.assurance ===
-        'with-assurance'
+      return this.$route.params.assurance === 'with-assurance'
         ? price
         : price - this.assurancePrice
     },
@@ -280,17 +281,33 @@ export default {
     },
     async generatePdf () {
       try {
-        const response = await this.$axios.post('/ticket/tahura/income/report', {
-          previewUrl: window.location.href
-        }, {
-          headers: {
-            Authorization: this.$route.params.token
+        const response = await this.$axios.post(
+          '/ticket/tahura/income/report',
+          {
+            previewUrl: window.location.href
+          },
+          {
+            headers: {
+              Authorization: this.$route.params.token
+            },
+            responseType: 'blob'
           }
-        })
+        )
 
-        console.log(response)
-
-        window.open(response.data, '_blank')
+        const fileBlob = new Blob([response.data])
+        const fileUrl = window.URL.createObjectURL(fileBlob)
+        const link = document.createElement('a')
+        link.href = fileUrl
+        link.setAttribute(
+          'download',
+          `laporan pendapatan ${formatDate(
+            this.$route.params.startDate,
+            'dd MMMM yyyy'
+          )} - ${formatDate(this.$route.params.endDate, 'dd MMMM yyyy')}.pdf`
+        )
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
       } catch (error) {
         console.error(error)
       }
