@@ -87,7 +87,6 @@ export default {
       if (this.getIsValidFormOtherComplaint) {
         this.typeConfirmation = 'submit'
         this.showPopupConfirmationAddComplaint()
-        // this.$store.dispatch('add-complaint/submitDataAddComplaint')
       }
     },
     prevToFormHandle () {
