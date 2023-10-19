@@ -18,6 +18,14 @@ export function formatDate (date, format = 'dd/MM/yyyy') {
   return '-'
 }
 
+export function formatExcelDate (date, formatDate = 'dd MMMM yyyy') {
+  const dateExcel = new Date(Math.round((date - 25569) * 86400 * 1000)) // Excel date to JavaScript date
+  if (isValid(new Date(dateExcel))) {
+    return formatInTimeZone(dateExcel, 'Asia/Bangkok', formatDate, { locale: id })
+  }
+  return '-'
+}
+
 export function base64ToBlobUrl (base64, type) {
   const binStr = atob(base64)
   const len = binStr.length
