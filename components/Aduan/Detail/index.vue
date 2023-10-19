@@ -238,11 +238,11 @@
               </tr>
               <tr>
                 <td><strong>Tanggal Laporan Masuk</strong></td>
-                <td>{{ detailComplaint?.created_at || '-' }}</td>
+                <td>{{ detailComplaint?.sp4n_added_at || '-' }}</td>
               </tr>
               <tr>
                 <td><strong>Tanggal Diinput ke Sapawarga</strong></td>
-                <td>-</td>
+                <td>{{ detailComplaint?.created_at }}</td>
               </tr>
               <tr>
                 <td><strong>Nama Lengkap</strong></td>
@@ -389,7 +389,8 @@ export default {
       this.detailComplaint = {
         ...dataDetailComplaint,
         created_at: dataDetailComplaint?.created_at && formatDate(dataDetailComplaint?.created_at, 'dd/MM/yyyy - HH:mm'),
-        sp4n_created_at: dataDetailComplaint?.sp4n_created_at && formatDate(dataDetailComplaint?.sp4n_created_at || '', 'dd/MM/yyyy - HH:mm')
+        sp4n_created_at: dataDetailComplaint?.sp4n_created_at && formatDate(dataDetailComplaint?.sp4n_created_at || '', 'dd/MM/yyyy - HH:mm'),
+        sp4n_added_at: dataDetailComplaint?.sp4n_added_at && formatDate(dataDetailComplaint?.sp4n_added_at || '', 'dd/MM/yyyy - HH:mm')
       }
       this.listPhoto = dataDetailComplaint?.photos
     } catch {
