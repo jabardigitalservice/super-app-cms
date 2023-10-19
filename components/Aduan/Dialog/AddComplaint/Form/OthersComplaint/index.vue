@@ -89,18 +89,18 @@ export default {
   },
   computed: {
     listCategoryComplaint () {
-      return this.listDataCategoryComplaint.map((item) => {
-        return { label: item.name, value: item.id }
+      return this.listDataCategoryComplaint.map((category) => {
+        return { label: category.name, value: category.id }
       })
     },
     listSubCategoryComplaint () {
-      return this.listDataSubCategoryComplaint.map((item) => {
-        return { label: item.name, value: item.id }
+      return this.listDataSubCategoryComplaint.map((subcategory) => {
+        return { label: subcategory.name, value: subcategory.id }
       })
     },
     listDisposition () {
-      return this.listDataDisposition.map((item) => {
-        return { label: item.name, value: item.name }
+      return this.listDataDisposition.map((disposition) => {
+        return { label: disposition.name, value: disposition.name }
       })
     }
   },

@@ -101,18 +101,18 @@ export default {
   },
   computed: {
     listCity () {
-      return this.listDataCity.map((item) => {
-        return { value: item.id, label: item.name }
+      return this.listDataCity.map((city) => {
+        return { value: city.id, label: city.name }
       })
     },
     listDistrict () {
-      return this.listDataDistrict.map((item) => {
-        return { value: item.id, label: item.name }
+      return this.listDataDistrict.map((district) => {
+        return { value: district.id, label: district.name }
       })
     },
     listVillage () {
-      return this.listDataVillage.map((item) => {
-        return { value: item.id, label: item.name }
+      return this.listDataVillage.map((village) => {
+        return { value: village.id, label: village.name }
       })
     }
   },
