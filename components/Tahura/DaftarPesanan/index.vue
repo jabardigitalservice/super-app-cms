@@ -3,7 +3,7 @@
     <BaseTabGroup>
       <template #tab-list>
         <TabBarListTahura
-          :list-tab="listTab"
+          :list-tab="listStatusTahura"
           @selected="selectedTabHandle"
           @button-tab="listTabHandle"
         />
@@ -101,7 +101,7 @@ import { formatDate, generateItemsPerPageOptions } from '~/utils'
 import 'vue2-datepicker/index.css'
 import EyesIcon from '~/assets/icon/eyes.svg?inline'
 import TabBarListTahura from '~/components/Tahura/TabBar/index.vue'
-import { statusTahura } from '@/constant/tahura.js'
+import { statusTahura, listStatusTahura } from '@/constant/tahura.js'
 export default {
   name: 'DaftarPesananTahura',
   components: {
@@ -110,111 +110,6 @@ export default {
   },
   data () {
     return {
-      // TODO: remove dummy data after API read or integration with API finished
-      dummyData: {
-        status: true,
-        message: 'Success',
-        code: '2000800',
-        data: [
-          {
-            id: 403,
-            userId: '44975f8b-dd21-4f06-b9cf-dde342e10df8',
-            orderBy: 'JSA Testing',
-            reservationDate: '2023-10-10',
-            paymentMethod: 'qris',
-            statusCode: 'scanned',
-            statusName: 'Scan Berhasil',
-            invoice: 'THR-10102302003',
-            ticketCount: 2,
-            amount: 114000,
-            countdownMinutes: 0,
-            destination:
-              '00020101021226620017ID.CO.BANKBJB.WWW01189360011030001226780208001226780303UMI51470017ID.CO.BANKBJB.WWW0215ID12312312938450303UMI52049399530336054061140005802ID5916Ticketing Tahura6007Bandung61051232262490124QRIS20231010151635007458021008118449960703C0263046A41',
-            orderedAt: '2023-10-10T08:16:33.796698Z',
-            expiredAt: '2023-10-10T09:16:33Z',
-            categories: [
-              {
-                code: 'wna',
-                name: 'Wisatawan Asing',
-                price: 57000,
-                series: 'B',
-                quantity: 2
-              }
-            ]
-          },
-          {
-            id: 402,
-            userId: '44975f8b-dd21-4f06-b9cf-dde342e10df8',
-            orderBy: 'JSA Testing',
-            reservationDate: '2023-10-10',
-            paymentMethod: 'qris',
-            statusCode: 'paid',
-            statusName: 'Sukses',
-            invoice: 'THR-10102325002',
-            ticketCount: 25,
-            amount: 1425000,
-            countdownMinutes: 0,
-            destination:
-              '00020101021226620017ID.CO.BANKBJB.WWW01189360011030001226780208001226780303UMI51470017ID.CO.BANKBJB.WWW0215ID12312312938450303UMI520493995303360540714250005802ID5916Ticketing Tahura6007Bandung61051232262490124QRIS20231010103126007455021008118449960703C026304ABB8',
-            orderedAt: '2023-10-10T03:31:25.412813Z',
-            expiredAt: '2023-10-10T04:31:25Z',
-            categories: [
-              {
-                code: 'wna',
-                name: 'Wisatawan Asing',
-                price: 57000,
-                series: 'B',
-                quantity: 25
-              }
-            ]
-          },
-          {
-            id: 401,
-            userId: '44975f8b-dd21-4f06-b9cf-dde342e10df8',
-            orderBy: 'JSA Testing',
-            reservationDate: '2023-10-10',
-            paymentMethod: 'qris',
-            statusCode: 'paid',
-            statusName: 'Sukses',
-            invoice: 'THR-10102315001',
-            ticketCount: 15,
-            amount: 255000,
-            countdownMinutes: 0,
-            destination:
-              '00020101021226620017ID.CO.BANKBJB.WWW01189360011030001226780208001226780303UMI51470017ID.CO.BANKBJB.WWW0215ID12312312938450303UMI52049399530336054062550005802ID5916Ticketing Tahura6007Bandung61051232262490124QRIS20231010100805007452021008118449960703C0263049D5E',
-            orderedAt: '2023-10-10T03:08:04.23285Z',
-            expiredAt: '2023-10-10T04:08:04Z',
-            categories: [
-              {
-                code: 'wni',
-                name: 'Wisatawan Lokal',
-                price: 17000,
-                series: 'A',
-                quantity: 15
-              }
-            ]
-          }
-        ]
-      },
-      dummydataTab: {
-        status: true,
-        message: 'Success',
-        code: '2000800',
-        data: [
-          {
-            statusCode: 'all',
-            quantity: 500
-          },
-          {
-            statusCode: 'scanned',
-            quantity: 300
-          },
-          {
-            statusCode: 'paid',
-            quantity: 200
-          }
-        ]
-      },
       headerTableList: [
         {
           text: 'no. order',
@@ -264,7 +159,7 @@ export default {
         page: 1,
         q: null,
         pageSize: 5,
-        sortType: 'desc',
+        sortOrder: 'desc',
         sortBy: 'orderedAt',
         status: ''
       },
@@ -275,8 +170,9 @@ export default {
       dateRange: [new Date(), new Date()],
       isShowPopupDate: false,
       isShowPopupDateRange: false,
-      listTab: [],
-      statusTahura
+
+      statusTahura,
+      listStatusTahura
     }
   },
   async fetch () {
@@ -285,7 +181,7 @@ export default {
         params: this.query
       })
 
-      const data = response.data.data
+      const data = response.data
       this.daftarPesananList = data?.data || []
 
       if (this.daftarPesananList.length) {
@@ -298,14 +194,21 @@ export default {
       this.pagination.itemsPerPage = data?.pageSize || this.query.pageSize
 
       const responseCountDaftarpesanan = await this.$axios.get(
-        '/ticket/tahura/order/count'
+        '/ticket/tahura/order/count',
+        {
+          params: this.query
+        }
       )
-      this.listTab = responseCountDaftarpesanan.data
+
+      if (responseCountDaftarpesanan.data.data.length > 0) {
+        this.combinedCountOrder(
+          responseCountDaftarpesanan.data.data
+        )
+      } else {
+        this.resetQuantity()
+      }
     } catch {
-      // TODO : used dummy data, remove after API ready
-      this.daftarPesananList = this.dummyData.data
-      this.listTab = this.dummydataTab.data
-      //   this.this.pagination.disabled = true
+      this.pagination.disabled = true
     }
   },
   computed: {
@@ -415,10 +318,10 @@ export default {
     sortChange (value) {
       const key = Object.keys(value)[0]
       if (key && value[key] !== 'no-sort') {
-        this.query.sortType = value[key]
+        this.query.sortOrder = value[key]
         this.query.sortBy = key === 'status' ? 'status' : key
       } else {
-        this.query.sortType = 'desc'
+        this.query.sortOrder = 'desc'
         this.query.sortBy = 'orderedAt'
       }
 
@@ -432,7 +335,7 @@ export default {
         page: 1,
         q: null,
         pageSize: 5,
-        sortType: 'desc',
+        sortOrder: 'desc',
         sortBy: 'orderedAt',
         status: status === 'all' ? '' : status
       }
@@ -440,6 +343,24 @@ export default {
       this.isShowPopupDateRange = false
       this.setQuery(query)
       this.$fetch()
+    },
+    combinedCountOrder (countFromApi) {
+      this.listStatusTahura.forEach((status) => {
+        const { statusCode } = status
+        if (statusCode !== 'all') {
+          const matchingStatus = countFromApi.find(apiStatus => apiStatus.statusCode === statusCode)
+          if (matchingStatus) {
+            status.quantity = matchingStatus.quantity
+          }
+        } else {
+          status.quantity = countFromApi.reduce((total, apiStatus) => total + apiStatus.quantity, 0)
+        }
+      })
+    },
+    resetQuantity () {
+      this.listStatusTahura.forEach((status) => {
+        status.quantity = 0
+      })
     }
   }
 }
