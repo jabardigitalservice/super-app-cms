@@ -102,12 +102,14 @@ export default {
     },
     showPopupConfirmationAddComplaint () {
       this.isShowPopupConfirmation = true
-      this.dataDialog = {
-        showButtonCancel: true
-      }
+      this.dataDialog = { showButtonCancel: true }
 
       if (this.typeConfirmation === 'submit') {
-        this.setDataDialog({ title: 'Konfirmasi Tambah Aduan', description: 'Apakah Anda yakin ingin menyimpan data ini?', labelButtonSubmit: 'Ya Simpan' })
+        this.setDataDialog({
+          title: 'Konfirmasi Tambah Aduan',
+          description: 'Apakah Anda yakin ingin menyimpan data ini?',
+          labelButtonSubmit: 'Ya Simpan'
+        })
       } else {
         this.setDataDialog({
           title: 'Konfirmasi Pembatalan',
