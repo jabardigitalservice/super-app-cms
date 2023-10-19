@@ -67,6 +67,8 @@ export default {
           return this.submitFormLocationComplaintHandle()
         case 3 :
           return this.submitFormOtherComplaintHandle()
+        default:
+          return null
       }
     },
     async submitFormInformationComplaintHandle () {
