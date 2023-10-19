@@ -5,57 +5,49 @@
         <h1 class="mb-2 font-bold text-base font-roboto">
           Lokasi Aduan
         </h1>
-        <div class="mb-4">
-          <ValidationProvider v-slot="{ errors }" name="Kota/Kabupaten" rules="requiredSelectForm">
-            <jds-select
-              v-model="dataLocationComplaint.city_id.value"
-              name="Kota/Kabupaten"
-              label="Kota/Kabupaten"
-              placeholder="Pilih Kota/Kabupaten"
-              :error-message="(dataLocationComplaint.city_id.isChooseDirty || isSubmit) ? errors[0] : ''"
-              :options="listCity"
-            />
-          </ValidationProvider>
-        </div>
-        <div class="mb-4">
-          <ValidationProvider v-slot="{ errors }" name="Kecamatan" rules="requiredSelectForm">
-            <jds-select
-              v-model="dataLocationComplaint.district_id.value"
-              name="Kecamatan"
-              label="Kecamatan"
-              placeholder="Pilih Kecamatan"
-              :error-message="(dataLocationComplaint.district_id.isChooseDirty || isSubmit) ? errors[0] : ''"
-              :options="listDistrict"
-            />
-          </ValidationProvider>
-        </div>
-        <div class="mb-4">
-          <ValidationProvider v-slot="{ errors }" name="Kelurahan" rules="requiredSelectForm">
-            <jds-select
-              v-model="dataLocationComplaint.subdistrict_id.value"
-              name="Kelurahan"
-              label="Kelurahan"
-              placeholder="Pilih Kelurahan"
-              :error-message="(dataLocationComplaint.subdistrict_id.isChooseDirty || isSubmit) ? errors[0] : ''"
-              :options="listVillage"
-            />
-          </ValidationProvider>
-        </div>
-        <div>
-          <ValidationProvider v-slot="{ errors }" name="Detail Lokasi" rules="required">
-            <BaseTextArea
-              v-model="addressDetail"
-              placeholder="Masukkan Detail Lokasi"
-              label="Detail Lokasi"
-              name="Detail Lokasi"
-              maxlength="255"
-              :error-message="(isInputDirty || isSubmit) ? errors[0] : ''"
-            />
-          </ValidationProvider>
-          <p class="text-sm text-gray-600">
-            Tersisa {{ 255-addressDetail.length }} karakter
-          </p>
-        </div>
+        <ValidationProvider v-slot="{ errors,dirty }" name="Kota/Kabupaten" rules="requiredSelectForm" class="mb-4" tag="div">
+          <jds-select
+            v-model="payloadLocationComplaint.city_id"
+            name="Kota/Kabupaten"
+            label="Kota/Kabupaten"
+            placeholder="Pilih Kota/Kabupaten"
+            :error-message="(dirty || isSubmit) ? errors[0] : ''"
+            :options="listCity"
+          />
+        </ValidationProvider>
+        <ValidationProvider v-slot="{ errors,dirty }" name="Kecamatan" rules="requiredSelectForm" class="mb-4" tag="div">
+          <jds-select
+            v-model="payloadLocationComplaint.district_id"
+            name="Kecamatan"
+            label="Kecamatan"
+            placeholder="Pilih Kecamatan"
+            :error-message="(dirty || isSubmit) ? errors[0] : ''"
+            :options="listDistrict"
+          />
+        </ValidationProvider>
+        <ValidationProvider v-slot="{ errors,dirty }" name="Kelurahan" rules="requiredSelectForm" class="mb-4" tag="div">
+          <jds-select
+            v-model="payloadLocationComplaint.subdistrict_id"
+            name="Kelurahan"
+            label="Kelurahan"
+            placeholder="Pilih Kelurahan"
+            :error-message="(dirty || isSubmit) ? errors[0] : ''"
+            :options="listVillage"
+          />
+        </ValidationProvider>
+        <ValidationProvider v-slot="{ errors,dirty }" name="Detail Lokasi" rules="required" class="mb-4" tag="div">
+          <BaseTextArea
+            v-model="addressDetail"
+            placeholder="Masukkan Detail Lokasi"
+            label="Detail Lokasi"
+            name="Detail Lokasi"
+            maxlength="255"
+            :error-message="(dirty|| isSubmit) ? errors[0] : ''"
+          />
+        </ValidationProvider>
+        <p class="text-sm text-gray-600 mt-1">
+          Tersisa {{ 255-addressDetail.length }} karakter
+        </p>
       </form>
     </ValidationObserver>
   </div>
@@ -77,23 +69,12 @@ export default {
       listDataCity: [],
       listDataDistrict: [],
       listDataVillage: [],
-      dataLocationComplaint: {
-        city_id: {
-          value: '',
-          isChooseDirty: false
-        },
-        district_id: {
-          value: '',
-          isChooseDirty: false
-        },
-        subdistrict_id: {
-          value: '',
-          isChooseDirty: false
-        }
+      payloadLocationComplaint: {
+        city_id: '',
+        district_id: '',
+        subdistrict_id: ''
       },
       addressDetail: '',
-      isInputDirty: false,
-      payloadLocationComplaint: {},
       isSubmit: false
     }
   },
@@ -136,10 +117,9 @@ export default {
     }
   },
   watch: {
-    dataLocationComplaint: {
+    payloadLocationComplaint: {
       deep: true,
       handler () {
-        this.changeDataLocationComplaint('input-choose')
         this.$fetch()
       }
     },
@@ -149,40 +129,24 @@ export default {
     }
   },
   methods: {
-    changeDataLocationComplaint (typeChange) {
-      Object.keys(this.dataLocationComplaint).forEach((item) => {
-        switch (typeChange) {
-          case 'input-choose': // this type for change when user choose & input data
-            if (this.dataLocationComplaint[item].value) {
-              this.dataLocationComplaint[item].isChooseDirty = true
-              this.payloadLocationComplaint[item] = this.dataLocationComplaint[item].value
-            }
-            break
-          case 'clear': // this type for clear form
-            this.dataLocationComplaint[item].isChooseDirty = false
-            this.dataLocationComplaint[item].value = ''
-            break
-          default:
-            this.dataLocationComplaint[item].isChooseDirty = false
-        }
-      })
-    },
     async inputDataLocationComplaintHandle () {
       this.isSubmit = true
       const isValid = await this.$refs.formLocationComplaint.validate()
       this.$store.commit('add-complaint/setIsValidFormLocationComplaint', isValid)
       if (isValid) {
         this.$store.commit('add-complaint/setDataLocationComplaint', { ...this.payloadLocationComplaint })
-        this.changeDataLocationComplaint('submit')
         this.isSubmit = false
       }
     },
     clearFormLocationComplaintHandle () {
-      this.changeDataLocationComplaint('clear')
-      this.payloadLocationComplaint = {}
+      this.payloadLocationComplaint = {
+        city_id: '',
+        district_id: '',
+        subdistrict_id: '',
+        addressDetail: ''
+      }
       this.isSubmit = false
-      this.isInputDirty = false
-      this.addressDetail = ''
+      this.$refs.formLocationComplaint.reset()
     }
   }
 }

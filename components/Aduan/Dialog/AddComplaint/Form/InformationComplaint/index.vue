@@ -5,66 +5,56 @@
         <h1 class="mb-2 font-bold text-base font-roboto">
           Informasi Aduan
         </h1>
-        <div class="mb-4">
-          <ValidationProvider v-slot="{ errors }" name="ID SP4N Lapor" rules="required|numeric">
-            <BaseInputText
-              v-model="dataInformationComplaint.sp4n_id.value"
-              placeholder="Masukkan ID SP4N Lapor"
-              :error-message="(dataInformationComplaint.sp4n_id.isInputDirty || isSubmit) ? errors[0] : ''"
-              label="ID SP4N Lapor"
-              maxlength="10"
-            />
-          </ValidationProvider>
-        </div>
-        <div class="mb-4">
-          <ValidationProvider v-slot="{ errors }" name="Tanggal Laporan Masuk" rules="required">
-            <label class="text-gray-800 text-[15px] mb-1">Tanggal Laporan Masuk</label><br>
-            <date-picker
-              v-model="dataInformationComplaint.span_created_at.value"
-              format="DD/MM/YYYY"
-              :class="{'mx-datepicker--error': (dataInformationComplaint.span_created_at.isInputDirty || isSubmit) ? errors[0] : ''}"
-              placeholder="Pilih Tanggal Laporan Masuk"
-            /><br>
-            <small class="text-red-600">{{ (dataInformationComplaint.span_created_at.isInputDirty || isSubmit) ? errors[0] : '' }}</small>
-          </ValidationProvider>
-        </div>
-        <div class="mb-4">
-          <ValidationProvider v-slot="{ errors }" name="Nama Pelapor" rules="required">
-            <jds-input-text
-              v-model="dataInformationComplaint.user_name.value"
-              name="Nama Pelapor"
-              label="Nama Pelapor"
-              placeholder="Masukkan Nama Pelapor"
-              :error-message="(dataInformationComplaint.user_name.isInputDirty || isSubmit) ? errors[0] : ''"
-            />
-          </ValidationProvider>
-        </div>
-        <div class="mb-4">
-          <ValidationProvider v-slot="{ errors }" name="Judul Aduan" rules="required">
-            <jds-input-text
-              v-model="dataInformationComplaint.title.value"
-              name="Judul Aduan"
-              label="Judul Aduan"
-              placeholder="Masukkan Judul Aduan"
-              :error-message="(dataInformationComplaint.title.isInputDirty || isSubmit) ? errors[0] : ''"
-            />
-          </ValidationProvider>
-        </div>
-        <div class="mb-4">
-          <ValidationProvider v-slot="{ errors }" name="Isi Laporan" rules="required">
-            <BaseTextArea
-              v-model="dataInformationComplaint.description.value"
-              placeholder="Masukkan Isi Laporan"
-              label="Isi Laporan"
-              name="Isi Laporan"
-              maxlength="255"
-              :error-message="(dataInformationComplaint.description.isInputDirty || isSubmit) ? errors[0] : ''"
-            />
-          </ValidationProvider>
-          <p class="text-sm text-gray-600">
-            Tersisa {{ 255-dataInformationComplaint.description.value.length }} karakter
-          </p>
-        </div>
+        <ValidationProvider v-slot="{ errors,dirty }" name="ID SP4N Lapor" class="mb-4" rules="required|numeric" tag="div">
+          <BaseInputText
+            v-model="payloadInformationComplaint.sp4n_id"
+            placeholder="Masukkan ID SP4N Lapor"
+            :error-message="(dirty || isSubmit) ? errors[0] : ''"
+            label="ID SP4N Lapor"
+            maxlength="10"
+          />
+        </ValidationProvider>
+        <ValidationProvider v-slot="{ errors,dirty }" name="Tanggal Laporan Masuk" rules="required" class="mb-4" tag="div">
+          <label class="text-gray-800 text-[15px] mb-1">Tanggal Laporan Masuk</label><br>
+          <date-picker
+            v-model="payloadInformationComplaint.span_created_at"
+            format="DD/MM/YYYY"
+            :class="{'mx-datepicker--error': (dirty || isSubmit) ? errors[0] : ''}"
+            placeholder="Pilih Tanggal Laporan Masuk"
+          /><br>
+          <small class="text-red-600">{{ (dirty || isSubmit) ? errors[0] : '' }}</small>
+        </ValidationProvider>
+        <ValidationProvider v-slot="{ errors,dirty }" name="Nama Pelapor" rules="required" class="mb-4" tag="div">
+          <jds-input-text
+            v-model="payloadInformationComplaint.user_name"
+            name="Nama Pelapor"
+            label="Nama Pelapor"
+            placeholder="Masukkan Nama Pelapor"
+            :error-message="(dirty || isSubmit) ? errors[0] : ''"
+          />
+        </ValidationProvider>
+        <ValidationProvider v-slot="{ errors,dirty }" name="Judul Aduan" rules="required" class="mb-4" tag="div">
+          <jds-input-text
+            v-model="payloadInformationComplaint.title"
+            name="Judul Aduan"
+            label="Judul Aduan"
+            placeholder="Masukkan Judul Aduan"
+            :error-message="(dirty || isSubmit) ? errors[0] : ''"
+          />
+        </ValidationProvider>
+        <ValidationProvider v-slot="{ errors,dirty }" name="Isi Laporan" rules="required" class="mb-4" tag="div">
+          <BaseTextArea
+            v-model="payloadInformationComplaint.description"
+            placeholder="Masukkan Isi Laporan"
+            label="Isi Laporan"
+            name="Isi Laporan"
+            maxlength="255"
+            :error-message="(dirty || isSubmit) ? errors[0] : ''"
+          />
+        </ValidationProvider>
+        <p class="text-sm text-gray-600">
+          Tersisa {{ 255-payloadInformationComplaint.description.length }} karakter
+        </p>
       </form>
     </ValidationObserver>
   </div>
@@ -87,60 +77,18 @@ export default {
   },
   data () {
     return {
-      dataInformationComplaint: {
-        sp4n_id: {
-          value: '',
-          isInputDirty: false
-        },
-        span_created_at: {
-          value: '',
-          isInputDirty: false
-        },
-        user_name: {
-          value: '',
-          isInputDirty: false
-        },
-        title: {
-          value: '',
-          isInputDirty: false
-        },
-        description: {
-          value: '',
-          isInputDirty: false
-        }
+      payloadInformationComplaint: {
+        sp4n_id: '',
+        span_created_at: '',
+        user_name: '',
+        title: '',
+        description: ''
       },
       isSubmit: false,
-      spanId: '',
-      payloadInformationComplaint: {}
-    }
-  },
-  watch: {
-    dataInformationComplaint: {
-      deep: true,
-      handler () {
-        this.changeDataInformationComplaint('input')
-      }
+      spanId: ''
     }
   },
   methods: {
-    changeDataInformationComplaint (typeChange) {
-      Object.keys(this.dataInformationComplaint).forEach((item) => {
-        switch (typeChange) {
-          case 'input': // this type for change when user input data
-            if (this.dataInformationComplaint[item].value) {
-              this.dataInformationComplaint[item].isInputDirty = true
-              this.payloadInformationComplaint[item] = this.dataInformationComplaint[item].value
-            }
-            break
-          case 'clear': // this type for clear form
-            this.dataInformationComplaint[item].isInputDirty = false
-            this.dataInformationComplaint[item].value = ''
-            break
-          default:
-            this.dataInformationComplaint[item].isInputDirty = false
-        }
-      })
-    },
     async inputDataInformationComplaintHandle () {
       this.isSubmit = true
       const isValid = await this.$refs.informationComplaintValidate.validate()
@@ -148,14 +96,19 @@ export default {
       this.$store.commit('add-complaint/setIsValidFormInformationComplaint', isValid)
       if (isValid) {
         this.$store.commit('add-complaint/setDataInformationComplaint', { ...this.payloadInformationComplaint, span_created_at: formatDate(this.payloadInformationComplaint.span_created_at || '', 'yyyy-MM-dd') })
-        this.changeDataInformationComplaint('submit')
         this.isSubmit = false
       }
     },
     clearFormInformationComplaintHandle () {
-      this.changeDataInformationComplaint('clear')
-      this.payloadInformationComplaint = { }
+      this.payloadInformationComplaint = {
+        sp4n_id: '',
+        span_created_at: '',
+        user_name: '',
+        title: '',
+        description: ''
+      }
       this.isSubmit = false
+      this.$refs.informationComplaintValidate.reset()
     }
   }
 }
