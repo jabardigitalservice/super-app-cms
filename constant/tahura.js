@@ -1,15 +1,18 @@
 export const listStatusTahura = [
   {
-    value: '',
-    label: 'Semua Status'
+    statusCode: '',
+    label: 'Semua Status',
+    quantity: 0
   },
   {
-    value: 'scanned',
-    label: 'Sudah Scan'
+    statusCode: 'scanned',
+    label: 'Sudah Scan',
+    quantity: 0
   },
   {
-    value: 'paid',
-    label: 'Belum Scan'
+    statusCode: 'paid',
+    label: 'Belum Scan',
+    quantity: 0
   }
 ]
 
