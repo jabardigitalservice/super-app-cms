@@ -75,7 +75,7 @@
                   Jumlah Tiket
                 </th>
                 <th scope="col" class="border border-black px-6 py-3 font-bold">
-                  Tarik (RP)
+                  Tarif (RP)
                 </th>
                 <th scope="col" class="border border-black px-6 py-3 font-bold">
                   Jumlah Total (RP)
@@ -280,13 +280,17 @@ export default {
     },
     async generatePdf () {
       try {
-        await this.$axios.post('/ticket/tahura/income/report', {
+        const response = await this.$axios.post('/ticket/tahura/income/report', {
           previewUrl: window.location.href
         }, {
           headers: {
             Authorization: this.$route.params.token
           }
         })
+
+        console.log(response)
+
+        window.open(response.data, '_blank')
       } catch (error) {
         console.error(error)
       }

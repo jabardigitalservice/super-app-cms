@@ -439,7 +439,6 @@ export default {
       const wb = XLSX.utils.book_new();
       const wscols = [
         { wch: 20 },
-        { wch: 20 },
         { wch: 5 },
         { wch: 20 },
         { wch: 20 },
