@@ -27,7 +27,7 @@ export default {
     }
   },
   mounted () {
-    this.$store.commit('setActivePage', typeAduan.aduanMasuk.label)
+    this.$store.commit('setActivePage', 'Daftar Aduan dari SP4N')
     this.$store.commit('setHeader', {
       navigations: this.navigations,
       descriptionPage: this.descriptionPage
