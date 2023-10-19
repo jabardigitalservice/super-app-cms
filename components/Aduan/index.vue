@@ -36,7 +36,7 @@
                     <jds-icon name="calendar-date-outline" size="sm" fill="#069550" />
                   </template>
                   <template #footer="{emit}">
-                    <BaseDialogFooter label-button="Pilih" :show-cancel-button="true" @close="closePopupDateHandle()" @submit="filterDateHandle(emit)" />
+                    <BaseDialogFooter label-button-submit="Pilih" :show-cancel-button="true" @close="closePopupDateHandle()" @submit="filterDateHandle(emit)" />
                   </template>
                 </date-picker>
               </div>
@@ -115,6 +115,7 @@
     <DialogInformation :data-dialog="dataDialog" :show-popup="isShowPopupInformation" :icon-popup="iconPopup" @close="closePopupInformationHandle()" @submit="submitRetryHandle" />
     <DialogInputTextArea :data-dialog="dataDialog" :show-popup="isShowPopupConfirmationFailedVerification" @close="closePopupHandle()" @submit="submitPopupComplaintHandle" />
     <DialogInputText :data-dialog="dataDialog" :show-popup="isShowPopupInputIdSpan" @close="closePopupHandle()" @submit="submitInputIdSpanHandle" />
+    <DialogAddComplaint :show-popup="isShowPopupAddComplaint" @close="closePopupAddComplaint()" />
     <DialogLoading :show-popup="isLoading" />
   </div>
 </template>
@@ -125,6 +126,7 @@ import debounce from 'lodash.debounce'
 import { formatDate, generateItemsPerPageOptions, formatNumberToUnit, convertToUnit } from '~/utils'
 import 'vue2-datepicker/index.css'
 import TabBarList from '~/components/Aduan/TabBar/List'
+import DialogAddComplaint from '~/components/Aduan/Dialog/AddComplaint'
 
 import {
   complaintHeader,
@@ -137,7 +139,7 @@ import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
 
 export default {
   name: 'AduanMasuk',
-  components: { TabBarList },
+  components: { TabBarList, DialogAddComplaint },
   mixins: [popupAduanMasuk],
   props: {
     typeAduanPage: {
@@ -195,6 +197,10 @@ export default {
         this.query = this.addComplaintStatusFilterHandle()
       }
 
+      if (this.typeAduan.aduanDariSpanLapor.props === this.typeAduanPage) {
+        this.setQuery({ complaint_source: 'sp4n' })
+      }
+
       const responseListComplaint = await this.$axios.get('/warga/complaints', {
         params: { ...this.query, is_admin: 1 }
       })
@@ -218,7 +224,7 @@ export default {
       this.pagination.totalRows = data?.total_data || 0
       this.pagination.itemsPerPage = data?.page_size || this.query.limit
 
-      this.complaintStatus.total.value = this.getTotalStatistic()
+      this.complaintStatus.total.value = this.typeAduan.aduanDariSpanLapor.props === this.typeAduanPage ? this.listDataComplaint.length : this.getTotalStatistic()
       this.listStatisticComplaint.unshift(this.complaintStatus.total)
     } catch {
       this.pagination.disabled = true
@@ -393,7 +399,10 @@ export default {
       this.isShowPopupDateRange = false
       this.$refs.datepicker.closePopup()
     },
-
+    closePopupAddComplaint () {
+      this.isShowPopupAddComplaint = false
+      this.$fetch()
+    },
     setQuery (params) {
       this.query = { ...this.query, ...params }
     },
