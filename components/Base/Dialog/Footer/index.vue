@@ -1,14 +1,17 @@
 <template>
   <div
-    class="bg-gray-50 px-6 py-4 flex justify-end rounded-b-lg"
-    :class="{'justify-center':showCancelButton===false}"
+    class="bg-gray-50 px-6 py-4 rounded-b-lg"
   >
-    <div class="mr-4">
-      <jds-button v-show="showCancelButton" label="Batalkan" variant="secondary" class="!text-[14px] !font-bold" @click="$emit('close')" />
-    </div>
-    <div>
-      <jds-button :label="labelButton" :variant="variant" class="!text-[14px] !font-bold" @click="submitButtonHandle()" />
-    </div>
+    <slot>
+      <div class="flex justify-end" :class="{'justify-center':showCancelButton===false}">
+        <div class="mr-4">
+          <jds-button v-show="showCancelButton" :label="labelButtonCancel" variant="secondary" class="!text-[14px] !font-bold" @click="$emit('close')" />
+        </div>
+        <div>
+          <jds-button :label="labelButtonSubmit" :variant="variant" class="!text-[14px] !font-bold" @click="submitButtonHandle()" />
+        </div>
+      </div>
+    </slot>
   </div>
 </template>
 
@@ -16,13 +19,17 @@
 export default {
   name: 'BaseDialogFooter',
   props: {
-    labelButton: {
+    labelButtonSubmit: {
       type: String,
       default: ''
     },
     showCancelButton: {
       type: Boolean,
       default: true
+    },
+    labelButtonCancel: {
+      type: String,
+      default: 'Batalkan'
     },
     variant: {
       type: String,

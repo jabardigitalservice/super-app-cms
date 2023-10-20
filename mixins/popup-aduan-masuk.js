@@ -9,7 +9,7 @@ export default {
         title: '',
         description: '',
         subDescription: '',
-        labelButton: '',
+        labelButtonSubmit: '',
         labelInput: '',
         placeholder: '',
         showCancelButton: true,
@@ -109,9 +109,9 @@ export default {
     },
     setSucessFailedInformationHandle (description, success = true) {
       if (success) {
-        return { description, labelButton: 'Saya Mengerti', showCancelButton: false }
+        return { description, labelButtonSubmit: 'Saya Mengerti', showCancelButton: false, icon: { name: 'check-mark-circle', fill: '#069550' } }
       } else {
-        return { description, labelButton: 'Coba Lagi' }
+        return { description, labelButtonSubmit: 'Coba Lagi', icon: { name: 'times-circle', fill: '#EF5350' } }
       }
     },
     async integrationPopupHandle (paramDialog, paramsInputRequest, pathApi) {
