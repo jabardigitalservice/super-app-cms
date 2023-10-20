@@ -81,7 +81,7 @@
                 <jds-select
                   v-model="query.status"
                   placeholder="Semua Status"
-                  :options="listStatusTahura"
+                  :options="listCategoryStatus"
                   class="!ml-2 mr-2"
                   @change="filterCategoryHandle"
                 />
@@ -133,7 +133,7 @@
                         Jumlah Tiket
                       </th>
                       <th scope="col" class="px-6 py-3 font-bold">
-                        Tarik (RP)
+                        Tarif (RP)
                       </th>
                       <th scope="col" class="px-6 py-3 font-bold">
                         Jumlah Total (RP)
@@ -249,7 +249,11 @@
 </template>
 
 <script>
-import { formatDate, convertToRupiah } from '~/utils'
+import {
+  formatDate,
+  convertToRupiah,
+  formatExcelDate
+} from '~/utils'
 import { listStatusTahura } from '@/constant/tahura.js'
 import 'vue2-datepicker/index.css'
 
@@ -331,6 +335,14 @@ export default {
         return {
           value: item.code,
           label: item.name
+        }
+      })
+    },
+    listCategoryStatus () {
+      return this.listStatusTahura.map((item) => {
+        return {
+          value: item.statusCode,
+          label: item.label
         }
       })
     }
@@ -427,6 +439,7 @@ export default {
     },
     formatDate,
     convertToRupiah,
+    formatExcelDate,
     downloadExcelReport () {
       /*eslint-disable*/
       const table = document.getElementById("table-laporan-pendapatan");
@@ -441,6 +454,25 @@ export default {
         { wch: 20 },
         { wch: 20 },
       ];
+
+
+      // mengambil row
+      const rowCount = table.rows.length;
+   
+      // mengambil value row
+      for (let rowIndex = 1; rowIndex < rowCount; rowIndex++) {
+        const cellAddress = XLSX.utils.encode_cell({ r: rowIndex, c: 0 });
+        // mengambil value, format pada row
+
+        // mengubah data yg ada value nya dan berformat n (waktu pada excel)
+        if (ws[cellAddress].v && ws[cellAddress].t === 'n') {
+          const originalValue = ws[cellAddress].v;
+          const formattedValue = formatExcelDate(originalValue); 
+
+          ws[cellAddress] = { v: formattedValue }; // mengubah value 
+        }
+      }
+
       ws["!cols"] = wscols;
 
       XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
