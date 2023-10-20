@@ -1,6 +1,5 @@
 <template>
-  <!-- TODO: NEXT SLICING DETAIL -->
-  <div>Detail</div>
+  <TahuraDaftarPesananDetail />
 </template>
 
 <script>

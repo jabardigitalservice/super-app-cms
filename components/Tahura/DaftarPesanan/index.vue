@@ -83,8 +83,8 @@
             </template>
 
             <!-- eslint-disable-next-line vue/valid-v-slot -->
-            <template #item.action>
-              <BaseButton class="w-4">
+            <template #item.action="{ item }">
+              <BaseButton class="w-4" @click="goToDetail(item)">
                 <EyesIcon class="h-4 w-4" />
               </BaseButton>
             </template>
@@ -100,7 +100,7 @@ import debounce from 'lodash.debounce'
 import { formatDate, generateItemsPerPageOptions } from '~/utils'
 import 'vue2-datepicker/index.css'
 import EyesIcon from '~/assets/icon/eyes.svg?inline'
-import TabBarListTahura from '~/components/Tahura/TabBar/index.vue'
+import TabBarListTahura from '~/components/Tahura/TabBar/List/index.vue'
 import { statusTahura, listStatusTahura } from '@/constant/tahura.js'
 export default {
   name: 'DaftarPesananTahura',
@@ -363,6 +363,9 @@ export default {
       this.listStatusTahura.forEach((status) => {
         status.quantity = 0
       })
+    },
+    goToDetail (item) {
+      this.$router.push(`/tahura/daftar-pesanan/detail/${item.invoice}`)
     }
   }
 }
