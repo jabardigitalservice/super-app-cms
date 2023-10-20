@@ -181,8 +181,8 @@ export default {
         params: this.query
       })
 
-      const data = response.data
-      this.daftarPesananList = data?.data || []
+      const { data } = response.data
+      this.daftarPesananList = data || []
 
       if (this.daftarPesananList.length) {
         this.pagination.disabled = false
@@ -200,9 +200,11 @@ export default {
         }
       )
 
-      if (responseCountDaftarpesanan.data.data.length > 0) {
+      const { data: countData } = responseCountDaftarpesanan.data
+
+      if (countData.length > 0) {
         this.combinedCountOrder(
-          responseCountDaftarpesanan.data.data
+          countData
         )
       } else {
         this.resetQuantity()
