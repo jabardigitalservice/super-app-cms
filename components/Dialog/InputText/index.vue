@@ -15,13 +15,12 @@
                 :name="dataDialog.labelInput"
                 :rules="'required|' + dataDialog.dataRules"
               >
-                <jds-input-text
+                <BaseInputText
                   v-model="fieldInputText"
-                  :placeholder="dataDialog.placeholder"
-                  :name="dataDialog.labelInput"
-                  :label="dataDialog.labelInput"
-                  :error-message="isInputDirty || isSubmit ? errors[0] : ''"
-                  class="!w-full"
+                  placeholder="Masukkan ID SP4N Lapor"
+                  :error-message="errors[0]"
+                  label="ID SP4N Lapor"
+                  :maxlength="dataDialog.maxLength"
                 />
               </ValidationProvider>
             </div>
@@ -29,7 +28,7 @@
         </ValidationObserver>
       </div>
       <BaseDialogFooter
-        :label-button="dataDialog.labelButton"
+        :label-button-submit="dataDialog.labelButtonSubmit"
         @close="closePopupHandle()"
         @submit="submitDialogInputTextHandle"
       />
@@ -54,21 +53,11 @@ export default {
   },
   data () {
     return {
-      fieldInputText: '',
-      isInputDirty: false, // for check if user has typing something or no
-      isSubmit: false
-    }
-  },
-  watch: {
-    fieldInputText () {
-      if (this.fieldInputText.length > 0) {
-        this.isInputDirty = true
-      }
+      fieldInputText: ''
     }
   },
   methods: {
     async submitDialogInputTextHandle () {
-      this.isSubmit = true
       const isDataValid = await this.$refs.form.validate()
       if (isDataValid) {
         this.$emit('submit', {
@@ -76,13 +65,10 @@ export default {
           valueText: this.fieldInputText
         })
         this.fieldInputText = ''
-        this.isInputDirty = false
-        this.isSubmit = false
       }
     },
     closePopupHandle () {
-      this.isInputDirty = false
-      this.isSubmit = false
+      this.$refs.form.reset()
       this.fieldInputText = ''
       this.$emit('close')
     }

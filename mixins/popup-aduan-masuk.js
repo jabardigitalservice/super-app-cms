@@ -13,7 +13,8 @@ export default {
         labelInput: '',
         placeholder: '',
         showCancelButton: true,
-        dataRules: ''
+        dataRules: '',
+        maxLength: 0
       },
       iconPopup: {
         fill: '',
@@ -62,7 +63,8 @@ export default {
           'No.Aduan', dataComplaint.complaint_id, 'Tambahkan'),
         labelInput: 'ID SP4N Lapor',
         placeholder: 'Masukkan ID SP4N Lapor',
-        dataRules: 'maxTenDigitsInt'
+        dataRules: 'numeric',
+        maxLength: 10
       })
       this.isShowPopupInputIdSpan = true
     },
@@ -102,7 +104,7 @@ export default {
       this.integrationPopupHandle(dataDialogInformation, { sp4n_id: item.valueText }, 'add-sp4n')
     },
     setDataDialogConfirmation (title, description, subDescription, labelButton) {
-      return { title, description, subDescription, labelButton }
+      return { title, description, subDescription, labelButtonSubmit: labelButton }
     },
     setDataDialogInformation (title, subDescription) {
       return { title, subDescription }
