@@ -13,7 +13,8 @@ export default {
         labelInput: '',
         placeholder: '',
         showCancelButton: true,
-        dataRules: ''
+        dataRules: '',
+        maxLength: 0
       },
       iconPopup: {
         fill: '',
@@ -62,7 +63,8 @@ export default {
           'No.Aduan', dataComplaint.complaint_id, 'Tambahkan'),
         labelInput: 'ID SP4N Lapor',
         placeholder: 'Masukkan ID SP4N Lapor',
-        dataRules: 'maxTenDigitsInt'
+        dataRules: 'numeric',
+        maxLength: 10
       })
       this.isShowPopupInputIdSpan = true
     },
