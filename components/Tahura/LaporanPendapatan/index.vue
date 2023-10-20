@@ -81,7 +81,7 @@
                 <jds-select
                   v-model="query.status"
                   placeholder="Semua Status"
-                  :options="listStatusTahura"
+                  :options="listCategoryStatus"
                   class="!ml-2 mr-2"
                   @change="filterCategoryHandle"
                 />
@@ -335,6 +335,14 @@ export default {
         return {
           value: item.code,
           label: item.name
+        }
+      })
+    },
+    listCategoryStatus () {
+      return this.listStatusTahura.map((item) => {
+        return {
+          value: item.statusCode,
+          label: item.label
         }
       })
     }

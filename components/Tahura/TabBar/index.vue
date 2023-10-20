@@ -5,14 +5,14 @@
     @selected="selectedTabHandle"
   >
     <template #default="{ dataTab, indexTab }">
-      <BaseTab
+      <button
         :class="{ 'ml-2': indexTab > 0 }"
-        :selected="indexTab === selectedTabIndex"
-        :title="statusTahura[dataTab.statusCode]?.label"
+        @click="$emit('button-tab', dataTab.statusCode)"
       >
-        <button
+        <BaseTab
           class="flex items-start text-sm text-green-100"
-          @click="$emit('button-tab', dataTab.statusCode)"
+          :selected="indexTab === selectedTabIndex"
+          :title="statusTahura[dataTab.statusCode]?.label"
         >
           <div
             class="h-[28px] w-[28px] rounded-full p-1"
@@ -46,8 +46,8 @@
               {{ dataTab.quantity }}
             </p>
           </div>
-        </button>
-      </BaseTab>
+        </BaseTab>
+      </button>
     </template>
   </BaseTabList>
 </template>
