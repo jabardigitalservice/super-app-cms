@@ -29,7 +29,7 @@
         </ValidationObserver>
       </div>
       <BaseDialogFooter
-        :label-button="dataDialog.labelButton"
+        :label-button-submit="dataDialog.labelButtonSubmit"
         @close="closePopupHandle()"
         @submit="submitDialogInputTextHandle"
       />

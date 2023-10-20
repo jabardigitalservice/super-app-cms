@@ -28,7 +28,7 @@
           </form>
         </ValidationObserver>
       </div>
-      <BaseDialogFooter :label-button=" dataDialog.labelButton" @close="closePopupHandle()" @submit="submitConfirmationFaileComplaintdHandle()" />
+      <BaseDialogFooter :label-button-submit=" dataDialog.labelButtonSubmit" @close="closePopupHandle()" @submit="submitConfirmationFaileComplaintdHandle()" />
     </BaseDialogPanel>
   </BaseDialog>
 </template>

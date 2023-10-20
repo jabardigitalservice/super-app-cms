@@ -102,7 +102,7 @@ export default {
       this.integrationPopupHandle(dataDialogInformation, { sp4n_id: item.valueText }, 'add-sp4n')
     },
     setDataDialogConfirmation (title, description, subDescription, labelButton) {
-      return { title, description, subDescription, labelButton }
+      return { title, description, subDescription, labelButtonSubmit: labelButton }
     },
     setDataDialogInformation (title, subDescription) {
       return { title, subDescription }
