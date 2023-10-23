@@ -47,7 +47,7 @@
                   </template>
                   <template #footer="{ emit }">
                     <BaseDialogFooter
-                      label-button="Pilih"
+                      label-button-submit="Pilih"
                       :show-cancel-button="true"
                       @close="closePopupDateHandle()"
                       @submit="filterDateHandle(emit)"
@@ -181,7 +181,7 @@ export default {
         params: this.query
       })
 
-      const { data } = response.data
+      const { data, meta } = response.data
       this.daftarPesananList = data || []
 
       if (this.daftarPesananList.length) {
@@ -189,9 +189,9 @@ export default {
       } else {
         this.pagination.disabled = true
       }
-      this.pagination.currentPage = data?.page || 1
-      this.pagination.totalRows = data?.totalData || 0
-      this.pagination.itemsPerPage = data?.pageSize || this.query.pageSize
+      this.pagination.currentPage = meta?.page || 1
+      this.pagination.totalRows = meta?.totalData || 0
+      this.pagination.itemsPerPage = meta?.pageSize || this.query.pageSize
 
       const responseCountDaftarpesanan = await this.$axios.get(
         '/ticket/tahura/order/count',
@@ -203,9 +203,7 @@ export default {
       const { data: countData } = responseCountDaftarpesanan.data
 
       if (countData.length > 0) {
-        this.combinedCountOrder(
-          countData
-        )
+        this.combinedCountOrder(countData)
       } else {
         this.resetQuantity()
       }
@@ -350,12 +348,17 @@ export default {
       this.listStatusTahura.forEach((status) => {
         const { statusCode } = status
         if (statusCode !== 'all') {
-          const matchingStatus = countFromApi.find(apiStatus => apiStatus.statusCode === statusCode)
+          const matchingStatus = countFromApi.find(
+            apiStatus => apiStatus.statusCode === statusCode
+          )
           if (matchingStatus) {
             status.quantity = matchingStatus.quantity
           }
         } else {
-          status.quantity = countFromApi.reduce((total, apiStatus) => total + apiStatus.quantity, 0)
+          status.quantity = countFromApi.reduce(
+            (total, apiStatus) => total + apiStatus.quantity,
+            0
+          )
         }
       })
     },
