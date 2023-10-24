@@ -1,23 +1,25 @@
 <template>
-  <nuxt-link
-    :to="{ path: link }"
-    class="flex w-full min-w-[200px] items-center justify-between rounded-lg p-3 hover:bg-green-700 hover:font-bold hover:text-white"
-    :class="{ 'nuxt-link-exact-active': getActivePage == label }"
-  >
-    <div class="flex items-center">
-      <BaseIconSvg
-        v-if="icon"
-        :icon="`/icon/${icon}`"
-        :size="16"
-        fill-color="#FFFFFF"
-        class="mr-3 flex-shrink-0"
-      />
-      <div class="font-lato text-sm text-white">
-        {{ label }}
+  <div @click="handleClick">
+    <nuxt-link
+      :to="{ path: link}"
+      class="flex w-full min-w-[200px] items-center justify-between rounded-lg p-3 hover:bg-green-700 hover:font-bold hover:text-white"
+      :class="{ 'nuxt-link-exact-active': getActivePage == label }"
+    >
+      <div class="flex items-center">
+        <BaseIconSvg
+          v-if="icon"
+          :icon="`/icon/${icon}`"
+          :size="16"
+          fill-color="#FFFFFF"
+          class="mr-3 flex-shrink-0"
+        />
+        <div class="font-lato text-sm text-white">
+          {{ label }}
+        </div>
       </div>
-    </div>
-    <ChevronRight v-if="isShowArrow" class="stroke-white" />
-  </nuxt-link>
+      <ChevronRight v-if="isShowArrow" class="stroke-white" />
+    </nuxt-link>
+  </div>
 </template>
 
 <script>
@@ -49,6 +51,13 @@ export default {
   computed: {
     getActivePage () {
       return this.$store.state.page
+    }
+  },
+  methods: {
+    handleClick () {
+      this.$store.commit('setDataTabAduanStatus', '')
+      this.$store.commit('setDataTabAduanPage', 1)
+      this.$store.commit('setDataTabAduanLimit', 5)
     }
   }
 }

@@ -5,15 +5,13 @@
     @selected="selectedTabHandle"
   >
     <template #default="{ dataTab, indexTab }">
-      <BaseTab
-        v-if="
-          dataTab.typeAduan.every(item=>!item.includes('aduan-dialihkan-span-lapor'))
-        "
-        :class="{ 'ml-2': indexTab > 0 }"
-        :selected="indexTab === selectedTabIndex"
-        :title="dataTab.name"
-      >
-        <button class="flex items-start text-sm text-green-100" @click="$emit('button-tab',dataTab.id)">
+      <button v-if=" dataTab.typeAduan.every(item=>!item.includes('aduan-dialihkan-span-lapor'))" @click="$emit('button-tab',dataTab.id)">
+        <BaseTab
+          class="flex items-start text-sm text-green-100"
+          :class="{ 'ml-2': indexTab > 0 }"
+          :selected="indexTab === selectedTabIndex"
+          :title="dataTab.name"
+        >
           <div
             class="h-[28px] w-[28px] p-1 rounded-full"
             :class="
@@ -52,13 +50,14 @@
               >{{ dataTab.unit }}</span>
             </p>
           </div>
-        </button>
-      </BaseTab>
+        </BaseTab>
+      </button>
     </template>
   </BaseTabList>
 </template>
 
 <script>
+import { complaintTab } from '~/constant/aduan-masuk'
 
 export default {
   name: 'TabBarList',
@@ -74,12 +73,23 @@ export default {
   },
   data () {
     return {
-      selectedTabIndex: 0
+      selectedTabIndex: 0,
+      foundDataTab: this.searchDataByTitleTab(this.typeAduan),
+      complaintTab
+    }
+  },
+  mounted () {
+    if (this.foundDataTab) {
+      this.selectedTabIndex = this.foundDataTab[this.$store.state.dataTabAduanStatus]?.value || 0
     }
   },
   methods: {
     selectedTabHandle (index) {
       this.selectedTabIndex = index
+    },
+    searchDataByTitleTab (title) {
+      const result = complaintTab.find(item => item.title === title)
+      return result ? { ...result } : null
     }
   }
 }
