@@ -126,32 +126,7 @@
           </template>
 
           <template v-else>
-            <div
-              v-if="qrCode && !isLoading"
-              class="flex flex-col items-center justify-center"
-            >
-              <img
-                class="mt-2 !h-[280px] !w-[280px]"
-                :src="qrCode"
-                alt="QR Code"
-              >
-              <a
-                :href="qrCode"
-                :download="`qrcode-${$route.params.invoice}.png`"
-              >
-                <jds-button class="!w-full!text-sm mt-[16px] !bg-green-600">
-                  Unduh QR Code
-                </jds-button>
-              </a>
-            </div>
-            <div v-else>
-              <div class="flex flex-col items-center justify-center h-[300px]">
-                <jds-spinner class="mb-4" size="56" />
-                <p class="text-green-700 text-2xl font-lato font-bold">
-                  Loading....
-                </p>
-              </div>
-            </div>
+            <BaseQRGenerator :base64-string="base64String" />
           </template>
         </BaseTabPanel>
       </template>
@@ -160,7 +135,6 @@
 </template>
 
 <script>
-import QRCode from 'qrcode-generator'
 import ArrowLeft from '~/assets/icon/arrow-left.svg?inline'
 import TabBarListDetail from '~/components/Tahura/TabBar/Detail/index.vue'
 import { statusTahura } from '@/constant/tahura.js'
@@ -196,13 +170,13 @@ export default {
       statusTahura,
       dataScanned: {},
       viewDetail: 'detail-page',
-      qrCode: null,
-      isLoading: false
+      base64String: ''
     }
   },
   watch: {
     detailPesanan: {
-      handler: 'generateQRCode'
+      handler: 'generateQRCode',
+      immediate: true
     }
   },
   methods: {
@@ -214,29 +188,13 @@ export default {
       this.viewDetail = namePage
     },
     generateQRCode () {
-      this.isLoading = true
       if (
         this.detailPesanan?.tickets &&
         this.detailPesanan.tickets.length > 0
       ) {
         const jsonString = JSON.stringify(this.detailPesanan?.tickets[0])
 
-        const base64String = btoa(jsonString)
-
-        this.changeBase64ToQRImage(base64String)
-      }
-    },
-    changeBase64ToQRImage (base64String) {
-      if (base64String) {
-        const qr = QRCode(0, 'M')
-        qr.addData(base64String)
-        qr.make()
-        const qrCodeDataURL = qr.createDataURL(8, 0)
-
-        this.qrCode = qrCodeDataURL
-        this.isLoading = false
-      } else {
-        this.qrCode = null
+        this.base64String = btoa(jsonString)
       }
     }
   }
