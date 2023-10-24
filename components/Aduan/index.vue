@@ -133,6 +133,7 @@ import {
   complaintStatus,
   complaintDivertedToSpanHeader,
   complaintFromSpanHeader,
+  determiningAuthorityHeader,
   typeAduan
 } from '~/constant/aduan-masuk'
 import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
@@ -182,6 +183,7 @@ export default {
       selectedTabIndex: 0,
       complaintDivertedToSpanHeader,
       complaintFromSpanHeader,
+      determiningAuthorityHeader,
       typeAduan,
       isShowPopupDate: false,
       isShowPopupAddComplaint: false,
@@ -226,6 +228,9 @@ export default {
 
       this.complaintStatus.total.value = this.typeAduan.aduanDariSpanLapor.props === this.typeAduanPage ? this.pagination.totalRows : this.getTotalStatistic()
       this.listStatisticComplaint.unshift(this.complaintStatus.total)
+      if (this.listStatisticComplaint.length === 2) {
+        this.listStatisticComplaint.pop()
+      }
     } catch {
       this.pagination.disabled = true
     }
@@ -244,7 +249,8 @@ export default {
           status_id: item.complaint_status_id,
           sp4n_id: item.sp4n_id || 'Belum ada',
           diverted_to_span_at: item.diverted_to_span_at ? formatDate(item.diverted_to_span_at || '', 'dd/MM/yyyy HH:mm') : 'Belum ada',
-          sp4n_created_at: item.sp4n_created_at ? formatDate(item.sp4n_created_at || '', 'dd/MM/yyyy HH:mm') : 'Belum ada'
+          sp4n_created_at: item.sp4n_created_at ? formatDate(item.sp4n_created_at || '', 'dd/MM/yyyy HH:mm') : 'Belum ada',
+          complaint_source: item.complaint_source === 'sp4n' ? 'SP4N Lapor' : item.complaint_source
         }
       })
     },
@@ -307,6 +313,8 @@ export default {
           return this.complaintDivertedToSpanHeader
         case typeAduan.aduanDariSpanLapor.props:
           return this.complaintFromSpanHeader
+        case typeAduan.penentuanKewenangan.props:
+          return this.determiningAuthorityHeader
         default:
           return {}
       }
@@ -351,12 +359,13 @@ export default {
       this.$router.push(`${this.linkPageDetail}/${item.id}`)
     },
     getColorText (statusId) {
-      switch (statusId) {
-        case complaintStatus.unverified.id:
+      const statusColor = this.complaintStatus[statusId].statusColor.find(statusColor => statusColor.typeAduan === this.typeAduanPage)
+      switch (statusColor.color) {
+        case 'yellow':
           return 'text-[#FF7500]'
-        case complaintStatus.verified.id:
+        case 'green':
           return 'text-green-700'
-        case complaintStatus.failed.id:
+        case 'red':
           return 'text-[#DD5E5E]'
         default:
           return 'text-gray-900'
