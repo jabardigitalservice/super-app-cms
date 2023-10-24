@@ -155,6 +155,7 @@ export default {
       this.$router.back()
     },
     selectedTabHandle (index) {
+      console.log(index)
       this.selectedTabIndex = index
     },
     formatDate

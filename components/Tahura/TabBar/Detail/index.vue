@@ -5,6 +5,7 @@
     @selectd="selectedTabHandle"
   >
     <template #default="{ dataTab, indexTab }">
+      {{ indexTab }}
       <button :class="{ 'ml-2': indexTab > 0 }">
         <BaseTab
           class="flex items-start text-sm text-green-100"
