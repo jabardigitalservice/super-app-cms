@@ -2,10 +2,10 @@
   <BaseTabList
     class="bg-green-600"
     :list-tab="listTab"
-    @selectd="selectedTabHandle"
+    @selected="selectedTabHandle"
   >
     <template #default="{ dataTab, indexTab }">
-      <button :class="{ 'ml-2': indexTab > 0 }">
+      <button :class="{ 'ml-2': indexTab > 0 }" @click="$emit('button-tab', dataTab.detailPage)">
         <BaseTab
           class="flex items-start text-sm text-green-100"
           :selected="indexTab === selectedTabIndex"
@@ -59,7 +59,6 @@ export default {
   },
   methods: {
     selectedTabHandle (index) {
-      console.log(index)
       this.selectedTabIndex = index
     }
   }
