@@ -145,11 +145,11 @@ export default {
   props: {
     detailPesanan: {
       type: Object,
-      default: () => {}
+      default: () => ({})
     },
     detailScanned: {
       type: Object,
-      default: () => {}
+      default: () => ({})
     }
   },
   data () {

@@ -29,7 +29,7 @@ export default {
   props: {
     base64String: {
       type: String,
-      default: () => ''
+      required: true
     }
   },
   data () {
