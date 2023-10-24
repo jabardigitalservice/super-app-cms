@@ -63,7 +63,7 @@
                   </template>
                   <template #footer="{ emit }">
                     <BaseDialogFooter
-                      label-button="Pilih"
+                      label-button-submit="Pilih"
                       :show-cancel-button="true"
                       @close="closePopupDateHandle()"
                       @submit="filterDateHandle(emit)"
