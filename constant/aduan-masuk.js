@@ -153,5 +153,11 @@ export const complaintButtonDetail = {
     label: 'Tambahkan ID SP4N Lapor',
     variant: 'primary',
     complaintStatus: 'no-id-span'
+  },
+  complaintProcess: {
+    idButton: 'button-complaint-process',
+    label: 'Proses Aduan',
+    variant: 'primary',
+    complaintStatus: 'disposition-authority'
   }
 }
