@@ -6,9 +6,6 @@
   >
     <template #default="{ dataTab, indexTab }">
       <BaseTab
-        v-if="
-          dataTab.typeAduan.every(item=>!item.includes('aduan-dialihkan-span-lapor'))
-        "
         :class="{ 'ml-2': indexTab > 0 }"
         :selected="indexTab === selectedTabIndex"
         :title="dataTab.name"

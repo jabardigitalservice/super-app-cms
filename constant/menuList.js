@@ -84,25 +84,36 @@ const masterDataMenu = {
 const aduanMenu = {
   titleMenu: 'aduan',
   showTitleMenuForRoles: ['admin'],
-  menu: [{
-    name: 'Daftar Aduan Masuk',
-    path: '/aduan/aduan-masuk',
-    arrow: false,
-    showMenuAndAccessForRoles: ['admin'],
-    icon: 'clipboard-list.svg'
-  }, {
-    name: 'Dialihkan ke SP4N',
-    path: '/aduan/dialihkan-ke-span-lapor',
-    arrow: false,
-    showMenuAndAccessForRoles: ['admin'],
-    icon: 'clipboard-arrow-left.svg'
-  }, {
-    name: 'Daftar Aduan dari SP4N',
-    path: '/aduan/aduan-dari-span-lapor',
-    arrow: false,
-    showMenuAndAccessForRoles: ['admin'],
-    icon: 'clipboard-pencil.svg'
-  }]
+  menu: [
+    {
+      name: 'Daftar Aduan Masuk',
+      path: '/aduan/aduan-masuk',
+      arrow: false,
+      showMenuAndAccessForRoles: ['admin'],
+      icon: 'clipboard-list.svg'
+    },
+    {
+      name: 'Daftar Penentuan Kewenangan',
+      path: '/aduan/penentuan-kewenangan',
+      arrow: false,
+      showMenuAndAccessForRoles: ['admin'],
+      icon: 'clipboard-user.svg'
+    },
+    {
+      name: 'Dialihkan ke SP4N',
+      path: '/aduan/dialihkan-ke-span-lapor',
+      arrow: false,
+      showMenuAndAccessForRoles: ['admin'],
+      icon: 'clipboard-arrow-left.svg'
+    },
+    {
+      name: 'Daftar Aduan dari SP4N',
+      path: '/aduan/aduan-dari-span-lapor',
+      arrow: false,
+      showMenuAndAccessForRoles: ['admin'],
+      icon: 'clipboard-pencil.svg'
+    }
+  ]
 }
 
 const tahuraMenu = {
