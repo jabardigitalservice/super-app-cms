@@ -19,11 +19,30 @@
             placeholder="Pilih Kategori"
             :error-message="dirty || isSubmit ? errors[0] : ''"
             :options="listCategoryComplaint"
+            @select="resectValueChildCategory"
           />
         </ValidationProvider>
+
+        <ValidationProvider
+          v-if="payloadOtherComplaint.complaint_category_id === 'lainnya'"
+          v-slot="{ errors, dirty }"
+          name="Kategori"
+          class="mb-4"
+          rules="max:50|min:1|required"
+          tag="div"
+        >
+          <BaseInputText
+            v-model="payloadOtherComplaint.complaint_subcategory_id"
+            placeholder="Masukkan Kategori"
+            :error-message="dirty || isSubmit ? errors[0] : ''"
+            maxlength="50"
+          />
+        </ValidationProvider>
+
         <ValidationProvider
           v-if="payloadOtherComplaint.complaint_category_id !== 'lainnya'"
           v-slot="{ errors, dirty }"
+          :disabled="!payloadOtherComplaint.complaint_category_id"
           name="Sub Kategori"
           rules="requiredSelectForm"
           class="mb-4"
@@ -36,27 +55,30 @@
             placeholder="Pilih Sub Kategori"
             :error-message="dirty || isSubmit ? errors[0] : ''"
             :options="listSubCategoryComplaint"
-            @change="testingChangedata"
+            @select="complaint_subcategory_child_id = ''"
           />
         </ValidationProvider>
 
         <ValidationProvider
-          v-else
+          v-if="
+            payloadOtherComplaint.complaint_subcategory_id.includes(
+              'lainnya-terkait'
+            )
+          "
           v-slot="{ errors, dirty }"
           name="Sub Kategori"
           class="mb-4"
-          rules="required"
+          rules="max:50|min:1|required"
           tag="div"
         >
-          <jds-input-text
-            v-model="payloadOtherComplaint.complaint_subcategory_id"
-            name="Sub Kategori"
-            label="Sub Kategori"
-            class="!w-full"
+          <BaseInputText
+            v-model="payloadOtherComplaint.complaint_subcategory_child_id"
             placeholder="Masukkan Sub Kategori"
             :error-message="dirty || isSubmit ? errors[0] : ''"
+            maxlength="50"
           />
         </ValidationProvider>
+
         <h1 class="mb-2 font-roboto text-base font-bold">
           Disposisi & Kewenangan
         </h1>
@@ -109,6 +131,7 @@ export default {
         complaint_category_id: '',
         complaint_subcategory_id: '',
         disposition: '',
+        complaint_subcategory_child_id: '',
         authority: 'Pemerintah Provinsi Jawa Barat'
       },
       isSubmit: false
@@ -132,6 +155,7 @@ export default {
           }
         )
         const dataSubCategoryComplaint = responseDataSubCategory.data.data
+        console.log(dataSubCategoryComplaint)
         this.listDataSubCategoryComplaint = dataSubCategoryComplaint
       }
       const responseDataDisposition = await this.$axios.get(
@@ -186,13 +210,15 @@ export default {
         complaint_category_id: '',
         complaint_subcategory_id: '',
         disposition: '',
+        complaint_subcategory_child_id: '',
         authority: 'Pemerintah Provinsi Jawa Barat'
       }
       this.isSubmit = false
       this.$refs.formOtherComplaint.reset()
     },
-    testingChangedata () {
-      console.log('adsa')
+    resectValueChildCategory () {
+      this.payloadOtherComplaint.complaint_subcategory_id = ''
+      this.payloadOtherComplaint.complaint_subcategory_child_id = ''
     }
   }
 }
