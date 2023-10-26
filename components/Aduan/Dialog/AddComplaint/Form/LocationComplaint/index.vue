@@ -145,6 +145,7 @@ export default {
         subdistrict_id: '',
         addressDetail: ''
       }
+      this.addressDetail = ''
       this.isSubmit = false
       this.$refs.formLocationComplaint.reset()
     }

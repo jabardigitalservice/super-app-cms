@@ -1,11 +1,13 @@
 <template>
   <div class="form-text-area">
     <label :for="name">{{ label }}</label>
-    <div class="mt-1 input-wrapper h-[100px] bg-gray-50 rounded-lg border border-gray-400 py-2 px-[14px]" :class="{'mb-[2px] !border-red-600':errorMessage}">
+    <div
+      class="input-wrapper mt-1 h-[100px] rounded-lg border border-gray-400 bg-gray-50 py-2 px-[14px]"
+      :class="{ 'mb-[2px] !border-red-600': errorMessage }"
+    >
       <textarea
         :value="value"
-        class="h-full w-full bg-transparent resize-none font-lato placeholder:text-sm placeholder:text-gray-600 focus:outline-none"
-
+        class="h-full w-full resize-none bg-transparent font-lato placeholder:text-sm placeholder:text-gray-600 focus:outline-none"
         v-bind="$attrs"
         @input="onInput"
       />
@@ -22,6 +24,10 @@ export default {
     event: 'input'
   },
   props: {
+    name: {
+      type: String,
+      default: ''
+    },
     label: {
       type: String,
       default: ''
