@@ -19,7 +19,7 @@
             placeholder="Pilih Kategori"
             :error-message="dirty || isSubmit ? errors[0] : ''"
             :options="listCategoryComplaint"
-            @select="resectValueChildCategory"
+            @change="resectValueChildCategory"
           />
         </ValidationProvider>
 
@@ -42,7 +42,6 @@
         <ValidationProvider
           v-if="payloadOtherComplaint.complaint_category_id !== 'lainnya'"
           v-slot="{ errors, dirty }"
-          :disabled="!payloadOtherComplaint.complaint_category_id"
           name="Sub Kategori"
           rules="requiredSelectForm"
           class="mb-4"
@@ -50,12 +49,13 @@
         >
           <jds-select
             v-model="payloadOtherComplaint.complaint_subcategory_id"
+            :disabled="!payloadOtherComplaint.complaint_category_id"
             name="Sub Kategori"
             label="Sub Kategori"
             placeholder="Pilih Sub Kategori"
             :error-message="dirty || isSubmit ? errors[0] : ''"
             :options="listSubCategoryComplaint"
-            @select="complaint_subcategory_child_id = ''"
+            @change="complaint_subcategory_child_id = ''"
           />
         </ValidationProvider>
 
@@ -155,7 +155,6 @@ export default {
           }
         )
         const dataSubCategoryComplaint = responseDataSubCategory.data.data
-        console.log(dataSubCategoryComplaint)
         this.listDataSubCategoryComplaint = dataSubCategoryComplaint
       }
       const responseDataDisposition = await this.$axios.get(
