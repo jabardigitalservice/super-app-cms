@@ -260,6 +260,9 @@ import 'vue2-datepicker/index.css'
 export default {
   name: 'LaporanPendapatanTahura',
   data () {
+    const today = new Date()
+    const oneMonthAgo = new Date(today)
+    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1)
     return {
       listDataTypeAssurance: [
         {
@@ -278,7 +281,7 @@ export default {
       },
       isShowPopupDate: false,
       isShowPopupDateRange: false,
-      dateRange: [new Date(), new Date()],
+      dateRange: [oneMonthAgo, today],
       listDataLaporan: [],
       assurancePrice: 0,
       grandTotal: 0,
@@ -381,7 +384,7 @@ export default {
       this.$fetch()
     },
     clearDateRangeHandle () {
-      this.dateRange = [new Date(), new Date()]
+      this.dateRange = [this.oneMonthAgo, new Date()]
 
       this.setQuery({
         startDate: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
