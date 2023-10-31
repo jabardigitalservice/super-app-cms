@@ -33,7 +33,6 @@
                   range
                   range-separator=" - "
                   :disabled-date="disabledRange"
-                  @close="isShowPopupDate = false"
                   @clear="clearDateRangeHandle"
                   @change="changeDateRangeHandle"
                   @input="checkMaxDate"
@@ -171,7 +170,6 @@ export default {
       q: '',
       selectedTabIndex: 0,
       dateRange: [oneMonthAgo, today],
-      isShowPopupDate: false,
       isShowPopupDateRange: false,
       today,
       oneMonthAgo,
@@ -288,13 +286,13 @@ export default {
         startDate: this.dateRange[0],
         endDate: this.dateRange[1]
       })
+      this.getCount()
       this.isShowPopupDateRange = false
       this.$fetch()
-      this.getCount()
     },
     changeDateRangeHandle () {
-      this.isShowPopupDateRange = true
       this.getCount()
+      this.isShowPopupDateRange = true
     },
     setQuery (params) {
       this.query = { ...this.query, ...params }
@@ -367,11 +365,13 @@ export default {
       this.$router.push(`/tahura/daftar-pesanan/detail/${item.invoice}`)
     },
     async getCount () {
+      const queryCount = { ...this.query }
+      queryCount.status = ''
       try {
         const responseCountDaftarpesanan = await this.$axios.get(
           '/ticket/tahura/order/count',
           {
-            params: this.query
+            params: queryCount
           }
         )
 
