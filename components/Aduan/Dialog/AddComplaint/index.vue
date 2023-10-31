@@ -10,7 +10,7 @@
       @submit="submitFormAddComplaint()"
     >
       <template #form-complaint>
-        <div class="mt-8">
+        <div class="mt-8 overflow-y-auto max-h-[450px]">
           <FormInformationComplaint v-show="indexCurrentActive === 1" ref="formInformationComplaint" />
           <FormLocationComplaint v-show="indexCurrentActive === 2" ref="formLocationComplaint" />
           <FormOtherComplaint v-show="indexCurrentActive === 3" ref="formOtherComplaint" />

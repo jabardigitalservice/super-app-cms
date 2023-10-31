@@ -10,7 +10,7 @@
             <jds-button label="Batal" variant="tertiary" class="!font-bold !text-green-700" @click="$emit('close')" />
             <div class="flex">
               <div class="mr-3">
-                <jds-button label="Kembali" variant="secondary" class="!font-bold !border-green-700 !text-green-700" @click="$emit('prev')" />
+                <jds-button v-show="indexCurrentActive !== 1" label="Kembali" variant="secondary" class="!font-bold !border-green-700 !text-green-700" @click="$emit('prev')" />
               </div>
               <jds-button :label="labelButton" variant="primary" @click="$emit('submit')" />
             </div>
