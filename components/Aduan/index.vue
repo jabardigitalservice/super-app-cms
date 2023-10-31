@@ -2,7 +2,12 @@
   <div>
     <BaseTabGroup>
       <template #tab-list>
-        <TabBarList :list-tab="listStatistic" :type-aduan="typeAduanPage" @selected="selectedTabHandle" @button-tab="listTabHandle" />
+        <TabBarList
+          :list-tab="listStatistic"
+          :type-aduan="typeAduanPage"
+          @selected="selectedTabHandle"
+          @button-tab="listTabHandle"
+        />
       </template>
       <template #tab-panel>
         <BaseTabPanel class="px-3 pt-6 pb-4">
@@ -21,28 +26,48 @@
                 <p class="ml-2 text-sm text-blue-gray-700">
                   Filter :
                 </p>
-                <jds-select v-model="query.complaint_category_id" placeholder="Kategori Aduan" :options="listCategory" class="!ml-2 mr-2 select-form-complaint !w-[260px]" @change="filterCategoryHandle" />
+                <jds-select
+                  v-model="query.complaint_category_id"
+                  placeholder="Kategori Aduan"
+                  :options="listCategory"
+                  class="select-form-complaint !ml-2 mr-2 !w-[260px]"
+                  @change="filterCategoryHandle"
+                />
                 <date-picker
                   ref="datepicker"
                   v-model="dateRange"
                   format="DD/MM/YYYY"
                   range
                   range-separator=" - "
-                  @close="isShowPopupDate=false"
+                  @close="isShowPopupDate = false"
                   @clear="clearDateRangeHandle"
                   @change="changeDateRangeHandle"
                 >
                   <template #icon-calendar>
-                    <jds-icon name="calendar-date-outline" size="sm" fill="#069550" />
+                    <jds-icon
+                      name="calendar-date-outline"
+                      size="sm"
+                      fill="#069550"
+                    />
                   </template>
-                  <template #footer="{emit}">
-                    <BaseDialogFooter label-button-submit="Pilih" :show-cancel-button="true" @close="closePopupDateHandle()" @submit="filterDateHandle(emit)" />
+                  <template #footer="{ emit }">
+                    <BaseDialogFooter
+                      label-button-submit="Pilih"
+                      :show-cancel-button="true"
+                      @close="closePopupDateHandle()"
+                      @submit="filterDateHandle(emit)"
+                    />
                   </template>
                 </date-picker>
               </div>
             </div>
 
-            <jds-button v-show="typeAduan.aduanDariSpanLapor.props===typeAduanPage" label="Tambah Aduan" variant="primary" @click="isShowPopupAddComplaint=true" />
+            <jds-button
+              v-show="typeAduan.aduanDariSpanLapor.props === typeAduanPage"
+              label="Tambah Aduan"
+              variant="primary"
+              @click="isShowPopupAddComplaint = true"
+            />
           </div>
           <JdsDataTable
             :headers="checkTypeHeaderAduan(typeAduanPage)"
@@ -71,7 +96,10 @@
             <template #item.sp4n_created_at="{ item }">
               <div class="flex items-center">
                 <p
-                  :class="{'bg-gray-100 text-[#FF7500] h-fit w-fit rounded-[32px] px-[10px] py-1 text-xs font-semibold':item.sp4n_created_at==='Belum ada'}"
+                  :class="{
+                    'h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 text-xs font-semibold text-[#FF7500]':
+                      item.sp4n_created_at === 'Belum ada',
+                  }"
                 >
                   {{ item.sp4n_created_at }}
                 </p>
@@ -81,7 +109,10 @@
             <template #item.diverted_to_span_at="{ item }">
               <div class="flex items-center">
                 <p
-                  :class="{'bg-gray-100 text-[#FF7500] h-fit w-fit rounded-[32px] px-[10px] py-1 text-xs font-semibold':item.diverted_to_span_at==='Belum ada'}"
+                  :class="{
+                    'h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 text-xs font-semibold text-[#FF7500]':
+                      item.diverted_to_span_at === 'Belum ada',
+                  }"
                 >
                   {{ item.diverted_to_span_at }}
                 </p>
@@ -91,31 +122,64 @@
             <template #item.sp4n_id="{ item }">
               <div class="flex items-center">
                 <p
-                  :class="{'bg-gray-100 text-[#FF7500] h-fit w-fit rounded-[32px] px-[10px] py-1 text-xs font-semibold':item.sp4n_id==='Belum ada'}"
+                  :class="{
+                    'h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 text-xs font-semibold text-[#FF7500]':
+                      item.sp4n_id === 'Belum ada',
+                  }"
                 >
                   {{ item.sp4n_id }}
                 </p>
               </div>
             </template>
             <!-- eslint-disable-next-line vue/valid-v-slot -->
-            <template #item.action="{item}">
+            <template #item.action="{ item }">
               <BaseTableAction
                 :list-menu-pop-over="menuTableActionHandle(item?.status_id)"
                 @detail="goToPageDetailHandle(item)"
-                @verify="showPopupConfirmationVerificationComplaintHandle (item)"
+                @verify="showPopupConfirmationVerificationComplaintHandle(item)"
                 @failed="showPopupConfirmationFailedComplaintHandle(item)"
                 @add-span="showPopupInputIdSpanHandle(item)"
+                @process-complaint="showPopupProcessComplaintHandle(item)"
               />
             </template>
           </JdsDataTable>
         </BaseTabPanel>
       </template>
     </BaseTabGroup>
-    <DialogConfirmation :data-dialog="dataDialog" :show-popup="isShowPopupConfirmationVerification" @close="closePopupHandle()" @submit="submitPopupComplaintHandle" />
-    <DialogInformation :data-dialog="dataDialog" :show-popup="isShowPopupInformation" :icon-popup="iconPopup" @close="closePopupInformationHandle()" @submit="submitRetryHandle" />
-    <DialogInputTextArea :data-dialog="dataDialog" :show-popup="isShowPopupConfirmationFailedVerification" @close="closePopupHandle()" @submit="submitPopupComplaintHandle" />
-    <DialogInputText :data-dialog="dataDialog" :show-popup="isShowPopupInputIdSpan" @close="closePopupHandle()" @submit="submitInputIdSpanHandle" />
-    <DialogAddComplaint :show-popup="isShowPopupAddComplaint" @close="closePopupAddComplaint()" />
+    <DialogConfirmation
+      :data-dialog="dataDialog"
+      :show-popup="isShowPopupConfirmationVerification"
+      @close="closePopupHandle()"
+      @submit="submitPopupComplaintHandle"
+    />
+    <DialogInformation
+      :data-dialog="dataDialog"
+      :show-popup="isShowPopupInformation"
+      :icon-popup="iconPopup"
+      @close="closePopupInformationHandle()"
+      @submit="submitRetryHandle"
+    />
+    <DialogInputTextArea
+      :data-dialog="dataDialog"
+      :show-popup="isShowPopupConfirmationFailedVerification"
+      @close="closePopupHandle()"
+      @submit="submitPopupComplaintHandle"
+    />
+    <DialogInputText
+      :data-dialog="dataDialog"
+      :show-popup="isShowPopupInputIdSpan"
+      @close="closePopupHandle()"
+      @submit="submitInputIdSpanHandle"
+    />
+    <DialogAddComplaint
+      :show-popup="isShowPopupAddComplaint"
+      @close="closePopupAddComplaint()"
+    />
+    <DialogProcessComplaint
+      :data-dialog="dataDialog"
+      :show-popup="isShowPopupProcessComplaint"
+      @close="closePopupHandle()"
+    />
     <DialogLoading :show-popup="isLoading" />
   </div>
 </template>
@@ -123,10 +187,16 @@
 <script>
 import debounce from 'lodash.debounce'
 
-import { formatDate, generateItemsPerPageOptions, formatNumberToUnit, convertToUnit } from '~/utils'
+import {
+  formatDate,
+  generateItemsPerPageOptions,
+  formatNumberToUnit,
+  convertToUnit
+} from '~/utils'
 import 'vue2-datepicker/index.css'
 import TabBarList from '~/components/Aduan/TabBar/List'
 import DialogAddComplaint from '~/components/Aduan/Dialog/AddComplaint'
+import DialogProcessComplaint from '~/components/Aduan/Dialog/ProcessComplaint'
 
 import {
   complaintHeader,
@@ -140,7 +210,7 @@ import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
 
 export default {
   name: 'AduanMasuk',
-  components: { TabBarList, DialogAddComplaint },
+  components: { TabBarList, DialogAddComplaint, DialogProcessComplaint },
   mixins: [popupAduanMasuk],
   props: {
     typeAduanPage: {
@@ -156,9 +226,30 @@ export default {
     return {
       menuTableAction: [
         { menu: 'Lihat Detail Aduan', value: 'detail', typeAduan: ['all'] },
-        { menu: 'Terverifikasi', value: 'verify', typeAduan: [typeAduan.aduanMasuk.props], complaintStatus: 'unverified' },
-        { menu: 'Gagal Diverifikasi', value: 'failed', typeAduan: [typeAduan.aduanMasuk.props], complaintStatus: 'unverified' },
-        { menu: 'Tambahkan ID SP4N Lapor', value: 'add-span', typeAduan: [typeAduan.aduanDialihkanSpanLapor.props], complaintStatus: 'no-id-span' }
+        {
+          menu: 'Terverifikasi',
+          value: 'verify',
+          typeAduan: [typeAduan.aduanMasuk.props],
+          complaintStatus: 'unverified'
+        },
+        {
+          menu: 'Gagal Diverifikasi',
+          value: 'failed',
+          typeAduan: [typeAduan.aduanMasuk.props],
+          complaintStatus: 'unverified'
+        },
+        {
+          menu: 'Tambahkan ID SP4N Lapor',
+          value: 'add-span',
+          typeAduan: [typeAduan.aduanDialihkanSpanLapor.props],
+          complaintStatus: 'no-id-span'
+        },
+        {
+          menu: 'Proses Aduan',
+          value: 'process-complaint',
+          typeAduan: [typeAduan.penentuanKewenangan.props],
+          complaintStatus: 'verified'
+        }
       ],
       listDataComplaint: [],
       listDataCategory: [],
@@ -190,12 +281,17 @@ export default {
       listValueStatusComplaint: [],
       listStatisticComplaint: [],
       isShowPopupDateRange: false,
-      dateRange: [new Date(new Date().setFullYear(new Date().getFullYear() - 1)), new Date()]
+      dateRange: [
+        new Date(new Date().setFullYear(new Date().getFullYear() - 1)),
+        new Date()
+      ]
     }
   },
   async fetch () {
     try {
-      if (!JSON.stringify(Object.keys(this.query)).match('complaint_status_id')) {
+      if (
+        !JSON.stringify(Object.keys(this.query)).match('complaint_status_id')
+      ) {
         this.query = this.addComplaintStatusFilterHandle()
       }
 
@@ -207,12 +303,22 @@ export default {
         params: { ...this.query, is_admin: 1 }
       })
 
-      const responseListCategoryComplaint = await this.$axios.get('/warga/complaints/categories')
-      const responseListStatisticComplaint = await this.$axios.get('/warga/complaints/statistics')
+      const responseListCategoryComplaint = await this.$axios.get(
+        '/warga/complaints/categories'
+      )
+      const responseListStatisticComplaint = await this.$axios.get(
+        '/warga/complaints/statistics'
+      )
 
       this.listDataCategory = responseListCategoryComplaint.data.data
-      const listDataStatisticComplaint = responseListStatisticComplaint.data.data
-      this.listStatisticComplaint = listDataStatisticComplaint.filter(item => this.complaintStatus[item.id].typeAduan.includes(this.typeAduanPage) && item.id === this.complaintStatus[item.id].id)
+      const listDataStatisticComplaint =
+        responseListStatisticComplaint.data.data
+      this.listStatisticComplaint = listDataStatisticComplaint.filter(
+        item =>
+          this.complaintStatus[item.id].typeAduan.includes(
+            this.typeAduanPage
+          ) && item.id === this.complaintStatus[item.id].id
+      )
       const { data } = responseListComplaint.data
 
       this.listDataComplaint = data?.data || []
@@ -226,7 +332,10 @@ export default {
       this.pagination.totalRows = data?.total_data || 0
       this.pagination.itemsPerPage = data?.page_size || this.query.limit
 
-      this.complaintStatus.total.value = this.typeAduan.aduanDariSpanLapor.props === this.typeAduanPage ? this.pagination.totalRows : this.getTotalStatistic()
+      this.complaintStatus.total.value =
+        this.typeAduan.aduanDariSpanLapor.props === this.typeAduanPage
+          ? this.pagination.totalRows
+          : this.getTotalStatistic()
       this.listStatisticComplaint.unshift(this.complaintStatus.total)
       if (this.listStatisticComplaint.length === 2) {
         this.listStatisticComplaint.pop()
@@ -238,26 +347,39 @@ export default {
   computed: {
     listData () {
       return this.listDataComplaint.map((item) => {
-        if (this.typeAduan.aduanDialihkanSpanLapor.props === this.typeAduanPage) {
-          item.complaint_status_id = !item.sp4n_id ? 'no-id-span' : item.complaint_status_id
+        if (
+          this.typeAduan.aduanDialihkanSpanLapor.props === this.typeAduanPage
+        ) {
+          item.complaint_status_id = !item.sp4n_id
+            ? 'no-id-span'
+            : item.complaint_status_id
         }
         return {
           ...item,
           category: item.complaint_category.name,
           status: this.complaintStatus[item.complaint_status.id].name,
-          created_at: formatDate(item.created_at || '', 'dd/MM/yyyy HH:mm'),
+          created_at_format: formatDate(item.created_at, 'dd/MM/yyyy HH:mm'),
+          created_at_api: item.created_at,
           status_id: item.complaint_status_id,
           sp4n_id: item.sp4n_id || 'Belum ada',
-          diverted_to_span_at: item.diverted_to_span_at ? formatDate(item.diverted_to_span_at || '', 'dd/MM/yyyy HH:mm') : 'Belum ada',
-          sp4n_created_at: item.sp4n_created_at ? formatDate(item.sp4n_created_at || '', 'dd/MM/yyyy HH:mm') : 'Belum ada',
-          complaint_source: item.complaint_source === 'sp4n' ? 'SP4N Lapor' : item.complaint_source
+          diverted_to_span_at: item.diverted_to_span_at
+            ? formatDate(item.diverted_to_span_at || '', 'dd/MM/yyyy HH:mm')
+            : 'Belum ada',
+          sp4n_created_at: item.sp4n_created_at
+            ? formatDate(item.sp4n_created_at || '', 'dd/MM/yyyy HH:mm')
+            : 'Belum ada',
+          complaint_source:
+            item.complaint_source === 'sp4n'
+              ? 'SP4N Lapor'
+              : item.complaint_source
         }
       })
     },
     listCategory () {
       return this.listDataCategory.map((item) => {
         return {
-          value: item.id, label: item.name
+          value: item.id,
+          label: item.name
         }
       })
     },
@@ -359,7 +481,9 @@ export default {
       this.$router.push(`${this.linkPageDetail}/${item.id}`)
     },
     getColorText (statusId) {
-      const statusColor = this.complaintStatus[statusId].statusColor.find(statusColor => statusColor.typeAduan === this.typeAduanPage)
+      const statusColor = this.complaintStatus[statusId].statusColor.find(
+        statusColor => statusColor.typeAduan === this.typeAduanPage
+      )
       switch (statusColor.color) {
         case 'yellow':
           return 'text-[#FF7500]'
@@ -372,19 +496,34 @@ export default {
       }
     },
     menuTableActionHandle (complaintStatus) {
-      return this.menuTableAction.filter(item => item.typeAduan.includes('all') || (item.typeAduan.includes(this.typeAduanPage) && complaintStatus === item.complaintStatus))
+      return this.menuTableAction.filter(
+        item =>
+          item.typeAduan.includes('all') ||
+          (item.typeAduan.includes(this.typeAduanPage) &&
+            complaintStatus === item.complaintStatus)
+      )
     },
     getTotalStatistic () {
-      const total = this.listStatisticComplaint.reduce((accumulator, object) => {
-        return accumulator + object.value
-      }, 0)
+      const total = this.listStatisticComplaint.reduce(
+        (accumulator, object) => {
+          return accumulator + object.value
+        },
+        0
+      )
       return total
     },
     addComplaintStatusFilterHandle () {
       this.listValueStatusComplaint = Object.values(this.complaintStatus)
       for (let i = 0; i < this.listValueStatusComplaint.length; i++) {
-        if (this.listValueStatusComplaint[i].typeAduan.includes(this.typeAduanPage)) {
-          this.setQuery({ [`complaint_status_id[${i - 1}]`]: this.listValueStatusComplaint[i].id })
+        if (
+          this.listValueStatusComplaint[i].typeAduan.includes(
+            this.typeAduanPage
+          )
+        ) {
+          this.setQuery({
+            [`complaint_status_id[${i - 1}]`]:
+              this.listValueStatusComplaint[i].id
+          })
         }
       }
       return this.query
@@ -393,14 +532,26 @@ export default {
       this.query = { page: 1, limit: 5 }
       if (status !== 'total') {
         this.search = ''
-        this.dateRange = [new Date(new Date().setFullYear(new Date().getFullYear() - 1)), new Date()]
-        this.setQuery({ 'complaint_status_id[0]': status, search: null, complaint_category_id: null, sort_by: 'updated_at', sort_type: 'desc' })
+        this.dateRange = [
+          new Date(new Date().setFullYear(new Date().getFullYear() - 1)),
+          new Date()
+        ]
+        this.setQuery({
+          'complaint_status_id[0]': status,
+          search: null,
+          complaint_category_id: null,
+          sort_by: 'updated_at',
+          sort_type: 'desc'
+        })
         this.isShowPopupDateRange = false
       }
       this.$fetch()
     },
     filterDateHandle () {
-      this.setQuery({ start_date: formatDate(this.dateRange[0], 'yyyy-MM-dd'), end_date: formatDate(this.dateRange[1], 'yyyy-MM-dd') })
+      this.setQuery({
+        start_date: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
+        end_date: formatDate(this.dateRange[1], 'yyyy-MM-dd')
+      })
       this.$fetch()
       this.$refs.datepicker.closePopup()
     },
@@ -416,8 +567,14 @@ export default {
       this.query = { ...this.query, ...params }
     },
     clearDateRangeHandle () {
-      this.dateRange = [new Date(new Date().setFullYear(new Date().getFullYear() - 1)), new Date()]
-      this.setQuery({ start_date: formatDate(this.dateRange[0], 'yyyy-MM-dd'), end_date: formatDate(this.dateRange[1], 'yyyy-MM-dd') })
+      this.dateRange = [
+        new Date(new Date().setFullYear(new Date().getFullYear() - 1)),
+        new Date()
+      ]
+      this.setQuery({
+        start_date: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
+        end_date: formatDate(this.dateRange[1], 'yyyy-MM-dd')
+      })
       this.isShowPopupDateRange = false
       this.$fetch()
     },
@@ -429,13 +586,13 @@ export default {
 </script>
 
 <style>
-  .icon-tab rect{
-    fill: #008444 !important;
-  }
+.icon-tab rect {
+  fill: #008444 !important;
+}
 
-  .icon-tab path{
-    stroke: white;
-  }
+.icon-tab path {
+  stroke: white;
+}
 
 .icon-tab path {
   stroke: white;
@@ -449,12 +606,11 @@ export default {
   stroke: #16a75c;
 }
 
-.select-form-complaint .jds-input-text{
+.select-form-complaint .jds-input-text {
   width: 260px !important;
 }
 
-.select-form-complaint .jds-popover__content{
+.select-form-complaint .jds-popover__content {
   width: 260px !important;
 }
-
 </style>
