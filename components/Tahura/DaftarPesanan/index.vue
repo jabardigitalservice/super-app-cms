@@ -28,7 +28,7 @@
 
                 <date-picker
                   ref="datepicker"
-                  v-model="query.dateRange"
+                  v-model="dateRange"
                   format="DD/MM/YYYY"
                   range
                   range-separator=" - "
@@ -109,6 +109,9 @@ export default {
     TabBarListTahura
   },
   data () {
+    const today = new Date()
+    const oneMonthAgo = new Date(today)
+    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1)
     return {
       headerTableList: [
         {
@@ -150,7 +153,7 @@ export default {
       pagination: {
         currentPage: 1,
         totalRows: 5,
-        itemsPerPage: 5,
+        itemsPerPage: 25,
         itemsPerPageOptions: [],
         disabled: true
       },
@@ -158,25 +161,29 @@ export default {
         forScan: true,
         page: 1,
         q: null,
-        pageSize: 5,
+        pageSize: 25,
         sortOrder: 'desc',
         sortBy: 'orderedAt',
-        status: '',
-        dateRange: [new Date().setMonth(new Date().getMonth() - 1), new Date()]
+        status: ''
       },
       sortBy: '',
       sortOrder: '',
       q: '',
       selectedTabIndex: 0,
-      // dateRange: [new Date().setMonth(new Date().getMonth() - 1), new Date()],
+      dateRange: [oneMonthAgo, today],
       isShowPopupDate: false,
       isShowPopupDateRange: false,
-
+      today,
+      oneMonthAgo,
       statusTahura,
       listStatusTahura
     }
   },
   async fetch () {
+    this.setQuery({
+      startDate: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
+      endDate: formatDate(this.dateRange[1], 'yyyy-MM-dd')
+    })
     try {
       const response = await this.$axios.get('/ticket/tahura/orders', {
         params: this.query
@@ -190,24 +197,9 @@ export default {
       } else {
         this.pagination.disabled = true
       }
-      this.pagination.currentPage = meta?.page || 1
+      this.pagination.currentPage = meta?.pageNumber || 1
       this.pagination.totalRows = meta?.totalData || 0
       this.pagination.itemsPerPage = meta?.pageSize || this.query.pageSize
-
-      const responseCountDaftarpesanan = await this.$axios.get(
-        '/ticket/tahura/order/count',
-        {
-          params: this.query
-        }
-      )
-
-      const { data: countData } = responseCountDaftarpesanan.data
-
-      if (countData.length > 0) {
-        this.combinedCountOrder(countData)
-      } else {
-        this.resetQuantity()
-      }
     } catch {
       this.pagination.disabled = true
     }
@@ -252,6 +244,9 @@ export default {
     this.pagination.itemsPerPageOptions = generateItemsPerPageOptions(
       this.pagination.itemsPerPage
     )
+
+    this.getCount()
+
     this.selectedTabHandle(0)
   },
   methods: {
@@ -279,24 +274,23 @@ export default {
     },
     filterDateHandle () {
       this.setQuery({
-        startDate: formatDate(this.query.dateRange[0], 'yyyy-MM-dd'),
-        endDate: formatDate(this.query.dateRange[1], 'yyyy-MM-dd')
+        startDate: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
+        endDate: formatDate(this.dateRange[1], 'yyyy-MM-dd')
       })
       this.$fetch()
       this.$refs.datepicker.closePopup()
+      this.getCount()
     },
     clearDateRangeHandle () {
-      this.query.dateRange = [
-        new Date().setMonth(new Date().getMonth() - 1),
-        new Date()
-      ]
+      this.dateRange = [this.oneMonthAgo, this.today]
 
       this.setQuery({
-        startDate: formatDate(this.query.dateRange[0], 'yyyy-MM-dd'),
-        endDate: formatDate(this.query.dateRange[1], 'yyyy-MM-dd')
+        startDate: this.dateRange[0],
+        endDate: this.dateRange[1]
       })
       this.isShowPopupDateRange = false
       this.$fetch()
+      this.getCount()
     },
     changeDateRangeHandle () {
       this.isShowPopupDateRange = true
@@ -332,12 +326,10 @@ export default {
       this.$fetch()
     },
     listTabHandle (status) {
-      this.q = ''
       const query = {
         forScan: true,
         page: 1,
-        q: null,
-        pageSize: 5,
+        pageSize: 25,
         sortOrder: 'desc',
         sortBy: 'orderedAt',
         status: status === 'all' ? '' : status
@@ -372,6 +364,26 @@ export default {
     },
     goToDetail (item) {
       this.$router.push(`/tahura/daftar-pesanan/detail/${item.invoice}`)
+    },
+    async getCount () {
+      try {
+        const responseCountDaftarpesanan = await this.$axios.get(
+          '/ticket/tahura/order/count',
+          {
+            params: this.query
+          }
+        )
+
+        const { data: countData } = responseCountDaftarpesanan.data
+
+        if (countData.length > 0) {
+          this.combinedCountOrder(countData)
+        } else {
+          this.resetQuantity()
+        }
+      } catch (error) {
+        console.error(error)
+      }
     }
   }
 }
