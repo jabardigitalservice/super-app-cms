@@ -28,7 +28,7 @@
 
                 <date-picker
                   ref="datepicker"
-                  v-model="dateRange"
+                  v-model="query.dateRange"
                   format="DD/MM/YYYY"
                   range
                   range-separator=" - "
@@ -161,13 +161,14 @@ export default {
         pageSize: 5,
         sortOrder: 'desc',
         sortBy: 'orderedAt',
-        status: ''
+        status: '',
+        dateRange: [new Date().setMonth(new Date().getMonth() - 1), new Date()]
       },
       sortBy: '',
       sortOrder: '',
       q: '',
       selectedTabIndex: 0,
-      dateRange: [new Date(), new Date()],
+      // dateRange: [new Date().setMonth(new Date().getMonth() - 1), new Date()],
       isShowPopupDate: false,
       isShowPopupDateRange: false,
 
@@ -278,18 +279,21 @@ export default {
     },
     filterDateHandle () {
       this.setQuery({
-        startDate: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
-        endDate: formatDate(this.dateRange[1], 'yyyy-MM-dd')
+        startDate: formatDate(this.query.dateRange[0], 'yyyy-MM-dd'),
+        endDate: formatDate(this.query.dateRange[1], 'yyyy-MM-dd')
       })
       this.$fetch()
       this.$refs.datepicker.closePopup()
     },
     clearDateRangeHandle () {
-      this.dateRange = [new Date(), new Date()]
+      this.query.dateRange = [
+        new Date().setMonth(new Date().getMonth() - 1),
+        new Date()
+      ]
 
       this.setQuery({
-        startDate: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
-        endDate: formatDate(this.dateRange[1], 'yyyy-MM-dd')
+        startDate: formatDate(this.query.dateRange[0], 'yyyy-MM-dd'),
+        endDate: formatDate(this.query.dateRange[1], 'yyyy-MM-dd')
       })
       this.isShowPopupDateRange = false
       this.$fetch()
@@ -329,7 +333,6 @@ export default {
     },
     listTabHandle (status) {
       this.q = ''
-      this.dateRange = [new Date(), new Date()]
       const query = {
         forScan: true,
         page: 1,
