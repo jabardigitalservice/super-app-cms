@@ -278,8 +278,8 @@ export default {
         endDate: formatDate(this.dateRange[1], 'yyyy-MM-dd')
       })
       this.$fetch()
-      this.$refs.datepicker.closePopup()
       this.getCount()
+      this.$refs.datepicker.closePopup()
     },
     clearDateRangeHandle () {
       this.dateRange = [this.oneMonthAgo, this.today]
@@ -294,6 +294,7 @@ export default {
     },
     changeDateRangeHandle () {
       this.isShowPopupDateRange = true
+      this.getCount()
     },
     setQuery (params) {
       this.query = { ...this.query, ...params }
@@ -375,12 +376,8 @@ export default {
         )
 
         const { data: countData } = responseCountDaftarpesanan.data
-
-        if (countData.length > 0) {
-          this.combinedCountOrder(countData)
-        } else {
-          this.resetQuantity()
-        }
+        this.resetQuantity()
+        this.combinedCountOrder(countData)
       } catch (error) {
         console.error(error)
       }
