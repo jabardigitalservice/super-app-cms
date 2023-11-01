@@ -56,7 +56,7 @@
               name="Status Aduan"
               label="Status Aduan"
               placeholder="Pilih Status Aduan"
-              :error-message="!isChangeComplaintStatus ? errors[0] : ''"
+              :error-message="errors[0]"
               :options="listComplaintStatus"
               :class="{ 'mb-2': errors.length > 0 }"
               @change="changeSelectStatusHandle"
@@ -75,7 +75,7 @@
               name="Cakupan Urusan"
               label="Cakupan Urusan"
               placeholder="Pilih Cakupan Urusan"
-              :error-message="!isChangeComplaintStatus ? errors[0] : ''"
+              :error-message="errors[0]"
               :options="listAuthority"
               :class="{ 'mb-2': errors.length > 0 }"
             />
@@ -262,7 +262,7 @@
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import AlertMessage from '~/components/Aduan/Dialog/ProcessComplaint/AlertMessage'
 import { complaintStatus } from '~/constant/aduan-masuk'
-// import { formatDate } from '~/utils'
+
 export default {
   name: 'DialogComplaintProcess',
   components: { ValidationProvider, ValidationObserver, AlertMessage },
