@@ -2,7 +2,7 @@ export const complaintHeader = [
   { key: 'complaint_id', text: 'ID Aduan', sortable: true },
   { key: 'user_name', text: 'Nama Lengkap', sortable: true },
   { key: 'category', text: 'Kategori Aduan' },
-  { key: 'created_at', text: 'Tanggal Aduan Masuk', sortable: true },
+  { key: 'created_at_format', text: 'Tanggal Aduan Masuk', sortable: true },
   { key: 'status', text: 'Status' },
   { key: 'action', text: 'Aksi' }
 ]
@@ -23,7 +23,11 @@ export const complaintFromSpanHeader = [
   { key: 'sp4n_id', text: 'ID Aduan SP4N ' },
   { key: 'user_name', text: 'Nama Lengkap', sortable: true },
   { key: 'category', text: 'Kategori Aduan' },
-  { key: 'created_at', text: 'Tanggal Diinput ke Sapawarga', sortable: true },
+  {
+    key: 'created_at_format',
+    text: 'Tanggal Diinput ke Sapawarga',
+    sortable: true
+  },
   { key: 'action', text: 'Áksi' }
 ]
 
