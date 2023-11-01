@@ -63,7 +63,7 @@
                   </template>
                   <template #footer="{ emit }">
                     <BaseDialogFooter
-                      label-button="Pilih"
+                      label-button-submit="Pilih"
                       :show-cancel-button="true"
                       @close="closePopupDateHandle()"
                       @submit="filterDateHandle(emit)"
@@ -103,7 +103,6 @@
                   class="m-[12px]"
                   :list-menu-pop-over="actionDownloadLaporan"
                   @xls="downloadExcelReport"
-                  @pdf="downloadPdfReport"
                 >
                   Download Laporan
                 </BaseButtonDropdown>
@@ -260,6 +259,9 @@ import 'vue2-datepicker/index.css'
 export default {
   name: 'LaporanPendapatanTahura',
   data () {
+    const today = new Date()
+    const oneMonthAgo = new Date(today)
+    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1)
     return {
       listDataTypeAssurance: [
         {
@@ -278,13 +280,12 @@ export default {
       },
       isShowPopupDate: false,
       isShowPopupDateRange: false,
-      dateRange: [new Date(), new Date()],
+      dateRange: [oneMonthAgo, today],
       listDataLaporan: [],
       assurancePrice: 0,
       grandTotal: 0,
       selectAsurance: 'with-assurance',
       actionDownloadLaporan: [
-        { menu: 'Portable Data Format (.pdf)', value: 'pdf' },
         { menu: 'Microsoft Excel (.xls)', value: 'xls' }
       ],
       listDataCategoryWisatawan: [],
@@ -381,7 +382,7 @@ export default {
       this.$fetch()
     },
     clearDateRangeHandle () {
-      this.dateRange = [new Date(), new Date()]
+      this.dateRange = [this.oneMonthAgo, new Date()]
 
       this.setQuery({
         startDate: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
@@ -483,17 +484,6 @@ export default {
           this.query.startDate,
           "dd MMMM yyyy"
         )} - ${formatDate(this.query.endDate, "dd MMMM yyyy")}.xlsx`
-      );
-    },
-    downloadPdfReport() {
-      this.query.assurance = this.selectAsurance;
-      window.open(
-        `/preview-pdf/tahura/${this.query.assurance}/${
-          this.query.category || "-"
-        }/${this.query.startDate}/${this.query.endDate}/${
-          this.query.status || "-"
-        }/${this.$auth.strategy.token.get()}`,
-        "_blank"
       );
     },
   },

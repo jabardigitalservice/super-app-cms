@@ -151,11 +151,13 @@
             <span class="font-bold"> {{ convertToRupiah(grandTotal) }}</span>
           </h5>
 
-          <h5 class="mt-5 text-[16px] text-black">
+          <p class="break-inside-avoid" />
+
+          <h5 class="mt-5 text-[16px] text-black break-inside-avoid">
             Di<em>export</em> oleh: Sistem <em>E-Ticketing</em> Sapawarga
           </h5>
 
-          <div class="mt-[50px] break-inside-avoid">
+          <div class="mt-[50px]">
             <div class="flex flex-row">
               <div class="flex flex-1 flex-col text-center">
                 <h5 class="mb-5">
@@ -308,8 +310,10 @@ export default {
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)
+        window.close()
       } catch (error) {
         console.error(error)
+        window.close()
       }
     }
   }

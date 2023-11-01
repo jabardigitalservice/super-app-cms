@@ -18,6 +18,7 @@
         <ValidationProvider v-slot="{ errors,dirty }" name="Kecamatan" rules="requiredSelectForm" class="mb-4" tag="div">
           <jds-select
             v-model="payloadLocationComplaint.district_id"
+            :disabled="!payloadLocationComplaint.city_id"
             name="Kecamatan"
             label="Kecamatan"
             placeholder="Pilih Kecamatan"
@@ -28,6 +29,7 @@
         <ValidationProvider v-slot="{ errors,dirty }" name="Kelurahan" rules="requiredSelectForm" class="mb-4" tag="div">
           <jds-select
             v-model="payloadLocationComplaint.subdistrict_id"
+            :disabled="!payloadLocationComplaint.district_id"
             name="Kelurahan"
             label="Kelurahan"
             placeholder="Pilih Kelurahan"
@@ -145,6 +147,7 @@ export default {
         subdistrict_id: '',
         addressDetail: ''
       }
+      this.addressDetail = ''
       this.isSubmit = false
       this.$refs.formLocationComplaint.reset()
     }

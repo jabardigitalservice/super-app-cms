@@ -1,44 +1,110 @@
 <template>
   <div>
     <ValidationObserver ref="formOtherComplaint">
-      <form class="px-6 pb-6 pt-4 form-add-complaint">
-        <h1 class="mb-2 font-bold text-base font-roboto">
+      <form class="form-add-complaint px-6 pb-6 pt-4">
+        <h1 class="mb-2 font-roboto text-base font-bold">
           Kategori Aduan
         </h1>
-        <ValidationProvider v-slot="{ errors,dirty }" name="Kategori" rules="requiredSelectForm" class="mb-4" tag="div">
+        <ValidationProvider
+          v-slot="{ errors, dirty }"
+          name="Kategori"
+          rules="requiredSelectForm"
+          class="mb-4"
+          tag="div"
+        >
           <jds-select
             v-model="payloadOtherComplaint.complaint_category_id"
             name="Kategori"
             label="Kategori"
             placeholder="Pilih Kategori"
-            :error-message="(dirty || isSubmit) ? errors[0] : ''"
+            :error-message="dirty || isSubmit ? errors[0] : ''"
             :options="listCategoryComplaint"
+            @change="resectValueChildCategory"
           />
         </ValidationProvider>
-        <ValidationProvider v-slot="{ errors,dirty }" name="Sub Kategori" rules="requiredSelectForm" class="mb-4" tag="div">
+
+        <ValidationProvider
+          v-if="payloadOtherComplaint.complaint_category_id === 'lainnya'"
+          v-slot="{ errors, dirty }"
+          name="Kategori"
+          class="mb-4"
+          rules="max:50|min:1|required"
+          tag="div"
+        >
+          <BaseInputText
+            v-model="payloadOtherComplaint.complaint_subcategory_id"
+            placeholder="Masukkan Kategori"
+            :error-message="dirty || isSubmit ? errors[0] : ''"
+            maxlength="50"
+          />
+        </ValidationProvider>
+
+        <ValidationProvider
+          v-if="payloadOtherComplaint.complaint_category_id !== 'lainnya'"
+          v-slot="{ errors, dirty }"
+          name="Sub Kategori"
+          rules="requiredSelectForm"
+          class="mb-4"
+          tag="div"
+        >
           <jds-select
             v-model="payloadOtherComplaint.complaint_subcategory_id"
+            :disabled="!payloadOtherComplaint.complaint_category_id"
             name="Sub Kategori"
-            label="Kategori"
+            label="Sub Kategori"
             placeholder="Pilih Sub Kategori"
-            :error-message="(dirty || isSubmit) ? errors[0] : '' "
+            :error-message="dirty || isSubmit ? errors[0] : ''"
             :options="listSubCategoryComplaint"
+            @change="complaint_subcategory_child_id = ''"
           />
         </ValidationProvider>
-        <h1 class="mb-2 font-bold text-base font-roboto">
+
+        <ValidationProvider
+          v-if="
+            payloadOtherComplaint.complaint_subcategory_id.includes(
+              'lainnya-terkait'
+            )
+          "
+          v-slot="{ errors, dirty }"
+          name="Sub Kategori"
+          class="mb-4"
+          rules="max:50|min:1|required"
+          tag="div"
+        >
+          <BaseInputText
+            v-model="payloadOtherComplaint.complaint_subcategory_child_id"
+            placeholder="Masukkan Sub Kategori"
+            :error-message="dirty || isSubmit ? errors[0] : ''"
+            maxlength="50"
+          />
+        </ValidationProvider>
+
+        <h1 class="mb-2 font-roboto text-base font-bold">
           Disposisi & Kewenangan
         </h1>
-        <ValidationProvider v-slot="{ errors,dirty }" name="Disposisi" rules="requiredSelectForm" class="mb-4" tag="div">
+        <ValidationProvider
+          v-slot="{ errors, dirty }"
+          name="Disposisi"
+          rules="requiredSelectForm"
+          class="mb-4"
+          tag="div"
+        >
           <jds-select
             v-model="payloadOtherComplaint.disposition"
             name="Disposisi"
             label="Disposisi"
             placeholder="Pilih Dinas Untuk Disposisi"
-            :error-message="(dirty || isSubmit) ? errors[0] : '' "
+            :error-message="dirty || isSubmit ? errors[0] : ''"
             :options="listDisposition"
           />
         </ValidationProvider>
-        <jds-input-text v-model="payloadOtherComplaint.authority" name="Kewenangan" label="Kewenangan" disabled class="!w-full" />
+        <jds-input-text
+          v-model="payloadOtherComplaint.authority"
+          name="Kewenangan"
+          label="Kewenangan"
+          disabled
+          class="!w-full"
+        />
       </form>
     </ValidationObserver>
   </div>
@@ -65,6 +131,7 @@ export default {
         complaint_category_id: '',
         complaint_subcategory_id: '',
         disposition: '',
+        complaint_subcategory_child_id: '',
         authority: 'Pemerintah Provinsi Jawa Barat'
       },
       isSubmit: false
@@ -72,15 +139,28 @@ export default {
   },
   async fetch () {
     try {
-      const responseDataCategory = await this.$axios.get('/warga/complaints/categories')
+      const responseDataCategory = await this.$axios.get(
+        '/warga/complaints/categories'
+      )
       const dataCategoryComplaint = responseDataCategory.data.data
       this.listDataCategoryComplaint = dataCategoryComplaint
       if (this.payloadOtherComplaint.complaint_category_id) {
-        const responseDataSubCategory = await this.$axios.get('/warga/complaints/subcategories', { params: { complaint_category_id: this.payloadOtherComplaint.complaint_category_id } })
+        const responseDataSubCategory = await this.$axios.get(
+          '/warga/complaints/subcategories',
+          {
+            params: {
+              complaint_category_id:
+                this.payloadOtherComplaint.complaint_category_id
+            }
+          }
+        )
         const dataSubCategoryComplaint = responseDataSubCategory.data.data
         this.listDataSubCategoryComplaint = dataSubCategoryComplaint
       }
-      const responseDataDisposition = await this.$axios.get('/warga/complaints/dispositions', { params: { authority: 'Pemerintah Provinsi Jawa Barat' } })
+      const responseDataDisposition = await this.$axios.get(
+        '/warga/complaints/dispositions',
+        { params: { authority: 'Pemerintah Provinsi Jawa Barat' } }
+      )
       const dataDisposition = responseDataDisposition.data.data
       this.listDataDisposition = dataDisposition
     } catch {
@@ -118,7 +198,9 @@ export default {
       const isValid = await this.$refs.formOtherComplaint.validate()
       this.$store.commit('add-complaint/setIsValidFormOtherComplaint', isValid)
       if (isValid) {
-        this.$store.commit('add-complaint/setDataOtherComplaint', { ...this.payloadOtherComplaint })
+        this.$store.commit('add-complaint/setDataOtherComplaint', {
+          ...this.payloadOtherComplaint
+        })
         this.isSubmit = false
       }
     },
@@ -127,21 +209,26 @@ export default {
         complaint_category_id: '',
         complaint_subcategory_id: '',
         disposition: '',
+        complaint_subcategory_child_id: '',
         authority: 'Pemerintah Provinsi Jawa Barat'
       }
       this.isSubmit = false
       this.$refs.formOtherComplaint.reset()
+    },
+    resectValueChildCategory () {
+      this.payloadOtherComplaint.complaint_subcategory_id = ''
+      this.payloadOtherComplaint.complaint_subcategory_child_id = ''
     }
   }
-
 }
 </script>
 
 <style scoped>
- .jds-input-text::v-deep.jds-input-text--disabled .jds-input-text__input-wrapper {
-   @apply !bg-gray-200
- }
- .jds-input-text::v-deep.jds-input-text--disabled input:disabled{
-   @apply !text-gray-600
- }
+.jds-input-text::v-deep.jds-input-text--disabled
+  .jds-input-text__input-wrapper {
+  @apply !bg-gray-200;
+}
+.jds-input-text::v-deep.jds-input-text--disabled input:disabled {
+  @apply !text-gray-600;
+}
 </style>

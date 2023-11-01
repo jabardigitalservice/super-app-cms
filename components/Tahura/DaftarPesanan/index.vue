@@ -33,7 +33,6 @@
                   range
                   range-separator=" - "
                   :disabled-date="disabledRange"
-                  @close="isShowPopupDate = false"
                   @clear="clearDateRangeHandle"
                   @change="changeDateRangeHandle"
                   @input="checkMaxDate"
@@ -47,7 +46,7 @@
                   </template>
                   <template #footer="{ emit }">
                     <BaseDialogFooter
-                      label-button="Pilih"
+                      label-button-submit="Pilih"
                       :show-cancel-button="true"
                       @close="closePopupDateHandle()"
                       @submit="filterDateHandle(emit)"
@@ -83,8 +82,8 @@
             </template>
 
             <!-- eslint-disable-next-line vue/valid-v-slot -->
-            <template #item.action>
-              <BaseButton class="w-4">
+            <template #item.action="{ item }">
+              <BaseButton class="w-4" @click="goToDetail(item)">
                 <EyesIcon class="h-4 w-4" />
               </BaseButton>
             </template>
@@ -100,7 +99,7 @@ import debounce from 'lodash.debounce'
 import { formatDate, generateItemsPerPageOptions } from '~/utils'
 import 'vue2-datepicker/index.css'
 import EyesIcon from '~/assets/icon/eyes.svg?inline'
-import TabBarListTahura from '~/components/Tahura/TabBar/index.vue'
+import TabBarListTahura from '~/components/Tahura/TabBar/List/index.vue'
 import { statusTahura, listStatusTahura } from '@/constant/tahura.js'
 export default {
   name: 'DaftarPesananTahura',
@@ -109,6 +108,9 @@ export default {
     TabBarListTahura
   },
   data () {
+    const today = new Date()
+    const oneMonthAgo = new Date(today)
+    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1)
     return {
       headerTableList: [
         {
@@ -150,7 +152,7 @@ export default {
       pagination: {
         currentPage: 1,
         totalRows: 5,
-        itemsPerPage: 5,
+        itemsPerPage: 25,
         itemsPerPageOptions: [],
         disabled: true
       },
@@ -158,7 +160,7 @@ export default {
         forScan: true,
         page: 1,
         q: null,
-        pageSize: 5,
+        pageSize: 25,
         sortOrder: 'desc',
         sortBy: 'orderedAt',
         status: ''
@@ -167,21 +169,25 @@ export default {
       sortOrder: '',
       q: '',
       selectedTabIndex: 0,
-      dateRange: [new Date(), new Date()],
-      isShowPopupDate: false,
+      dateRange: [oneMonthAgo, today],
       isShowPopupDateRange: false,
-
+      today,
+      oneMonthAgo,
       statusTahura,
       listStatusTahura
     }
   },
   async fetch () {
+    this.setQuery({
+      startDate: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
+      endDate: formatDate(this.dateRange[1], 'yyyy-MM-dd')
+    })
     try {
       const response = await this.$axios.get('/ticket/tahura/orders', {
         params: this.query
       })
 
-      const { data } = response.data
+      const { data, meta } = response.data
       this.daftarPesananList = data || []
 
       if (this.daftarPesananList.length) {
@@ -189,26 +195,9 @@ export default {
       } else {
         this.pagination.disabled = true
       }
-      this.pagination.currentPage = data?.page || 1
-      this.pagination.totalRows = data?.totalData || 0
-      this.pagination.itemsPerPage = data?.pageSize || this.query.pageSize
-
-      const responseCountDaftarpesanan = await this.$axios.get(
-        '/ticket/tahura/order/count',
-        {
-          params: this.query
-        }
-      )
-
-      const { data: countData } = responseCountDaftarpesanan.data
-
-      if (countData.length > 0) {
-        this.combinedCountOrder(
-          countData
-        )
-      } else {
-        this.resetQuantity()
-      }
+      this.pagination.currentPage = meta?.pageNumber || 1
+      this.pagination.totalRows = meta?.totalData || 0
+      this.pagination.itemsPerPage = meta?.pageSize || this.query.pageSize
     } catch {
       this.pagination.disabled = true
     }
@@ -253,6 +242,9 @@ export default {
     this.pagination.itemsPerPageOptions = generateItemsPerPageOptions(
       this.pagination.itemsPerPage
     )
+
+    this.getCount()
+
     this.selectedTabHandle(0)
   },
   methods: {
@@ -284,19 +276,22 @@ export default {
         endDate: formatDate(this.dateRange[1], 'yyyy-MM-dd')
       })
       this.$fetch()
+      this.getCount()
       this.$refs.datepicker.closePopup()
     },
     clearDateRangeHandle () {
-      this.dateRange = [new Date(), new Date()]
+      this.dateRange = [this.oneMonthAgo, this.today]
 
       this.setQuery({
-        startDate: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
-        endDate: formatDate(this.dateRange[1], 'yyyy-MM-dd')
+        startDate: this.dateRange[0],
+        endDate: this.dateRange[1]
       })
+      this.getCount()
       this.isShowPopupDateRange = false
       this.$fetch()
     },
     changeDateRangeHandle () {
+      this.getCount()
       this.isShowPopupDateRange = true
     },
     setQuery (params) {
@@ -330,13 +325,10 @@ export default {
       this.$fetch()
     },
     listTabHandle (status) {
-      this.q = ''
-      this.dateRange = [new Date(), new Date()]
       const query = {
         forScan: true,
         page: 1,
-        q: null,
-        pageSize: 5,
+        pageSize: 25,
         sortOrder: 'desc',
         sortBy: 'orderedAt',
         status: status === 'all' ? '' : status
@@ -350,12 +342,17 @@ export default {
       this.listStatusTahura.forEach((status) => {
         const { statusCode } = status
         if (statusCode !== 'all') {
-          const matchingStatus = countFromApi.find(apiStatus => apiStatus.statusCode === statusCode)
+          const matchingStatus = countFromApi.find(
+            apiStatus => apiStatus.statusCode === statusCode
+          )
           if (matchingStatus) {
             status.quantity = matchingStatus.quantity
           }
         } else {
-          status.quantity = countFromApi.reduce((total, apiStatus) => total + apiStatus.quantity, 0)
+          status.quantity = countFromApi.reduce(
+            (total, apiStatus) => total + apiStatus.quantity,
+            0
+          )
         }
       })
     },
@@ -363,6 +360,27 @@ export default {
       this.listStatusTahura.forEach((status) => {
         status.quantity = 0
       })
+    },
+    goToDetail (item) {
+      this.$router.push(`/tahura/daftar-pesanan/detail/${item.invoice}`)
+    },
+    async getCount () {
+      const queryCount = { ...this.query }
+      queryCount.status = ''
+      try {
+        const responseCountDaftarpesanan = await this.$axios.get(
+          '/ticket/tahura/order/count',
+          {
+            params: queryCount
+          }
+        )
+
+        const { data: countData } = responseCountDaftarpesanan.data
+        this.resetQuantity()
+        this.combinedCountOrder(countData)
+      } catch (error) {
+        console.error(error)
+      }
     }
   }
 }
