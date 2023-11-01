@@ -103,7 +103,6 @@
                   class="m-[12px]"
                   :list-menu-pop-over="actionDownloadLaporan"
                   @xls="downloadExcelReport"
-                  @pdf="downloadPdfReport"
                 >
                   Download Laporan
                 </BaseButtonDropdown>
@@ -287,7 +286,6 @@ export default {
       grandTotal: 0,
       selectAsurance: 'with-assurance',
       actionDownloadLaporan: [
-        { menu: 'Portable Data Format (.pdf)', value: 'pdf' },
         { menu: 'Microsoft Excel (.xls)', value: 'xls' }
       ],
       listDataCategoryWisatawan: [],
@@ -486,17 +484,6 @@ export default {
           this.query.startDate,
           "dd MMMM yyyy"
         )} - ${formatDate(this.query.endDate, "dd MMMM yyyy")}.xlsx`
-      );
-    },
-    downloadPdfReport() {
-      this.query.assurance = this.selectAsurance;
-      window.open(
-        `/preview-pdf/tahura/${this.query.assurance}/${
-          this.query.category || "-"
-        }/${this.query.startDate}/${this.query.endDate}/${
-          this.query.status || "-"
-        }/${this.$auth.strategy.token.get()}`,
-        "_blank"
       );
     },
   },
