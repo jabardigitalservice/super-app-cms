@@ -162,6 +162,6 @@ export const complaintButtonDetail = {
     idButton: 'button-complaint-process',
     label: 'Proses Aduan',
     variant: 'primary',
-    complaintStatus: 'disposition-authority'
+    complaintStatus: complaintStatus.verified.id
   }
 }
