@@ -81,7 +81,7 @@
               </tr>
               <tr>
                 <td><strong>Tanggal Aduan Masuk</strong></td>
-                <td>{{ detailComplaint?.created_at }}</td>
+                <td>{{ detailComplaint?.created_at_format }}</td>
               </tr>
               <tr
                 v-show="
@@ -132,11 +132,12 @@
               <tr
                 v-show="
                   typeAduanPage === typeAduan.penentuanKewenangan.props &&
-                    detailComplaint?.complaint_status_id !== 'verified'
+                    detailComplaint?.complaint_status_id !==
+                    complaintStatus.rejected.id
                 "
               >
                 <td><strong>Cakupan Urusan</strong></td>
-                <td>{{ detailComplaint?.authority }}</td>
+                <td>{{ detailComplaint?.coverage_of_affairs || "-" }}</td>
               </tr>
             </BaseTableDetail>
             <BaseTableDetail
@@ -169,7 +170,9 @@
               v-show="
                 typeAduanPage === typeAduan.penentuanKewenangan.props &&
                   detailComplaint?.complaint_status_id !==
-                  complaintStatus.verified.id
+                  complaintStatus.verified.id &&
+                  detailComplaint.complaint_status_id !==
+                  complaintStatus.rejected.id
               "
               header="Informasi Instansi"
               class="mb-4"
@@ -178,7 +181,7 @@
                 <td class="w-[180px]">
                   <strong>Nama Instansi</strong>
                 </td>
-                <td>{{ detailComplaint?.disposition }}</td>
+                <td>{{ detailComplaint?.opd_name || "-" }}</td>
               </tr>
               <tr
                 v-show="
@@ -187,7 +190,7 @@
                 "
               >
                 <td><strong>Nama Kepala Perangkat Daerah</strong></td>
-                <td>-</td>
+                <td>{{ detailComplaint?.opd_pic || "-" }}</td>
               </tr>
             </BaseTableDetail>
             <BaseTableDetail
@@ -208,7 +211,7 @@
                 <td class="w-[180px]">
                   <strong>Tanggal Deadline</strong>
                 </td>
-                <td>-</td>
+                <td>{{ detailComplaint?.deadline_date || "-" }}</td>
               </tr>
               <tr
                 v-show="
@@ -217,15 +220,15 @@
                 "
               >
                 <td><strong>Tingkat Urgensi</strong></td>
-                <td>-</td>
+                <td>{{ detailComplaint?.urgency_level || "-" }}</td>
               </tr>
               <tr
                 v-show="
                   detailComplaint?.status_id !== complaintStatus.verified.id
                 "
               >
-                <td><strong>Keterangan</strong></td>
-                <td>{{ detailComplaint?.complaint_status_note || "-" }}</td>
+                <td><strong>Keterangan Status</strong></td>
+                <td>{{ detailComplaint?.status_description || "-" }}</td>
               </tr>
             </BaseTableDetail>
             <BaseTableDetail header="Informasi Pelapor" class="mb-4">
@@ -287,15 +290,15 @@
               </tr>
               <tr>
                 <td>Kabupaten / Kota</td>
-                <td>{{ detailComplaint?.city?.name || "-" }}</td>
+                <td>{{ detailComplaint?.city_name || "-" }}</td>
               </tr>
               <tr>
                 <td>Kecamatan</td>
-                <td>{{ detailComplaint?.district?.name || "-" }}</td>
+                <td>{{ detailComplaint?.district_name || "-" }}</td>
               </tr>
               <tr>
                 <td>Kelurahan</td>
-                <td>{{ detailComplaint?.subdistrict?.name || "-" }}</td>
+                <td>{{ detailComplaint?.subdistrict_name || "-" }}</td>
               </tr>
               <tr colspan="2">
                 <td>Detail Lokasi Kejadian</td>
@@ -476,6 +479,11 @@
       @submit="submitPopupComplaintHandle"
     />
     <DialogLoading :show-popup="isLoading" />
+    <DialogProcessComplaint
+      :data-dialog="dataDialog"
+      :show-popup="isShowPopupProcessComplaint"
+      @close="isShowPopupProcessComplaint = false"
+    />
   </div>
 </template>
 
@@ -491,6 +499,7 @@ import TabBarDetail from '~/components/Aduan/TabBar/Detail'
 import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
 import DialogTrackingSpanLapor from '~/components/Aduan/Dialog/TrackingSpanLapor'
 import { formatDate } from '~/utils'
+import DialogProcessComplaint from '~/components/Aduan/Dialog/ProcessComplaint'
 
 export default {
   name: 'DetailAduanMasuk',
@@ -498,7 +507,8 @@ export default {
     DialogViewImage,
     TabBarDetail,
     DialogTrackingSpanLapor,
-    ArrowLeft
+    ArrowLeft,
+    DialogProcessComplaint
   },
   mixins: [popupAduanMasuk],
   props: {
@@ -544,7 +554,8 @@ export default {
       }
       this.detailComplaint = {
         ...dataDetailComplaint,
-        created_at:
+        created_at_api: dataDetailComplaint?.created_at,
+        created_at_format:
           dataDetailComplaint?.created_at &&
           formatDate(dataDetailComplaint?.created_at, 'dd/MM/yyyy - HH:mm'),
         sp4n_created_at:
@@ -559,7 +570,10 @@ export default {
             dataDetailComplaint?.sp4n_added_at || '',
             'dd/MM/yyyy - HH:mm'
           ),
-        complaint_source: dataDetailComplaint.complaint_source === 'sp4n' ? 'SP4N Lapor' : dataDetailComplaint.complaint_source
+        complaint_source:
+          dataDetailComplaint.complaint_source === 'sp4n'
+            ? 'SP4N Lapor'
+            : dataDetailComplaint.complaint_source
       }
       this.listPhoto = dataDetailComplaint?.photos || []
     } catch {
@@ -572,7 +586,10 @@ export default {
     listTypeAduanStatusAduan () {
       const listTypeAduanStatusAduan = []
       Object.values(this.typeAduan).forEach((item) => {
-        if (item.props !== this.typeAduan.aduanDialihkanSpanLapor.props && item.props !== this.typeAduan.aduanDariSpanLapor.props) {
+        if (
+          item.props !== this.typeAduan.aduanDialihkanSpanLapor.props &&
+          item.props !== this.typeAduan.aduanDariSpanLapor.props
+        ) {
           listTypeAduanStatusAduan.push(item.props)
         }
       })
@@ -594,7 +611,10 @@ export default {
       }
     },
     getStatusColorHandle (statusId) {
-      if (statusId && this.listTypeAduanStatusAduan.includes(this.typeAduanPage)) {
+      if (
+        statusId &&
+        this.listTypeAduanStatusAduan.includes(this.typeAduanPage)
+      ) {
         const statusColor = this.complaintStatus[statusId].statusColor.find(
           statusColor => statusColor.typeAduan === this.typeAduanPage
         )
@@ -622,6 +642,8 @@ export default {
           )
         case this.complaintButtonDetail.addIdSpan.idButton:
           return this.showPopupInputIdSpanHandle(this.detailComplaint)
+        case this.complaintButtonDetail.complaintProcess.idButton:
+          return this.showPopupProcessComplaintHandle(this.detailComplaint)
       }
     },
     showViewPhotoDialogHandle (url) {
