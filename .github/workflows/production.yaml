@@ -9,13 +9,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
 
         # Configure Docker with Credentials
       - name: Configure Docker
@@ -24,16 +24,16 @@ jobs:
         # Set version tag using SHA Hash (short)
       - name: Set version tag
         id: vars
-        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
         # Build the Docker image
       - name: Build and push
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v4
         with:
           context: .
           file: Dockerfile
           push: true
-          tags: ${{ secrets.SERVICE_IMAGENAME }}:${{ steps.vars.outputs.sha_short }}
+          tags: ${{ secrets.SERVICE_IMAGENAME }}:${{ env.sha_short }}
           build-args: |
             KEYCLOCK_CLIENT_ID=${{ secrets.KEYCLOCK_CLIENT_ID_PROD }}
             KEYCLOCK_ENDPOINT=${{ secrets.KEYCLOCK_ENDPOINT_PROD }}
@@ -60,7 +60,7 @@ jobs:
       - name: GitOps ArgoCD Update Image Tag
         uses: mikefarah/yq@master
         with:
-          cmd: yq -i '.spec.template.spec.containers[0].image = "${{ secrets.SERVICE_IMAGENAME }}:${{ steps.vars.outputs.sha_short }}"' 'jds-terraform-gke/k8s/superapp/production/web-admin/deployment.yaml'
+          cmd: yq -i '.spec.template.spec.containers[0].image = "${{ secrets.SERVICE_IMAGENAME }}:${{ env.sha_short }}"' 'jds-terraform-gke/k8s/superapp/production/web-admin/deployment.yaml'
 
       - name: GitOps ArgoCD Create Branch, Commit, Push
         run: |
@@ -68,7 +68,7 @@ jobs:
           cd jds-terraform-gke/k8s/superapp/production/web-admin
           git config user.email "github-action@github.com"
           git config user.name "Github Action"
-          git checkout -b superapp-web-admin-release-${{ steps.vars.outputs.sha_short }}-production
+          git checkout -b superapp-web-admin-release-${{ env.sha_short }}-production
           git add deployment.yaml
-          git commit -m "[release]: Superapp Web Admin ${{ steps.vars.outputs.sha_short }} to production"
-          git push origin superapp-web-admin-release-${{ steps.vars.outputs.sha_short }}-production -o merge_request.description="# Overview \n\n - Superapp Web Admin Release ${{ steps.vars.outputs.sha_short }} to production \n\n ## Evidence \n\n - title: Release Web Admin ${{ steps.vars.outputs.sha_short }} to production \n - project: Jabar Super Apps \n - participants:  " -o merge_request.create
+          git commit -m "[release]: Superapp Web Admin ${{ env.sha_short }} to production"
+          git push origin superapp-web-admin-release-${{ env.sha_short }}-production -o merge_request.description="# Overview \n\n - Superapp Web Admin Release ${{ env.sha_short }} to production \n\n ## Evidence \n\n - title: Release Web Admin ${{ env.sha_short }} to production \n - project: Jabar Super Apps \n - participants:  " -o merge_request.create
