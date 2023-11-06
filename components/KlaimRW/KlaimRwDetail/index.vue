@@ -16,7 +16,7 @@
         <BaseButton
           v-show="detail.rwStatus == userStatus.waiting"
           class="mr-[12px] w-fit border border-red-400 text-red-400 hover:bg-red-50"
-          @click="rejectConfirmationHandle"
+          @click="confirmationDialog.showReject=true"
         >
           Tolak Akun RW Ini
         </BaseButton>
@@ -26,7 +26,7 @@
               detail.rwStatus == userStatus.rejected
           "
           class="w-fit bg-green-700 text-white hover:bg-green-600"
-          @click="verifyConfirmationHandle"
+          @click="showVerifyPopupHandle(detail)"
         >
           Verifikasi Akun RW Ini
         </BaseButton>
@@ -197,7 +197,6 @@
     />
     <EditStatusPopup
       :show-popup="confirmationDialog.showEditStatus"
-      dialog-type="confirmation"
       :account-name="detail?.name || '-'"
       :account-status="detail?.rwStatus || '-'"
       @close="confirmationDialog.showEditStatus = false"
@@ -205,21 +204,14 @@
     />
     <RejectConfirmation
       :show-popup="confirmationDialog.showReject"
-      dialog-type="confirmation"
       :account-name="detail?.name || '-'"
       :account-email="detail?.email || '-'"
       @submit="actionRejectUser"
       @close="confirmationDialog.showReject = false"
     />
-    <VerifyConfirmation
-      :show-popup="confirmationDialog.showVerify"
-      dialog-type="confirmation"
-      :account-name="detail?.name || '-'"
-      @submit="actionVerifyUser"
-      @close="confirmationDialog.showVerify = false"
-    />
+    <BasePopup :show-popup="showPopupConfirmationInformation" @submit="actionVerifyUser" @close="onClosePopupInfo" />
     <InformationPopup
-      :show-popup="informationDialog.showDialog"
+      :show-popup="informationDialog.show"
       :account-name="detail?.name || '-'"
       :title="informationDialog.title"
       :description-text="informationDialog.info"
@@ -227,13 +219,13 @@
       @close="closeInformationDialogHandle"
     />
 
-    <BasePopupDragAndDropFile
+    <BaseDialogDragAndDropFile
+      :api-update-file="`/user/rw/${detail?.id}`"
       :show-popup="documentEdit.showDialog"
       :detail-drag-and-drop="DragAndDropComponentInformation"
-      :api-update-file="`/user/rw/${detail?.id}`"
-      @preview-file="previewFile"
-      @submit-edit-file="informationEditSk"
       @close="closeEditDialogHandle"
+      @submit-edit-file="informationEditSk"
+      @preview-file="previewFile"
     >
       <template #header>
         <p class="font-lato text-[14px] text-gray-800">
@@ -252,19 +244,19 @@
           </div>
         </div>
       </template>
-    </BasePopupDragAndDropFile>
+    </BaseDialogDragAndDropFile>
   </div>
 </template>
 
 <script>
 import RejectConfirmation from '~/components/KlaimRW/Popup/RejectConfirmation.vue'
-import VerifyConfirmation from '~/components/KlaimRW/Popup/VerifyConfirmation.vue'
 import InformationPopup from '~/components/KlaimRW/Popup/Information.vue'
 import EditStatusPopup from '~/components/KlaimRW/Popup/EditStatus.vue'
 import ArrowLeft from '~/assets/icon/arrow-left.svg?inline'
 import DetailTableComponent from '~/components/KlaimRW/KlaimRwDetail/DetailTableComponent'
 import { formatDate } from '~/utils'
 import { userStatus } from '~/constant/klaim-rw'
+import popup from '~/mixins/klaim-rw'
 
 export default {
   name: 'KlaimRwDetail',
@@ -272,22 +264,15 @@ export default {
     ArrowLeft,
     DetailTableComponent,
     RejectConfirmation,
-    VerifyConfirmation,
     InformationPopup,
     EditStatusPopup
   },
+  mixins: [popup],
   data () {
     return {
       confirmationDialog: {
         showReject: false,
-        showVerify: false,
         showEditStatus: false
-      },
-      informationDialog: {
-        title: '',
-        showDialog: false,
-        info: '',
-        message: ''
       },
       documentDialog: {
         showDialog: false,
@@ -345,48 +330,9 @@ export default {
     rejectConfirmationHandle () {
       this.confirmationDialog.showReject = true
     },
-    verifyConfirmationHandle () {
-      this.confirmationDialog.showVerify = true
-    },
-    async actionRejectUser () {
-      this.confirmationDialog.showReject = false
-      this.informationDialog.title = 'Penolakan Akun RW'
-      try {
-        await this.$axios.post('/user/role/reject-rw', {
-          userId: this.detail?.id
-        })
-        this.informationDialog.showDialog = true
-        this.informationDialog.info =
-          'Penolakan akun RW telah berhasil dilakukan.'
-        this.informationDialog.message =
-          'Email terkait informasi penolakan telah dikirimkan ke email akun RW bersangkutan.'
-      } catch {
-        this.informationDialog.showDialog = true
-        this.informationDialog.info = 'Penolakan akun RW gagal dilakukan'
-        this.informationDialog.message = ''
-      }
-    },
-    async actionVerifyUser () {
-      this.informationDialog.title = 'Verifikasi Akun RW'
-      try {
-        await this.$axios.post('/user/role/verify-rw', {
-          userId: this.detail?.id
-        })
-        this.confirmationDialog.showVerify = false
-        this.informationDialog.showDialog = true
-        this.informationDialog.info =
-          'Verifikasi akun RW telah berhasil dilakukan.'
-        this.informationDialog.message =
-          'Email terkait informasi verifikasi telah dikirimkan ke email akun RW bersangkutan.'
-      } catch {
-        this.confirmationDialog.showVerify = false
-        this.informationDialog.showDialog = true
-        this.informationDialog.info = 'Verifikasi akun RW gagal dilakukan.'
-        this.informationDialog.message = ''
-      }
-    },
     actionEditStatusHandle (value) {
       this.confirmationDialog.showEditStatus = false
+      this.user.id = this.detail.id
       if (value === userStatus.rejected) {
         this.actionRejectUser()
       } else if (value === userStatus.verified) {
@@ -415,9 +361,10 @@ export default {
 
       this.informationDialog.info = information.info
       this.informationDialog.message = information.message
+      this.$fetch()
     },
     closeInformationDialogHandle () {
-      this.informationDialog.showDialog = false
+      this.informationDialog.show = false
       this.documentDialog.fileId = ''
       this.documentDialog.mimeType = ''
       this.$fetch()
@@ -425,11 +372,11 @@ export default {
     editDocumentHandle () {
       this.documentEdit.showDialog = true
     },
-    previewFile (file) {
+    previewFile () {
       this.documentDialog.showDialog = true
       this.documentDialog.fileId = 'loading'
-      this.documentDialog.fileId = file.data
-      this.documentDialog.mimeType = file.mimeType
+      this.documentDialog.fileId = this.$store.state.dataImage.data
+      this.documentDialog.mimeType = this.$store.state.dataImage.mimeType
     },
     closeEditDialogHandle () {
       this.documentEdit.showDialog = false

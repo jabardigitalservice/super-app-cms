@@ -88,6 +88,19 @@
               </td>
             </tr>
           </BaseTableDetail>
+          <!-- TODO: comment code for production -->
+          <!-- <BaseTableDetail header="Target" class="mb-4">
+            <tr>
+              <td class="w-[146px]">
+                <strong>Platform</strong>
+              </td>
+              <td>{{ detailMessageNotif?.targetPlatform || '-' }}</td>
+            </tr>
+            <tr>
+              <td><strong>Topik</strong></td>
+              <td>{{ detailMessageNotif?.topic|| '-' }}</td>
+            </tr>
+          </BaseTableDetail> -->
           <BaseTableDetail header="Tombol Tautan">
             <tr>
               <td class="w-[146px]">
@@ -103,7 +116,7 @@
         </div>
       </div>
     </div>
-    <BaseViewImage :show-popup="showImageCoverPopup" :image-url="detailMessageNotif.imageBackground" title="Cover Image" @close="showImageCoverPopup=false" />
+    <BaseViewFile :show="showImageCoverPopup" :file="detailMessageNotif.imageBackground" :with-url-path="true" title="Cover Image" @close="showImageCoverPopup=false" />
     <BasePopup :show-popup="showPopupConfirmationInformation" @submit="submitHandle" @close="closePopupDetailHandle" />
   </div>
 </template>
