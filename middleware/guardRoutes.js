@@ -4,8 +4,12 @@ export default function ({ $role, route, redirect, $auth, params }) {
   if (route.path !== '/login' && $auth.strategy.token.get()) {
     // redirect first login by role
     if (route.path === '/') {
-      if ($role.includes('admin_ticket') && !$role.includes('admin')) {
+      if ($role.includes('admin:mraj_officer') && !$role.includes('admin')) {
         return redirect('/ticket-museum')
+      }
+
+      if ($role.includes('tahura_officer') && !$role.includes('admin')) {
+        return redirect('/tahura/dashboard')
       }
     }
 
