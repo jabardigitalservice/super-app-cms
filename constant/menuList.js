@@ -41,13 +41,13 @@ const messageNotifMenu = {
 
 const tiketMuseumMenu = {
   titleMenu: 'tiket museum',
-  showTitleMenuForRoles: ['admin_ticket'],
+  showTitleMenuForRoles: ['admin:mraj_officer'],
   menu: [
     {
       name: 'Tiket Museum',
       path: '/ticket-museum',
       arrow: false,
-      showMenuAndAccessForRoles: ['admin_ticket'],
+      showMenuAndAccessForRoles: ['admin:mraj_officer'],
       icon: 'item.svg'
     }
   ]
