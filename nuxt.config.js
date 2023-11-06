@@ -14,22 +14,26 @@ export default {
       { hid: 'description', name: 'description', content: '' },
       { name: 'format-detection', content: 'telephone=no' }
     ],
-    link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.png' }
-    ],
+    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.png' }],
     script: [
       {
         src: '/newrelic-browser-script.js',
         'data-account-id': `${process.env.ACCOUNT_ID_NEW_RELIC}`,
         'data-browser-license-key': `${process.env.LICENSE_KEY_NEW_RELIC_ACCOUNT}`,
         'data-application-id': `${process.env.APPLICATION_ID_NEW_RELIC}`
+      },
+      {
+        src: '/xlsx-script.js',
+        async: true
+      },
+      {
+        src: 'https://public.tableau.com/javascripts/api/tableau-2.min.js'
       }
     ]
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: [
-  ],
+  css: ['~/assets/css/style.css'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
@@ -37,7 +41,8 @@ export default {
     // plugin axios
     '~/plugins/axios',
     '~/plugins/vue-gtag.js',
-    '~/plugins/vee-validate.js'
+    '~/plugins/vee-validate.js',
+    '~/plugins/date-picker.js'
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -90,7 +95,14 @@ export default {
   },
 
   router: {
-    middleware: ['auth', 'guardRoutes']
+    middleware: ['auth', 'guardRoutes'],
+    extendRoutes (routes, resolve) {
+      routes.push({
+        name: 'preview-pdf',
+        path: '/preview-pdf/tahura/:assurance/:category/:startDate/:endDate/:status/:token',
+        component: resolve(__dirname, '~/pages/tahura/preview-pdf/_assurance-category-startDate-endDate-status-token.vue')
+      })
+    }
   },
 
   googleFonts: {
@@ -124,10 +136,16 @@ export default {
     apiKey: process.env.API_KEY,
     keyclockBaseUrl: process.env.KEYCLOCK_BASE_URL,
     axios: {
-      browserBaseURL: process.env.BROWSER_BASE_URL + '/' + process.env.VERSION_ENDPOINT
+      browserBaseURL:
+        process.env.BROWSER_BASE_URL + '/' + process.env.VERSION_ENDPOINT
     },
     googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID,
-    tinymceApiKey: process.env.TINYMCE_API_KEY
+    tinymceApiKey: process.env.TINYMCE_API_KEY,
+    googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
+    urlTableauJabarProv: process.env.URL_TABLEAU_JABARPROV,
+    urlDashboardTahura: process.env.URL_DASHBOARD_TAHURA,
+    usernameTableau: process.env.USERNAME_TABLEAU,
+    urlGetTokenTableau: process.env.URL_GET_TOKEN_TABLEAU
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios

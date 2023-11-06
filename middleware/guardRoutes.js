@@ -1,33 +1,43 @@
+import { menu } from '@/constant/menuList.js'
+
 export default function ({ $role, route, redirect, $auth, params }) {
   if (route.path !== '/login' && $auth.strategy.token.get()) {
     // redirect first login by role
     if (route.path === '/') {
-      if ($role.includes('admin_ticket') && !$role.includes('admin')) {
+      if ($role.includes('admin:mraj_officer') && !$role.includes('admin')) {
         return redirect('/ticket-museum')
+      }
+
+      if ($role.includes('tahura_officer') && !$role.includes('admin')) {
+        return redirect('/tahura/dashboard')
       }
     }
 
-    // guard routes by roles
+    const allowedRoutesForAllRoles = ['/', '/login', '/logout', '/unauthorized']
 
-    const allowedRolesPathAdminRW = ['/', `/detail/${params.id}`, '/activities', '/message-notif', '/message-notif/create', `/message-notif/detail/${params.id}`, '/data-user', '/configuration', '/management-release']
-    const allowedRolesPathAdminTicket = ['/ticket-museum', `/ticket-museum/detail/${params.invoice}`]
+    const allowedRoutesMenu = menu
+      .flatMap(menuItem => menuItem.menu || [])
+      .filter(menu =>
+        menu?.showMenuAndAccessForRoles?.some(value => $role.includes(value))
+      )
+      .map(detailSubMenu => detailSubMenu.path)
 
-    const allowedRoutes = [
-      { routes: allowedRolesPathAdminRW, role: 'admin' },
-      { routes: allowedRolesPathAdminTicket, role: 'admin_ticket' }
-    ]
+    const allowedRoutesChild = menu
+      .flatMap(menuItem => menuItem.childRoute || [])
+      .filter(childRoute =>
+        childRoute?.accessChildRouteForRoles?.some(value => $role.includes(value))
+      )
+      .map(detailSubMenu => detailSubMenu.path)
 
-    const isAuthorized = allowedRoutes.flatMap((route) => {
-      if ($role.includes(route.role)) {
-        return route.routes
-      }
-      return []
-    }).includes(route.path)
+    const allowedRoutesByRoles = [...allowedRoutesMenu, ...allowedRoutesChild]
 
-    if (route.path !== '/unauthorized') {
-      if (!isAuthorized) {
-        return redirect('/unauthorized')
-      }
+    const hasMatchingRoute = allowedRoutesByRoles.some(routePattern =>
+      route.path.startsWith(`${routePattern}`)
+    )
+
+    if (!hasMatchingRoute && !allowedRoutesForAllRoles.includes(route.path)) {
+      // Pengguna tidak memiliki akses ke halaman saat ini, redirect atau tindakan lain
+      redirect('/unauthorized')
     }
   }
 }

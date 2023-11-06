@@ -29,7 +29,7 @@
             class="rounded-lg border border-green-700 px-4 py-1 text-green-700 hover:bg-green-50"
             @click="onClickDocument(item?.fileId)"
           >
-            Lihat Bukti Pembayaran
+            Bukti Pembayaran
           </button>
         </template>
         <!-- eslint-disable-next-line vue/valid-v-slot -->
