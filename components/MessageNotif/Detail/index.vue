@@ -88,7 +88,8 @@
               </td>
             </tr>
           </BaseTableDetail>
-          <BaseTableDetail header="Target" class="mb-4">
+          <!-- TODO: comment code for production -->
+          <!-- <BaseTableDetail header="Target" class="mb-4">
             <tr>
               <td class="w-[146px]">
                 <strong>Platform</strong>
@@ -99,7 +100,7 @@
               <td><strong>Topik</strong></td>
               <td>{{ detailMessageNotif?.topic|| '-' }}</td>
             </tr>
-          </BaseTableDetail>
+          </BaseTableDetail> -->
           <BaseTableDetail header="Tombol Tautan">
             <tr>
               <td class="w-[146px]">

@@ -112,8 +112,9 @@ export default {
       return this.messageNotifList.map((item) => {
         return {
           ...item,
-          targetPlatform: item.targetPlatform || '-',
-          topic: item.topic || '-',
+          // TODO: comment code for production
+          // targetPlatform: item.targetPlatform || '-',
+          // topic: item.topic || '-',
           createdAt: formatDate(item.createdAt || '', 'dd/MM/yyyy HH:mm'),
           publishedAt: formatDate(item.publishedAt || '', 'dd/MM/yyyy HH:mm')
         }
