@@ -3,8 +3,9 @@ export const messageNotifHeader = [
   { key: 'createdAt', text: 'Dibuat pada', sortable: true },
   { key: 'publishedAt', text: 'Dikirim pada', sortable: true },
   { key: 'status', text: 'Status', sortable: true },
-  { key: 'targetPlatform', text: 'Target Platform', sortable: true },
-  { key: 'topic', text: 'Topik', sortable: true },
+  // TODO: comment code for production
+  // { key: 'targetPlatform', text: 'Target Platform', sortable: true },
+  // { key: 'topic', text: 'Topik', sortable: true },
   { key: 'action', text: 'Aksi' }
 ]
 

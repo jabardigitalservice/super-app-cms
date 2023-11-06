@@ -137,7 +137,8 @@
           </ValidationProvider>
         </div>
         <!--- Target must be choose one between platform or topic, because in firebase only can submit one of them. -->
-        <div class="col-span-2 mt-4">
+        <!-- TODO: comment code for production -->
+        <!-- <div class="col-span-2 mt-4">
           <h2 class="text-sm font-bold text-gray-800 before:content-['*'] before:ml-0.5 before:text-red-500">
             Target <em>(Wajib pilih salah satu)</em>
           </h2>
@@ -163,7 +164,7 @@
             :disabled="isDisabledTopic"
             @change="checkFormSelectTopicDisabled"
           />
-        </div>
+        </div> -->
         <small class="text-red-600">{{ errMessageTarget }}</small>
         <div class="col-span-2 mt-4">
           <h2 class="text-sm font-bold text-gray-800">
@@ -236,11 +237,12 @@ export default {
         content: '',
         actionTitle: '',
         actionUrl: '',
-        category: '',
-        target: {
-          platform: '',
-          topic: ''
-        }
+        category: ''
+        // TODO: comment code for production
+        // target: {
+        //   platform: '',
+        //   topic: ''
+        // }
       },
       detailDragAndDrop: {
         informationSizeCompatible:
@@ -252,8 +254,9 @@ export default {
         acceptFile: '.jpg,.jpeg,.png'
       },
       categoryOptions: [],
-      platformOptions: [{ label: 'Android OS', value: 'android' }, { label: 'Apple iOS', value: 'ios' }],
-      topicOptions: [{ label: 'RW', value: 'rw' }, { label: 'Publik', value: 'general' }],
+      // TODO: comment code for production
+      // platformOptions: [{ label: 'Android OS', value: 'android' }, { label: 'Apple iOS', value: 'ios' }],
+      // topicOptions: [{ label: 'RW', value: 'rw' }, { label: 'Publik', value: 'general' }],
       isInformationPopup: false,
       savedConfirmationPopup,
       savedInformationPopup,
@@ -309,9 +312,9 @@ export default {
     },
     async validHandle (fileCorrect = true) {
       const isDataValid = await this.$refs.form.validate()
-      if (this.fieldMessageNotif.target.platform === '' && this.fieldMessageNotif.target.topic === '') {
-        this.errMessageTarget = 'wajib memilih salah satu target.'
-      }
+      // if (this.fieldMessageNotif.target.platform === '' && this.fieldMessageNotif.target.topic === '') {
+      //   this.errMessageTarget = 'wajib memilih salah satu target.'
+      // }
       if (!isDataValid || !fileCorrect || this.errMessageTarget) {
         return false
       }
@@ -358,11 +361,12 @@ export default {
           await this.$refs.BaseDragAndDropFile.uploadFile()
         }
 
-        if (this.fieldMessageNotif.target.platform !== '') {
-          delete this.fieldMessageNotif.target.topic
-        } else {
-          delete this.fieldMessageNotif.target.platform
-        }
+        // TODO: comment code for production
+        // if (this.fieldMessageNotif.target.platform !== '') {
+        //   delete this.fieldMessageNotif.target.topic
+        // } else {
+        //   delete this.fieldMessageNotif.target.platform
+        // }
 
         const response = await this.$axios.post('/messages', {
           ...this.fieldMessageNotif
