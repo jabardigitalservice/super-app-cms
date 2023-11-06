@@ -118,34 +118,34 @@ const aduanMenu = {
 
 const tahuraMenu = {
   titleMenu: 'Ticketing Tahura',
-  showTitleMenuForRoles: ['admin'],
+  showTitleMenuForRoles: ['admin', 'tahura_officer'],
   menu: [
     {
       name: 'Dashboard',
       path: '/tahura/dashboard',
       arrow: false,
-      showMenuAndAccessForRoles: ['admin'],
+      showMenuAndAccessForRoles: ['admin', 'tahura_officer'],
       icon: 'speedo-meter.svg'
     },
     {
       name: 'Daftar Pesanan',
       path: '/tahura/daftar-pesanan',
       arrow: false,
-      showMenuAndAccessForRoles: ['admin'],
+      showMenuAndAccessForRoles: ['admin', 'tahura_officer'],
       icon: 'ticket.svg'
     },
     {
       name: 'Laporan Pendapatan',
       path: '/tahura/laporan-pendapatan',
       arrow: false,
-      showMenuAndAccessForRoles: ['admin'],
+      showMenuAndAccessForRoles: ['admin', 'tahura_officer'],
       icon: 'news-paper.svg'
     }
   ],
   childRoute: [
     {
       path: '/tahura/preview-pdf',
-      accessChildRouteForRoles: ['admin']
+      accessChildRouteForRoles: ['admin', 'tahura_officer']
     }
   ]
 }
