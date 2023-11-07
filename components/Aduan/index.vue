@@ -299,6 +299,7 @@ export default {
         this.setQuery({ complaint_source: 'sp4n' })
       }
 
+      console.log(this.query)
       const responseListComplaint = await this.$axios.get('/warga/complaints', {
         params: { ...this.query, is_admin: 1 }
       })
@@ -470,7 +471,12 @@ export default {
     sortChange (value) {
       const key = Object.keys(value)[0]
       if (key && value[key] !== 'no-sort') {
-        this.query.sort_by = key
+        if (key === 'created_at_format') {
+          this.query.sort_by = 'created_at'
+        } else {
+          this.query.sort_by = key
+        }
+
         this.query.sort_type = value[key]
       } else {
         delete this.query.sort_by
