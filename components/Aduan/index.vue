@@ -299,7 +299,6 @@ export default {
         this.setQuery({ complaint_source: 'sp4n' })
       }
 
-      console.log(this.query)
       const responseListComplaint = await this.$axios.get('/warga/complaints', {
         params: { ...this.query, is_admin: 1 }
       })
@@ -341,12 +340,6 @@ export default {
       if (this.listStatisticComplaint.length === 2) {
         this.listStatisticComplaint.pop()
       }
-
-      this.listStatisticComplaint = this.listStatisticComplaint.filter(item =>
-        this.typeAduan.penentuanKewenangan.props === this.typeAduanPage
-          ? item.id !== this.complaintStatus.verified.id
-          : item
-      )
     } catch {
       this.pagination.disabled = true
     }
