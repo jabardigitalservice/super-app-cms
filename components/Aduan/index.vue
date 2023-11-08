@@ -300,7 +300,7 @@ export default {
       }
 
       // default sort by updated date
-      if (this.checkComplaintTypeSortByUpdatedDateHandle()) {
+      if (this.checkComplaintTypeSortByUpdatedDateHandle() && !this.query.sort_by) {
         this.setQuery({ sort_by: 'updated_at' })
       }
 
