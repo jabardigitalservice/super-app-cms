@@ -299,6 +299,11 @@ export default {
         this.setQuery({ complaint_source: 'sp4n' })
       }
 
+      // default sort by updated date
+      if (this.checkComplaintTypeSortByUpdatedDateHandle()) {
+        this.setQuery({ sort_by: 'updated_at' })
+      }
+
       const responseListComplaint = await this.$axios.get('/warga/complaints', {
         params: { ...this.query, is_admin: 1 }
       })
@@ -585,6 +590,10 @@ export default {
     },
     changeDateRangeHandle () {
       this.isShowPopupDateRange = true
+    },
+    checkComplaintTypeSortByUpdatedDateHandle () {
+      const listCmplaintTypeSortByUpdatedDate = [this.typeAduan.penentuanKewenangan.props]
+      return listCmplaintTypeSortByUpdatedDate.includes(this.typeAduanPage)
     }
   }
 }
