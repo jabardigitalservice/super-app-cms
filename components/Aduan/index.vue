@@ -340,12 +340,6 @@ export default {
       if (this.listStatisticComplaint.length === 2) {
         this.listStatisticComplaint.pop()
       }
-
-      this.listStatisticComplaint = this.listStatisticComplaint.filter(item =>
-        this.typeAduan.penentuanKewenangan.props === this.typeAduanPage
-          ? item.id !== this.complaintStatus.verified.id
-          : item
-      )
     } catch {
       this.pagination.disabled = true
     }
@@ -470,7 +464,12 @@ export default {
     sortChange (value) {
       const key = Object.keys(value)[0]
       if (key && value[key] !== 'no-sort') {
-        this.query.sort_by = key
+        if (key === 'created_at_format') {
+          this.query.sort_by = 'created_at'
+        } else {
+          this.query.sort_by = key
+        }
+
         this.query.sort_type = value[key]
       } else {
         delete this.query.sort_by
