@@ -592,8 +592,8 @@ export default {
       this.isShowPopupDateRange = true
     },
     checkComplaintTypeSortByUpdatedDateHandle () {
-      const listCmplaintTypeSortByUpdatedDate = [this.typeAduan.penentuanKewenangan.props]
-      return listCmplaintTypeSortByUpdatedDate.includes(this.typeAduanPage)
+      const listComplaintTypeSortByUpdatedDate = [this.typeAduan.penentuanKewenangan.props]
+      return listComplaintTypeSortByUpdatedDate.includes(this.typeAduanPage)
     }
   }
 }
