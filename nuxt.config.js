@@ -42,7 +42,8 @@ export default {
     '~/plugins/axios',
     '~/plugins/vue-gtag.js',
     '~/plugins/vee-validate.js',
-    '~/plugins/date-picker.js'
+    '~/plugins/date-picker.js',
+    '~/plugins/unleash.client.js'
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -145,7 +146,11 @@ export default {
     urlTableauJabarProv: process.env.URL_TABLEAU_JABARPROV,
     urlDashboardTahura: process.env.URL_DASHBOARD_TAHURA,
     usernameTableau: process.env.USERNAME_TABLEAU,
-    urlGetTokenTableau: process.env.URL_GET_TOKEN_TABLEAU
+    urlGetTokenTableau: process.env.URL_GET_TOKEN_TABLEAU,
+    unleash: {
+      unleashURL: process.env.UNLEASH_URL,
+      unleashToken: process.env.UNLEASH_TOKEN
+    }
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
