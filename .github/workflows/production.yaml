@@ -51,7 +51,7 @@ jobs:
             USERNAME_TABLEAU=${{secrets.USERNAME_TABLEAU}}
             URL_GET_TOKEN_TABLEAU=${{secrets.URL_GET_TOKEN_TABLEAU}}
             UNLEASH_URL=${{secrets.UNLEASH_URL}}
-            UNLEASH_TOKEN=${{secrets.UNLEASH_TOKEN}}
+            UNLEASH_TOKEN=${{secrets.UNLEASH_TOKEN_PRODUCTION}}
       # GitOps
       - name: GitOps ArgoCD Setup
         run: |
