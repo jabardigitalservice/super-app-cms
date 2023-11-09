@@ -84,34 +84,39 @@ const masterDataMenu = {
 const aduanMenu = {
   titleMenu: 'aduan',
   showTitleMenuForRoles: ['admin'],
+  unleashVariable: 'SAPAWARGA-CMS__ADUAN',
   menu: [
     {
       name: 'Daftar Aduan Masuk',
       path: '/aduan/aduan-masuk',
       arrow: false,
       showMenuAndAccessForRoles: ['admin'],
-      icon: 'clipboard-list.svg'
+      icon: 'clipboard-list.svg',
+      unleashVariable: 'SAPAWARGA-CMS__ADUAN'
     },
     {
       name: 'Daftar Penentuan Kewenangan',
       path: '/aduan/penentuan-kewenangan',
       arrow: false,
       showMenuAndAccessForRoles: ['admin'],
-      icon: 'clipboard-user.svg'
+      icon: 'clipboard-user.svg',
+      unleashVariable: 'SAPAWARGA-CMS__ADUAN'
     },
     {
       name: 'Dialihkan ke SP4N',
       path: '/aduan/dialihkan-ke-span-lapor',
       arrow: false,
       showMenuAndAccessForRoles: ['admin'],
-      icon: 'clipboard-arrow-left.svg'
+      icon: 'clipboard-arrow-left.svg',
+      unleashVariable: 'SAPAWARGA-CMS__ADUAN'
     },
     {
       name: 'Daftar Aduan dari SP4N',
       path: '/aduan/aduan-dari-span-lapor',
       arrow: false,
       showMenuAndAccessForRoles: ['admin'],
-      icon: 'clipboard-pencil.svg'
+      icon: 'clipboard-pencil.svg',
+      unleashVariable: 'SAPAWARGA-CMS__ADUAN'
     }
   ]
 }
