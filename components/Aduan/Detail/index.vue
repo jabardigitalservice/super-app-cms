@@ -271,7 +271,7 @@
                 </td>
                 <td>
                   {{
-                    getCategorySubCategoryNameHandle(dataCategory)
+                    getSubCategoryName(dataCategory)
                   }}
                 </td>
               </tr>
@@ -281,7 +281,7 @@
                 <td><strong>Sub Kategori Aduan</strong></td>
                 <td>
                   {{
-                    getCategorySubCategoryNameHandle(dataSubCategory)
+                    getSubCategoryName(dataSubCategory)
                   }}
                 </td>
               </tr>
@@ -428,7 +428,7 @@
                   <strong class="text-[10px]">Kategori Aduan </strong>
                 </td>
                 <td>
-                  {{ getCategorySubCategoryNameHandle(dataCategory) }}
+                  {{ getSubCategoryName(dataCategory) }}
                 </td>
               </tr>
               <tr
@@ -436,7 +436,7 @@
               >
                 <td><strong>Sub Kategori Aduan</strong></td>
                 <td>
-                  {{ getCategorySubCategoryNameHandle(dataSubCategory) }}
+                  {{ getSubCategoryName(dataSubCategory) }}
                 </td>
               </tr>
               <tr>
@@ -633,23 +633,21 @@ export default {
       }
     },
 
-    getCategorySubCategoryNameHandle (dataCategorySubcategory) {
-      if (this.detailComplaint[dataCategorySubcategory.key]) {
-        if (
-          this.detailComplaint[dataCategorySubcategory.key]?.id.includes(
-            dataCategorySubcategory.valueSearch
-          ) &&
-          this.detailComplaint[dataCategorySubcategory.subKey]
-        ) {
-          return `${
-            this.detailComplaint[dataCategorySubcategory.key]?.name
-          } - ${this.detailComplaint[dataCategorySubcategory.subKey]?.name}`
-        } else {
-          return this.detailComplaint[dataCategorySubcategory.key]?.name
-        }
-      } else {
-        return '-'
+    getSubCategoryName (dataSubcategory) {
+      // check if detail complaint by key has property object
+      const hasSubcategory = Object.keys(this.detailComplaint) || Object.keys[this.detailComplaint[dataSubcategory.key]]
+
+      // guard clauses if don't have sub category
+      if (!hasSubcategory) { return '-' }
+
+      if (this.detailComplaint[dataSubcategory.key]?.id.includes(dataSubcategory.valueSearch) &&
+          this.detailComplaint[dataSubcategory.subKey]) {
+        return `${
+            this.detailComplaint[dataSubcategory.key]?.name
+          } - ${this.detailComplaint[dataSubcategory.subKey]?.name}`
       }
+
+      return this.detailComplaint[dataSubcategory.key]?.name
     },
     getStatusColorHandle (statusId) {
       if (
