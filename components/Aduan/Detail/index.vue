@@ -269,12 +269,20 @@
                 <td class="w-[180px]">
                   <strong class="text-[10px]">Kategori Aduan </strong>
                 </td>
-                <td>{{ detailComplaint?.complaint_category?.name || "-" }}</td>
+                <td>
+                  {{
+                    getCategorySubCategoryNameHandle(dataCategory)
+                  }}
+                </td>
               </tr>
-              <tr>
+              <tr
+                v-show="detailComplaint?.complaint_category?.id !== 'lainnya'"
+              >
                 <td><strong>Sub Kategori Aduan</strong></td>
                 <td>
-                  {{ detailComplaint?.complaint_subcategory?.name || "-" }}
+                  {{
+                    getCategorySubCategoryNameHandle(dataSubCategory)
+                  }}
                 </td>
               </tr>
               <tr>
@@ -419,12 +427,16 @@
                 <td class="w-[205px]">
                   <strong class="text-[10px]">Kategori Aduan </strong>
                 </td>
-                <td>{{ detailComplaint?.complaint_category?.name || "-" }}</td>
+                <td>
+                  {{ getCategorySubCategoryNameHandle(dataCategory) }}
+                </td>
               </tr>
-              <tr>
+              <tr
+                v-show="detailComplaint?.complaint_category?.id !== 'lainnya'"
+              >
                 <td><strong>Sub Kategori Aduan</strong></td>
                 <td>
-                  {{ detailComplaint?.complaint_subcategory?.name || "-" }}
+                  {{ getCategorySubCategoryNameHandle(dataSubCategory) }}
                 </td>
               </tr>
               <tr>
@@ -536,7 +548,17 @@ export default {
       complaintButtonDetail,
       typeAduan,
       isShowPopupViewImage: false,
-      isShowPopupDetailStatusComplaint: false
+      isShowPopupDetailStatusComplaint: false,
+      dataCategory: {
+        key: 'complaint_category',
+        subKey: 'complaint_subcategory',
+        valueSearch: 'lainnya'
+      },
+      dataSubCategory: {
+        key: 'complaint_subcategory',
+        subKey: 'complaint_subcategory_child',
+        valueSearch: 'lainnya-terkait'
+      }
     }
   },
   async fetch () {
@@ -606,6 +628,25 @@ export default {
     getCoordinatHandle () {
       if (this.detailComplaint?.longitude && this.detailComplaint?.latitude) {
         return `${this.detailComplaint.latitude}, ${this.detailComplaint.longitude}`
+      } else {
+        return '-'
+      }
+    },
+
+    getCategorySubCategoryNameHandle (dataCategorySubcategory) {
+      if (this.detailComplaint[dataCategorySubcategory.key]) {
+        if (
+          this.detailComplaint[dataCategorySubcategory.key]?.id.includes(
+            dataCategorySubcategory.valueSearch
+          ) &&
+          this.detailComplaint[dataCategorySubcategory.subKey]
+        ) {
+          return `${
+            this.detailComplaint[dataCategorySubcategory.key]?.name
+          } - ${this.detailComplaint[dataCategorySubcategory.subKey]?.name}`
+        } else {
+          return this.detailComplaint[dataCategorySubcategory.key]?.name
+        }
       } else {
         return '-'
       }
