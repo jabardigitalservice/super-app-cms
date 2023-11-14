@@ -33,7 +33,7 @@ export const complaintFromSpanHeader = [
 
 export const determiningAuthorityHeader = [...complaintHeader]
 determiningAuthorityHeader.splice(1, 0, {
-  key: 'complaint_source',
+  key: 'complaint_source_name',
   text: 'Sumber Aduan'
 })
 
@@ -61,6 +61,17 @@ export const typeAduan = {
     label: 'Daftar Aduan dari SP4N Lapor',
     link: '/aduan/aduan-dari-span-lapor',
     id: 'aduanDariSpanLapor'
+  }
+}
+
+export const complaintSource = {
+  sapawarga: {
+    id: 'sapawarga',
+    name: 'Sapawarga'
+  },
+  span: {
+    id: 'sp4n',
+    name: 'SP4N Lapor'
   }
 }
 
