@@ -304,7 +304,7 @@ export default {
 
       // default sort by updated date
       if (
-        this.checkComplaintTypeSortByUpdatedDateHandle() &&
+        this.checkPropsSortByUpdatedDate() &&
         !this.query.sort_by
       ) {
         this.setQuery({ sort_by: 'updated_at' })
@@ -599,11 +599,11 @@ export default {
     changeDateRangeHandle () {
       this.isShowPopupDateRange = true
     },
-    checkComplaintTypeSortByUpdatedDateHandle () {
-      const listComplaintTypeSortByUpdatedDate = [
+    checkPropsSortByUpdatedDate () {
+      const listPropsSortByUpdatedDate = [
         this.typeAduan.penentuanKewenangan.props
       ]
-      return listComplaintTypeSortByUpdatedDate.includes(this.typeAduanPage)
+      return listPropsSortByUpdatedDate.includes(this.typeAduanPage)
     },
     getComplaintSource (dataComplaint) {
       if (dataComplaint.complaint_source === 'sp4n') {
