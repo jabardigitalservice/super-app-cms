@@ -76,12 +76,12 @@
           </ValidationProvider>
           <div
             v-if="payload.complaint_status_id !== complaintStatus.rejected.id"
+            class="mb-4"
           >
             <ValidationProvider
               v-slot="{ errors }"
               rules="requiredSelectForm"
               name="Cakupan urusan"
-              class="mb-4"
             >
               <jds-select
                 v-model="payload.coverage_of_affairs"
