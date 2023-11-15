@@ -109,6 +109,8 @@ export default {
   },
   data () {
     const today = new Date()
+    const sevenDaysLater = new Date(today)
+    sevenDaysLater.setDate(today.getDate() + 7)
     const oneMonthAgo = new Date(today)
     oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1)
     return {
@@ -173,6 +175,7 @@ export default {
       isShowPopupDateRange: false,
       today,
       oneMonthAgo,
+      sevenDaysLater,
       statusTahura,
       listStatusTahura
     }
@@ -257,7 +260,7 @@ export default {
         inputDate[1] === undefined ? inputDate[0] : inputDate[1]
       )
       endDate.setMonth(endDate.getMonth() - 3)
-      return date > new Date() || date < endDate
+      return date > this.sevenDaysLater || date < endDate
     },
     checkMaxDate (date) {
       const endDate = new Date(date[1])
