@@ -179,6 +179,7 @@
       :data-dialog="dataDialog"
       :show-popup="isShowPopupProcessComplaint"
       @close="closePopupHandle()"
+      @submit="submitProcessComplaint"
     />
     <DialogLoading :show-popup="isLoading" />
   </div>
@@ -204,7 +205,8 @@ import {
   complaintDivertedToSpanHeader,
   complaintFromSpanHeader,
   determiningAuthorityHeader,
-  typeAduan
+  typeAduan,
+  complaintSource
 } from '~/constant/aduan-masuk'
 import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
 
@@ -281,6 +283,7 @@ export default {
       listValueStatusComplaint: [],
       listStatisticComplaint: [],
       isShowPopupDateRange: false,
+      complaintSource,
       dateRange: [
         new Date(new Date().setFullYear(new Date().getFullYear() - 1)),
         new Date()
@@ -300,7 +303,10 @@ export default {
       }
 
       // default sort by updated date
-      if (this.checkComplaintTypeSortByUpdatedDateHandle() && !this.query.sort_by) {
+      if (
+        this.checkPropsSortByUpdatedDate() &&
+        !this.query.sort_by
+      ) {
         this.setQuery({ sort_by: 'updated_at' })
       }
 
@@ -373,10 +379,12 @@ export default {
           sp4n_created_at: item.sp4n_created_at
             ? formatDate(item.sp4n_created_at || '', 'dd/MM/yyyy HH:mm')
             : 'Belum ada',
-          complaint_source:
-            item.complaint_source === 'sp4n'
-              ? 'SP4N Lapor'
-              : item.complaint_source
+          complaint_source_name: item?.complaint_source
+            ? this.getComplaintSource(item).name
+            : '',
+          complaint_source_id: item?.complaint_source
+            ? this.getComplaintSource(item).id
+            : ''
         }
       })
     },
@@ -591,9 +599,17 @@ export default {
     changeDateRangeHandle () {
       this.isShowPopupDateRange = true
     },
-    checkComplaintTypeSortByUpdatedDateHandle () {
-      const listComplaintTypeSortByUpdatedDate = [this.typeAduan.penentuanKewenangan.props]
-      return listComplaintTypeSortByUpdatedDate.includes(this.typeAduanPage)
+    checkPropsSortByUpdatedDate () {
+      const listPropsSortByUpdatedDate = [
+        this.typeAduan.penentuanKewenangan.props
+      ]
+      return listPropsSortByUpdatedDate.includes(this.typeAduanPage)
+    },
+    getComplaintSource (dataComplaint) {
+      if (dataComplaint.complaint_source === 'sp4n') {
+        return this.complaintSource.span
+      }
+      return this.complaintSource[dataComplaint.complaint_source]
     }
   }
 }

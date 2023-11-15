@@ -23,22 +23,28 @@
                   class="h-[23px] w-[23px] flex-shrink-0 rounded-[4px] bg-[#F6F6F9]"
                   :class="{
                     'py-[3px] px-[5px]':
-                      dataDialog.complaintSource === 'sapawarga',
+                      dataComplaintSource?.id === complaintSource.sapawarga.id,
                   }"
                 >
                   <img
                     :src="
-                      dataDialog.complaintSource === 'sapawarga'
+                      dataComplaintSource?.id === complaintSource.sapawarga.id
                         ? require('~/assets/logo/sapawarga.svg')
                         : require('~/assets/logo/span-lapor.svg')
                     "
                     alt="logo"
-                    :width="dataDialog.complaintSource === 'sapawarga' && '11'"
-                    :height="dataDialog.complaintSource === 'sapawarga' && '15'"
+                    :width="
+                      dataComplaintSource?.id ===
+                        complaintSource.sapawarga.id && '11'
+                    "
+                    :height="
+                      dataComplaintSource?.id ===
+                        complaintSource.sapawarga.id && '15'
+                    "
                   >
                 </div>
                 <p class="ml-2 text-sm font-bold">
-                  {{ dataDialog.complaintSource }}
+                  {{ dataComplaintSource?.name }}
                 </p>
               </div>
             </div>
@@ -59,27 +65,39 @@
               :error-message="errors[0]"
               :options="listComplaintStatus"
               :class="{ 'mb-2': errors.length > 0 }"
-              @change="changeSelectStatusHandle"
+              :disabled="dataComplaintSource?.id === complaintSource.span.id"
+              @change="
+                changeSelectValue(
+                  payload.complaint_status_id,
+                  'complaint_status_id'
+                )
+              "
             />
           </ValidationProvider>
-          <ValidationProvider
+          <div
             v-if="payload.complaint_status_id !== complaintStatus.rejected.id"
-            v-slot="{ errors }"
-            rules="requiredSelectForm"
-            name="Cakupan Urusan"
             class="mb-4"
-            tag="div"
           >
-            <jds-select
-              v-model="payload.coverage_of_affairs"
-              name="Cakupan Urusan"
-              label="Cakupan Urusan"
-              placeholder="Pilih Cakupan Urusan"
-              :error-message="errors[0]"
-              :options="listAuthority"
-              :class="{ 'mb-2': errors.length > 0 }"
-            />
-          </ValidationProvider>
+            <ValidationProvider
+              v-slot="{ errors }"
+              rules="requiredSelectForm"
+              name="Cakupan urusan"
+            >
+              <jds-select
+                v-model="payload.coverage_of_affairs"
+                name="Cakupan Urusan"
+                label="Cakupan Urusan"
+                placeholder="Pilih Cakupan Urusan"
+                :error-message="errors[0]"
+                :options="listAuthority"
+                :class="{ 'mb-2': errors.length > 0 }"
+                class="!w-full"
+                @change="
+                  changeSelectValue(payload.opd_name, 'coverage_of_affairs')
+                "
+              />
+            </ValidationProvider>
+          </div>
           <ValidationProvider
             v-if="
               payload.complaint_status_id !==
@@ -103,6 +121,7 @@
               Tersisa {{ 255 - payload.status_description.length }} karakter
             </p>
           </ValidationProvider>
+
           <div
             v-if="payload.complaint_status_id !== complaintStatus.rejected.id"
           >
@@ -133,6 +152,7 @@
                 :options="listDisposition"
                 :class="{ 'mb-2': errors.length > 0 }"
                 class="!w-full"
+                @change="changeSelectValue(payload.opd_name, 'opd_name')"
               />
             </ValidationProvider>
             <ValidationProvider
@@ -236,13 +256,14 @@
                   placeholder="Pilih Tanggal Deadline"
                   name="Tanggal Deadline"
                   :disabled-date="disabledDateHandle"
+                  @change="changeUrgencyStatus"
                 /><br>
                 <small class="text-red-600">{{ errors[0] }}</small>
               </ValidationProvider>
               <div class="self-center">
                 <label class="text-sm">Tingkat Urgensi</label>
                 <p class="text-sm font-bold">
-                  {{ payload.urgency_level }}
+                  {{ payload?.urgency_level || "-" }}
                 </p>
               </div>
             </div>
@@ -253,6 +274,7 @@
         :show-cancel-button="true"
         label-button-submit="Proses Aduan"
         @close="closePopupProcessComplaint()"
+        @submit="saveDataProcessComplaint()"
       />
     </BaseDialogPanel>
   </BaseDialog>
@@ -261,11 +283,16 @@
 <script>
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import AlertMessage from '~/components/Aduan/Dialog/ProcessComplaint/AlertMessage'
-import { complaintStatus } from '~/constant/aduan-masuk'
+import { complaintStatus, complaintSource } from '~/constant/aduan-masuk'
+import { formatDate } from '~/utils'
 
 export default {
   name: 'DialogComplaintProcess',
-  components: { ValidationProvider, ValidationObserver, AlertMessage },
+  components: {
+    ValidationProvider,
+    ValidationObserver,
+    AlertMessage
+  },
   props: {
     showPopup: {
       type: Boolean,
@@ -282,16 +309,8 @@ export default {
       listDataAuthority: [],
       listDataDisposition: [],
       complaintStatus,
-      payload: {
-        status_description: '',
-        coverage_of_affairs: '',
-        complaint_status_note: '',
-        deadline_date: '',
-        proposed_ikp_narrative: '',
-        urgency_level: 'Mendesak',
-        opd_pic: '',
-        opd_name: ''
-      }
+      complaintSource,
+      complaintStatusValue: ''
     }
   },
   async fetch () {
@@ -340,48 +359,65 @@ export default {
       return this.listDataDisposition.map((item) => {
         return { value: item.name, label: item.name }
       })
-    }
-  },
-  watch: {
+    },
     payload: {
-      deep: true,
-      handler () {
-        if (this.payload.coverage_of_affairs) {
-          this.$fetch()
+      get () {
+        return { ...this.$store.state['process-complaint'].payload }
+      },
+      set (value) {
+        this.$store.commit('process-complaint/setPayload', value)
+      }
+    },
+    dataComplaintSource: {
+      get () {
+        return {
+          ...this.$store.state['process-complaint'].dataComplaintSource
         }
-
-        if (this.payload.deadline_date) {
-          this.changeUrgencyStatusHandle()
-        }
+      },
+      set (value) {
+        this.$store.commit('process-complaint/setComplaintSource', value)
       }
     }
   },
   methods: {
-    changeSelectStatusHandle (value) {
-      if (value) {
-        this.clearPopupProcessComplaint()
+    changeSelectValue (value, keyObject) {
+      switch (keyObject) {
+        case 'complaint_status_id':
+          this.clearPopupProcessComplaint()
+          break
+        case 'coverage_of_affairs':
+          this.$fetch()
+          break
+        default:
+          this.paylod = { ...this.payload, [keyObject]: value }
+          this.$store.commit('process-complaint/setPayload', {
+            ...this.payload
+          })
+          break
       }
     },
     clearPopupProcessComplaint () {
       this.payload = {
         ...this.payload,
-        coverage_of_affairs: '',
-        disposition: '',
+        coverage_of_affairs: null,
         status_description: '',
-        deadline_date: '',
+        deadline_date: null,
         proposed_ikp_narrative: '',
-        urgency_level: 'Mendesak',
-        opd_pic: '',
-        opd_name: ''
+        urgency_level: null,
+        opd_pic: null,
+        opd_name: null
       }
+      this.listDataDisposition = [{ label: '', value: '' }]
+      this.$store.commit('process-complaint/setPayload', { ...this.payload })
       this.$refs.form.reset()
     },
     closePopupProcessComplaint () {
-      this.payload.complaint_status_id = ''
+      this.payload = { ...this.payload, complaint_status_id: null }
+      this.$store.commit('process-complaint/setPayload', { ...this.payload })
       this.clearPopupProcessComplaint()
       this.$emit('close')
     },
-    changeUrgencyStatusHandle () {
+    changeUrgencyStatus () {
       const millisecondDifferent =
         new Date(this.payload.deadline_date).getTime() -
         new Date(this.dataDialog.createdDate).getTime() // to get diffrent date in millisecond unit
@@ -391,10 +427,21 @@ export default {
       } else {
         this.payload.urgency_level = 'Tidak Mendesak'
       }
+      this.$store.commit('process-complaint/setPayload', { ...this.payload })
     },
     disabledDateHandle: function (date) {
       const createdDate = new Date(this.dataDialog.createdDate)
       return date < createdDate
+    },
+    async saveDataProcessComplaint () {
+      const isValid = await this.$refs.form.validate()
+      if (isValid) {
+        this.payload.deadline_date = this.payload?.deadline_date
+          ? formatDate(this.payload?.deadline_date || '', 'yyyy-MM-dd')
+          : null
+        this.$emit('submit', { ...this.dataDialog, payload: this.payload })
+        this.closePopupProcessComplaint()
+      }
     }
   }
 }
@@ -419,6 +466,17 @@ export default {
 
 .form-process-complaint .jds-select .jds-input-text__input-wrapper {
   @apply !w-[462px] !bg-white;
+}
+
+.form-process-complaint .jds-select--disabled .jds-input-text__input-wrapper {
+  @apply !bg-gray-200;
+}
+
+.form-process-complaint
+  .jds-select--disabled
+  .jds-input-text__input-wrapper
+  input {
+  @apply !text-gray-600;
 }
 
 .form-process-complaint .text-area .input-wrapper {

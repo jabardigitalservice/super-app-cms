@@ -93,9 +93,13 @@ export default {
           dataComplaint.complaint_id,
           'Proses Aduan'
         ),
-        complaintSource: dataComplaint.complaint_source,
         createdDate: dataComplaint.created_at_api
       })
+      this.$store.commit('process-complaint/setComplaintSource', {
+        id: dataComplaint.complaint_source_id,
+        name: dataComplaint.complaint_source_name
+      })
+      this.$store.dispatch('process-complaint/changeComplaintStatusId')
       this.isShowPopupProcessComplaint = true
     },
     submitPopupComplaintHandle (item) {
@@ -164,6 +168,31 @@ export default {
         'add-sp4n'
       )
     },
+
+    submitProcessComplaint (dataComplaint) {
+      this.isShowPopupProcessComplaint = false
+      let dataDialogInformation = {}
+      dataDialogInformation = {
+        ...this.setDataDialogInformation(
+          'Proses Aduan',
+          dataComplaint.subDescription
+        ),
+        success: this.setSucessFailedInformationHandle(
+          'Proses Aduan berhasil dilakukan',
+          true
+        ),
+        failed: this.setSucessFailedInformationHandle(
+          'Proses Aduan gagal dilakukan',
+          false
+        )
+      }
+      this.integrationPopupHandle(
+        dataDialogInformation,
+        dataComplaint.payload,
+        'determine-authority'
+      )
+    },
+
     setDataDialogConfirmation (title, description, subDescription, labelButton) {
       return {
         title,
