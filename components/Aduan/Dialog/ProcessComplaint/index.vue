@@ -360,16 +360,6 @@ export default {
         return { value: item.name, label: item.name }
       })
     },
-    valueComplaintStatus () {
-      if (
-        this.dataDialog.complaintSource?.id ===
-        this.complaintSource.sapawarga.id
-      ) {
-        return ''
-      } else {
-        return this.complaintStatus.coordinated.id
-      }
-    },
     payload: {
       get () {
         return { ...this.$store.state['process-complaint'].payload }
@@ -388,9 +378,6 @@ export default {
         this.$store.commit('process-complaint/setComplaintSource', value)
       }
     }
-  },
-  mounted () {
-    this.complaintStatusValue = this.valueComplaintStatus
   },
   methods: {
     changeSelectValue (value, keyObject) {
