@@ -227,7 +227,9 @@
                   detailComplaint?.status_id !== complaintStatus.verified.id
                 "
               >
-                <td><strong>Keterangan Status</strong></td>
+                <td class="w-[180px]">
+                  <strong>Keterangan Status</strong>
+                </td>
                 <td>{{ detailComplaint?.status_description || "-" }}</td>
               </tr>
             </BaseTableDetail>
@@ -270,9 +272,7 @@
                   <strong class="text-[10px]">Kategori Aduan </strong>
                 </td>
                 <td>
-                  {{
-                    getSubCategoryName(dataCategory)
-                  }}
+                  {{ getSubCategoryName(dataCategory) }}
                 </td>
               </tr>
               <tr
@@ -280,9 +280,7 @@
               >
                 <td><strong>Sub Kategori Aduan</strong></td>
                 <td>
-                  {{
-                    getSubCategoryName(dataSubCategory)
-                  }}
+                  {{ getSubCategoryName(dataSubCategory) }}
                 </td>
               </tr>
               <tr>
@@ -635,16 +633,24 @@ export default {
 
     getSubCategoryName (dataSubcategory) {
       // check if detail complaint by key has property object
-      const hasSubcategory = Object.keys(this.detailComplaint) || Object.keys[this.detailComplaint[dataSubcategory.key]]
+      const hasSubcategory =
+        Object.keys(this.detailComplaint) ||
+        Object.keys[this.detailComplaint[dataSubcategory.key]]
 
       // guard clauses if don't have sub category
-      if (!hasSubcategory) { return '-' }
+      if (!hasSubcategory) {
+        return '-'
+      }
 
-      if (this.detailComplaint[dataSubcategory.key]?.id.includes(dataSubcategory.valueSearch) &&
-          this.detailComplaint[dataSubcategory.subKey]) {
-        return `${
-            this.detailComplaint[dataSubcategory.key]?.name
-          } - ${this.detailComplaint[dataSubcategory.subKey]?.name}`
+      if (
+        this.detailComplaint[dataSubcategory.key]?.id.includes(
+          dataSubcategory.valueSearch
+        ) &&
+        this.detailComplaint[dataSubcategory.subKey]
+      ) {
+        return `${this.detailComplaint[dataSubcategory.key]?.name} - ${
+          this.detailComplaint[dataSubcategory.subKey]?.name
+        }`
       }
 
       return this.detailComplaint[dataSubcategory.key]?.name
