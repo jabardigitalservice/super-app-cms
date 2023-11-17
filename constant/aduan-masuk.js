@@ -8,7 +8,9 @@ export const complaintHeader = [
 ]
 
 export const complaintDivertedToSpanHeader = [...complaintHeader]
-complaintDivertedToSpanHeader.splice(4, 1,
+complaintDivertedToSpanHeader.splice(
+  4,
+  1,
   { key: 'sp4n_created_at', text: 'Tanggal Diinput SP4N', sortable: true },
   {
     key: 'diverted_to_span_at',
@@ -61,6 +63,12 @@ export const typeAduan = {
     label: 'Daftar Aduan dari SP4N Lapor',
     link: '/aduan/aduan-dari-span-lapor',
     id: 'aduanDariSpanLapor'
+  },
+  penginputanIkp: {
+    props: 'penginputan-ikp',
+    label: 'Daftar Penginputan IKP',
+    link: '/aduan/penginputan-ikp',
+    id: 'penginputanIkp'
   }
 }
 

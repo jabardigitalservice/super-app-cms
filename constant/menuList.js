@@ -117,6 +117,14 @@ const aduanMenu = {
       showMenuAndAccessForRoles: ['admin'],
       icon: 'clipboard-pencil.svg',
       unleashVariable: 'SAPAWARGA-CMS__ADUAN'
+    },
+    {
+      name: 'Daftar Penginputan IKP',
+      path: '/aduan/penginputan-ikp',
+      arrow: false,
+      showMenuAndAccessForRoles: ['admin'],
+      icon: 'edit-pencil.svg',
+      unleashVariable: 'SAPAWARGA-CMS__ADUAN'
     }
   ]
 }
