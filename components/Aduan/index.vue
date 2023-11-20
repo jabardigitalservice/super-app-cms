@@ -449,6 +449,8 @@ export default {
           return this.complaintFromSpanHeader
         case typeAduan.penentuanKewenangan.props:
           return this.determiningAuthorityHeader
+        case typeAduan.penginputanIkp.props:
+          return this.complaintHeader
         default:
           return {}
       }

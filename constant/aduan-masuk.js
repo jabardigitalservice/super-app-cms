@@ -89,7 +89,7 @@ export const complaintStatus = Object.freeze({
     name: 'Semua Aduan',
     value: 0,
     statusColor: '',
-    icon: '/icon/icon-aduan/complaint-icon.svg',
+    icon: '/icon/icon-aduan/complaint-status/complaint-all-icon.svg',
     typeAduan: ['all']
   },
   unverified: {
@@ -97,7 +97,7 @@ export const complaintStatus = Object.freeze({
     name: 'Menunggu Verifikasi',
     value: 0,
     statusColor: [{ color: 'yellow', typeAduan: typeAduan.aduanMasuk.props }],
-    icon: '/icon/icon-aduan/complaint-wait-verify-icon.svg',
+    icon: '/icon/icon-aduan/complaint-status/complaint-unverified-icon.svg',
     typeAduan: [typeAduan.aduanMasuk.props]
   },
   verified: {
@@ -108,7 +108,7 @@ export const complaintStatus = Object.freeze({
       { color: 'yellow', typeAduan: typeAduan.penentuanKewenangan.props },
       { color: 'green', typeAduan: typeAduan.aduanMasuk.props }
     ],
-    icon: '/icon/icon-aduan/complaint-verify-icon.svg',
+    icon: '/icon/icon-aduan/complaint-status/complaint-verify-icon.svg',
     typeAduan: [
       typeAduan.aduanMasuk.props,
       typeAduan.penentuanKewenangan.props
@@ -119,7 +119,7 @@ export const complaintStatus = Object.freeze({
     name: 'Gagal Diverifikasi',
     value: 0,
     statusColor: [{ color: 'red', typeAduan: typeAduan.aduanMasuk.props }],
-    icon: '/icon/icon-aduan/complaint-failed-icon.svg',
+    icon: '/icon/icon-aduan/complaint-status/complaint-failed-icon.svg',
     typeAduan: [typeAduan.aduanMasuk.props]
   },
   coordinated: {
@@ -127,10 +127,14 @@ export const complaintStatus = Object.freeze({
     name: 'Dikoordinasikan',
     value: 0,
     statusColor: [
-      { color: 'green', typeAduan: typeAduan.penentuanKewenangan.props }
+      { color: 'green', typeAduan: typeAduan.penentuanKewenangan.props },
+      { color: 'yellow', typeAduan: typeAduan.penginputanIkp.props }
     ],
-    icon: '/icon/icon-aduan/complaint-coordination-icon.svg',
-    typeAduan: [typeAduan.penentuanKewenangan.props]
+    icon: '/icon/icon-aduan/complaint-status/complaint-coordinated-icon.svg',
+    typeAduan: [
+      typeAduan.penentuanKewenangan.props,
+      typeAduan.penginputanIkp.props
+    ]
   },
   diverted_to_span: {
     id: 'diverted_to_span',
@@ -139,7 +143,7 @@ export const complaintStatus = Object.freeze({
     statusColor: [
       { color: 'green', typeAduan: typeAduan.penentuanKewenangan.props }
     ],
-    icon: '/icon/icon-aduan/complaint-span-icon.svg',
+    icon: '/icon/icon-aduan/complaint-status/complaint-diverted-to-span-icon.svg',
     typeAduan: [
       typeAduan.penentuanKewenangan.props,
       typeAduan.aduanDialihkanSpanLapor.props
@@ -152,8 +156,48 @@ export const complaintStatus = Object.freeze({
     statusColor: [
       { color: 'red', typeAduan: typeAduan.penentuanKewenangan.props }
     ],
-    icon: '/icon/icon-aduan/complaint-failed-icon.svg',
+    icon: '/icon/icon-aduan/complaint-status/complaint-rejected-icon.svg',
     typeAduan: [typeAduan.penentuanKewenangan.props]
+  },
+  followup: {
+    id: 'followup',
+    name: 'Ditindaklanjuti',
+    value: 0,
+    statusColor: [
+      { color: 'primer-blue', typeAduan: typeAduan.penginputanIkp.props }
+    ],
+    icon: '/icon/icon-aduan/complaint-status/complaint-followup-icon.svg',
+    typeAduan: [typeAduan.penginputanIkp.props]
+  },
+  postponed: {
+    id: 'postponed',
+    name: 'Pengerjaan Ditunda',
+    value: 0,
+    statusColor: [
+      { color: 'purple', typeAduan: typeAduan.penginputanIkp.props }
+    ],
+    icon: '/icon/icon-aduan/complaint-status/complaint-postponed-icon.svg',
+    typeAduan: [typeAduan.penginputanIkp.props]
+  },
+  review: {
+    id: 'review',
+    name: 'Ditinjau Ulang',
+    value: 0,
+    statusColor: [
+      { color: 'blue-gray', typeAduan: typeAduan.penginputanIkp.props }
+    ],
+    icon: '/icon/icon-aduan/complaint-status/complaint-review-icon.svg',
+    typeAduan: [typeAduan.penginputanIkp.props]
+  },
+  finished: {
+    id: 'finished',
+    name: 'Selesai',
+    value: 0,
+    statusColor: [
+      { color: 'green', typeAduan: typeAduan.penginputanIkp.props }
+    ],
+    icon: '/icon/icon-aduan/complaint-status/complaint-finished-icon.svg',
+    typeAduan: [typeAduan.penginputanIkp.props]
   }
 })
 
