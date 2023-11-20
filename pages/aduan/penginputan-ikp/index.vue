@@ -1,7 +1,11 @@
 <template>
   <div>
     <TabBarMenu :list-tab="listTab" class="mb-[18px]" @button-tab="clickTab" />
-    <Aduan v-if="idTab==='complaint'" :type-aduan-page="typeAduan.penginputanIkp.props" link-page-detail="/aduan/penginputan-ikp/detail" />
+    <Aduan
+      v-if="idTab === 'complaint'"
+      :type-aduan-page="typeAduan.penginputanIkp.props"
+      link-page-detail="/aduan/penginputan-ikp/detail"
+    />
   </div>
 </template>
 
@@ -19,9 +23,13 @@ export default {
           link: typeAduan.penginputanIkp.link
         }
       ],
-      descriptionPage: 'Berisi semua daftar aduan dari masyarakat Jabar yang perlu untuk dikoordinasikan.',
+      descriptionPage:
+        'Berisi semua daftar aduan dari masyarakat Jabar yang perlu untuk dikoordinasikan.',
       typeAduan,
-      listTab: [{ id: 'complaint', name: 'Semua Aduan' }, { id: 'ikp', name: 'Daftar Instruksi Khusus Pimpinan' }],
+      listTab: [
+        { id: 'complaint', name: 'Semua Aduan' },
+        { id: 'ikp', name: 'Daftar Instruksi Khusus Pimpinan' }
+      ],
       idTab: ''
     }
   },
