@@ -6,11 +6,12 @@
   >
     <template #default="{ dataTab, indexTab }">
       <button
+        class="!ml-4 !mr-2 !w-fit"
         :class="{
           'border-b border-b-[3px] border-green-700':
             indexTab === selectedTabIndex,
         }"
-        class="!ml-4 !mr-2 !w-fit"
+        @click="$emit('button-tab',dataTab.id)"
       >
         <BaseTab
           class="!h-[45px] !min-w-[102px] rounded-none !bg-white !py-[10px] !px-2"
