@@ -272,7 +272,6 @@ export default {
       sortOrder: '',
       search: '',
       complaintHeader,
-      complaintStatus,
       selectedTabIndex: 0,
       complaintDivertedToSpanHeader,
       complaintFromSpanHeader,
@@ -303,35 +302,15 @@ export default {
       }
 
       // default sort by updated date
-      if (
-        this.checkPropsSortByUpdatedDate() &&
-        !this.query.sort_by
-      ) {
+      if (this.checkPropsSortByUpdatedDate() && !this.query.sort_by) {
         this.setQuery({ sort_by: 'updated_at' })
       }
 
+      // handle list data complaint
       const responseListComplaint = await this.$axios.get('/warga/complaints', {
         params: { ...this.query, is_admin: 1 }
       })
-
-      const responseListCategoryComplaint = await this.$axios.get(
-        '/warga/complaints/categories'
-      )
-      const responseListStatisticComplaint = await this.$axios.get(
-        '/warga/complaints/statistics'
-      )
-
-      this.listDataCategory = responseListCategoryComplaint.data.data
-      const listDataStatisticComplaint =
-        responseListStatisticComplaint.data.data
-      this.listStatisticComplaint = listDataStatisticComplaint.filter(
-        item =>
-          this.complaintStatus[item.id].typeAduan.includes(
-            this.typeAduanPage
-          ) && item.id === this.complaintStatus[item.id].id
-      )
       const { data } = responseListComplaint.data
-
       this.listDataComplaint = data?.data || []
       if (this.listDataComplaint.length) {
         this.pagination.disabled = false
@@ -343,11 +322,31 @@ export default {
       this.pagination.totalRows = data?.total_data || 0
       this.pagination.itemsPerPage = data?.page_size || this.query.limit
 
-      this.complaintStatus.total.value =
+      // handle list data category
+      const responseListCategoryComplaint = await this.$axios.get(
+        '/warga/complaints/categories'
+      )
+
+      this.listDataCategory = responseListCategoryComplaint.data.data
+
+      // handle data statistic complaint
+      const responseListStatisticComplaint = await this.$axios.get(
+        '/warga/complaints/statistics'
+      )
+      const listDataStatisticComplaint =
+        responseListStatisticComplaint.data.data
+      const listComplaintStatus = this.getStatusComplaintByComplaintType()
+      this.listStatisticComplaint = listDataStatisticComplaint.filter(
+        statisticComplaint =>
+          listComplaintStatus.find(
+            complaintStatus => statisticComplaint.id === complaintStatus.id
+          )
+      )
+      complaintStatus.total.value =
         this.typeAduan.aduanDariSpanLapor.props === this.typeAduanPage
           ? this.pagination.totalRows
           : this.getTotalStatistic()
-      this.listStatisticComplaint.unshift(this.complaintStatus.total)
+      this.listStatisticComplaint.unshift(complaintStatus.total)
       if (this.listStatisticComplaint.length === 2) {
         this.listStatisticComplaint.pop()
       }
@@ -368,7 +367,7 @@ export default {
         return {
           ...item,
           category: item.complaint_category.name,
-          status: this.complaintStatus[item.complaint_status.id].name,
+          status: complaintStatus[item.complaint_status.id].name,
           created_at_format: formatDate(item.created_at, 'dd/MM/yyyy HH:mm'),
           created_at_api: item.created_at,
           status_id: item.complaint_status_id,
@@ -399,11 +398,11 @@ export default {
     listStatistic () {
       return this.listStatisticComplaint.map((item) => {
         return {
-          ...this.complaintStatus[item.id],
+          ...complaintStatus[item.id],
           value: formatNumberToUnit(item.value),
           unit: convertToUnit(item.value),
-          icon: this.complaintStatus[item.id].icon,
-          name: this.complaintStatus[item.id].name
+          icon: complaintStatus[item.id].icon,
+          name: complaintStatus[item.id].name
         }
       })
     }
@@ -499,7 +498,7 @@ export default {
       this.$router.push(`${this.linkPageDetail}/${item.id}`)
     },
     getColorText (statusId) {
-      const statusColor = this.complaintStatus[statusId].statusColor.find(
+      const statusColor = complaintStatus[statusId].statusColor.find(
         statusColor => statusColor.typeAduan === this.typeAduanPage
       )
       switch (statusColor.color) {
@@ -531,18 +530,11 @@ export default {
       return total
     },
     addComplaintStatusFilterHandle () {
-      this.listValueStatusComplaint = Object.values(this.complaintStatus)
-      for (let i = 0; i < this.listValueStatusComplaint.length; i++) {
-        if (
-          this.listValueStatusComplaint[i].typeAduan.includes(
-            this.typeAduanPage
-          )
-        ) {
-          this.setQuery({
-            [`complaint_status_id[${i - 1}]`]:
-              this.listValueStatusComplaint[i].id
-          })
-        }
+      const listValueStatusComplaint = this.getStatusComplaintByComplaintType()
+      for (let i = 0; i < listValueStatusComplaint.length; i++) {
+        this.setQuery({
+          [`complaint_status_id[${i - 1}]`]: listValueStatusComplaint[i].id
+        })
       }
       return this.query
     },
@@ -604,6 +596,11 @@ export default {
         this.typeAduan.penentuanKewenangan.props
       ]
       return listPropsSortByUpdatedDate.includes(this.typeAduanPage)
+    },
+    getStatusComplaintByComplaintType () {
+      return Object.values(complaintStatus).filter(item =>
+        item.typeAduan.includes(this.typeAduanPage)
+      )
     },
     getComplaintSource (dataComplaint) {
       if (dataComplaint.complaint_source === 'sp4n') {
