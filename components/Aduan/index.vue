@@ -22,7 +22,7 @@
                 class="w-[280px]"
               />
               <div class="ml-4 flex items-center">
-                <jds-icon name="filter-outline" size="sm" fill="#022B55" />
+                <jds-icon name="filter-outline" size="sm" fill="#022B55" class="flex-shrink-0" />
                 <p class="ml-2 text-sm text-blue-gray-700">
                   Filter :
                 </p>
