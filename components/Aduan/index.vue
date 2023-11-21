@@ -601,7 +601,7 @@ export default {
     },
     checkPropsSortByUpdatedDate () {
       const listPropsSortByUpdatedDate = [
-        this.typeAduan.penentuanKewenangan.props
+        this.typeAduan.penentuanKewenangan.props, this.typeAduan.penginputanIkp.props
       ]
       return listPropsSortByUpdatedDate.includes(this.typeAduanPage)
     },
