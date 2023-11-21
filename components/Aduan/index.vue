@@ -232,13 +232,13 @@ export default {
           menu: 'Terverifikasi',
           value: 'verify',
           typeAduan: [typeAduan.aduanMasuk.props],
-          complaintStatus: 'unverified'
+          complaintStatus: complaintStatus.unverified.id
         },
         {
           menu: 'Gagal Diverifikasi',
           value: 'failed',
           typeAduan: [typeAduan.aduanMasuk.props],
-          complaintStatus: 'unverified'
+          complaintStatus: complaintStatus.unverified.id
         },
         {
           menu: 'Tambahkan ID SP4N Lapor',
@@ -250,7 +250,13 @@ export default {
           menu: 'Proses Aduan',
           value: 'process-complaint',
           typeAduan: [typeAduan.penentuanKewenangan.props],
-          complaintStatus: 'verified'
+          complaintStatus: complaintStatus.verified.id
+        },
+        {
+          menu: 'Tindaklanjuti Aduan',
+          value: 'followup-complaint',
+          typeAduan: [typeAduan.penginputanIkp.props],
+          complaintStatus: complaintStatus.coordinated.id
         }
       ],
       listDataComplaint: [],
