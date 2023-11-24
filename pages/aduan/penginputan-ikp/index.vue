@@ -6,6 +6,7 @@
       :type-aduan-page="typeAduan.penginputanIkp.props"
       link-page-detail="/aduan/penginputan-ikp/detail"
     />
+    <AduanDaftarIKPTable v-else />
   </div>
 </template>
 
@@ -43,7 +44,6 @@ export default {
   },
   methods: {
     clickTab (idTab) {
-      console.log(idTab)
       this.idTab = idTab
     }
   }
