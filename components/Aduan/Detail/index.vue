@@ -208,10 +208,7 @@ export default {
     },
     listTab () {
       return this.listDataTab.filter(item =>
-        this.detailComplaint?.complaint_status_id !==
-        complaintStatus.followup.id
-          ? item.id !== 'input-ikp'
-          : item
+        this.checkShowTabIkp([complaintStatus.coordinated.id]) ? item : item.id !== 'input-ikp'
       )
     }
   },
@@ -221,6 +218,9 @@ export default {
   methods: {
     selectedTab (idTab) {
       this.idTab = idTab
+    },
+    checkShowTabIkp (listFilter) {
+      return typeAduan.penginputanIkp.props === this.typeAduanPage && this.filterComplaintStatus(listFilter)
     },
     clickButtonConfirmationHandle (idButton) {
       switch (idButton) {

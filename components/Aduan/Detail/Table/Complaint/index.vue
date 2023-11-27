@@ -420,7 +420,7 @@
 </template>
 
 <script>
-import { complaintStatus, typeAduan } from '~/constant/aduan-masuk'
+import { typeAduan } from '~/constant/aduan-masuk'
 import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
 
 export default {
@@ -449,7 +449,6 @@ export default {
         }
       ],
       selectedTabIndex: 0,
-      complaintStatus,
       dataCategory: {
         key: 'complaint_category',
         subKey: 'complaint_subcategory',
@@ -476,14 +475,14 @@ export default {
         }
       })
       return listTypeAduanStatusAduan
-    },
-    listComplaintStatus () {
-      return Object.values(complaintStatus).filter(item =>
-        item.typeAduan.includes(this.typeAduanPage)
-      )
     }
   },
   methods: {
+    findComplaintStatus (listComplaintStatus) {
+      return listComplaintStatus.find(
+        item => item.id === this.detailComplaint?.complaint_status_id
+      )
+    },
     getCoordinatHandle () {
       if (this.detailComplaint?.longitude && this.detailComplaint?.latitude) {
         return `${this.detailComplaint.latitude}, ${this.detailComplaint.longitude}`
@@ -555,19 +554,7 @@ export default {
           return false
       }
     },
-    findComplaintStatus (listComplaintStatus) {
-      return listComplaintStatus.find(
-        item => item.id === this.detailComplaint?.complaint_status_id
-      )
-    },
-    filterComplaintStatus (listFilter) {
-      return this.listComplaintStatus.filter(
-        itemComplaintStatus =>
-          !listFilter.find(
-            itemFilter => itemComplaintStatus.id === itemFilter.id
-          )
-      )
-    },
+
     showDataByComplaintTypeStatus (listFilter) {
       const listComplaintType = [
         typeAduan.penentuanKewenangan.props,
