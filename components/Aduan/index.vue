@@ -526,7 +526,7 @@ export default {
         case 'dark-blue':
           return 'text-blue-gray-500'
         case 'purple':
-          return 'text-purple-600'
+          return 'text-[#691B9A]'
         default:
           return 'text-gray-900'
       }
