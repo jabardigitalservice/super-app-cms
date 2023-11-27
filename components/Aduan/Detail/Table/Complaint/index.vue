@@ -15,7 +15,7 @@
           <td>{{ detailComplaint?.complaint_id || "-" }}</td>
         </tr>
         <tr
-          v-show="showIdSpanLaporHandle(detailComplaint?.complaint_status_id)"
+          v-if="showIdSpanLaporHandle(detailComplaint?.complaint_status_id)"
         >
           <td class="text-lato">
             <strong class="text-[10px]">ID SP4N Lapor </strong>
@@ -32,7 +32,7 @@
             </div>
           </td>
         </tr>
-        <tr v-show="typeAduan.penentuanKewenangan.props === typeAduanPage">
+        <tr v-if="typeAduan.penentuanKewenangan.props === typeAduanPage">
           <td><strong>Sumber Aduan</strong></td>
           <td>{{ detailComplaint?.complaint_source || "-" }}</td>
         </tr>
@@ -40,7 +40,7 @@
           <td><strong>Tanggal Aduan Masuk</strong></td>
           <td>{{ detailComplaint?.created_at_format }}</td>
         </tr>
-        <tr v-show="typeAduanPage === typeAduan.aduanDialihkanSpanLapor.props">
+        <tr v-if="typeAduanPage === typeAduan.aduanDialihkanSpanLapor.props">
           <td class="w-[175px]">
             <strong>Tanggal Diinput ke SP4N</strong>
           </td>
@@ -56,12 +56,12 @@
             </div>
           </td>
         </tr>
-        <tr v-show="listTypeAduanByStatusAduan.includes(typeAduanPage)">
+        <tr v-if="listTypeAduanByStatusAduan.includes(typeAduanPage)">
           <td><strong>Status</strong></td>
           <td>
             <div class="flex items-center">
               <div
-                v-show="detailComplaint?.complaint_status_id"
+                v-if="detailComplaint?.complaint_status_id"
                 :class="[
                   ' mr-2 h-2 w-2 rounded-full',
                   getStatusColorHandle(detailComplaint?.complaint_status_id),
@@ -72,7 +72,7 @@
           </td>
         </tr>
         <tr
-          v-show="
+          v-if="
             typeAduanPage === typeAduan.aduanMasuk.props &&
               detailComplaint?.complaint_status_note
           "
@@ -81,7 +81,7 @@
           <td>{{ detailComplaint?.complaint_status_note }}</td>
         </tr>
         <tr
-          v-show="
+          v-if="
             showDataByComplaintTypeStatus([
               complaintStatus.rejected,
               complaintStatus.verified,
@@ -92,7 +92,7 @@
           <td>{{ detailComplaint?.coverage_of_affairs || "-" }}</td>
         </tr>
         <tr
-          v-show="
+          v-if="
             detailComplaint?.complaint_status_id ===
               complaintStatus.postponed.id ||
               detailComplaint?.complaint_status_id === complaintStatus.review.id
@@ -102,7 +102,7 @@
           <td>-</td>
         </tr>
         <tr
-          v-show="
+          v-if="
             detailComplaint?.complaint_status_id ===
               complaintStatus.postponed.id ||
               detailComplaint?.complaint_status_id === complaintStatus.review.id
@@ -120,7 +120,7 @@
         </tr>
       </BaseTableDetail>
       <BaseTableDetail
-        v-show="
+        v-if="
           typeAduan.aduanDialihkanSpanLapor.props === typeAduanPage &&
             detailComplaint?.diverted_to_span_at &&
             detailComplaint?.sp4n_created_at
@@ -144,7 +144,7 @@
         </tr>
       </BaseTableDetail>
       <BaseTableDetail
-        v-show="
+        v-if="
           showDataByComplaintTypeStatus([
             complaintStatus.rejected,
             complaintStatus.verified,
@@ -160,7 +160,7 @@
           <td>{{ detailComplaint?.opd_name || "-" }}</td>
         </tr>
         <tr
-          v-show="
+          v-if="
             showDataByComplaintTypeStatus([
               complaintStatus.rejected,
               complaintStatus.diverted_to_span,
@@ -172,12 +172,12 @@
         </tr>
       </BaseTableDetail>
       <BaseTableDetail
-        v-show="showDataByComplaintTypeStatus([complaintStatus.verified])"
+        v-if="showDataByComplaintTypeStatus([complaintStatus.verified])"
         header="Informasi Lainnya"
         class="mb-4"
       >
         <tr
-          v-show="
+          v-if="
             showDataByComplaintTypeStatus([
               complaintStatus.rejected,
               complaintStatus.diverted_to_span,
@@ -190,7 +190,7 @@
           <td>{{ detailComplaint?.deadline_date || "-" }}</td>
         </tr>
         <tr
-          v-show="
+          v-if="
             showDataByComplaintTypeStatus([
               complaintStatus.rejected,
               complaintStatus.diverted_to_span,
@@ -200,7 +200,7 @@
           <td><strong>Tingkat Urgensi</strong></td>
           <td>{{ detailComplaint?.urgency_level || "-" }}</td>
         </tr>
-        <tr v-show="showDataByComplaintTypeStatus([complaintStatus.verified])">
+        <tr v-if="showDataByComplaintTypeStatus([complaintStatus.verified])">
           <td class="w-[180px]">
             <strong>Keterangan Status</strong>
           </td>
@@ -249,7 +249,7 @@
             {{ getSubCategoryName(dataCategory) }}
           </td>
         </tr>
-        <tr v-show="detailComplaint?.complaint_category?.id !== 'lainnya'">
+        <tr v-if="detailComplaint?.complaint_category?.id !== 'lainnya'">
           <td><strong>Sub Kategori Aduan</strong></td>
           <td>
             {{ getSubCategoryName(dataSubCategory) }}
@@ -316,7 +316,7 @@
           </td>
         </tr>
       </BaseTableDetail>
-      <BaseTableDetail v-show="detailComplaint?.photos" header="Bukti Foto">
+      <BaseTableDetail v-if="detailComplaint?.photos" header="Bukti Foto">
         <tr>
           <td class="w-[180px] px-2">
             <strong>{{ listPhoto.length }} Foto</strong>
@@ -397,7 +397,7 @@
             {{ getSubCategoryName(dataCategory) }}
           </td>
         </tr>
-        <tr v-show="detailComplaint?.complaint_category?.id !== 'lainnya'">
+        <tr v-if="detailComplaint?.complaint_category?.id !== 'lainnya'">
           <td><strong>Sub Kategori Aduan</strong></td>
           <td>
             {{ getSubCategoryName(dataSubCategory) }}
