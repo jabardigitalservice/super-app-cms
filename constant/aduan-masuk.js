@@ -164,7 +164,7 @@ export const complaintStatus = Object.freeze({
     name: 'Ditindaklanjuti',
     value: 0,
     statusColor: [
-      { color: 'primer-blue', typeAduan: typeAduan.penginputanIkp.props }
+      { color: 'light-blue', typeAduan: typeAduan.penginputanIkp.props }
     ],
     icon: '/icon/icon-aduan/complaint-status/complaint-followup-icon.svg',
     typeAduan: [typeAduan.penginputanIkp.props]
@@ -184,7 +184,7 @@ export const complaintStatus = Object.freeze({
     name: 'Ditinjau Ulang',
     value: 0,
     statusColor: [
-      { color: 'blue-gray', typeAduan: typeAduan.penginputanIkp.props }
+      { color: 'dark-blue', typeAduan: typeAduan.penginputanIkp.props }
     ],
     icon: '/icon/icon-aduan/complaint-status/complaint-review-icon.svg',
     typeAduan: [typeAduan.penginputanIkp.props]
@@ -226,5 +226,11 @@ export const complaintButtonDetail = {
     label: 'Proses Aduan',
     variant: 'primary',
     complaintStatus: complaintStatus.verified.id
+  },
+  followup: {
+    idButton: 'button-followup',
+    label: 'Tindaklanjuti Aduan',
+    variant: 'primary',
+    complaintStatus: complaintStatus.coordinated.id
   }
 }

@@ -1,3 +1,4 @@
+import { complaintStatus } from '~/constant/aduan-masuk'
 export default {
   data () {
     return {
@@ -24,7 +25,15 @@ export default {
       complaintNote: '',
       isLoading: false,
       typeDialog: '',
-      idApi: ''
+      idApi: '',
+      complaintStatus
+    }
+  },
+  computed: {
+    listComplaintStatus () {
+      return Object.values(complaintStatus).filter(item =>
+        item.typeAduan.includes(this.typeAduanPage)
+      )
     }
   },
   methods: {
@@ -36,7 +45,14 @@ export default {
       this.isShowPopupInputIdSpan = false
       this.isShowPopupProcessComplaint = false
     },
-
+    filterComplaintStatus (listFilter) {
+      return this.listComplaintStatus.filter(
+        itemComplaintStatus =>
+          !listFilter.find(
+            itemFilter => itemComplaintStatus.id === itemFilter.id
+          )
+      )
+    },
     showPopupConfirmationVerificationComplaintHandle (dataComplaint) {
       this.idApi = dataComplaint.id
       this.typeDialog = 'verificationComplaint'

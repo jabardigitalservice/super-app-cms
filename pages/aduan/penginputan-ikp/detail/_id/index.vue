@@ -1,8 +1,5 @@
 <template>
-  <AduanDetail
-    :type-aduan-page="typeAduan.aduanMasuk.props"
-    :list-button="listButtonDetail"
-  />
+  <AduanDetail :type-aduan-page="typeAduan.penginputanIkp.props" :list-button="listButtonDetail" />
 </template>
 
 <script>
@@ -17,19 +14,18 @@ export default {
     return {
       navigations: [
         {
-          label: typeAduan.aduanMasuk.label,
-          link: typeAduan.aduanMasuk.link
+          label: typeAduan.penginputanIkp.label,
+          link: typeAduan.penginputanIkp.link
         },
         {
           label: 'Detail Aduan',
-          link: `/aduan/aduan-masuk/detail/${this.$route.params.id}`
+          link: `/aduan/penginputan-ikp/detail/${this.$route.params.id}`
         }
       ],
-      descriptionPage: 'Berisi detail aduan dari masyarakat Jabar',
+      descriptionPage: 'Berisi detail aduan dari masyarakat Jabar yang perlu untuk dikoordinasikan.',
       typeAduan,
       listButtonDetail: [
-        complaintButtonDetail.failed,
-        complaintButtonDetail.verified
+        complaintButtonDetail.followup
       ]
     }
   },
