@@ -521,6 +521,12 @@ export default {
           return 'text-green-700'
         case 'red':
           return 'text-[#DD5E5E]'
+        case 'light-blue':
+          return 'text-[#1E88E5]'
+        case 'dark-blue':
+          return 'text-blue-gray-500'
+        case 'purple':
+          return 'text-purple-600'
         default:
           return 'text-gray-900'
       }
