@@ -165,7 +165,6 @@ export default {
       },
       menuTableAction: [
         { menu: 'Lihat Detail IKP', value: 'detail' },
-        { menu: 'Selesaikan IKP', value: 'finished' },
         { menu: 'Tambah Aduan', value: 'add' }
       ],
       listDataIkp: [],
