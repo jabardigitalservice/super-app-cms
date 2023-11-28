@@ -37,7 +37,7 @@
       </template>
       <template #tab-panel>
         <BaseTabPanel
-          class="layout-content h-[calc(100vh-280px)] overflow-y-auto px-6 py-4 px-[19px]"
+          class="layout-content h-[calc(100vh-280px)] overflow-y-auto py-4 px-[19px]"
         >
           <TableComplaintDetail
             v-if="idTab === 'all'"
@@ -46,7 +46,7 @@
             :type-aduan-page="typeAduanPage"
             @button-image="isShowPopupViewImage = true"
           />
-          <AduanDaftarIKPTableDetail v-else-if="idTab === 'input-ikp'" />
+          <AduanDaftarIKPTableDetail v-else-if="idTab === 'input-ikp'" :show-daftar-aduan="false" />
         </BaseTabPanel>
       </template>
     </BaseTabGroup>
