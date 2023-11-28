@@ -6,7 +6,7 @@
       :type-aduan-page="typeAduan.penginputanIkp.props"
       link-page-detail="/aduan/penginputan-ikp/detail"
     />
-    <AduanDaftarIKPTable v-else />
+    <AduanDaftarIKP v-else />
   </div>
 </template>
 

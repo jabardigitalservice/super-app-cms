@@ -11,7 +11,7 @@
           Kembali
         </div>
       </jds-button>
-      <div class="flex">
+      <div v-if="idTab === 'all'" class="flex">
         <div
           v-for="(button, index) in listButton"
           v-show="
@@ -46,6 +46,7 @@
             :type-aduan-page="typeAduanPage"
             @button-image="isShowPopupViewImage = true"
           />
+          <AduanDaftarIKPTableDetail v-else-if="idTab === 'input-ikp'" />
         </BaseTabPanel>
       </template>
     </BaseTabGroup>
@@ -208,7 +209,9 @@ export default {
     },
     listTab () {
       return this.listDataTab.filter(item =>
-        this.checkShowTabIkp([complaintStatus.coordinated.id]) ? item : item.id !== 'input-ikp'
+        this.checkShowTabIkp([complaintStatus.coordinated.id])
+          ? item
+          : item.id !== 'input-ikp'
       )
     }
   },
@@ -220,7 +223,10 @@ export default {
       this.idTab = idTab
     },
     checkShowTabIkp (listFilter) {
-      return typeAduan.penginputanIkp.props === this.typeAduanPage && this.filterComplaintStatus(listFilter)
+      return (
+        typeAduan.penginputanIkp.props === this.typeAduanPage &&
+        this.filterComplaintStatus(listFilter)
+      )
     },
     clickButtonConfirmationHandle (idButton) {
       switch (idButton) {
