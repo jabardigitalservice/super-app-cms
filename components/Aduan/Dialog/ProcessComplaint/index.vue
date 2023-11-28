@@ -191,6 +191,7 @@
                 label="Usulan Narasi IKP"
                 class="text-area"
                 :error-message="errors[0]"
+                maxlength="500"
               />
               <p class="mt-1 text-xs text-gray-600">
                 Tersisa
@@ -229,6 +230,7 @@
                 label="Keterangan Status Aduan"
                 class="text-area"
                 :error-message="errors[0]"
+                maxlength="255"
               />
               <p class="mt-1 text-xs text-gray-600">
                 Tersisa {{ 255 - payload.status_description.length }} karakter
