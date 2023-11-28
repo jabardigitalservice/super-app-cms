@@ -34,7 +34,7 @@ export const headerDaftarIkp = [
 export const ikpStatus = Object.freeze({
   total: {
     id: 'total',
-    name: 'Semua Aduan',
+    name: 'Semua IKP',
     value: 0,
     icon: '/icon/icon-aduan/complaint-status/complaint-all-icon.svg'
   },

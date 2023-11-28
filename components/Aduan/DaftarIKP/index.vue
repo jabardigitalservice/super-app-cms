@@ -92,8 +92,8 @@
             <template #item.action="{ item }">
               <BaseTableAction
                 :list-menu-pop-over="
-                  filterTableAction(item?.complaint_status_id)
-                "
+                  filterTableAction(item?.complaint_status_id)"
+                @detail="goToPageDetail(item.id)"
               />
             </template>
           </JdsDataTable>
@@ -165,7 +165,6 @@ export default {
       },
       menuTableAction: [
         { menu: 'Lihat Detail IKP', value: 'detail' },
-        { menu: 'Selesaikan IKP', value: 'finished' },
         { menu: 'Tambah Aduan', value: 'add' }
       ],
       listDataIkp: [],
@@ -380,6 +379,9 @@ export default {
         default:
           return 'text-gray-900'
       }
+    },
+    goToPageDetail (id) {
+      this.$router.push(`/aduan/penginputan-ikp/detail-ikp/${id}`)
     }
   }
 }
