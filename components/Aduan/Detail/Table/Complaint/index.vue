@@ -531,7 +531,7 @@ export default {
           case 'red':
             return 'bg-[#DD5E5E]'
           case 'light-blue':
-            return 'bg-blue-600'
+            return 'bg-[#1E88E5]'
           case 'dark-blue':
             return 'bg-blue-gray-500'
           case 'purple':
