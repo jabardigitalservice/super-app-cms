@@ -191,6 +191,7 @@
                 label="Usulan Narasi IKP"
                 class="text-area"
                 :error-message="errors[0]"
+                maxlength="500"
               />
               <p class="mt-1 text-xs text-gray-600">
                 Tersisa
@@ -229,6 +230,7 @@
                 label="Keterangan Status Aduan"
                 class="text-area"
                 :error-message="errors[0]"
+                maxlength="255"
               />
               <p class="mt-1 text-xs text-gray-600">
                 Tersisa {{ 255 - payload.status_description.length }} karakter
@@ -305,7 +307,20 @@ export default {
   },
   data () {
     return {
-      listDataComplaintStatus: [],
+      listComplaintStatus: [
+        {
+          value: complaintStatus.coordinated.id,
+          label: complaintStatus.coordinated.name
+        },
+        {
+          value: complaintStatus.diverted_to_span.id,
+          label: complaintStatus.diverted_to_span.name
+        },
+        {
+          value: complaintStatus.rejected.id,
+          label: complaintStatus.rejected.name
+        }
+      ],
       listDataAuthority: [],
       listDataDisposition: [],
       complaintStatus,
@@ -315,17 +330,6 @@ export default {
   },
   async fetch () {
     try {
-      const responseComplaintStatus = await this.$axios.get(
-        '/warga/complaints/status'
-      )
-      const dataComplaintStatus = responseComplaintStatus.data.data
-      this.listDataComplaintStatus = dataComplaintStatus.filter(
-        item =>
-          item.id === this.complaintStatus.coordinated.id ||
-          item.id === this.complaintStatus.rejected.id ||
-          item.id === this.complaintStatus.diverted_to_span.id
-      )
-
       const responseAuthority = await this.$axios.get(
         '/warga/complaints/authorities'
       )
@@ -345,13 +349,8 @@ export default {
     }
   },
   computed: {
-    listComplaintStatus () {
-      return this.listDataComplaintStatus.map((item) => {
-        return { value: item.id, label: item.name }
-      })
-    },
     listAuthority () {
-      return this.listDataAuthority.map((item) => {
+      return this.filterListAuthority().map((item) => {
         return { value: item.id, label: item.name }
       })
     },
@@ -394,6 +393,15 @@ export default {
             ...this.payload
           })
           break
+      }
+    },
+    filterListAuthority () {
+      switch (this.payload.complaint_status_id) {
+        case complaintStatus.coordinated.id :
+          return this.listDataAuthority.filter(item => item.id === 'Pemerintah Provinsi Jawa Barat')
+        case complaintStatus.diverted_to_span.id:
+          return this.listDataAuthority.filter(item => item.id !== 'Pemerintah Provinsi Jawa Barat')
+        default: return this.listDataAuthority
       }
     },
     clearPopupProcessComplaint () {
