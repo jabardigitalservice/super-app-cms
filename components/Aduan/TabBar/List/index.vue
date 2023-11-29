@@ -5,14 +5,17 @@
     @selected="selectedTabHandle"
   >
     <template #default="{ dataTab, indexTab }">
-      <BaseTab
+      <button
         :class="{ 'ml-2': indexTab > 0 }"
-        :selected="indexTab === selectedTabIndex"
-        :title="dataTab.name"
+        @click="$emit('button-tab', dataTab.id)"
       >
-        <button class="flex items-start text-sm text-green-100" @click="$emit('button-tab',dataTab.id)">
+        <BaseTab
+          class="flex items-start text-sm text-green-100"
+          :selected="indexTab === selectedTabIndex"
+          :title="dataTab.name"
+        >
           <div
-            class="h-[28px] w-[28px] p-1 rounded-full"
+            class="h-[28px] w-[28px] rounded-full p-1"
             :class="
               indexTab === selectedTabIndex ? 'bg-gray-100' : 'bg-green-800'
             "
@@ -49,14 +52,13 @@
               >{{ dataTab.unit }}</span>
             </p>
           </div>
-        </button>
-      </BaseTab>
+        </BaseTab>
+      </button>
     </template>
   </BaseTabList>
 </template>
 
 <script>
-
 export default {
   name: 'TabBarList',
   props: {
