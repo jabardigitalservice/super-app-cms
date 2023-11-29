@@ -1,6 +1,14 @@
 <template>
   <div>
-    <BaseTabGroup>
+    <div v-if="$fetchState.pending">
+      <div class="flex flex-col items-center justify-center h-[300px]">
+        <jds-spinner class="mb-4" size="56" />
+        <p class="text-green-700 text-2xl font-lato font-bold">
+          Loading....
+        </p>
+      </div>
+    </div>
+    <BaseTabGroup v-else>
       <template #tab-list>
         <TabBarList
           :list-tab="listStatistic"
