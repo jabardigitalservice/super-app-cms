@@ -2,7 +2,7 @@
   <div>
     <BaseTabGroup>
       <template #tab-list>
-        <TabBarList :list-tab="listStatistic" @selected="selectedTabHandle" />
+        <TabBarList :list-tab="listStatistic" @selected="selectedTabHandle" @button-tab="listTabHandle" />
       </template>
       <template #tab-panel>
         <BaseTabPanel class="px-3 pt-6 pb-4">
@@ -72,7 +72,7 @@
             <template #item.narasi_ikp="{ item }">
               <div class="flex items-center">
                 <span class="font-lato text-[14px]">
-                  <strong>({{ item.id }})</strong> {{ item.narrative }}
+                  <strong>({{ item.ikp_code }})</strong> {{ item.narrative }}
                 </span>
               </div>
             </template>
@@ -93,7 +93,7 @@
               <BaseTableAction
                 :list-menu-pop-over="
                   filterTableAction(item?.complaint_status_id)"
-                @detail="goToPageDetail(item.id)"
+                @detail="goToPageDetail(item.ikp_code)"
               />
             </template>
           </JdsDataTable>
@@ -119,53 +119,8 @@ export default {
   components: { TabBarList },
   data () {
     return {
-      dummyData: {
-        code: 2000600,
-        message: 'Success',
-        data: {
-          data: [
-            {
-              id: '9999',
-              narrative: 'Perbaikan Terminal LP',
-              complaint_total: 2,
-              created_at: '2023-07-24T09:17:27.000000Z',
-              deadline_at: '2023-07-24T09:17:27.000000Z',
-              complaint_status_id: 'finished'
-            },
-            {
-              id: '0993',
-              narrative: 'Perbaikan Terminal Cicaheum',
-              complaint_total: 15,
-              created_at: '2023-07-24T09:17:27.000000Z',
-              deadline_at: '2023-07-24T09:17:27.000000Z',
-              complaint_status_id: 'followup'
-            }
-          ],
-          page_size: 100,
-          page: 1,
-          total_pages: 1,
-          total_data: 58
-        }
-      },
-      dummyStatic: {
-        code: 2000600,
-        message: 'Success',
-        data: [
-          {
-            id: 'followup',
-            name: 'Ditindaklanjuti',
-            value: 153
-          },
-          {
-            id: 'finished',
-            name: 'Selesai',
-            value: 23
-          }
-        ]
-      },
       menuTableAction: [
-        { menu: 'Lihat Detail IKP', value: 'detail' },
-        { menu: 'Tambah Aduan', value: 'add' }
+        { menu: 'Lihat Detail IKP', value: 'detail' }
       ],
       listDataIkp: [],
       listStatisticIkp: [],
@@ -180,7 +135,7 @@ export default {
         limit: 5,
         page: 1,
         search: null,
-        complaint_category_id: null
+        status: ''
       },
       search: '',
       isShowPopupDate: false,
@@ -197,7 +152,7 @@ export default {
       const responseList = await this.$axios.get('/warga/ikp', {
         params: { ...this.query }
       })
-      const { data } = responseList
+      const { data } = responseList.data
       this.listDataIkp = data?.data || []
       if (this.listDataIkp.length) {
         this.pagination.disabled = false
@@ -220,15 +175,28 @@ export default {
       }
     } catch {
       this.pagination.disabled = true
-      // dummy data, waiting API ready
-      const { data } = this.dummyData
-      this.listDataIkp = data?.data || []
-      this.listStatisticIkp = this.dummyStatic.data
-      ikpStatus.total.value = this.getTotalStatistic()
-      this.listStatisticIkp.unshift(ikpStatus.total)
-      if (this.listStatisticIkp.length === 2) {
-        this.listStatisticIkp.pop()
-      }
+    }
+  },
+  computed: {
+    listData () {
+      return this.listDataIkp.map((item) => {
+        return {
+          ...item,
+          created_at: formatDate(item.created_at, 'dd/MM/yyyy HH:mm'),
+          deadline_at: formatDate(item.created_at, 'dd/MM/yyyy HH:mm')
+        }
+      })
+    },
+    listStatistic () {
+      return this.listStatisticIkp.map((item) => {
+        return {
+          ...ikpStatus[item.id],
+          value: formatNumberToUnit(item.value),
+          unit: convertToUnit(item.value),
+          icon: ikpStatus[item.id].icon,
+          name: ikpStatus[item.id].name
+        }
+      })
     }
   },
   watch: {
@@ -252,28 +220,6 @@ export default {
         this.$fetch()
       }
     }, 500)
-  },
-  computed: {
-    listData () {
-      return this.listDataIkp.map((item) => {
-        return {
-          ...item,
-          created_at: formatDate(item.created_at, 'dd/MM/yyyy HH:mm'),
-          deadline_at: formatDate(item.created_at, 'dd/MM/yyyy HH:mm')
-        }
-      })
-    },
-    listStatistic () {
-      return this.listStatisticIkp.map((item) => {
-        return {
-          ...ikpStatus[item.id],
-          value: formatNumberToUnit(item.value),
-          unit: convertToUnit(item.value),
-          icon: ikpStatus[item.id].icon,
-          name: ikpStatus[item.id].name
-        }
-      })
-    }
   },
   mounted () {
     this.pagination.itemsPerPageOptions = generateItemsPerPageOptions(
@@ -364,6 +310,10 @@ export default {
       switch (status) {
         case ikpStatus.followup.id:
           return ikpStatus.followup.name
+        case ikpStatus.postponed.id:
+          return ikpStatus.postponed.name
+        case ikpStatus.review.id:
+          return ikpStatus.review.name
         case ikpStatus.finished.id:
           return ikpStatus.finished.name
         default:
@@ -371,14 +321,33 @@ export default {
       }
     },
     getColorText (status) {
-      switch (status) {
-        case ikpStatus.followup.id:
+      switch (ikpStatus[status].statusColor) {
+        case 'yellow':
           return 'text-[#FF7500]'
-        case ikpStatus.finished.id:
+        case 'green':
           return 'text-green-700'
+        case 'red':
+          return 'text-[#DD5E5E]'
+        case 'light-blue':
+          return 'text-[#1E88E5]'
+        case 'dark-blue':
+          return 'text-blue-gray-500'
+        case 'purple':
+          return 'text-[#691B9A]'
         default:
           return 'text-gray-900'
       }
+    },
+    listTabHandle (status) {
+      const query = {
+        limit: 5,
+        page: 1,
+        status: status === 'total' ? '' : status
+      }
+
+      this.isShowPopupDateRange = false
+      this.setQuery(query)
+      this.$fetch()
     },
     goToPageDetail (id) {
       this.$router.push(`/aduan/penginputan-ikp/detail-ikp/${id}`)

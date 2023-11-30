@@ -10,7 +10,7 @@
             <strong>Narasi IKP </strong>
           </td>
           <td>
-            <strong>({{ detailIKP?.id || "-" }})</strong>
+            <strong>({{ detailIKP?.ikp_code || "-" }})</strong>
             {{ detailIKP?.narrative }}
           </td>
         </tr>
@@ -18,7 +18,7 @@
           <td class="text-lato w-[164px] text-[14px]">
             <strong>Jumlah Aduan </strong>
           </td>
-          <td>{{ detailIKP?.complaint_total || "-" }}</td>
+          <td>{{ detailIKP?.complaints_count }}</td>
         </tr>
         <tr>
           <td class="text-lato w-[164px] text-[14px]">
@@ -141,6 +141,10 @@ export default {
       switch (status) {
         case ikpStatus.followup.id:
           return ikpStatus.followup.name
+        case ikpStatus.postponed.id:
+          return ikpStatus.postponed.name
+        case ikpStatus.review.id:
+          return ikpStatus.review.name
         case ikpStatus.finished.id:
           return ikpStatus.finished.name
         default:
@@ -148,11 +152,19 @@ export default {
       }
     },
     getStatusColorHandle (status) {
-      switch (status) {
-        case ikpStatus.followup.id:
+      switch (ikpStatus[status].statusColor) {
+        case 'yellow':
           return 'bg-[#FF7500]'
-        case ikpStatus.finished.id:
+        case 'green':
           return 'bg-green-700'
+        case 'red':
+          return 'bg-[#DD5E5E]'
+        case 'light-blue':
+          return 'bg-[#1E88E5]'
+        case 'dark-blue':
+          return 'bg-blue-gray-500'
+        case 'purple':
+          return 'bg-[#691B9A]'
         default:
           return 'bg-gray-900'
       }
