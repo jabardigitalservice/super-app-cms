@@ -187,6 +187,7 @@ export default {
             ? 'SP4N Lapor'
             : dataDetailComplaint.complaint_source
       }
+
       this.listPhoto = dataDetailComplaint?.photos || []
     } catch {
       this.detailComplaint = {}
@@ -222,10 +223,9 @@ export default {
     selectedTab (idTab) {
       this.idTab = idTab
     },
-    checkShowTabIkp (listFilter) {
+    checkShowTabIkp () {
       return (
-        typeAduan.penginputanIkp.props === this.typeAduanPage &&
-        this.filterComplaintStatus(listFilter)
+        typeAduan.penginputanIkp.props === this.typeAduanPage && this.detailComplaint.ikp_code
       )
     },
     clickButtonConfirmationHandle (idButton) {
