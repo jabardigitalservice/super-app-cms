@@ -134,8 +134,7 @@ export default {
       query: {
         limit: 5,
         page: 1,
-        search: null,
-        status: ''
+        search: null
       },
       search: '',
       isShowPopupDate: false,
@@ -338,11 +337,16 @@ export default {
           return 'text-gray-900'
       }
     },
-    listTabHandle (status) {
+    listTabHandle (statusId) {
       const query = {
         limit: 5,
-        page: 1,
-        status: status === 'total' ? '' : status
+        page: 1
+      }
+
+      if (statusId !== 'total') {
+        query.status = statusId
+      } else {
+        delete this.query.status
       }
 
       this.isShowPopupDateRange = false
