@@ -14,9 +14,7 @@
           </td>
           <td>{{ detailComplaint?.complaint_id || "-" }}</td>
         </tr>
-        <tr
-          v-if="showIdSpanLaporHandle(detailComplaint?.complaint_status_id)"
-        >
+        <tr v-if="showIdSpanLaporHandle(detailComplaint?.complaint_status_id)">
           <td class="text-lato">
             <strong class="text-[10px]">ID SP4N Lapor </strong>
           </td>
@@ -113,6 +111,7 @@
             <jds-button
               variant="secondary"
               class="!border-green-600 !text-sm !font-medium !text-green-600"
+              @click="showPopupViewDocument()"
             >
               Lihat Dokumen Bukti
             </jds-button>
@@ -416,15 +415,23 @@
         </tr>
       </BaseTableDetail>
     </div>
+    <DialogViewDocument
+      :show-popup="isShowPopupViewDocument"
+      :list-file-document="listFileDocument"
+      :list-file-image="listFileImage"
+      @close="isShowPopupViewDocument = false"
+    />
   </div>
 </template>
 
 <script>
 import { typeAduan } from '~/constant/aduan-masuk'
 import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
+import DialogViewDocument from '~/components/Aduan/Dialog/ViewDocument'
 
 export default {
   name: 'DetailAduanMasuk',
+  components: { DialogViewDocument },
   mixins: [popupAduanMasuk],
   props: {
     typeAduanPage: {
@@ -437,7 +444,7 @@ export default {
     },
     listPhoto: {
       type: Array,
-      default: () => []
+      default: () => ([])
     }
   },
   data () {
@@ -459,7 +466,15 @@ export default {
         subKey: 'complaint_subcategory_child',
         valueSearch: 'lainnya-terkait'
       },
-      typeAduan
+      typeAduan,
+      listUrlFile: [
+        'http://101.50.0.202:12002/trk/img/lim/Screenshot 20231009 100616.png',
+        'http://101.50.0.202:12002/trk/img/lim/Kanomodeltemplate.pdf'
+      ],
+      listAllFile: [],
+      listFileDocument: [],
+      listFileImage: [],
+      isShowPopupViewDocument: false
     }
   },
   computed: {
@@ -554,7 +569,23 @@ export default {
           return false
       }
     },
-
+    getDataFile (dataUrl) {
+      const file = dataUrl.split('/').pop()
+      const fileType = file.split('.')[1]
+      return { name: file, type: fileType, url: dataUrl }
+    },
+    showPopupViewDocument () {
+      this.listAllFile = this.listUrlFile.map(item => this.getDataFile(item))
+      const listTypeDocument = ['doc', 'docx', 'xls', 'xlsx', 'pdf']
+      const listTypeImage = ['png', 'jpg']
+      this.listFileDocument = this.listAllFile.filter(dataDocument =>
+        listTypeDocument.includes(dataDocument.type)
+      )
+      this.listFileImage = this.listAllFile.filter(dataImage =>
+        listTypeImage.includes(dataImage.type)
+      )
+      this.isShowPopupViewDocument = true
+    },
     showDataByComplaintTypeStatus (listFilter) {
       const listComplaintType = [
         typeAduan.penentuanKewenangan.props,
