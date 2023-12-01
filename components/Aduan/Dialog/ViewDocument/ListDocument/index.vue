@@ -39,15 +39,16 @@ export default {
   },
   methods: {
     getImageFileType () {
-      switch (this.fileDocument.type) {
-        case 'pdf':
-          return 'file-pdf.svg'
-        case 'doc':
-          return 'file-doc.svg'
-        case 'excel':
-          return 'file-excel.svg'
-        default:
-          return '-'
+      if (this.fileDocument.type === 'pdf') {
+        return 'file-pdf.svg'
+      }
+
+      if (this.fileDocument.type === 'doc' || this.fileDocument.type === 'docx') {
+        return 'file-doc.svg'
+      }
+
+      if (this.fileDocument.type === 'xls' || this.fileDocument.type === 'xlsx') {
+        return 'file-excel.svg'
       }
     }
   }
