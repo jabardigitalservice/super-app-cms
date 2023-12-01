@@ -576,7 +576,7 @@ export default {
     },
     showPopupViewDocument () {
       this.listAllFile = this.listUrlFile.map(item => this.getDataFile(item))
-      const listTypeDocument = ['doc', 'xls', 'pdf']
+      const listTypeDocument = ['doc', 'docx', 'xls', 'xlsx', 'pdf']
       const listTypeImage = ['png', 'jpg']
       this.listFileDocument = this.listAllFile.filter(dataDocument =>
         listTypeDocument.includes(dataDocument.type)
