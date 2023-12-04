@@ -154,6 +154,8 @@ export default {
       this.$refs.formLocationComplaint.clearFormLocationComplaintHandle()
       this.$refs.formOtherComplaint.clearFormOtherComplaintHandle()
       this.$emit('close')
+      console.log('close')
+      this.$store.commit('add-complaint/setIsError', false)
     },
     closePopupConfirmationHandle () {
       if (this.typeConfirmation === 'submit') {
