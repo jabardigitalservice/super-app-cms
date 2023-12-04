@@ -46,7 +46,7 @@
             :type-aduan-page="typeAduanPage"
             @button-image="isShowPopupViewImage = true"
           />
-          <AduanDaftarIKPTableDetail v-else-if="idTab === 'input-ikp'" :show-daftar-aduan="false" />
+          <AduanDaftarIKPTableDetail v-else-if="idTab === 'input-ikp'" :show-daftar-aduan="false" :ikp-code="ikpCode" />
         </BaseTabPanel>
       </template>
     </BaseTabGroup>
@@ -148,7 +148,8 @@ export default {
       idTab: '',
       listPhoto: [],
       isShowPopupViewImage: false,
-      isShowPopupDetailStatusComplaint: false
+      isShowPopupDetailStatusComplaint: false,
+      ikpCode: ''
     }
   },
   async fetch () {
@@ -187,6 +188,8 @@ export default {
             ? 'SP4N Lapor'
             : dataDetailComplaint.complaint_source
       }
+
+      this.ikpCode = dataDetailComplaint?.ikp_code
 
       this.listPhoto = dataDetailComplaint?.photos || []
     } catch {

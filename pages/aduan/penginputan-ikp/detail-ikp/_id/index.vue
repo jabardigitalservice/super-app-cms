@@ -20,7 +20,7 @@
         <BaseTabPanel
           class="layout-content h-[calc(100vh-280px)] overflow-y-auto py-4 px-[19px]"
         >
-          <AduanDaftarIKPTableDetail :show-daftar-aduan="true" :detail-i-k-p="dataDetail" />
+          <AduanDaftarIKPTableDetail :show-daftar-aduan="true" :ikp-code="$route.params.id" />
         </BaseTabPanel>
       </template>
     </BaseTabGroup>
@@ -30,7 +30,7 @@
 <script>
 import TabBarDetail from '~/components/Aduan/TabBar/Detail'
 import ArrowLeft from '~/assets/icon/arrow-left.svg?inline'
-import { formatDate } from '~/utils'
+
 export default {
   name: 'PageDetailIKP',
   components: {
@@ -57,29 +57,7 @@ export default {
           name: 'Instruksi Khusus Pimpinan',
           icon: '/icon/icon-aduan/complaint-detail.svg'
         }
-      ],
-      dataDetail: {}
-    }
-  },
-  async fetch () {
-    try {
-      const response = await this.$axios.get(
-        `/warga/ikp/${this.$route.params.id}`
-      )
-      this.dataDetail = response.data.data
-      this.dataDetail.created_at =
-        formatDate(
-          this.dataDetail.created_at || '',
-          'dd/MM/yyyy HH:mm'
-        ) || '-'
-
-      this.dataDetail.deadline_at =
-        formatDate(
-          this.dataDetail.deadline_at || '',
-          'dd/MM/yyyy HH:mm'
-        ) || '-'
-    } catch (error) {
-      this.dataDetail = {}
+      ]
     }
   },
   mounted () {
