@@ -10,15 +10,15 @@
             <strong>Narasi IKP </strong>
           </td>
           <td>
-            <strong>({{ detailIKP?.id || "-" }})</strong>
-            {{ detailIKP?.narrative }}
+            <strong>({{ dataDetail?.ikp_code || "-" }})</strong>
+            {{ dataDetail?.narrative }}
           </td>
         </tr>
         <tr>
           <td class="text-lato w-[164px] text-[14px]">
             <strong>Jumlah Aduan </strong>
           </td>
-          <td>{{ detailIKP?.complaint_total || "-" }}</td>
+          <td>{{ dataDetail?.complaints_count }}</td>
         </tr>
         <tr>
           <td class="text-lato w-[164px] text-[14px]">
@@ -27,14 +27,14 @@
           <td>
             <div class="flex items-center">
               <div
-                v-if="detailIKP?.complaint_status_id"
+                v-if="dataDetail?.complaint_status_id"
                 :class="[
                   ' mr-2 h-2 w-2 rounded-full',
-                  getStatusColorHandle(detailIKP?.complaint_status_id),
+                  getStatusColorHandle(dataDetail?.complaint_status_id),
                 ]"
               />
 
-              {{ getStatusText(detailIKP?.complaint_status_id) }}
+              {{ getStatusText(dataDetail?.complaint_status_id) }}
             </div>
           </td>
         </tr>
@@ -42,7 +42,7 @@
           <td class="text-lato w-[164px] text-[14px]">
             <strong>Keterangan </strong>
           </td>
-          <td>{{ detailIKP?.description || "-" }}</td>
+          <td>{{ dataDetail?.description || "-" }}</td>
         </tr>
       </basetabledetail>
     </div>
@@ -52,13 +52,13 @@
         <td class="text-lato w-[164px] text-[14px]">
           <strong>Tanggal Dibuat </strong>
         </td>
-        <td>{{ detailIKP?.created_at || "-" }}</td>
+        <td>{{ dataDetail?.created_at || "-" }}</td>
       </tr>
       <tr>
         <td class="text-lato w-[164px] text-[14px]">
           <strong>Tanggal Deadline </strong>
         </td>
-        <td>{{ detailIKP?.deadline_at || "-" }}</td>
+        <td>{{ dataDetail?.deadline_at || "-" }}</td>
       </tr>
     </BaseTableDetail>
 
@@ -67,13 +67,13 @@
         <td class="text-lato w-[164px] text-[14px]">
           <strong>Indikator Nilai </strong>
         </td>
-        <td>{{ detailIKP?.indicator_value || "-" }}</td>
+        <td>{{ dataDetail?.indicator_value || "-" }}</td>
       </tr>
       <tr>
         <td class="text-lato w-[164px] text-[14px]">
           <strong>Indikator Satuan </strong>
         </td>
-        <td>{{ detailIKP?.indicator_unit || "-" }}</td>
+        <td>{{ dataDetail?.indicator_unit || "-" }}</td>
       </tr>
     </BaseTableDetail>
 
@@ -82,11 +82,11 @@
         <td class="text-lato w-[164px] text-[14px]">
           <strong>Perangkat Daerah </strong>
         </td>
-        <td>{{ detailIKP?.opd_name || "-" }}</td>
+        <td>{{ dataDetail?.opd_name || "-" }}</td>
       </tr>
     </BaseTableDetail>
 
-    <div v-if="detailIKP?.complaints?.length > 0 && showDaftarAduan" class="rounded-lg border border-gray-200">
+    <div v-if="dataDetail?.complaints?.length > 0 && showDaftarAduan" class="rounded-lg border border-gray-200">
       <jds-simple-table>
         <thead class="h-[42px] py-[6px]">
           <tr>
@@ -103,7 +103,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(item, index) in detailIKP?.complaints" :key="index">
+          <tr v-for="(item, index) in dataDetail?.complaints" :key="index">
             <td class="text-lato w-[80%] text-[14px]">
               {{ item?.complaint_id }}
             </td>
@@ -119,21 +119,48 @@
       </jds-simple-table>
     </div>
   </div>
-  </div>
 </template>
 
 <script>
 import { ikpStatus } from '~/constant/daftar-ikp'
+import { formatDate } from '~/utils'
 export default {
   name: 'DaftarIKPTableDetail',
   props: {
-    detailIKP: {
-      type: Object,
-      default: () => ({})
-    },
     showDaftarAduan: {
       type: Boolean,
       default: false
+    },
+    ikpCode: {
+      type: String,
+      default: ''
+    }
+
+  },
+  data () {
+    return {
+      dataDetail: {}
+    }
+  },
+  async fetch () {
+    try {
+      const response = await this.$axios.get(
+        `/warga/ikp/${this.ikpCode}`
+      )
+      this.dataDetail = response.data.data
+      this.dataDetail.created_at =
+        formatDate(
+          this.dataDetail.created_at || '',
+          'dd/MM/yyyy HH:mm'
+        ) || '-'
+
+      this.dataDetail.deadline_at =
+        formatDate(
+          this.dataDetail.deadline_at || '',
+          'dd/MM/yyyy HH:mm'
+        ) || '-'
+    } catch (error) {
+      this.dataDetail = {}
     }
   },
   methods: {
@@ -141,6 +168,10 @@ export default {
       switch (status) {
         case ikpStatus.followup.id:
           return ikpStatus.followup.name
+        case ikpStatus.postponed.id:
+          return ikpStatus.postponed.name
+        case ikpStatus.review.id:
+          return ikpStatus.review.name
         case ikpStatus.finished.id:
           return ikpStatus.finished.name
         default:
@@ -148,11 +179,19 @@ export default {
       }
     },
     getStatusColorHandle (status) {
-      switch (status) {
-        case ikpStatus.followup.id:
+      switch (ikpStatus[status].statusColor) {
+        case 'yellow':
           return 'bg-[#FF7500]'
-        case ikpStatus.finished.id:
+        case 'green':
           return 'bg-green-700'
+        case 'red':
+          return 'bg-[#DD5E5E]'
+        case 'light-blue':
+          return 'bg-[#1E88E5]'
+        case 'dark-blue':
+          return 'bg-blue-gray-500'
+        case 'purple':
+          return 'bg-[#691B9A]'
         default:
           return 'bg-gray-900'
       }
