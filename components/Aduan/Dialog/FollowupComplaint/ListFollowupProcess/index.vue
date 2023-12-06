@@ -9,7 +9,7 @@
           {{ dataIkp.narrative }}
         </td>
         <td width="91" class="align-middle">
-          <BaseTableAction />
+          <BaseTableAction :list-menu-pop-over="listMenuTableAction" />
         </td>
         <td width="63" class="rounded-r-lg align-middle">
           <jds-button
@@ -31,6 +31,10 @@ export default {
     dataIkp: {
       type: Object,
       default: () => ({})
+    },
+    listMenuTableAction: {
+      type: Array,
+      default: () => ([])
     }
   }
 }
