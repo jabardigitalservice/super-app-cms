@@ -5,7 +5,7 @@ export const headerDaftarIkp = [
     sortable: true
   },
   {
-    key: 'complaint_total',
+    key: 'complaints_count',
     text: 'Jml Aduan',
     sortable: true
   },
@@ -36,18 +36,35 @@ export const ikpStatus = Object.freeze({
     id: 'total',
     name: 'Semua IKP',
     value: 0,
-    icon: '/icon/icon-aduan/complaint-status/complaint-all-icon.svg'
+    icon: '/icon/icon-aduan/complaint-status/complaint-all-icon.svg',
+    statusColor: ''
   },
   followup: {
     id: 'followup',
     name: 'Ditindaklanjuti',
     value: 0,
-    icon: '/icon/icon-aduan/complaint-status/complaint-followup-icon.svg'
+    icon: '/icon/icon-aduan/complaint-status/complaint-followup-icon.svg',
+    statusColor: 'light-blue'
+  },
+  postponed: {
+    id: 'postponed',
+    name: 'Pengerjaan Ditunda',
+    value: 0,
+    icon: '/icon/icon-aduan/complaint-status/complaint-postponed-icon.svg',
+    statusColor: 'purple'
+  },
+  review: {
+    id: 'review',
+    name: 'Ditinjau Ulang',
+    value: 0,
+    icon: '/icon/icon-aduan/complaint-status/complaint-review-icon.svg',
+    statusColor: 'dark-blue'
   },
   finished: {
     id: 'finished',
     name: 'Selesai',
     value: 0,
-    icon: '/icon/icon-aduan/complaint-status/complaint-finished-icon.svg'
+    icon: '/icon/icon-aduan/complaint-status/complaint-finished-icon.svg',
+    statusColor: 'green'
   }
 })
