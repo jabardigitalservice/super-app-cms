@@ -11,14 +11,16 @@
             :label="labelButtonCancel"
             variant="secondary"
             class="!text-[14px] !font-bold"
+            :disabled="isDisabledButtonCancel"
             @click="$emit('close')"
           />
         </div>
         <div>
           <jds-button
             :label="labelButtonSubmit"
+            type="button"
             :variant="variant"
-            class="!text-[14px] !font-bold"
+            :disabled="isDisabledButtonSubmit"
             @click="submitButtonHandle()"
           />
         </div>
@@ -46,6 +48,14 @@ export default {
     variant: {
       type: String,
       default: 'primary'
+    },
+    isDisabledButtonSubmit: {
+      type: Boolean,
+      default: false
+    },
+    isDisabledButtonCancel: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {
@@ -59,3 +69,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  .jds-button::v-deep {
+    @apply disabled:opacity-25 disabled:pointer-events-none !text-[14px] !font-bold
+  }
+</style>
