@@ -113,7 +113,7 @@
           :show-cancel-button="true"
           label-button-submit="Tindaklanjuti Aduan"
           :is-disabled-button-submit="!isFollowup"
-          @close="$emit('close')"
+          @close="closePopupFollowupComplaint()"
           @submit="showPopupConfirmationFollowupComplaint()"
         />
       </BaseDialogPanel>
@@ -192,6 +192,10 @@ export default {
     cancelFollowupProcess () {
       this.isFollowup = false
     },
+    closePopupFollowupComplaint () {
+      this.isFollowup = false
+      this.$emit('close')
+    },
     showPopupConfirmationFollowupComplaint () {
       this.$emit('close')
       this.dataDialogConfirmation = {
@@ -208,6 +212,7 @@ export default {
     submitDataFollowupComplaint () {
       this.isShowPopupConfirmationFollowup = false
       this.$emit('submit', this.dataIkp)
+      this.isFollowup = false
     }
   }
 }
