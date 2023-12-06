@@ -46,7 +46,10 @@
             :type-aduan-page="typeAduanPage"
             @button-image="isShowPopupViewImage = true"
           />
-          <AduanDaftarIKPTableDetail v-else-if="idTab === 'input-ikp'" :show-daftar-aduan="false" />
+          <AduanDaftarIKPTableDetail
+            v-else-if="idTab === 'input-ikp'"
+            :show-daftar-aduan="false"
+          />
         </BaseTabPanel>
       </template>
     </BaseTabGroup>
@@ -91,6 +94,12 @@
       :show-popup="isShowPopupProcessComplaint"
       @close="isShowPopupProcessComplaint = false"
     />
+    <DialogFollowupComplaint
+      :data-dialog="dataDialog"
+      :show-popup="isShowPopupFollowupComplaint"
+      @close="isShowPopupFollowupComplaint = false"
+      @submit="submitFollowupComplaint"
+    />
   </div>
 </template>
 
@@ -108,6 +117,7 @@ import DialogTrackingSpanLapor from '~/components/Aduan/Dialog/TrackingSpanLapor
 import TableComplaintDetail from '~/components/Aduan/Detail/Table/Complaint'
 import { formatDate } from '~/utils'
 import DialogProcessComplaint from '~/components/Aduan/Dialog/ProcessComplaint'
+import DialogFollowupComplaint from '~/components/Aduan/Dialog/FollowupComplaint'
 
 export default {
   name: 'DetailAduan',
@@ -117,7 +127,8 @@ export default {
     DialogTrackingSpanLapor,
     ArrowLeft,
     DialogProcessComplaint,
-    TableComplaintDetail
+    TableComplaintDetail,
+    DialogFollowupComplaint
   },
   mixins: [popupAduanMasuk],
   props: {
@@ -242,6 +253,8 @@ export default {
           return this.showPopupInputIdSpanHandle(this.detailComplaint)
         case complaintButtonDetail.complaintProcess.idButton:
           return this.showPopupProcessComplaintHandle(this.detailComplaint)
+        case complaintButtonDetail.followup.idButton:
+          return this.showPopupFollowupComplaint(this.detailComplaint)
       }
     },
     showViewPhotoDialogHandle (url) {
