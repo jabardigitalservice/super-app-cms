@@ -1,7 +1,7 @@
 <template>
   <jds-popover :value="isShowPopOver" :options="popoverOptions">
     <template #activator>
-      <BaseButton v-on-clickaway="closePopupOverHandle" class="border border-green-600 h-fit py-[4px] px-[16px] w-full text-[14px] font-medium text-green-600" @click="isShowPopOver=!isShowPopOver">
+      <BaseButton v-on-clickaway="closePopupOverHandle" class="border bg-white border-green-600 h-fit py-[4px] px-[16px] w-full text-[14px] font-medium text-green-600" @click="isShowPopOver=!isShowPopOver">
         <div class="flex items-center justify-between">
           Aksi
           <jds-icon name="chevron-down" fill="#16A75C" size="14px" class="ml-[10px]" :class="{'rotate-180':isShowPopOver}" />
