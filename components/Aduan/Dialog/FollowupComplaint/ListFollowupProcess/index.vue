@@ -9,7 +9,7 @@
           {{ dataIkp.narrative }}
         </td>
         <td width="91" class="align-middle">
-          <BaseTableAction :list-menu-pop-over="listMenuTableAction" />
+          <BaseTableAction :list-menu-pop-over="listMenuTableAction" @detail-narrative="$emit('detail-narrative',dataIkp)" />
         </td>
         <td width="63" class="rounded-r-lg align-middle">
           <jds-button

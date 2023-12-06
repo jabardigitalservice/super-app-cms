@@ -106,6 +106,7 @@
             v-if="isFollowup"
             :data-ikp="dataIkp"
             :list-menu-table-action="listMenuTableAction"
+            @detail-narrative="showPopupIkpNarrative"
             @close="cancelFollowupProcess()"
           />
         </div>
