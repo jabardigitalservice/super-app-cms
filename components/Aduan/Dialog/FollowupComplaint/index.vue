@@ -80,7 +80,7 @@
                   <td
                     :class="{ 'rounded-bl-lg': index === listIkp.length - 1 }"
                   >
-                    {{ itemIkp.ikp_code }}
+                    <strong>{{ itemIkp.ikp_code }}</strong>
                   </td>
                   <td>{{ itemIkp.narrative }}</td>
                   <td width="73">
