@@ -1,7 +1,7 @@
 <template>
   <div>
     <BaseDialog :show-popup="showPopup">
-      <BaseDialogPanel class="w-[600px] overflow-y-auto">
+      <BaseDialogPanel class="w-[600px] max-h-[626px]">
         <BaseDialogHeader :title="dataDialog.title" />
         <div class="form-followup-ikp px-6 pt-2">
           <BaseDialogDescription
