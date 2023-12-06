@@ -84,7 +84,7 @@
                   </td>
                   <td>{{ itemIkp.narrative }}</td>
                   <td width="73">
-                    <BaseTableAction />
+                    <BaseTableAction :list-menu-pop-over="listMenuTableAction" @detail-narrative="showPopupIkpNarrative(itemIkp)" />
                   </td>
                   <td
                     width="63"
@@ -105,6 +105,7 @@
           <ListFollowupProcess
             v-if="isFollowup"
             :data-ikp="dataIkp"
+            :list-menu-table-action="listMenuTableAction"
             @close="cancelFollowupProcess()"
           />
         </div>
@@ -123,6 +124,7 @@
       @close="isShowPopupConfirmationFollowup = false"
       @submit="submitDataFollowupComplaint()"
     />
+    <DialogIkpNarrative :show-popup="isShowPopupIkpNarrative" :data-ikp="dataIkp" @close="isShowPopupIkpNarrative=false" />
   </div>
 </template>
 
@@ -130,10 +132,11 @@
 import debounce from 'lodash.debounce'
 import AlertInformation from '~/components/Aduan/Alert/Information'
 import ListFollowupProcess from '~/components/Aduan/Dialog/FollowupComplaint/ListFollowupProcess'
+import DialogIkpNarrative from '~/components/Aduan/Dialog/IkpNarrative'
 
 export default {
   name: 'DialogFollowupComplaint',
-  components: { AlertInformation, ListFollowupProcess },
+  components: { AlertInformation, ListFollowupProcess, DialogIkpNarrative },
   props: {
     showPopup: {
       type: Boolean,
@@ -156,7 +159,11 @@ export default {
       search: '',
       dataIkp: {},
       dataDialogConfirmation: {},
-      isShowPopupConfirmationFollowup: false
+      isShowPopupConfirmationFollowup: false,
+      listMenuTableAction: [
+        { menu: 'Lihat Narasi IKP', value: 'detail-narrative' }
+      ],
+      isShowPopupIkpNarrative: false
     }
   },
   async fetch () {
@@ -193,6 +200,10 @@ export default {
         labelButtonSubmit: 'Tindaklanjuti Aduan'
       }
       this.isShowPopupConfirmationFollowup = true
+    },
+    showPopupIkpNarrative (dataIkp) {
+      this.dataIkp = dataIkp
+      this.isShowPopupIkpNarrative = true
     },
     submitDataFollowupComplaint () {
       this.isShowPopupConfirmationFollowup = false
