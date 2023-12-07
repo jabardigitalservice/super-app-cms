@@ -469,7 +469,11 @@ export default {
       typeAduan,
       listUrlFile: [
         'http://101.50.0.202:12002/trk/img/lim/Screenshot 20231009 100616.png',
-        'http://101.50.0.202:12002/trk/img/lim/Kanomodeltemplate.pdf'
+        'http://101.50.0.202:12002/trk/img/lim/Screenshot 20231009 100616.png',
+        'http://101.50.0.202:12002/trk/img/lim/photo1696837706 2.jpeg',
+        'http://101.50.0.202:12002/trk/img/lim/Kanomodeltemplate.pdf',
+        'https://sample-videos.com/doc/Sample-doc-file-100kb.doc',
+        'http://101.50.0.202:12002/trk/img/lim/Detail Sebaran IRBB 1-C1kBe.xlsx'
       ],
       listAllFile: [],
       listFileDocument: [],
@@ -577,7 +581,7 @@ export default {
     showPopupViewDocument () {
       this.listAllFile = this.listUrlFile.map(item => this.getDataFile(item))
       const listTypeDocument = ['doc', 'docx', 'xls', 'xlsx', 'pdf']
-      const listTypeImage = ['png', 'jpg']
+      const listTypeImage = ['png', 'jpg', 'jpeg']
       this.listFileDocument = this.listAllFile.filter(dataDocument =>
         listTypeDocument.includes(dataDocument.type)
       )

@@ -2,7 +2,11 @@
   <div>
     <BaseTabGroup>
       <template #tab-list>
-        <TabBarList :list-tab="listStatistic" @selected="selectedTabHandle" @button-tab="listTabHandle" />
+        <TabBarList
+          :list-tab="listStatistic"
+          @selected="selectedTabHandle"
+          @button-tab="listTabHandle"
+        />
       </template>
       <template #tab-panel>
         <BaseTabPanel class="px-3 pt-6 pb-4">
@@ -92,7 +96,8 @@
             <template #item.action="{ item }">
               <BaseTableAction
                 :list-menu-pop-over="
-                  filterTableAction(item?.complaint_status_id)"
+                  filterTableAction(item?.complaint_status_id)
+                "
                 @detail="goToPageDetail(item.ikp_code)"
               />
             </template>
@@ -119,9 +124,7 @@ export default {
   components: { TabBarList },
   data () {
     return {
-      menuTableAction: [
-        { menu: 'Lihat Detail IKP', value: 'detail' }
-      ],
+      menuTableAction: [{ menu: 'Lihat Detail IKP', value: 'detail' }],
       listDataIkp: [],
       listStatisticIkp: [],
       pagination: {
@@ -181,8 +184,12 @@ export default {
       return this.listDataIkp.map((item) => {
         return {
           ...item,
-          created_at: formatDate(item.created_at, 'dd/MM/yyyy HH:mm'),
-          deadline_at: formatDate(item.created_at, 'dd/MM/yyyy HH:mm')
+          created_at: item?.created_at
+            ? formatDate(item?.created_at, 'dd/MM/yyyy HH:mm')
+            : '-',
+          deadline_at: item?.created_at
+            ? formatDate(item?.created_at, 'dd/MM/yyyy HH:mm')
+            : '-'
         }
       })
     },
@@ -307,6 +314,8 @@ export default {
     },
     getStatusText (status) {
       switch (status) {
+        case ikpStatus.coordinated.id:
+          return ikpStatus.coordinated.name
         case ikpStatus.followup.id:
           return ikpStatus.followup.name
         case ikpStatus.postponed.id:

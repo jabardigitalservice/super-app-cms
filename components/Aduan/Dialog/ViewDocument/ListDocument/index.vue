@@ -14,6 +14,7 @@
     <jds-button
       variant="secondary"
       class="!w-[106px] !rounded-full !text-[14px] !font-bold"
+      @click="downloadFile(fileDocument.url, fileDocument.type)"
     >
       <div class="flex items-center">
         <BaseIconSvg
@@ -43,12 +44,25 @@ export default {
         return 'file-pdf.svg'
       }
 
-      if (this.fileDocument.type === 'doc' || this.fileDocument.type === 'docx') {
+      if (
+        this.fileDocument.type === 'doc' ||
+        this.fileDocument.type === 'docx'
+      ) {
         return 'file-doc.svg'
       }
 
-      if (this.fileDocument.type === 'xls' || this.fileDocument.type === 'xlsx') {
+      if (
+        this.fileDocument.type === 'xls' ||
+        this.fileDocument.type === 'xlsx'
+      ) {
         return 'file-excel.svg'
+      }
+    },
+    downloadFile (url, typeFile) {
+      if (typeFile === 'pdf') {
+        window.open(url, '_blank')
+      } else {
+        window.location.href = url
       }
     }
   }
