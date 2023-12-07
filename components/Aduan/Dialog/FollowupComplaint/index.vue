@@ -3,7 +3,7 @@
     <BaseDialog :show-popup="showPopup">
       <BaseDialogPanel class="w-[600px] max-h-[626px]">
         <BaseDialogHeader :title="dataDialog.title" />
-        <div class="form-followup-ikp px-6 pt-2">
+        <div class="form-followup-ikp px-6 pt-2 max-h-[506px] overflow-y-auto">
           <BaseDialogDescription
             description="No.Aduan"
             :sub-description="dataDialog.subDescription"
