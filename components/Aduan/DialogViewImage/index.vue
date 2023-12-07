@@ -116,6 +116,7 @@ export default {
         }
       }
     },
+    // TODO: integration with url Fix from API
     async downloadImageHandle () {
       if (this.swiperRef) {
         const activeIndex = this.swiperRef.activeIndex
