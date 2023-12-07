@@ -145,6 +145,7 @@
                 @failed="showPopupConfirmationFailedComplaintHandle(item)"
                 @add-span="showPopupInputIdSpanHandle(item)"
                 @process-complaint="showPopupProcessComplaintHandle(item)"
+                @followup-complaint="showPopupFollowupComplaint(item)"
               />
             </template>
           </JdsDataTable>
@@ -186,6 +187,12 @@
       @close="closePopupHandle()"
       @submit="submitProcessComplaint"
     />
+    <DialogFollowupComplaint
+      :data-dialog="dataDialog"
+      :show-popup="isShowPopupFollowupComplaint"
+      @close="isShowPopupFollowupComplaint = false"
+      @submit="submitFollowupComplaint"
+    />
     <DialogLoading :show-popup="isLoading" />
   </div>
 </template>
@@ -203,6 +210,7 @@ import 'vue2-datepicker/index.css'
 import TabBarList from '~/components/Aduan/TabBar/List'
 import DialogAddComplaint from '~/components/Aduan/Dialog/AddComplaint'
 import DialogProcessComplaint from '~/components/Aduan/Dialog/ProcessComplaint'
+import DialogFollowupComplaint from '~/components/Aduan/Dialog/FollowupComplaint'
 
 import {
   complaintHeader,
@@ -217,7 +225,12 @@ import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
 
 export default {
   name: 'AduanMasuk',
-  components: { TabBarList, DialogAddComplaint, DialogProcessComplaint },
+  components: {
+    TabBarList,
+    DialogAddComplaint,
+    DialogProcessComplaint,
+    DialogFollowupComplaint
+  },
   mixins: [popupAduanMasuk],
   props: {
     typeAduanPage: {

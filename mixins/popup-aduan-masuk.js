@@ -7,6 +7,7 @@ export default {
       isShowPopupInformation: false,
       isShowPopupInputIdSpan: false,
       isShowPopupProcessComplaint: false,
+      isShowPopupFollowupComplaint: false,
       dataDialog: {
         title: '',
         description: '',
@@ -118,6 +119,21 @@ export default {
       this.$store.dispatch('process-complaint/changeComplaintStatusId')
       this.isShowPopupProcessComplaint = true
     },
+    showPopupFollowupComplaint (dataComplaint) {
+      this.idApi = dataComplaint.id
+      this.typeDialog = 'followupComplaint'
+      this.setDataDialog({
+        ...this.setDataDialogConfirmation(
+          'Tindaklanjuti Aduan',
+          'No.Aduan',
+          dataComplaint.complaint_id,
+          'Tindaklanjuti Aduan'
+        ),
+        proposed_ikp_narrative: dataComplaint.proposed_ikp_narrative
+      })
+      this.isShowPopupFollowupComplaint = true
+    },
+
     submitPopupComplaintHandle (item) {
       let dataDialogInformation = {}
       const paramRequest = {}
@@ -206,6 +222,30 @@ export default {
         dataDialogInformation,
         dataComplaint.payload,
         'determine-authority'
+      )
+    },
+
+    submitFollowupComplaint (dataIkp) {
+      this.isShowPopupConfirmationFollowup = false
+      let dataDialogInformation = {}
+      dataDialogInformation = {
+        ...this.setDataDialogInformation(
+          'Tindaklanjuti Aduan',
+          dataIkp.ikp_code
+        ),
+        success: this.setSucessFailedInformationHandle(
+          'Tindaklanjuti Aduan berhasil dilakukan',
+          true
+        ),
+        failed: this.setSucessFailedInformationHandle(
+          'Tindaklanjuti Aduan gagal dilakukan',
+          false
+        )
+      }
+      this.integrationPopupHandle(
+        dataDialogInformation,
+        { ikp_code: dataIkp.ikp_code },
+        'follow-up'
       )
     },
 
