@@ -28,7 +28,7 @@ extend('url', {
 
 extend('numeric', {
   ...numeric,
-  message: (_, values) => `${values._field_} harus diisi angka`
+  message: (_, values) => `${values._field_} harus berupa angka`
 })
 
 extend('maxTenDigitsInt', {
