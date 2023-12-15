@@ -34,6 +34,21 @@
   @apply bg-green-50 !important;
 }
 
+.mx-datepicker .mx-datepicker--error .mx-input-wrapper {
+  @apply !bg-red-400;
+}
+
+.mx-datepicker .mx-input {
+  @apply !border-gray-500 !bg-gray-50 placeholder:!font-lato placeholder:!text-sm placeholder:!text-gray-800;
+}
+
+.mx-datepicker.mx-datepicker--error .mx-input {
+  @apply !border-red-600;
+}
+.mx-datepicker .mx-datepicker--error .mx-input {
+  @apply !border-red-600;
+}
+
 .mx-datepicker-popup{
   @apply rounded-lg border border-gray-400 !important;
 }
@@ -107,6 +122,7 @@
 .form-add-complaint .jds-select__options::-webkit-scrollbar-thumb {
   @apply rounded-xl border-[6px] border-solid border-transparent bg-gray-300 bg-clip-content;
 }
+
 
 /* for filterable style
 .form-add-complaint .jds-options__filter .jds-input-text__input-wrapper{
