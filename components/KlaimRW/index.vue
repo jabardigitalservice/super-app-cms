@@ -59,7 +59,7 @@
         <template #item.action="{ item }">
           <KlaimRWTableAction
             :status="item.rwStatus"
-            @detail="$router.push(`/detail/${item.id}`)"
+            @detail="goToDetail(item.id)"
             @verify="showVerifyPopupHandle(item)"
             @reject="rejectUser(item)"
           />
@@ -88,7 +88,11 @@
       @close="showRejectRw = false"
       @submit="actionRejectUser"
     />
-    <BasePopup :show-popup="showPopupConfirmationInformation" @submit="actionVerifyUser" @close="onClosePopupInfo" />
+    <BasePopup
+      :show-popup="showPopupConfirmationInformation"
+      @submit="actionVerifyUser"
+      @close="onClosePopupInfo"
+    />
     <PopupInformation
       :show-popup="informationDialog.show"
       :title="informationDialog.title"
@@ -152,6 +156,7 @@ export default {
       const response = await this.$axios.get('/user/rw', {
         params: this.query
       })
+
       const { data } = response.data
       this.data = data?.data || []
       if (this.data.length) {
@@ -176,12 +181,30 @@ export default {
       })
     }
   },
+
   watch: {
     query: {
       deep: true,
       handler () {
+        if (Object.keys(this.$route.query).length > 0) {
+          this.$router.replace({
+            path: this.$route.path,
+            query: {}
+          })
+        }
+
         this.$fetch()
       }
+    },
+    '$route.query': {
+      handler (newQuery) {
+        if (Object.keys(newQuery).length > 0) {
+          this.query = { ...newQuery }
+          this.search = this.query.nameFilter || ''
+        }
+      },
+      deep: true,
+      immediate: true
     }
   },
   mounted () {
@@ -270,6 +293,12 @@ export default {
       } catch {
         this.informationDialog.file = ''
       }
+    },
+    goToDetail (id) {
+      this.$router.push({
+        path: `/detail/${id}`,
+        query: this.query
+      })
     }
   }
 }
@@ -288,5 +317,4 @@ export default {
 .jds-data-table:deep tr td {
   @apply min-w-[170px] border-r border-gray-200;
 }
-
 </style>
