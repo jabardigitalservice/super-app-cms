@@ -16,6 +16,7 @@
                 :ikp-narrative="ikpNarrative"
                 :is-truncate="isTruncate"
                 class="mt-3"
+                @truncate="isTruncate=true"
                 @detail-narrative="isTruncate = false"
               />
               <div class="pt-3 grid grid-cols-2 gap-3">
@@ -202,6 +203,9 @@ export default {
     },
     disabledDeadlineDate: function (date) {
       return date <= new Date()
+    },
+    truncateIKpnarrative () {
+      this.isTruncate = true
     },
     resetFormIkp () {
       this.payload = {
