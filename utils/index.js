@@ -78,3 +78,13 @@ export function convertToUnit (value) {
   }
   return units[unitIndex]
 }
+
+export function resetQueryParamsUrl (context) {
+  if (Object.keys(context.$route.query).length > 0) {
+    // replace query params url with empty object
+    context.$router.replace({
+      path: context.$route.path,
+      query: {}
+    })
+  }
+}
