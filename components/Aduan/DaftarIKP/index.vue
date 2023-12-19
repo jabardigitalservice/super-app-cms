@@ -164,6 +164,8 @@ export default {
       this.pagination.currentPage = data?.page || 1
       this.pagination.totalRows = data?.total_data || 0
       this.pagination.itemsPerPage = data?.page_size || this.query.limit
+
+      this.getCount()
     } catch {
       this.pagination.disabled = true
     }
@@ -220,7 +222,7 @@ export default {
     this.pagination.itemsPerPageOptions = generateItemsPerPageOptions(
       this.pagination.itemsPerPage
     )
-    this.getCount()
+
     this.selectedTabHandle(0)
   },
   methods: {
@@ -272,7 +274,6 @@ export default {
         end_date: formatDate(this.dateRange[1], 'yyyy-MM-dd')
       })
       this.$fetch()
-      this.getCount()
       this.$refs.datepicker.closePopup()
     },
     closePopupDateHandle () {
@@ -291,12 +292,11 @@ export default {
         start_date: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
         end_date: formatDate(this.dateRange[1], 'yyyy-MM-dd')
       })
-      this.getCount()
+
       this.isShowPopupDateRange = false
       this.$fetch()
     },
     changeDateRangeHandle () {
-      this.getCount()
       this.isShowPopupDateRange = true
     },
     getTotalStatistic () {
@@ -341,7 +341,6 @@ export default {
     },
     listTabHandle (statusId) {
       const query = {
-        limit: 5,
         page: 1
       }
 
@@ -360,6 +359,7 @@ export default {
     },
     async getCount () {
       const queryCount = { ...this.query }
+      queryCount.status = ''
       try {
         const responseListStatisticIkp = await this.$axios.get(
           '/warga/ikp/statistics',

@@ -33,7 +33,7 @@
                 </p>
                 <jds-select
                   v-model="query.complaint_category_id"
-                  placeholder="Kategori Aduan"
+                  placeholder="Semua Kategori Aduan"
                   :options="listCategory"
                   class="select-form-complaint !ml-2 mr-2 !w-[260px]"
                   @change="filterCategoryHandle"
@@ -352,28 +352,15 @@ export default {
       )
 
       this.listDataCategory = responseListCategoryComplaint.data.data
+      this.listDataCategory = [
+        {
+          id: '',
+          name: 'Semua Kategori Aduan'
+        },
+        ...this.listDataCategory
+      ]
 
-      // handle data statistic complaint
-      const responseListStatisticComplaint = await this.$axios.get(
-        '/warga/complaints/statistics'
-      )
-      const listDataStatisticComplaint =
-        responseListStatisticComplaint.data.data
-      const listComplaintStatus = this.getStatusComplaintByComplaintType()
-      this.listStatisticComplaint = listDataStatisticComplaint.filter(
-        statisticComplaint =>
-          listComplaintStatus.find(
-            complaintStatus => statisticComplaint.id === complaintStatus.id
-          )
-      )
-      complaintStatus.total.value =
-        this.typeAduan.aduanDariSpanLapor.props === this.typeAduanPage
-          ? this.pagination.totalRows
-          : this.getTotalStatistic()
-      this.listStatisticComplaint.unshift(complaintStatus.total)
-      if (this.listStatisticComplaint.length === 2) {
-        this.listStatisticComplaint.pop()
-      }
+      this.getCount()
     } catch {
       this.pagination.disabled = true
     }
@@ -457,6 +444,7 @@ export default {
     this.pagination.itemsPerPageOptions = generateItemsPerPageOptions(
       this.pagination.itemsPerPage
     )
+
     this.selectedTabHandle(0)
   },
   methods: {
@@ -517,7 +505,12 @@ export default {
       this.$fetch()
     },
     filterCategoryHandle (value) {
-      this.query['complaint_category_id[0]'] = value
+      if (value) {
+        this.query['complaint_category_id[0]'] = value
+      } else {
+        delete this.query.complaint_category_id
+        delete this.query['complaint_category_id[0]']
+      }
       this.$fetch()
     },
     goToPageDetailHandle (item) {
@@ -573,20 +566,11 @@ export default {
     listTabHandle (status) {
       this.query = { page: 1, limit: 5 }
       if (status !== 'total') {
-        this.search = ''
-        this.dateRange = [
-          new Date(new Date().setFullYear(new Date().getFullYear() - 1)),
-          new Date()
-        ]
         this.setQuery({
-          'complaint_status_id[0]': status,
-          search: null,
-          complaint_category_id: null,
-          sort_by: 'updated_at',
-          sort_type: 'desc'
+          'complaint_status_id[0]': status
         })
-        this.isShowPopupDateRange = false
       }
+      this.isShowPopupDateRange = false
       this.$fetch()
     },
     filterDateHandle () {
@@ -595,6 +579,7 @@ export default {
         end_date: formatDate(this.dateRange[1], 'yyyy-MM-dd')
       })
       this.$fetch()
+
       this.$refs.datepicker.closePopup()
     },
     closePopupDateHandle () {
@@ -617,6 +602,7 @@ export default {
         start_date: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
         end_date: formatDate(this.dateRange[1], 'yyyy-MM-dd')
       })
+
       this.isShowPopupDateRange = false
       this.$fetch()
     },
@@ -640,6 +626,44 @@ export default {
         return this.complaintSource.span
       }
       return this.complaintSource[dataComplaint.complaint_source]
+    },
+    async getCount () {
+      const queryCount = { ...this.query, is_admin: 1 }
+
+      for (const prop in queryCount) {
+        if (prop.startsWith('complaint_status_id[')) {
+          delete queryCount[prop]
+        }
+      }
+
+      try {
+        // handle data statistic complaint
+        const responseListStatisticComplaint = await this.$axios.get(
+          '/warga/complaints/statistics',
+          {
+            params: queryCount
+          }
+        )
+        const listDataStatisticComplaint =
+        responseListStatisticComplaint.data.data
+        const listComplaintStatus = this.getStatusComplaintByComplaintType()
+        this.listStatisticComplaint = listDataStatisticComplaint.filter(
+          statisticComplaint =>
+            listComplaintStatus.find(
+              complaintStatus => statisticComplaint.id === complaintStatus.id
+            )
+        )
+        complaintStatus.total.value =
+        this.typeAduan.aduanDariSpanLapor.props === this.typeAduanPage
+          ? this.pagination.totalRows
+          : this.getTotalStatistic()
+        this.listStatisticComplaint.unshift(complaintStatus.total)
+        if (this.listStatisticComplaint.length === 2) {
+          this.listStatisticComplaint.pop()
+        }
+      } catch (error) {
+        console.error(error)
+      }
     }
   }
 }
