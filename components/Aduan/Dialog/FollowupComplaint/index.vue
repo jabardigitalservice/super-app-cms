@@ -136,7 +136,6 @@
     />
     <DialogCreateIkp
       :show-popup="isShowPopupCreateIkp"
-      :ikp-narrative="dataDialog.proposed_ikp_narrative"
       @back-form-followup="closePopupCreateIkp()"
       @close-all-popup="closeAllPopup()"
       @close-popup-info="handleClosePopupInformation"
@@ -253,6 +252,7 @@ export default {
     },
     showPopupCreateIkp () {
       this.$emit('close')
+      this.$store.commit('edit-ikp-narrative/setDataIkpNarrative', this.dataDialog.proposed_ikp_narrative)
       this.isShowPopupCreateIkp = true
     },
     submitDataFollowupComplaint () {
