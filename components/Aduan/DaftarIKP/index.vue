@@ -110,7 +110,6 @@
 
 <script>
 import debounce from 'lodash.debounce'
-
 import {
   formatDate,
   generateItemsPerPageOptions,
@@ -165,16 +164,6 @@ export default {
       this.pagination.currentPage = data?.page || 1
       this.pagination.totalRows = data?.total_data || 0
       this.pagination.itemsPerPage = data?.page_size || this.query.limit
-
-      const responseListStatisticIkp = await this.$axios.get(
-        '/warga/ikp/statistics'
-      )
-      this.listStatisticIkp = responseListStatisticIkp.data.data
-      ikpStatus.total.value = this.getTotalStatistic()
-      this.listStatisticIkp.unshift(ikpStatus.total)
-      if (this.listStatisticIkp.length === 2) {
-        this.listStatisticIkp.pop()
-      }
     } catch {
       this.pagination.disabled = true
     }
@@ -231,6 +220,7 @@ export default {
     this.pagination.itemsPerPageOptions = generateItemsPerPageOptions(
       this.pagination.itemsPerPage
     )
+    this.getCount()
     this.selectedTabHandle(0)
   },
   methods: {
@@ -282,6 +272,7 @@ export default {
         end_date: formatDate(this.dateRange[1], 'yyyy-MM-dd')
       })
       this.$fetch()
+      this.getCount()
       this.$refs.datepicker.closePopup()
     },
     closePopupDateHandle () {
@@ -300,10 +291,12 @@ export default {
         start_date: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
         end_date: formatDate(this.dateRange[1], 'yyyy-MM-dd')
       })
+      this.getCount()
       this.isShowPopupDateRange = false
       this.$fetch()
     },
     changeDateRangeHandle () {
+      this.getCount()
       this.isShowPopupDateRange = true
     },
     getTotalStatistic () {
@@ -364,6 +357,25 @@ export default {
     },
     goToPageDetail (id) {
       this.$router.push(`/aduan/penginputan-ikp/detail-ikp/${id}`)
+    },
+    async getCount () {
+      const queryCount = { ...this.query }
+      try {
+        const responseListStatisticIkp = await this.$axios.get(
+          '/warga/ikp/statistics',
+          {
+            params: queryCount
+          }
+        )
+        this.listStatisticIkp = responseListStatisticIkp.data.data
+        ikpStatus.total.value = this.getTotalStatistic()
+        this.listStatisticIkp.unshift(ikpStatus.total)
+        if (this.listStatisticIkp.length === 2) {
+          this.listStatisticIkp.pop()
+        }
+      } catch (error) {
+        console.error(error)
+      }
     }
   }
 }
