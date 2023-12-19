@@ -9,10 +9,11 @@
           <jds-button
             v-show="showCancelButton"
             :label="labelButtonCancel"
+            type="button"
             variant="secondary"
             class="!text-[14px] !font-bold"
             :disabled="isDisabledButtonCancel"
-            @click="$emit('close')"
+            @click="closePopup"
           />
         </div>
         <div>
@@ -21,7 +22,7 @@
             type="button"
             :variant="variant"
             :disabled="isDisabledButtonSubmit"
-            @click="submitButtonHandle()"
+            @click="submitButtonHandle"
           />
         </div>
       </div>
@@ -59,7 +60,12 @@ export default {
     }
   },
   methods: {
-    submitButtonHandle () {
+    closePopup (event) {
+      event.preventDefault()
+      this.$emit('close')
+    },
+    submitButtonHandle (event) {
+      event.preventDefault()
       if (!this.showCancelButton) {
         this.$emit('close')
       } else {
