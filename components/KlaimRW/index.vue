@@ -110,7 +110,7 @@ import PopupRejectRw from './Popup/RejectConfirmation.vue'
 import PopupInformation from './Popup/Information.vue'
 import popup from '~/mixins/klaim-rw'
 import { headerTableKlaimRW, userStatus } from '~/constant/klaim-rw'
-import { generateItemsPerPageOptions, formatDate } from '~/utils'
+import { generateItemsPerPageOptions, formatDate, resetQueryParamsUrl } from '~/utils'
 
 export default {
   name: 'ComponentKlaimRW',
@@ -186,25 +186,21 @@ export default {
     query: {
       deep: true,
       handler () {
-        if (Object.keys(this.$route.query).length > 0) {
-          this.$router.replace({
-            path: this.$route.path,
-            query: {}
-          })
-        }
+        resetQueryParamsUrl(this)
 
         this.$fetch()
       }
     },
     '$route.query': {
+      deep: true,
+      immediate: true,
       handler (newQuery) {
         if (Object.keys(newQuery).length > 0) {
           this.query = { ...newQuery }
           this.search = this.query.nameFilter || ''
         }
-      },
-      deep: true,
-      immediate: true
+      }
+
     }
   },
   mounted () {
