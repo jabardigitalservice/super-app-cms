@@ -30,7 +30,7 @@
       <jds-button
         variant="secondary"
         class="!w-[106px] !rounded-full !text-[14px] !font-bold"
-        @click="goToBackHandle()"
+        @click="downloadImage(listImage)"
       >
         <div class="flex items-center">
           <BaseIconSvg
@@ -52,7 +52,10 @@
 </template>
 
 <script>
+import axios from 'axios'
+import JSZip from 'jszip'
 import DialogViewImage from '~/components/Aduan/DialogViewImage'
+import { formatDate } from '~/utils'
 export default {
   name: 'ListImage',
   components: { DialogViewImage },
@@ -65,6 +68,33 @@ export default {
   data () {
     return {
       isShowPopupViewImage: false
+    }
+  },
+  methods: {
+    async downloadImage (imageArray) {
+      const zip = new JSZip()
+
+      const downloadPromises = imageArray.map(async (image) => {
+        try {
+          const response = await axios.get(image.url, { responseType: 'blob' })
+          // menyimpan file gambar dengan nama file
+          zip.file(image.name, response.data)
+        } catch (error) {
+          console.error(error)
+        }
+      })
+
+      await Promise.all(downloadPromises)
+      const zipBlob = await zip.generateAsync({ type: 'blob' })
+      const link = document.createElement('a')
+      link.href = window.URL.createObjectURL(zipBlob)
+      link.download = `Dokumen Bukti Aduan ${formatDate(
+        new Date(),
+        'dd/MM/yyyy HH:mm'
+      )}.zip`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
     }
   }
 }

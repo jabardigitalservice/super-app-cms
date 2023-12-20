@@ -39,6 +39,13 @@ export const ikpStatus = Object.freeze({
     icon: '/icon/icon-aduan/complaint-status/complaint-all-icon.svg',
     statusColor: ''
   },
+  coordinated: {
+    id: 'coordinated',
+    name: 'Dikoordinasikan',
+    value: 0,
+    icon: '/icon/icon-aduan/complaint-status/complaint-coordinated-icon.svg',
+    statusColor: 'yellow'
+  },
   followup: {
     id: 'followup',
     name: 'Ditindaklanjuti',

@@ -166,6 +166,8 @@ export default {
   methods: {
     getStatusText (status) {
       switch (status) {
+        case ikpStatus.coordinated.id:
+          return ikpStatus.coordinated.name
         case ikpStatus.followup.id:
           return ikpStatus.followup.name
         case ikpStatus.postponed.id:
@@ -179,7 +181,7 @@ export default {
       }
     },
     getStatusColorHandle (status) {
-      switch (ikpStatus[status].statusColor) {
+      switch (ikpStatus[status]?.statusColor) {
         case 'yellow':
           return 'bg-[#FF7500]'
         case 'green':
