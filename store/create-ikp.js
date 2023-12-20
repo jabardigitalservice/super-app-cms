@@ -21,6 +21,8 @@ export const actions = {
   checkTruncate ({ state, commit }) {
     if (state.ikpNarrative.length >= 125) {
       commit('setIsTruncate', true)
+    } else {
+      commit('setIsTruncate', false)
     }
   }
 }

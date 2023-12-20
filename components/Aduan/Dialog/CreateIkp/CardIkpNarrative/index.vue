@@ -89,8 +89,8 @@ export default {
   },
   methods: {
     closePopupEditIkpNarrative () {
-      this.isShowPopupEditIkpNarrative = false
       this.$store.dispatch('create-ikp/checkTruncate')
+      this.isShowPopupEditIkpNarrative = false
     },
     showPopupEditIkpNarrative () {
       this.dataDialog = {
