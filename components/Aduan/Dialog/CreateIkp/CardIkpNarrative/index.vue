@@ -36,27 +36,28 @@
           v-if="isTruncate"
           type="button"
           class="text-sm font-bold text-green-600"
-          @click="$emit('detail-narrative')"
+          @click="$store.commit('create-ikp/setIsTruncate', false)"
         >
           Selengkapnya
         </button>
       </div>
     </div>
-    <DialogEditNarrative :show-popup="isShowPopupEditIkpNarrative" :data-edit="dataIkpNarrative" :data-dialog="dataDialog" @close="closePopupEditIkpNarrative" @submit="submitEditIkpNarrative()" />
+    <DialogEditNarrative
+      :show-popup="isShowPopupEditIkpNarrative"
+      :data-dialog="dataDialog"
+      @close="closePopupEditIkpNarrative"
+      @submit="submitEditIkpNarrative()"
+    />
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import DialogEditNarrative from '~/components/Aduan/Dialog/CreateIkp/Dialog/EditNarrative'
+
 export default {
   name: 'CardIkpNarrative',
   components: { DialogEditNarrative },
-  props: {
-    isTruncate: {
-      type: Boolean,
-      default: true
-    }
-  },
   data () {
     return {
       dataDialog: {
@@ -70,19 +71,26 @@ export default {
   },
   computed: {
     dataIkpNarrative () {
-      return this.$store.state['edit-ikp-narrative'].dataIkpNarrative
+      return this.$store.getters['create-ikp'].ikpNarrative
     },
     ikpNarrativeTruncate () {
       return this.dataIkpNarrative.substring(0, 125)
     },
     ikpNarrativeNonTruncate () {
-      return `${this.dataIkpNarrative.substring(125, this.dataIkpNarrative.length)}`
-    }
+      return `${this.dataIkpNarrative.substring(
+        125,
+        this.dataIkpNarrative.length
+      )}`
+    },
+    ...mapGetters('create-ikp', {
+      dataIkpNarrative: 'getIkpNarrative',
+      isTruncate: 'getIsTruncate'
+    })
   },
   methods: {
     closePopupEditIkpNarrative () {
       this.isShowPopupEditIkpNarrative = false
-      this.$emit('truncate')
+      this.$store.dispatch('create-ikp/checkTruncate')
     },
     showPopupEditIkpNarrative () {
       this.dataDialog = {
@@ -92,24 +100,20 @@ export default {
         labelTextArea: 'Usulan Narasi IKP',
         placeholder: 'Masukkan Usulan Narasi IKP'
       }
-      this.$store.commit('edit-ikp-narrative/setDataIkpNarrative', this.dataIkpNarrative)
       this.isShowPopupEditIkpNarrative = true
     },
     showIkpNarrative () {
       if (this.dataIkpNarrative.length >= 125) {
-        return `${this.ikpNarrativeTruncate} ${this.isTruncate ? '...' : this.ikpNarrativeNonTruncate}`
-      } else {
-        return this.dataIkpNarrative
+        return `${this.ikpNarrativeTruncate} ${
+          this.isTruncate ? '...' : this.ikpNarrativeNonTruncate
+        }`
       }
+      return this.dataIkpNarrative
     },
     submitEditIkpNarrative () {
-      this.isShowPopupEditIkpNarrative = false
-      if (this.dataIkpNarrative.length >= 125) {
-        this.$emit('truncate')
-      }
+      this.closePopupEditIkpNarrative()
       this.showIkpNarrative()
     }
   }
-
 }
 </script>

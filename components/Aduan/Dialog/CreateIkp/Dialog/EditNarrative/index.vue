@@ -35,10 +35,10 @@ export default {
   computed: {
     dataIkpNarrative: {
       get () {
-        return this.$store.state['edit-ikp-narrative'].dataIkpNarrative
+        return this.$store.state['create-ikp'].ikpNarrative
       },
       set (value) {
-        this.$store.commit('edit-ikp-narrative/setDataIkpNarrative', value)
+        this.$store.commit('create-ikp/setIkpNarrative', value)
       }
     }
   },
@@ -47,7 +47,7 @@ export default {
       this.isSubmit = true
       const isDataValid = await this.$refs.form.validate()
       if (isDataValid) {
-        this.$store.commit('edit-ikp-narrative/setDataIkpNarrative', this.dataIkpNarrative)
+        this.$store.commit('create-ikp/setIkpNarrative', this.dataIkpNarrative)
         this.$emit('submit')
       }
     },

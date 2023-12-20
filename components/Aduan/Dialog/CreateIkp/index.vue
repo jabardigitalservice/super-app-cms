@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BaseDialog :show-popup="showPopup">
+    <BaseDialog :show-popup="isShowPopupCreateIkp">
       <BaseDialogPanel class="w-[600px]">
         <BaseDialogHeader title="Buat IKP Baru" />
         <div
@@ -12,13 +12,7 @@
               <AlertInformation
                 message="Pembuatan Instruksi Khusus Pimpinan baru."
               />
-              <CardIkpNarrative
-                :ikp-narrative="ikpNarrative"
-                :is-truncate="isTruncate"
-                class="mt-3"
-                @truncate="isTruncate=true"
-                @detail-narrative="isTruncate = false"
-              />
+              <CardIkpNarrative class="mt-3" />
               <div class="pt-3 grid grid-cols-2 gap-3">
                 <div class="w-full">
                   <label class="pb-1 text-[15px] text-gray-800">Tanggal Instruksi Diberikan</label><br>
@@ -41,7 +35,7 @@
                     format="DD/MM/YYYY"
                     :class="{ 'mx-datepicker--error': errors[0] }"
                     :disabled-date="disabledDeadlineDate"
-                    placeholder="Pilih Tanggal Laporan Masuk"
+                    placeholder="Pilih Tanggal Deadline"
                     class="!w-full"
                   /><br>
                   <small class="text-red-600">{{ errors[0] }}</small>
@@ -119,6 +113,7 @@
 
 <script>
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
+import { mapGetters } from 'vuex'
 import AlertInformation from '~/components/Aduan/Alert/Information'
 import CardIkpNarrative from '~/components/Aduan/Dialog/CreateIkp/CardIkpNarrative'
 import DialogConfirmation from '~/components/Aduan/Dialog/CreateIkp/Dialog/Confirmation'
@@ -128,16 +123,6 @@ import { formatDate } from '~/utils'
 export default {
   name: 'DialogCreateIkp',
   components: { AlertInformation, CardIkpNarrative, DialogConfirmation, DialogInformation, ValidationObserver, ValidationProvider },
-  props: {
-    showPopup: {
-      type: Boolean,
-      default: false
-    },
-    ikpNarrative: {
-      type: String,
-      default: ''
-    }
-  },
   data () {
     return {
       payload: {
@@ -185,21 +170,30 @@ export default {
       return this.listDataDisposition.map((item) => {
         return { label: item.name, value: item.name }
       })
-    }
+    },
+    ...mapGetters('create-ikp', { isShowPopupCreateIkp: 'getIsShowPopup', ikpNarrative: 'getIkpNarrative' })
   },
   methods: {
     backToFormIkp () {
       this.isShowPopupConfirmation = false
-      this.$emit('back-form-ikp')
+      this.$store.commit('create-ikp/setIsShowPopup', true)
     },
     closePopupInformation () {
       this.isShowPopupInformation = false
       this.resetFormIkp()
-      this.$emit('close-popup-info', this.dataIkp)
+      if (!this.isErrorInputIkp) {
+        this.$store.commit('followup-complaint/setDataIkp', this.dataIkp)
+        this.$store.commit('followup-complaint/setIsFollowup', true)
+      } else {
+        this.$store.commit('followup-complaint/setIsFollowup', false)
+      }
+      this.$store.commit('followup-complaint/setIsShowPopup', true)
     },
     closePopupCreateIkp () {
       this.resetFormIkp()
-      this.$emit('back-form-followup')
+      this.$store.commit('create-ikp/setIsShowPopup', false)
+      this.$store.commit('followup-complaint/setIsFollowup', false)
+      this.$store.commit('followup-complaint/setIsShowPopup', true)
     },
     disabledDeadlineDate: function (date) {
       return date <= new Date()
@@ -216,6 +210,7 @@ export default {
         indicator_unit: '',
         opd_name: ''
       }
+      this.$store.commit('create-ikp/setIsTruncate', false)
       this.$refs.form.reset()
     },
     async showPopupConfirmation () {
@@ -223,8 +218,7 @@ export default {
       if (isValid) {
         this.payload.narrative = this.ikpNarrative
         this.isShowPopupConfirmation = true
-        this.dataIkp.narrative = this.ikpNarrative
-        this.$emit('close-all-popup')
+        this.$store.commit('create-ikp/setIsShowPopup', false)
       }
     },
     async submitIkp () {

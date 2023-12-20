@@ -7,7 +7,6 @@ export default {
       isShowPopupInformation: false,
       isShowPopupInputIdSpan: false,
       isShowPopupProcessComplaint: false,
-      isShowPopupFollowupComplaint: false,
       dataDialog: {
         title: '',
         description: '',
@@ -131,7 +130,7 @@ export default {
         ),
         proposed_ikp_narrative: dataComplaint.proposed_ikp_narrative
       })
-      this.isShowPopupFollowupComplaint = true
+      this.$store.commit('followup-complaint/setIsShowPopup', true)
     },
 
     submitPopupComplaintHandle (item) {

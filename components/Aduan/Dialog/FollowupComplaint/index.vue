@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BaseDialog :show-popup="showPopup">
+    <BaseDialog :show-popup="isShowPopupFollowup">
       <BaseDialogPanel class="max-h-[626px] w-[600px]">
         <BaseDialogHeader :title="dataDialog.title" />
         <div class="form-followup-ikp max-h-[506px] overflow-y-auto px-6 pt-2">
@@ -134,18 +134,13 @@
       :data-ikp="dataIkp"
       @close="isShowPopupIkpNarrative = false"
     />
-    <DialogCreateIkp
-      :show-popup="isShowPopupCreateIkp"
-      @back-form-followup="closePopupCreateIkp()"
-      @close-all-popup="closeAllPopup()"
-      @close-popup-info="handleClosePopupInformation"
-      @back-form-ikp="backToFormIkp()"
-    />
+    <DialogCreateIkp />
   </div>
 </template>
 
 <script>
 import debounce from 'lodash.debounce'
+import { mapGetters } from 'vuex'
 import AlertInformation from '~/components/Aduan/Alert/Information'
 import ListFollowupProcess from '~/components/Aduan/Dialog/FollowupComplaint/ListFollowupProcess'
 import DialogIkpNarrative from '~/components/Aduan/Dialog/IkpNarrative'
@@ -160,10 +155,6 @@ export default {
     DialogCreateIkp
   },
   props: {
-    showPopup: {
-      type: Boolean,
-      default: false
-    },
     dataDialog: {
       type: Object,
       default: () => ({})
@@ -177,16 +168,13 @@ export default {
         page: 1
       },
       listIkp: [],
-      isFollowup: false,
       search: '',
-      dataIkp: {},
       dataDialogConfirmation: {},
       isShowPopupConfirmationFollowup: false,
       listMenuTableAction: [
         { menu: 'Lihat Narasi IKP', value: 'detail-narrative' }
       ],
-      isShowPopupIkpNarrative: false,
-      isShowPopupCreateIkp: false
+      isShowPopupIkpNarrative: false
     }
   },
   async fetch () {
@@ -198,6 +186,13 @@ export default {
     } catch {
       this.listIkp = []
     }
+  },
+  computed: {
+    ...mapGetters('followup-complaint', {
+      isShowPopupFollowup: 'getIsShowPopup',
+      isFollowup: 'getIsFollowup',
+      dataIkp: 'getDataIkp'
+    })
   },
   watch: {
     search: debounce(function (value) {
@@ -212,33 +207,18 @@ export default {
       this.isShowPopupCreateIkp = true
     },
     chooseDataFollowupProcess (dataIkp) {
-      this.dataIkp = dataIkp
-      this.isFollowup = true
+      this.$store.commit('followup-complaint/setDataIkp', dataIkp)
+      this.$store.commit('followup-complaint/setIsFollowup', true)
     },
     cancelFollowupProcess () {
-      this.isFollowup = false
+      this.$store.commit('followup-complaint/setIsFollowup', false)
     },
     closePopupFollowupComplaint () {
-      this.isFollowup = false
-      this.$emit('close')
-    },
-    closePopupCreateIkp () {
-      this.isShowPopupCreateIkp = false
-      this.$emit('open')
-    },
-    closeAllPopup () {
-      this.isShowPopupCreateIkp = false
-      this.$emit('close')
-    },
-    handleClosePopupInformation (valueIkp) {
-      this.dataIkp = valueIkp
-      if (Object.keys(this.dataIkp).length > 0) {
-        this.isFollowup = true
-      }
-      this.$emit('open')
+      this.$store.commit('followup-complaint/setIsFollowup', false)
+      this.$store.commit('followup-complaint/setIsShowPopup', false)
     },
     showPopupConfirmationFollowupComplaint () {
-      this.$emit('close')
+      this.$store.commit('followup-complaint/setIsShowPopup', false)
       this.dataDialogConfirmation = {
         title: 'Tindaklanjuti Aduan',
         description: 'Apakah Anda yakin ingin menindaklanjuti aduan tersebut?',
@@ -251,14 +231,18 @@ export default {
       this.isShowPopupIkpNarrative = true
     },
     showPopupCreateIkp () {
-      this.$emit('close')
-      this.$store.commit('edit-ikp-narrative/setDataIkpNarrative', this.dataDialog.proposed_ikp_narrative)
-      this.isShowPopupCreateIkp = true
+      this.$store.commit('followup-complaint/setIsShowPopup', false)
+      this.$store.commit(
+        'create-ikp/setIkpNarrative',
+        this.dataDialog.proposed_ikp_narrative
+      )
+      this.$store.dispatch('create-ikp/checkTruncate')
+      this.$store.commit('create-ikp/setIsShowPopup', true)
     },
     submitDataFollowupComplaint () {
       this.isShowPopupConfirmationFollowup = false
       this.$emit('submit', this.dataIkp)
-      this.isFollowup = false
+      this.$store.commit('followup-complaint/setIsFollowup', false)
     }
   }
 }
