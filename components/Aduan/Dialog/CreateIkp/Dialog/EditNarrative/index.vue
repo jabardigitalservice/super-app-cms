@@ -4,15 +4,29 @@
       <BaseDialogHeader :title="dataDialog.title" />
       <div class="px-6 py-6">
         <ValidationObserver ref="form">
-          <ValidationProvider v-slot="{errors}" :name="dataDialog.labelTextArea" rules="required">
-            <BaseTextArea v-model="dataIkpNarrative" :label="dataDialog.labelTextArea" :name="dataDialog.nameTextArea" :placeholder="dataDialog.placeholder" :error-message="errors[0]" />
+          <ValidationProvider
+            v-slot="{ errors }"
+            :name="dataDialog.labelTextArea"
+            rules="required"
+          >
+            <BaseTextArea
+              v-model="dataIkpNarrative"
+              :label="dataDialog.labelTextArea"
+              :name="dataDialog.nameTextArea"
+              :placeholder="dataDialog.placeholder"
+              :error-message="errors[0]"
+            />
           </ValidationProvider>
           <p class="text-xs text-gray-600">
             Tersisa {{ 255 - dataIkpNarrative.length }} Karakter
           </p>
         </ValidationObserver>
       </div>
-      <BaseDialogFooter :label-button-submit="dataDialog.labelButtonSubmit" @close="closePopupHandle()" @submit="submitEditIkpNarrative" />
+      <BaseDialogFooter
+        :label-button-submit="dataDialog.labelButtonSubmit"
+        @close="closePopupHandle()"
+        @submit="submitEditIkpNarrative"
+      />
     </BaseDialogPanel>
   </BaseDialog>
 </template>
@@ -60,7 +74,7 @@ export default {
 </script>
 
 <style scoped>
-  .form-text-area::v-deep .input-wrapper{
-    @apply bg-white
-  }
+.form-text-area::v-deep .input-wrapper {
+  @apply bg-white;
+}
 </style>
