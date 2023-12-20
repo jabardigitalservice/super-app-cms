@@ -285,4 +285,10 @@ export default {
 .form-input-ikp .jds-select .jds-input-text__input-wrapper {
   @apply !w-[528px] !bg-white;
 }
+
+.form-input-ikp .jds-select__options {
+  @apply !max-h-[500px] !max-w-[528px] !overflow-y-auto;
+  scrollbar-color: #e0e0e0 transparent;
+  scrollbar-width: thin;
+}
 </style>
