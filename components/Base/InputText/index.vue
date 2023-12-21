@@ -4,7 +4,6 @@
     <input
       :value="value"
       type="text"
-      :placeholder="placeholder"
       class="h-[38px] w-full rounded-lg border border-gray-500 bg-gray-50 px-2 py-[11px] font-lato text-gray-600 placeholder:text-sm placeholder:text-gray-600 focus:outline-none"
       :class="{ 'form-input-text--error' : errorMessage }"
       v-bind="$attrs"
@@ -19,10 +18,6 @@ export default {
   name: 'BaseInputText',
   props: {
     value: {
-      type: String,
-      default: ''
-    },
-    placeholder: {
       type: String,
       default: ''
     },

@@ -189,8 +189,6 @@
     />
     <DialogFollowupComplaint
       :data-dialog="dataDialog"
-      :show-popup="isShowPopupFollowupComplaint"
-      @close="isShowPopupFollowupComplaint = false"
       @submit="submitFollowupComplaint"
     />
     <DialogLoading :show-popup="isLoading" />

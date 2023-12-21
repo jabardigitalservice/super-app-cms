@@ -9,10 +9,11 @@
           <jds-button
             v-show="showCancelButton"
             :label="labelButtonCancel"
+            type="button"
             variant="secondary"
             class="!text-[14px] !font-bold"
             :disabled="isDisabledButtonCancel"
-            @click="$emit('close')"
+            @click.prevent="$emit('close')"
           />
         </div>
         <div>
@@ -21,7 +22,7 @@
             type="button"
             :variant="variant"
             :disabled="isDisabledButtonSubmit"
-            @click="submitButtonHandle()"
+            @click.prevent="submitButtonHandle"
           />
         </div>
       </div>

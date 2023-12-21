@@ -34,6 +34,21 @@
   @apply bg-green-50 !important;
 }
 
+.mx-datepicker .mx-datepicker--error .mx-input-wrapper {
+  @apply !bg-red-400;
+}
+
+.mx-datepicker .mx-input {
+  @apply !border-gray-500 !bg-gray-50 placeholder:!font-lato placeholder:!text-sm placeholder:!text-gray-800;
+}
+
+.mx-datepicker.mx-datepicker--error .mx-input {
+  @apply !border-red-600;
+}
+.mx-datepicker .mx-datepicker--error .mx-input {
+  @apply !border-red-600;
+}
+
 .mx-datepicker-popup{
   @apply rounded-lg border border-gray-400 !important;
 }
@@ -90,22 +105,26 @@
   @apply !w-[580px]
 }
 
-.form-add-complaint .jds-select__options {
+.jds-select__options {
   @apply !max-h-[500px] !overflow-y-auto;
   scrollbar-color: #e0e0e0 transparent;
   scrollbar-width: thin;
 }
 
-.form-add-complaint .jds-select__options::-webkit-scrollbar {
+.jds-select__options::-webkit-scrollbar {
   @apply h-5 w-5;
 }
 
-.form-add-complaint .jds-select__options::-webkit-scrollbar-track {
+.jds-select__options::-webkit-scrollbar-track {
   @apply bg-transparent;
 }
 
-.form-add-complaint .jds-select__options::-webkit-scrollbar-thumb {
+.jds-select__options::-webkit-scrollbar-thumb {
   @apply rounded-xl border-[6px] border-solid border-transparent bg-gray-300 bg-clip-content;
+}
+
+.jds-options__option-list-item {
+ @apply !h-fit
 }
 
 /* for filterable style
