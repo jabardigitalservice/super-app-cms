@@ -31,12 +31,12 @@
         </button>
       </div>
       <div class="text-sm">
-        <span class="leading-[18px]">{{ showIkpNarrative() }}</span>
+        <span class="leading-[18px] line-clamp-2">{{ dataIkpNarrative }}</span>
         <button
           v-if="isTruncate"
           type="button"
           class="text-sm font-bold text-green-600"
-          @click="$store.commit('create-ikp/setIsTruncate', false)"
+          @click="isShowIkpNarrative=true"
         >
           Selengkapnya
         </button>
@@ -48,16 +48,18 @@
       @close="closePopupEditIkpNarrative"
       @submit="submitEditIkpNarrative()"
     />
+    <DialogIkpNarrative :show-popup="isShowIkpNarrative" :data-ikp="dataIkp" @close="isShowIkpNarrative=false" />
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import DialogEditNarrative from '~/components/Aduan/Dialog/CreateIkp/Dialog/EditNarrative'
+import DialogIkpNarrative from '~/components/Aduan/Dialog/IkpNarrative'
 
 export default {
   name: 'CardIkpNarrative',
-  components: { DialogEditNarrative },
+  components: { DialogEditNarrative, DialogIkpNarrative },
   data () {
     return {
       dataDialog: {
@@ -66,13 +68,11 @@ export default {
         labelTextArea: '',
         placeholder: ''
       },
-      isShowPopupEditIkpNarrative: false
+      isShowPopupEditIkpNarrative: false,
+      isShowIkpNarrative: false
     }
   },
   computed: {
-    dataIkpNarrative () {
-      return this.$store.getters['create-ikp'].ikpNarrative
-    },
     ikpNarrativeTruncate () {
       return this.dataIkpNarrative.substring(0, 125)
     },
@@ -85,7 +85,10 @@ export default {
     ...mapGetters('create-ikp', {
       dataIkpNarrative: 'getIkpNarrative',
       isTruncate: 'getIsTruncate'
-    })
+    }),
+    dataIkp () {
+      return { narrative: this.dataIkpNarrative }
+    }
   },
   methods: {
     closePopupEditIkpNarrative () {
@@ -102,17 +105,9 @@ export default {
       }
       this.isShowPopupEditIkpNarrative = true
     },
-    showIkpNarrative () {
-      if (this.dataIkpNarrative.length >= 125) {
-        return `${this.ikpNarrativeTruncate} ${
-          this.isTruncate ? '...' : this.ikpNarrativeNonTruncate
-        }`
-      }
-      return this.dataIkpNarrative
-    },
     submitEditIkpNarrative () {
       this.closePopupEditIkpNarrative()
-      this.showIkpNarrative()
+      this.$store.commit('create-ikp/setIsTruncate', true)
     }
   }
 }
