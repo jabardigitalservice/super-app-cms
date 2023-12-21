@@ -13,7 +13,7 @@
             variant="secondary"
             class="!text-[14px] !font-bold"
             :disabled="isDisabledButtonCancel"
-            @click="closePopup"
+            @click.prevent="$emit('close')"
           />
         </div>
         <div>
@@ -22,7 +22,7 @@
             type="button"
             :variant="variant"
             :disabled="isDisabledButtonSubmit"
-            @click="submitButtonHandle"
+            @click.prevent="submitButtonHandle"
           />
         </div>
       </div>
@@ -60,12 +60,7 @@ export default {
     }
   },
   methods: {
-    closePopup (event) {
-      event.preventDefault()
-      this.$emit('close')
-    },
-    submitButtonHandle (event) {
-      event.preventDefault()
+    submitButtonHandle () {
       if (!this.showCancelButton) {
         this.$emit('close')
       } else {
