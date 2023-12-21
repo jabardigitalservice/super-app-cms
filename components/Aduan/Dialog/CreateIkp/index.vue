@@ -163,9 +163,6 @@ export default {
     }
   },
   computed: {
-    characterTextArea () {
-      return { maxLength: 255, currentLength: this.payload.description.length }
-    },
     listDisposition () {
       return this.listDataDisposition.map((item) => {
         return { label: item.name, value: item.name }
