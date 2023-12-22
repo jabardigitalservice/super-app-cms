@@ -67,7 +67,7 @@
           >
             <jds-simple-table>
               <thead>
-                <tr class="66">
+                <tr>
                   <th class="rounded-tl-lg !bg-green-600">
                     ID IKP
                   </th>
@@ -80,6 +80,7 @@
                 <tr v-for="(itemIkp, index) in listIkp" :key="index">
                   <td
                     :class="{ 'rounded-bl-lg': index === listIkp.length - 1 }"
+                    width="66"
                   >
                     <strong>{{ itemIkp.ikp_code }}</strong>
                   </td>
