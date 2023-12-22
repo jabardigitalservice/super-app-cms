@@ -16,8 +16,8 @@ export default {
   name: 'DialogIkpNarrative',
   props: {
     showPopup: {
-      type: Object,
-      default: () => ({})
+      type: Boolean,
+      default: false
     },
     dataIkp: {
       type: Object,
