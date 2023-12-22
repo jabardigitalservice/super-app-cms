@@ -1,9 +1,9 @@
 <template>
   <div>
     <BaseDialog :show-popup="isShowPopupFollowup">
-      <BaseDialogPanel class="max-h-[626px] w-[600px]">
+      <BaseDialogPanel class="max-h-[750px] w-[600px]">
         <BaseDialogHeader :title="dataDialog.title" />
-        <div class="form-followup-ikp max-h-[506px] overflow-y-auto px-6 pt-2">
+        <div class="form-followup-ikp max-h-[630px] overflow-y-auto px-6 pt-2">
           <BaseDialogDescription
             description="No.Aduan"
             :sub-description="dataDialog.subDescription"
