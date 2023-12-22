@@ -39,6 +39,7 @@
     "@nuxtjs/google-fonts": "^3.0.0-0",
     "@nuxtjs/svg": "^0.4.0",
     "@nuxtjs/tailwindcss": "^5.3.3",
+    "@tailwindcss/line-clamp": "^0.4.4",
     "eslint": "^8.24.0",
     "eslint-plugin-nuxt": "^4.0.0",
     "eslint-plugin-vue": "^9.5.1",

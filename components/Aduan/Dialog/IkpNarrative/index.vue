@@ -1,7 +1,7 @@
 <template>
   <BaseDialog :show-popup="showPopup">
-    <BaseDialogPanel>
-      <BaseDialogHeader :title="`Narasi IKP (${dataIkp.ikp_code})`" />
+    <BaseDialogPanel class="w-[510px]">
+      <BaseDialogHeader :title="showTitleIkpNarrative()" />
       <p class="p-6">
         {{ dataIkp.narrative }}
       </p>
@@ -22,6 +22,14 @@ export default {
     dataIkp: {
       type: Object,
       default: () => ({})
+    }
+  },
+  methods: {
+    showTitleIkpNarrative () {
+      if (this.dataIkp?.code) {
+        return `Narasi IKP (${this.dataIkp.code})`
+      }
+      return 'Narasi IKP'
     }
   }
 }

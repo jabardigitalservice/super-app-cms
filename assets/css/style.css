@@ -65,6 +65,10 @@
   @apply text-green-700 !important;
 }
 
+.mx-datepicker--disabled .mx-icon-calendar{
+  @apply text-gray-500 !important;
+}
+
 .mx-input{
   @apply text-sm font-lato text-gray-700 !important;
 }

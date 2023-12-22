@@ -21,8 +21,16 @@
                     format="DD/MM/YYYY"
                     disabled
                     placeholder="Pilih Tanggal Instruksi Diberikan"
-                    class="!w-full"
-                  />
+                    class="!w-full mx-datepicker--disabled"
+                  >
+                    <template #icon-calendar>
+                      <jds-icon
+                        name="calendar-date-outline"
+                        size="sm"
+                        class="mx-icon-date"
+                      />
+                    </template>
+                  </date-picker>
                 </div>
                 <ValidationProvider
                   v-slot="{ errors }"
@@ -37,7 +45,15 @@
                     :disabled-date="disabledDeadlineDate"
                     placeholder="Pilih Tanggal Deadline"
                     class="!w-full"
-                  /><br>
+                  >
+                    <template #icon-calendar>
+                      <jds-icon
+                        name="calendar-date-outline"
+                        size="sm"
+                        class="mx-icon-date"
+                      />
+                    </template>
+                  </date-picker><br>
                   <small class="text-red-600">{{ errors[0] }}</small>
                 </ValidationProvider>
               </div>
