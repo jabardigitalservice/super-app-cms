@@ -73,6 +73,6 @@ export default {
 
 <style scoped>
   .jds-button::v-deep {
-    @apply disabled:opacity-25 disabled:pointer-events-none !text-[14px] !font-bold
+    @apply disabled:!bg-neutral-300 disabled:!text-neutral-500 disabled:pointer-events-none !text-[14px] !font-bold
   }
 </style>

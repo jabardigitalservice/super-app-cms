@@ -319,15 +319,15 @@ export default {
   @apply !h-4 !w-4 !fill-[#16A75C];
 }
 
-/* .form-followup-ikp .jds-data-table__head th:nth-child(1){
-  @apply !max-w-[66px]
+.form-followup-ikp::-webkit-scrollbar {
+  @apply h-5 w-5;
 }
 
-.form-followup-ikp .jds-data-table__head th:nth-child(3){
-  @apply !w-[91px]
-} */
+.form-followup-ikp::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
 
-/* .form-followup-ikp .jds-select .jds-input-text__input-wrapper {
-  @apply !h-[44px] !w-16 !rounded-none !border !bg-white;
-} */
+.form-followup-ikp::-webkit-scrollbar-thumb {
+  @apply rounded-xl border-[6px] border-solid border-transparent bg-gray-300 bg-clip-content;
+}
 </style>
