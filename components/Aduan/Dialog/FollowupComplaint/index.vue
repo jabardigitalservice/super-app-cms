@@ -161,7 +161,6 @@ import AlertInformation from '~/components/Aduan/Alert/Information'
 import ListFollowupProcess from '~/components/Aduan/Dialog/FollowupComplaint/ListFollowupProcess'
 import DialogIkpNarrative from '~/components/Aduan/Dialog/IkpNarrative'
 import DialogCreateIkp from '~/components/Aduan/Dialog/CreateIkp'
-import { headerDaftarIkpFollowup } from '~/constant/daftar-ikp'
 import Pagination from '~/components/Aduan/Dialog/FollowupComplaint/Pagination'
 
 export default {
@@ -186,7 +185,7 @@ export default {
         limit: 5,
         page: 1
       },
-      listIkp: [],
+      listDataIkp: [],
       search: '',
       dataDialogConfirmation: {},
       isShowPopupConfirmationFollowup: false,
@@ -194,7 +193,6 @@ export default {
         { menu: 'Lihat Narasi IKP', value: 'detail-narrative' }
       ],
       isShowPopupIkpNarrative: false,
-      headerDaftarIkpFollowup,
       pagination: {
         currentPage: '',
         totalRows: '',
@@ -209,7 +207,7 @@ export default {
       const responseIkp = await this.$axios.get('/warga/ikp', {
         params: { ...this.query, is_admin: 1 }
       })
-      this.listIkp = responseIkp.data.data.data
+      this.listDataIkp = responseIkp.data.data.data
       const pagination = responseIkp.data.data
       this.setPagination({
         currentPage: pagination?.page || 1,
@@ -226,7 +224,12 @@ export default {
       isShowPopupFollowup: 'getIsShowPopup',
       isFollowup: 'getIsFollowup',
       dataIkp: 'getDataIkp'
-    })
+    }),
+    listIkp () {
+      return this.listDataIkp.map((dataIkp) => {
+        return { ...dataIkp, code: dataIkp.ikp_code }
+      })
+    }
   },
   watch: {
     search: debounce(function (value) {
@@ -279,7 +282,7 @@ export default {
       this.isShowPopupConfirmationFollowup = true
     },
     showPopupIkpNarrative (dataIkp) {
-      this.dataIkp = dataIkp
+      this.$store.commit('followup-complaint/setDataIkp', dataIkp)
       this.isShowPopupIkpNarrative = true
     },
     showPopupCreateIkp () {
