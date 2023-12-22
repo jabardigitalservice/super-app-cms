@@ -26,11 +26,10 @@ export default {
   },
   methods: {
     showTitleIkpNarrative () {
-      const result = 'Narasi IKP'
       if (this.dataIkp?.code) {
-        return `${result}(${this.dataIkp.code})`
+        return `Narasi IKP (${this.dataIkp.code})`
       }
-      return result
+      return 'Narasi IKP'
     }
   }
 }
