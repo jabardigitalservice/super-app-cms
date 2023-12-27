@@ -281,9 +281,7 @@ export default {
       this.$refs.datepicker.closePopup()
     },
     setQuery (params) {
-      console.log(params)
       this.query = { ...this.query, ...params }
-      console.log(this.query, 'query ikp')
     },
     clearDateRangeHandle () {
       this.dateRange = [

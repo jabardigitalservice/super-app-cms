@@ -315,8 +315,6 @@ export default {
   },
   async fetch () {
     try {
-      console.log(JSON.stringify(Object.keys(this.query)).match('complaint_status_id'), 'true')
-      console.log(!JSON.stringify(Object.keys(this.query)).match('complaint_status_id'))
       if (
         !JSON.stringify(Object.keys(this.query)).match('complaint_status_id')
       ) {
@@ -546,12 +544,10 @@ export default {
     addComplaintStatusFilterHandle () {
       const listValueStatusComplaint = this.getStatusComplaintByComplaintType()
       for (let i = 0; i < listValueStatusComplaint.length; i++) {
-        // console.log(listValueStatusComplaint[i])
         this.setQuery({
           [`complaint_status_id[${i - 1}]`]: listValueStatusComplaint[i].id
         })
       }
-      // console.log(this.query)
       return this.query
     },
     listTabHandle (status) {
