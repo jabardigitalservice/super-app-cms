@@ -315,6 +315,8 @@ export default {
   },
   async fetch () {
     try {
+      console.log(JSON.stringify(Object.keys(this.query)).match('complaint_status_id'), 'true')
+      console.log(!JSON.stringify(Object.keys(this.query)).match('complaint_status_id'))
       if (
         !JSON.stringify(Object.keys(this.query)).match('complaint_status_id')
       ) {
@@ -345,20 +347,6 @@ export default {
       this.pagination.currentPage = data?.page || 1
       this.pagination.totalRows = data?.total_data || 0
       this.pagination.itemsPerPage = data?.page_size || this.query.limit
-
-      // handle list data category
-      const responseListCategoryComplaint = await this.$axios.get(
-        '/warga/complaints/categories'
-      )
-
-      this.listDataCategory = responseListCategoryComplaint.data.data
-      this.listDataCategory = [
-        {
-          id: '',
-          name: 'Semua Kategori Aduan'
-        },
-        ...this.listDataCategory
-      ]
 
       this.getCount()
     } catch {
@@ -445,6 +433,7 @@ export default {
       this.pagination.itemsPerPage
     )
 
+    this.getCategory()
     this.selectedTabHandle(0)
   },
   methods: {
@@ -557,10 +546,12 @@ export default {
     addComplaintStatusFilterHandle () {
       const listValueStatusComplaint = this.getStatusComplaintByComplaintType()
       for (let i = 0; i < listValueStatusComplaint.length; i++) {
+        // console.log(listValueStatusComplaint[i])
         this.setQuery({
           [`complaint_status_id[${i - 1}]`]: listValueStatusComplaint[i].id
         })
       }
+      // console.log(this.query)
       return this.query
     },
     listTabHandle (status) {
@@ -661,6 +652,25 @@ export default {
         if (this.listStatisticComplaint.length === 2) {
           this.listStatisticComplaint.pop()
         }
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    async getCategory () {
+      try {
+        // handle list data category
+        const responseListCategoryComplaint = await this.$axios.get(
+          '/warga/complaints/categories'
+        )
+
+        this.listDataCategory = responseListCategoryComplaint.data.data
+        this.listDataCategory = [
+          {
+            id: '',
+            name: 'Semua Kategori Aduan'
+          },
+          ...this.listDataCategory
+        ]
       } catch (error) {
         console.error(error)
       }
