@@ -549,12 +549,15 @@ export default {
       return this.query
     },
     listTabHandle (status) {
-      this.query = { page: 1, limit: 5 }
+      const query = { page: 1, limit: 5 }
+
+      this.deletePropertiesWithPrefix(this.query, 'complaint_status_id[')
+
       if (status !== 'total') {
-        this.setQuery({
-          'complaint_status_id[0]': status
-        })
+        query['complaint_status_id[0]'] = status
       }
+      this.setQuery(query)
+
       this.isShowPopupDateRange = false
       this.$fetch()
     },
@@ -615,11 +618,7 @@ export default {
     async getCount () {
       const queryCount = { ...this.query, is_admin: 1 }
 
-      for (const prop in queryCount) {
-        if (prop.startsWith('complaint_status_id[')) {
-          delete queryCount[prop]
-        }
-      }
+      this.deletePropertiesWithPrefix(queryCount, 'complaint_status_id[')
 
       try {
         // handle data statistic complaint
@@ -667,6 +666,13 @@ export default {
         ]
       } catch (error) {
         console.error(error)
+      }
+    },
+    deletePropertiesWithPrefix (obj, prefix) {
+      for (const prop in obj) {
+        if (prop.startsWith(prefix)) {
+          delete obj[prop]
+        }
       }
     }
   }
