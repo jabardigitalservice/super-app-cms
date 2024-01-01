@@ -202,7 +202,9 @@ import {
   formatDate,
   generateItemsPerPageOptions,
   formatNumberToUnit,
-  convertToUnit
+  convertToUnit,
+  resetQueryParamsUrl,
+  formatedStringDate
 } from '~/utils'
 import 'vue2-datepicker/index.css'
 import TabBarList from '~/components/Aduan/TabBar/List'
@@ -406,8 +408,27 @@ export default {
     query: {
       deep: true,
       handler () {
+        resetQueryParamsUrl(this)
         this.$fetch()
       }
+    },
+    '$route.query': {
+      deep: true,
+      immediate: true,
+      handler (newQuery) {
+        if (Object.keys(newQuery).length > 0) {
+          this.query = { ...newQuery }
+
+          this.search = this.query.search || ''
+          if (newQuery.start_date && newQuery.end_date) {
+            this.dateRange = [
+              formatedStringDate(newQuery.start_date),
+              formatedStringDate(newQuery.end_date)
+            ]
+          }
+        }
+      }
+
     },
     dateRange () {
       if (!this.isShowPopupDateRange) {
@@ -499,7 +520,10 @@ export default {
       this.$fetch()
     },
     goToPageDetailHandle (item) {
-      this.$router.push(`${this.linkPageDetail}/${item.id}`)
+      this.$router.push({
+        path: `${this.linkPageDetail}/${item.id}`,
+        query: this.query
+      })
     },
     getColorText (statusId) {
       const statusColor = complaintStatus[statusId].statusColor.find(
