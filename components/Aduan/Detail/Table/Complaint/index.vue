@@ -97,7 +97,7 @@
           "
         >
           <td><strong>Perubahan Deadline</strong></td>
-          <td>-</td>
+          <td>{{ detailComplaint?.ikp?.deadline_at || '-' }}</td>
         </tr>
         <tr
           v-if="
@@ -171,7 +171,11 @@
         </tr>
       </BaseTableDetail>
       <BaseTableDetail
-        v-if="showDataByComplaintTypeStatus([complaintStatus.verified])"
+        v-if="
+          showDataByComplaintTypeStatus([
+            complaintStatus.verified
+          ])
+        "
         header="Informasi Lainnya"
         class="mb-4"
       >
