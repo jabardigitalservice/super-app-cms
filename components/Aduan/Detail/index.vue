@@ -269,7 +269,10 @@ export default {
       }
     },
     goToBackHandle () {
-      this.$router.back()
+      this.$router.push({
+        path: this.$nuxt.context.from.path,
+        query: this.$route.query
+      })
     }
   }
 }
