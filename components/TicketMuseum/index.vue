@@ -184,7 +184,6 @@ export default {
           this.search = this.query.search || ''
         }
       }
-
     }
   },
   mounted () {
