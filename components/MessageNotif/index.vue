@@ -192,7 +192,12 @@ export default {
       this.searchDebounce(value)
     },
     goToDetailPageHandle (item) {
-      this.$router.push(`/message-notif/detail/${item.id}`)
+      // this.$router.push(`/message-notif/detail/${item.id}`)
+
+      this.$router.push({
+        path: `/message-notif/detail/${item.id}`,
+        query: this.query
+      })
     },
     goToFormAddMessageNotifHandle () {
       this.$router.push('/message-notif/create')
