@@ -1,5 +1,5 @@
 import { formatInTimeZone } from 'date-fns-tz'
-import { isValid } from 'date-fns'
+import { isValid, parse } from 'date-fns'
 import id from 'date-fns/locale/id'
 
 export function generateItemsPerPageOptions (itemsPerPage) {
@@ -16,6 +16,12 @@ export function formatDate (date, format = 'dd/MM/yyyy') {
     return formatInTimeZone(date, 'Asia/Bangkok', format, { locale: id })
   }
   return '-'
+}
+
+export function formatedStringDate (date) {
+  const parsedDate = parse(date, 'yyyy-MM-dd', new Date())
+
+  return parsedDate
 }
 
 export function formatExcelDate (date, formatDate = 'dd MMMM yyyy') {
