@@ -33,7 +33,6 @@
       <div class="text-sm">
         <span class="leading-[18px] line-clamp-2">{{ dataIkpNarrative }}</span>
         <button
-          v-if="isTruncate"
           type="button"
           class="text-sm font-bold text-green-600"
           @click="isShowIkpNarrative=true"
