@@ -23,8 +23,8 @@
         :headers="headerTable"
         :items="getListData"
         :pagination="pagination"
-        @next-page="nextPage"
-        @previous-page="previousPage"
+        @next-page="pageChange"
+        @previous-page="pageChange"
         @page-change="pageChange"
         @per-page-change="perPageChange"
         @change:sort="sortChange"
@@ -75,7 +75,7 @@ import {
   verificationConfirmationPopup,
   verificationInformationPopup
 } from '~/constant/manajemen-release'
-import { generateItemsPerPageOptions, formatDate } from '~/utils'
+import { generateItemsPerPageOptions, formatDate, resetQueryParamsUrl } from '~/utils'
 import popup from '~/mixins/manajemen-release'
 export default {
   name: 'ListManajemenRelease',
@@ -93,8 +93,6 @@ export default {
         itemsPerPageOptions: [],
         disabled: true
       },
-      sortBy: '',
-      sortOrder: '',
       search: '',
       query: {
         pageSize: 5,
@@ -155,8 +153,20 @@ export default {
     query: {
       deep: true,
       handler () {
+        resetQueryParamsUrl(this)
         this.$fetch()
       }
+    },
+    '$route.query': {
+      deep: true,
+      immediate: true,
+      handler (newQuery) {
+        if (Object.keys(newQuery).length > 0) {
+          this.query = { ...newQuery }
+          this.search = this.query.search || ''
+        }
+      }
+
     }
   },
   mounted () {
@@ -194,12 +204,6 @@ export default {
     onSearch (value) {
       this.searchInvoice(value)
     },
-    nextPage (value) {
-      this.query.page = value
-    },
-    previousPage (value) {
-      this.query.page = value
-    },
     pageChange (value) {
       this.query.page = value
     },
@@ -220,13 +224,22 @@ export default {
       }
     },
     goToForm () {
-      this.$router.push('/management-release/create')
+      this.$router.push({
+        path: '/management-release/create',
+        query: this.query
+      })
     },
     goToPageDetail (item) {
-      this.$router.push(`/management-release/detail/${item.versiRilis}`)
+      this.$router.push({
+        path: `/management-release/detail/${item.versiRilis}`,
+        query: this.query
+      })
     },
     goToPageEdit (item) {
-      this.$router.push(`/management-release/edit/${item.versiRilis}`)
+      this.$router.push({
+        path: `/management-release/edit/${item.versiRilis}`,
+        query: this.query
+      })
     }
   }
 }

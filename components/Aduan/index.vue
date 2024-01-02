@@ -290,8 +290,6 @@ export default {
         search: null,
         complaint_category_id: null
       },
-      sortBy: '',
-      sortOrder: '',
       search: '',
       complaintHeader,
       selectedTabIndex: 0,
