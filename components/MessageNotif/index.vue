@@ -3,11 +3,11 @@
     <div class="mt-2">
       <div class="flex justify-between mb-4">
         <jds-search
+          v-model="search"
           placeholder="Masukkan judul pesan"
           icon
           :button="false"
           small
-          value=""
           class="w-[275px] h-[38px] text-gray-500"
           @input="searchHandle"
         />
@@ -56,7 +56,7 @@
 import debounce from 'lodash.debounce'
 import { messageNotifHeader, messageStatus, deleteConfirmationPopup, deleteInformationPopup, publishedConfirmationPopup, publishedInformationPopup } from '~/constant/message-notif'
 import { iconPopup } from '~/constant/icon-popup'
-import { formatDate, generateItemsPerPageOptions } from '~/utils'
+import { formatDate, generateItemsPerPageOptions, resetQueryParamsUrl } from '~/utils'
 import popup from '~/mixins/message-notif'
 
 export default {
@@ -72,14 +72,19 @@ export default {
         { menu: 'Publikasikan', value: 'publish' },
         { menu: 'Hapus', value: 'delete' }
       ],
+      query: {
+        q: '',
+        page: 1,
+        limit: 5,
+        sortBy: '',
+        sortOrder: ''
+      },
       pagination: {
         currentPage: 1,
         totalRows: 5,
         itemsPerPage: 5,
         itemsPerPageOptions: []
       },
-      sortBy: '',
-      sortOrder: '',
       deleteConfirmationPopup,
       deleteInformationPopup,
       iconPopup,
@@ -90,14 +95,7 @@ export default {
   },
   async fetch () {
     try {
-      const queryParams = {
-        q: this.search, // query params search from backend
-        page: this.pagination.currentPage,
-        limit: this.pagination.itemsPerPage,
-        sortBy: this.sortBy,
-        sortOrder: this.sortOrder
-      }
-      const response = await this.$axios.get('/messages', { params: queryParams })
+      const response = await this.$axios.get('/messages', { params: this.query })
       const dataMessageNotif = response.data
       this.messageNotifList = dataMessageNotif.data
       this.pagination.currentPage = dataMessageNotif.meta.page
@@ -124,6 +122,27 @@ export default {
       return this.$store.state.isError
     }
   },
+  watch: {
+    query: {
+      deep: true,
+      handler () {
+        resetQueryParamsUrl(this)
+
+        this.$fetch()
+      }
+    },
+    '$route.query': {
+      deep: true,
+      immediate: true,
+      handler (newQuery) {
+        if (Object.keys(newQuery).length > 0) {
+          this.query = { ...newQuery }
+          this.search = this.query.q || ''
+        }
+      }
+
+    }
+  },
   mounted () {
     this.pagination.itemsPerPageOptions = generateItemsPerPageOptions(this.pagination.itemsPerPage)
   },
@@ -139,32 +158,35 @@ export default {
       return Object.values(this.messageStatus).find(item => item.id === currentStatus).status
     },
     pageChangeHandle (value) {
-      this.pagination.currentPage = value
+      this.query.page = value
       this.$fetch()
     },
     perPageChangeHandle (value) {
-      this.pagination.itemsPerPage = value
-      this.pagination.currentPage = 1
+      if (value) {
+        this.query.limit = value
+      }
+      this.pagination.page = 1
       this.$fetch()
     },
     sortHandle (value) {
       // replace createdAt & publishedAt to created_at & published_at, because in firebase is using snake case & json using camel case
-      this.sortBy = Object.keys(value)[0].replace('At', '_at')
-      this.sortOrder = Object.values(value)[0]
-      if (this.sortOrder === 'no-sort') {
-        this.sortBy = ''
-        this.sortOrder = ''
+      this.query.sortBy = Object.keys(value)[0].replace('At', '_at')
+      this.query.sortOrder = Object.values(value)[0]
+      if (this.query.sortOrder === 'no-sort') {
+        this.query.sortBy = ''
+        this.query.sortOrder = ''
       }
       this.$fetch()
     },
     searchDebounce: debounce(function (value) {
       if (value.length > 2) {
-        this.search = value
+        this.query.page = 1
+        this.query.q = value
+        this.$fetch()
       } else if (value.length === 0) {
-        this.search = ''
+        this.query.q = ''
+        this.$fetch()
       }
-      this.pagination.currentPage = 1
-      this.$fetch()
     }, 500),
     searchHandle (value) {
       this.searchDebounce(value)
