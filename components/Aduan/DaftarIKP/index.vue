@@ -110,7 +110,6 @@
 
 <script>
 import debounce from 'lodash.debounce'
-
 import {
   formatDate,
   generateItemsPerPageOptions,
@@ -166,15 +165,7 @@ export default {
       this.pagination.totalRows = data?.total_data || 0
       this.pagination.itemsPerPage = data?.page_size || this.query.limit
 
-      const responseListStatisticIkp = await this.$axios.get(
-        '/warga/ikp/statistics'
-      )
-      this.listStatisticIkp = responseListStatisticIkp.data.data
-      ikpStatus.total.value = this.getTotalStatistic()
-      this.listStatisticIkp.unshift(ikpStatus.total)
-      if (this.listStatisticIkp.length === 2) {
-        this.listStatisticIkp.pop()
-      }
+      this.getCount()
     } catch {
       this.pagination.disabled = true
     }
@@ -231,6 +222,7 @@ export default {
     this.pagination.itemsPerPageOptions = generateItemsPerPageOptions(
       this.pagination.itemsPerPage
     )
+
     this.selectedTabHandle(0)
   },
   methods: {
@@ -300,6 +292,7 @@ export default {
         start_date: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
         end_date: formatDate(this.dateRange[1], 'yyyy-MM-dd')
       })
+
       this.isShowPopupDateRange = false
       this.$fetch()
     },
@@ -348,7 +341,6 @@ export default {
     },
     listTabHandle (statusId) {
       const query = {
-        limit: 5,
         page: 1
       }
 
@@ -364,6 +356,26 @@ export default {
     },
     goToPageDetail (id) {
       this.$router.push(`/aduan/penginputan-ikp/detail-ikp/${id}`)
+    },
+    async getCount () {
+      const queryCount = { ...this.query }
+      queryCount.status = ''
+      try {
+        const responseListStatisticIkp = await this.$axios.get(
+          '/warga/ikp/statistics',
+          {
+            params: queryCount
+          }
+        )
+        this.listStatisticIkp = responseListStatisticIkp.data.data
+        ikpStatus.total.value = this.getTotalStatistic()
+        this.listStatisticIkp.unshift(ikpStatus.total)
+        if (this.listStatisticIkp.length === 2) {
+          this.listStatisticIkp.pop()
+        }
+      } catch (error) {
+        console.error(error)
+      }
     }
   }
 }
