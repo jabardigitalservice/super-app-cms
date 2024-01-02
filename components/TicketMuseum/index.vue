@@ -18,8 +18,8 @@
         :items="getListTicket"
         :loading="$fetchState.pending"
         :pagination="pagination"
-        @next-page="nextPage"
-        @previous-page="previousPage"
+        @next-page="pageChange"
+        @previous-page="pageChange"
         @page-change="pageChange"
         @per-page-change="perPageChange"
         @change:sort="sortChange"
@@ -107,8 +107,6 @@ export default {
         itemsPerPageOptions: [],
         disabled: true
       },
-      sortBy: '',
-      sortOrder: '',
       search: '',
       query: {
         pageSize: 5,
@@ -236,12 +234,6 @@ export default {
     }, 500),
     onSearch (value) {
       this.searchInvoice(value)
-    },
-    nextPage (value) {
-      this.query.page = value
-    },
-    previousPage (value) {
-      this.query.page = value
     },
     pageChange (value) {
       this.query.page = value
