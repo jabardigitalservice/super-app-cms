@@ -96,7 +96,7 @@
 
 <script>
 import debounce from 'lodash.debounce'
-import { formatDate, generateItemsPerPageOptions } from '~/utils'
+import { formatDate, generateItemsPerPageOptions, resetQueryParamsUrl, formatedStringDate } from '~/utils'
 import 'vue2-datepicker/index.css'
 import EyesIcon from '~/assets/icon/eyes.svg?inline'
 import TabBarListTahura from '~/components/Tahura/TabBar/List/index.vue'
@@ -167,8 +167,6 @@ export default {
         sortBy: 'orderedAt',
         status: ''
       },
-      sortBy: '',
-      sortOrder: '',
       q: '',
       selectedTabIndex: 0,
       dateRange: [oneMonthAgo, today],
@@ -201,6 +199,8 @@ export default {
       this.pagination.currentPage = meta?.pageNumber || 1
       this.pagination.totalRows = meta?.totalData || 0
       this.pagination.itemsPerPage = meta?.pageSize || this.query.pageSize
+
+      this.getCount()
     } catch {
       this.pagination.disabled = true
     }
@@ -223,7 +223,26 @@ export default {
     query: {
       deep: true,
       handler () {
+        resetQueryParamsUrl(this)
         this.$fetch()
+      }
+    },
+    '$route.query': {
+      deep: true,
+      immediate: true,
+      handler (newQuery) {
+        if (Object.keys(newQuery).length > 0) {
+          this.query = { ...newQuery }
+          this.q = this.query.q || ''
+
+          if (newQuery.startDate && newQuery.endDate) {
+            // console.log(newQuery.startDate)
+            this.dateRange = [
+              formatedStringDate(newQuery.startDate),
+              formatedStringDate(newQuery.endDate)
+            ]
+          }
+        }
       }
     },
     dateRange () {
@@ -245,8 +264,6 @@ export default {
     this.pagination.itemsPerPageOptions = generateItemsPerPageOptions(
       this.pagination.itemsPerPage
     )
-
-    this.getCount()
 
     this.selectedTabHandle(0)
   },
@@ -279,7 +296,6 @@ export default {
         endDate: formatDate(this.dateRange[1], 'yyyy-MM-dd')
       })
       this.$fetch()
-      this.getCount()
       this.$refs.datepicker.closePopup()
     },
     clearDateRangeHandle () {
@@ -289,12 +305,10 @@ export default {
         startDate: this.dateRange[0],
         endDate: this.dateRange[1]
       })
-      this.getCount()
       this.isShowPopupDateRange = false
       this.$fetch()
     },
     changeDateRangeHandle () {
-      this.getCount()
       this.isShowPopupDateRange = true
     },
     setQuery (params) {
@@ -359,7 +373,10 @@ export default {
       })
     },
     goToDetail (item) {
-      this.$router.push(`/tahura/daftar-pesanan/detail/${item.invoice}`)
+      this.$router.push({
+        path: `/tahura/daftar-pesanan/detail/${item.invoice}`,
+        query: this.query
+      })
     },
     async getCount () {
       const queryCount = { ...this.query }

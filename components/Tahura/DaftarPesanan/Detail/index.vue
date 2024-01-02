@@ -181,7 +181,10 @@ export default {
   },
   methods: {
     goToBackHandle () {
-      this.$router.back()
+      this.$router.push({
+        path: '/tahura/daftar-pesanan',
+        query: this.$route.query
+      })
     },
     formatDate,
     showViewDetailPage (namePage) {
