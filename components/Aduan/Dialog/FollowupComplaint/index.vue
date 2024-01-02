@@ -1,9 +1,9 @@
 <template>
   <div>
     <BaseDialog :show-popup="isShowPopupFollowup">
-      <BaseDialogPanel class="max-h-[626px] w-[600px]">
+      <BaseDialogPanel class="max-h-[750px] w-[600px]">
         <BaseDialogHeader :title="dataDialog.title" />
-        <div class="form-followup-ikp max-h-[506px] overflow-y-auto px-6 pt-2">
+        <div class="form-followup-ikp max-h-[630px] overflow-y-auto px-6 pt-2">
           <BaseDialogDescription
             description="No.Aduan"
             :sub-description="dataDialog.subDescription"
@@ -80,10 +80,15 @@
                 <tr v-for="(itemIkp, index) in listIkp" :key="index">
                   <td
                     :class="{ 'rounded-bl-lg': index === listIkp.length - 1 }"
+                    width="66"
                   >
                     <strong>{{ itemIkp.ikp_code }}</strong>
                   </td>
-                  <td>{{ itemIkp.narrative }}</td>
+                  <td width="280">
+                    <p class="w-[280px] truncate">
+                      {{ itemIkp.narrative }}
+                    </p>
+                  </td>
                   <td width="73">
                     <BaseTableAction
                       :list-menu-pop-over="listMenuTableAction"
@@ -103,6 +108,18 @@
                   </td>
                 </tr>
               </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="4" class="bg-gray-50 !p-0">
+                    <Pagination
+                      :pagination="pagination"
+                      @next-page="nextPage()"
+                      @previous-page="previousPage()"
+                      @per-page-change="pageChanges"
+                    />
+                  </td>
+                </tr>
+              </tfoot>
             </jds-simple-table>
           </div>
           <!-- show list followup process when choose IKP want to followup -->
@@ -145,6 +162,7 @@ import AlertInformation from '~/components/Aduan/Alert/Information'
 import ListFollowupProcess from '~/components/Aduan/Dialog/FollowupComplaint/ListFollowupProcess'
 import DialogIkpNarrative from '~/components/Aduan/Dialog/IkpNarrative'
 import DialogCreateIkp from '~/components/Aduan/Dialog/CreateIkp'
+import Pagination from '~/components/Aduan/Dialog/FollowupComplaint/Pagination'
 
 export default {
   name: 'DialogFollowupComplaint',
@@ -152,7 +170,8 @@ export default {
     AlertInformation,
     ListFollowupProcess,
     DialogIkpNarrative,
-    DialogCreateIkp
+    DialogCreateIkp,
+    Pagination
   },
   props: {
     dataDialog: {
@@ -164,25 +183,39 @@ export default {
     return {
       query: {
         search: null,
-        limit: 3,
+        limit: 5,
         page: 1
       },
-      listIkp: [],
+      listDataIkp: [],
       search: '',
       dataDialogConfirmation: {},
       isShowPopupConfirmationFollowup: false,
       listMenuTableAction: [
         { menu: 'Lihat Narasi IKP', value: 'detail-narrative' }
       ],
-      isShowPopupIkpNarrative: false
+      isShowPopupIkpNarrative: false,
+      pagination: {
+        currentPage: '',
+        totalRows: '',
+        itemsPerPage: '',
+        totalPages: ''
+      }
     }
   },
   async fetch () {
     try {
+      this.setQuery({ sort_by: 'ikp_code', sort_type: 'ASC' })
       const responseIkp = await this.$axios.get('/warga/ikp', {
         params: { ...this.query, is_admin: 1 }
       })
-      this.listIkp = responseIkp.data.data.data
+      this.listDataIkp = responseIkp.data.data.data
+      const pagination = responseIkp.data.data
+      this.setPagination({
+        currentPage: pagination?.page || 1,
+        totalRows: pagination?.total_data || 0,
+        itemsPerPage: pagination?.page_size || this.query.limit,
+        totalPages: pagination?.total_pages || 0
+      })
     } catch {
       this.listIkp = []
     }
@@ -192,10 +225,16 @@ export default {
       isShowPopupFollowup: 'getIsShowPopup',
       isFollowup: 'getIsFollowup',
       dataIkp: 'getDataIkp'
-    })
+    }),
+    listIkp () {
+      return this.listDataIkp.map((dataIkp) => {
+        return { ...dataIkp, code: dataIkp.ikp_code }
+      })
+    }
   },
   watch: {
     search: debounce(function (value) {
+      this.setQuery({ page: '' })
       if (value.length > 2 || value.length === 0) {
         this.query.search = value.length > 2 ? value : null
         this.$fetch()
@@ -217,6 +256,23 @@ export default {
       this.$store.commit('followup-complaint/setIsFollowup', false)
       this.$store.commit('followup-complaint/setIsShowPopup', false)
     },
+    nextPage () {
+      if (this.pagination.currentPage < this.pagination.totalPages) {
+        this.setQuery({ page: this.pagination.currentPage + 1 })
+        this.$fetch()
+      }
+    },
+    previousPage () {
+      if (this.pagination.currentPage > 1) {
+        this.setQuery({ page: this.pagination.currentPage - 1 })
+        this.$fetch()
+      }
+    },
+    pageChanges (value) {
+      this.pagination.currentPage = value
+      this.setQuery({ page: value })
+      this.$fetch()
+    },
     showPopupConfirmationFollowupComplaint () {
       this.$store.commit('followup-complaint/setIsShowPopup', false)
       this.dataDialogConfirmation = {
@@ -227,7 +283,7 @@ export default {
       this.isShowPopupConfirmationFollowup = true
     },
     showPopupIkpNarrative (dataIkp) {
-      this.dataIkp = dataIkp
+      this.$store.commit('followup-complaint/setDataIkp', dataIkp)
       this.isShowPopupIkpNarrative = true
     },
     showPopupCreateIkp () {
@@ -243,6 +299,12 @@ export default {
       this.isShowPopupConfirmationFollowup = false
       this.$emit('submit', this.dataIkp)
       this.$store.commit('followup-complaint/setIsFollowup', false)
+    },
+    setPagination (newPagination) {
+      this.pagination = { ...this.pagination, ...newPagination }
+    },
+    setQuery (newQuery) {
+      this.query = { ...this.query, ...newQuery }
     }
   }
 }
@@ -259,5 +321,17 @@ export default {
 
 .form-followup-ikp .jds-search__button--small .jds-icon__svg {
   @apply !h-4 !w-4 !fill-[#16A75C];
+}
+
+.form-followup-ikp::-webkit-scrollbar {
+  @apply h-5 w-5;
+}
+
+.form-followup-ikp::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+.form-followup-ikp::-webkit-scrollbar-thumb {
+  @apply rounded-xl border-[6px] border-solid border-transparent bg-gray-300 bg-clip-content;
 }
 </style>
