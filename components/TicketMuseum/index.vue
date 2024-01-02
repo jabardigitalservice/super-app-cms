@@ -2,7 +2,8 @@
   <div>
     <div class="mb-6 flex justify-between">
       <jds-search
-        value=""
+
+        v-model="search"
         placeholder="Masukkan id pembayaran"
         icon
         :button="false"
@@ -87,7 +88,8 @@ import {
 import {
   formatDate,
   convertToRupiah,
-  generateItemsPerPageOptions
+  generateItemsPerPageOptions,
+  resetQueryParamsUrl
 } from '~/utils'
 import popup from '~/mixins/tiket-museum'
 export default {
@@ -170,8 +172,21 @@ export default {
     query: {
       deep: true,
       handler () {
+        resetQueryParamsUrl(this)
+
         this.$fetch()
       }
+    },
+    '$route.query': {
+      deep: true,
+      immediate: true,
+      handler (newQuery) {
+        if (Object.keys(newQuery).length > 0) {
+          this.query = { ...newQuery }
+          this.search = this.query.search || ''
+        }
+      }
+
     }
   },
   mounted () {
@@ -181,7 +196,10 @@ export default {
   },
   methods: {
     goToDetailPageHandle (item) {
-      this.$router.push(`/ticket-museum/detail/${item.invoice}`)
+      this.$router.push({
+        path: `/ticket-museum/detail/${item.invoice}`,
+        query: this.query
+      })
     },
     async onClickDocument (fileId) {
       this.showFile = true
