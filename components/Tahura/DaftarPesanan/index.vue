@@ -236,7 +236,6 @@ export default {
           this.q = this.query.q || ''
 
           if (newQuery.startDate && newQuery.endDate) {
-            // console.log(newQuery.startDate)
             this.dateRange = [
               formatedStringDate(newQuery.startDate),
               formatedStringDate(newQuery.endDate)
