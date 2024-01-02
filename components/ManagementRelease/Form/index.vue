@@ -332,6 +332,12 @@ export default {
       return this.formField.majorVersion && this.formField.minorVersion && this.formField.patchNumber
         ? `${this.formField.majorVersion}.${this.formField.minorVersion}.${this.formField.patchNumber}`
         : ''
+    },
+    goToBackHandle () {
+      this.$router.push({
+        path: '/management-release',
+        query: this.$route.query
+      })
     }
   }
 }

@@ -2,7 +2,8 @@
   <div>
     <div class="mb-6 flex justify-between">
       <jds-search
-        value=""
+
+        v-model="search"
         placeholder="Masukkan id pembayaran"
         icon
         :button="false"
@@ -17,8 +18,8 @@
         :items="getListTicket"
         :loading="$fetchState.pending"
         :pagination="pagination"
-        @next-page="nextPage"
-        @previous-page="previousPage"
+        @next-page="pageChange"
+        @previous-page="pageChange"
         @page-change="pageChange"
         @per-page-change="perPageChange"
         @change:sort="sortChange"
@@ -87,7 +88,8 @@ import {
 import {
   formatDate,
   convertToRupiah,
-  generateItemsPerPageOptions
+  generateItemsPerPageOptions,
+  resetQueryParamsUrl
 } from '~/utils'
 import popup from '~/mixins/tiket-museum'
 export default {
@@ -105,8 +107,6 @@ export default {
         itemsPerPageOptions: [],
         disabled: true
       },
-      sortBy: '',
-      sortOrder: '',
       search: '',
       query: {
         pageSize: 5,
@@ -170,7 +170,19 @@ export default {
     query: {
       deep: true,
       handler () {
+        resetQueryParamsUrl(this)
+
         this.$fetch()
+      }
+    },
+    '$route.query': {
+      deep: true,
+      immediate: true,
+      handler (newQuery) {
+        if (Object.keys(newQuery).length > 0) {
+          this.query = { ...newQuery }
+          this.search = this.query.search || ''
+        }
       }
     }
   },
@@ -181,7 +193,10 @@ export default {
   },
   methods: {
     goToDetailPageHandle (item) {
-      this.$router.push(`/ticket-museum/detail/${item.invoice}`)
+      this.$router.push({
+        path: `/ticket-museum/detail/${item.invoice}`,
+        query: this.query
+      })
     },
     async onClickDocument (fileId) {
       this.showFile = true
@@ -218,12 +233,6 @@ export default {
     }, 500),
     onSearch (value) {
       this.searchInvoice(value)
-    },
-    nextPage (value) {
-      this.query.page = value
-    },
-    previousPage (value) {
-      this.query.page = value
     },
     pageChange (value) {
       this.query.page = value

@@ -66,8 +66,8 @@
             :loading="$fetchState.pending"
             :items="listData"
             :pagination="pagination"
-            @next-page="nextPage"
-            @previous-page="previousPage"
+            @next-page="pageChange"
+            @previous-page="pageChange"
             @page-change="pageChange"
             @per-page-change="perPageChange"
             @change:sort="sortChange"
@@ -235,12 +235,6 @@ export default {
       } else {
         return this.menuTableAction
       }
-    },
-    nextPage (value) {
-      this.query.page = value
-    },
-    previousPage (value) {
-      this.query.page = value
     },
     pageChange (value) {
       this.query.page = value

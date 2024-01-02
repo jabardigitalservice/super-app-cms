@@ -202,7 +202,10 @@ export default {
       return convertToRupiah(price)
     },
     goToBackHandle () {
-      this.$router.push('/ticket-museum')
+      this.$router.push({
+        path: '/ticket-museum',
+        query: this.$route.query
+      })
     },
     closePopupDetailHandle () {
       const dataPopup = {

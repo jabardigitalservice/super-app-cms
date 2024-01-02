@@ -17,8 +17,8 @@
         :items="dataRW"
         :pagination="pagination"
         :loading="$fetchState.pending"
-        @next-page="nextPage"
-        @previous-page="previousPage"
+        @next-page="pageChange"
+        @previous-page="pageChange"
         @page-change="pageChange"
         @per-page-change="perPageChange"
         @change:sort="sortChange"
@@ -221,12 +221,6 @@ export default {
     }, 500),
     onSearch (value) {
       this.searchTitle(value)
-    },
-    nextPage (value) {
-      this.query.page = value
-    },
-    previousPage (value) {
-      this.query.page = value
     },
     pageChange (value) {
       this.query.page = value
