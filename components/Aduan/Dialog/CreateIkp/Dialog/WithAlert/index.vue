@@ -10,7 +10,7 @@
           :message="alert.message"
           class="!h-[55px] !p-4"
         />
-        <BaseDialogDescription :description="dataDialog.description " class="mt-3" />
+        <BaseDialogDescription :description="dataDialog.description " class="mt-4" />
       </div>
 
       <BaseDialogFooter
