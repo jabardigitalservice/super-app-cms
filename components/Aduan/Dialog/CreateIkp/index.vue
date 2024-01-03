@@ -234,7 +234,6 @@ export default {
       this.$store.commit('create-ikp/setIsShowPopup', true)
     },
     closePopupInformation () {
-      // this.isShowPopupInformationSuccess = false
       this.resetFormIkp()
       if (this.isShowPopupInformationSuccess) {
         this.$store.commit('followup-complaint/setDataIkp', this.dataIkp)
