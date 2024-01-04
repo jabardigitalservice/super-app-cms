@@ -4,6 +4,7 @@
       <template #tab-list>
         <TabBarListTahura
           :list-tab="listStatusTahura"
+          :tab-index="query.tabIndex"
           @selected="selectedTabHandle"
           @button-tab="listTabHandle"
         />
@@ -165,10 +166,10 @@ export default {
         pageSize: 25,
         sortOrder: 'desc',
         sortBy: 'orderedAt',
-        status: ''
+        status: '',
+        tabIndex: 0
       },
       q: '',
-      selectedTabIndex: 0,
       dateRange: [oneMonthAgo, today],
       isShowPopupDateRange: false,
       today,
@@ -234,6 +235,7 @@ export default {
         if (Object.keys(newQuery).length > 0) {
           this.query = { ...newQuery }
           this.q = this.query.q || ''
+          this.query.tabIndex = parseInt(this.query.tabIndex)
 
           if (newQuery.startDate && newQuery.endDate) {
             this.dateRange = [
@@ -263,13 +265,11 @@ export default {
     this.pagination.itemsPerPageOptions = generateItemsPerPageOptions(
       this.pagination.itemsPerPage
     )
-
-    this.selectedTabHandle(0)
   },
   methods: {
     formatDate,
     selectedTabHandle (index) {
-      this.selectedTabIndex = index
+      this.query.tabIndex = index
     },
     disabledRange: function (date, inputDate) {
       const endDate = new Date(
