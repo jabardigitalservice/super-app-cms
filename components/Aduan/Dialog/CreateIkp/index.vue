@@ -148,6 +148,7 @@
       :alert="alert"
       :data-dialog="dataDialog"
       @close="closePopupInformation"
+      @submit="backToFormIkp"
     />
     <DialogLoading :show-popup="isShowPopupLoading" />
   </div>
@@ -231,6 +232,7 @@ export default {
   methods: {
     backToFormIkp () {
       this.isShowPopupConfirmation = false
+      this.isShowPopupInformationError = false
       this.$store.commit('create-ikp/setIsShowPopup', true)
     },
     closePopupInformation () {
@@ -310,7 +312,7 @@ export default {
         this.resetFormIkp()
         this.isShowPopupInformationSuccess = true
       } catch {
-        this.dataIkp = {}
+        this.payload.deadline_at = new Date(this.payload.deadline_at)
         this.setAlert({
           variant: 'error',
           message: 'Pembuatan IKP Baru Gagal'
