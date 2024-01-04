@@ -2,23 +2,23 @@
   <BaseDialog :show-popup="showPopup">
     <BaseDialogPanel class="w-[510px]">
       <BaseDialogHeader title="Buat IKP Baru" />
-      <div class="pb-4 pt-2 px-6">
+      <div class="pb-4 pt-4 px-6">
         <jds-section-message
           show
-          variant="warning"
+          :variant="alert.variant"
           :dismissible="false"
-          message="Pastikan data yang diisi telah sesuai dan benar"
+          :message="alert.message"
           class="!h-[55px] !p-4"
         />
-        <BaseDialogDescription description="Apakah Anda yakin ingin membuat IKP baru? " class="mt-3" />
+        <BaseDialogDescription :description="dataDialog.description " class="mt-4" />
       </div>
 
       <BaseDialogFooter
         :show-cancel-button="true"
-        label-button-submit="Lanjutkan"
-        label-button-cancel="Kembali"
+        :label-button-submit="dataDialog.labelButtonSubmit"
+        :label-button-cancel="dataDialog.labelButtonCancel"
         @submit="$emit('submit')"
-        @close="$emit('back')"
+        @close="$emit('close')"
       />
     </BaseDialogPanel>
   </BaseDialog>
@@ -31,6 +31,14 @@ export default {
     showPopup: {
       type: Boolean,
       default: false
+    },
+    alert: {
+      type: Object,
+      default: () => ({})
+    },
+    dataDialog: {
+      type: Object,
+      default: () => ({})
     }
   }
 }

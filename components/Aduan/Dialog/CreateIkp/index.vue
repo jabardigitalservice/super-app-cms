@@ -13,7 +13,7 @@
                 message="Pembuatan Instruksi Khusus Pimpinan baru."
               />
               <CardIkpNarrative class="mt-3" />
-              <div class="pt-3 grid grid-cols-2 gap-3">
+              <div class="grid grid-cols-2 gap-3 pt-3">
                 <div class="w-full">
                   <label class="pb-1 text-[15px] text-gray-800">Tanggal Instruksi Diberikan</label><br>
                   <date-picker
@@ -21,7 +21,7 @@
                     format="DD/MM/YYYY"
                     disabled
                     placeholder="Pilih Tanggal Instruksi Diberikan"
-                    class="!w-full mx-datepicker--disabled"
+                    class="mx-datepicker--disabled !w-full"
                   >
                     <template #icon-calendar>
                       <jds-icon
@@ -57,7 +57,11 @@
                   <small class="text-red-600">{{ errors[0] }}</small>
                 </ValidationProvider>
               </div>
-              <ValidationProvider v-slot="{ errors }" rules="required" name="Keterangan Instruksi Khusus Pimpinan">
+              <ValidationProvider
+                v-slot="{ errors }"
+                rules="required"
+                name="Keterangan Instruksi Khusus Pimpinan"
+              >
                 <BaseTextArea
                   v-model="payload.description"
                   label="Keterangan Instruksi Khusus Pimpinan"
@@ -70,8 +74,12 @@
               <p class="pt-1 text-xs text-gray-600">
                 Tersisa {{ 255 - payload.description.length }} karakter
               </p>
-              <div class="py-3 grid grid-cols-2 gap-x-2">
-                <ValidationProvider v-slot="{ errors }" rules="required|numeric" name="Indikator Nilai">
+              <div class="grid grid-cols-2 gap-x-2 py-3">
+                <ValidationProvider
+                  v-slot="{ errors }"
+                  rules="required|numeric"
+                  name="Indikator Nilai"
+                >
                   <BaseInputText
                     v-model="payload.indicator_value"
                     placeholder="Masukkan Indikator Nilai"
@@ -80,7 +88,11 @@
                     :error-message="errors[0]"
                   />
                 </ValidationProvider>
-                <ValidationProvider v-slot="{ errors }" rules="required" name="Indikator Satuan">
+                <ValidationProvider
+                  v-slot="{ errors }"
+                  rules="required"
+                  name="Indikator Satuan"
+                >
                   <BaseInputText
                     v-model="payload.indicator_unit"
                     placeholder="Masukkan Indikator Satuan"
@@ -89,7 +101,13 @@
                   />
                 </ValidationProvider>
               </div>
-              <ValidationProvider v-slot="{ errors }" rules="requiredSelectForm" name="Perangkat Daerah" class="pb-3" tag="div">
+              <ValidationProvider
+                v-slot="{ errors }"
+                rules="requiredSelectForm"
+                name="Perangkat Daerah"
+                class="pb-3"
+                tag="div"
+              >
                 <jds-select
                   v-model="payload.opd_name"
                   name="Perangkat Daerah"
@@ -110,18 +128,26 @@
         />
       </BaseDialogPanel>
     </BaseDialog>
-    <DialogConfirmation
+    <DialogWithAlert
       :show-popup="isShowPopupConfirmation"
-      @back="backToFormIkp()"
+      :alert="alert"
+      :data-dialog="dataDialog"
+      @close="backToFormIkp()"
       @submit="submitIkp"
     />
     <DialogInformation
-      :show-popup="isShowPopupInformation"
+      :show-popup="isShowPopupInformationSuccess"
       :data-ikp="dataIkp"
       :data-dialog="dataDialog"
       :icon="icon"
       @close="closePopupInformation"
       @submit="submitIkp"
+    />
+    <DialogWithAlert
+      :show-popup="isShowPopupInformationError"
+      :alert="alert"
+      :data-dialog="dataDialog"
+      @close="closePopupInformation"
     />
     <DialogLoading :show-popup="isShowPopupLoading" />
   </div>
@@ -132,13 +158,20 @@ import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import { mapGetters } from 'vuex'
 import AlertInformation from '~/components/Aduan/Alert/Information'
 import CardIkpNarrative from '~/components/Aduan/Dialog/CreateIkp/CardIkpNarrative'
-import DialogConfirmation from '~/components/Aduan/Dialog/CreateIkp/Dialog/Confirmation'
+import DialogWithAlert from '~/components/Aduan/Dialog/CreateIkp/Dialog/WithAlert'
 import DialogInformation from '~/components/Aduan/Dialog/CreateIkp/Dialog/Information'
 import { formatDate } from '~/utils'
 
 export default {
   name: 'DialogCreateIkp',
-  components: { AlertInformation, CardIkpNarrative, DialogConfirmation, DialogInformation, ValidationObserver, ValidationProvider },
+  components: {
+    AlertInformation,
+    CardIkpNarrative,
+    DialogWithAlert,
+    DialogInformation,
+    ValidationObserver,
+    ValidationProvider
+  },
   data () {
     return {
       payload: {
@@ -153,7 +186,8 @@ export default {
       listDataDisposition: [],
       isTruncate: true,
       isShowPopupConfirmation: false,
-      isShowPopupInformation: false,
+      isShowPopupInformationSuccess: false,
+      isShowPopupInformationError: false,
       isShowPopupLoading: false,
       isErrorInputIkp: false,
       dataIkp: {
@@ -162,7 +196,12 @@ export default {
       },
       dataDialog: {
         description: '',
-        labelButtonSubmit: ''
+        labelButtonSubmit: '',
+        labelButtonCancel: ''
+      },
+      alert: {
+        message: '',
+        variant: ''
       },
       icon: {}
     }
@@ -184,7 +223,10 @@ export default {
         return { label: item.name, value: item.name }
       })
     },
-    ...mapGetters('create-ikp', { isShowPopupCreateIkp: 'getIsShowPopup', ikpNarrative: 'getIkpNarrative' })
+    ...mapGetters('create-ikp', {
+      isShowPopupCreateIkp: 'getIsShowPopup',
+      ikpNarrative: 'getIkpNarrative'
+    })
   },
   methods: {
     backToFormIkp () {
@@ -192,14 +234,16 @@ export default {
       this.$store.commit('create-ikp/setIsShowPopup', true)
     },
     closePopupInformation () {
-      this.isShowPopupInformation = false
       this.resetFormIkp()
-      if (!this.isErrorInputIkp) {
+      if (this.isShowPopupInformationSuccess) {
         this.$store.commit('followup-complaint/setDataIkp', this.dataIkp)
         this.$store.commit('followup-complaint/setIsFollowup', true)
-      } else {
+      }
+      if (this.isShowPopupInformationError) {
         this.$store.commit('followup-complaint/setIsFollowup', false)
       }
+      this.isShowPopupInformationSuccess = false
+      this.isShowPopupInformationError = false
       this.$store.commit('followup-complaint/setIsShowPopup', true)
     },
     closePopupCreateIkp () {
@@ -228,6 +272,15 @@ export default {
     },
     async showPopupConfirmation () {
       const isValid = await this.$refs.form.validate()
+      this.setAlert({
+        variant: 'warning',
+        message: 'Pastikan data yang diisi telah sesuai dan benar'
+      })
+      this.setDataDialog({
+        description: 'Apakah Anda yakin ingin membuat IKP baru? ',
+        labelButtonSubmit: 'Simpan IKP Baru',
+        labelButtonCancel: 'Kembali'
+      })
       if (isValid) {
         this.payload.narrative = this.ikpNarrative
         this.isShowPopupConfirmation = true
@@ -238,25 +291,43 @@ export default {
       this.isShowPopupConfirmation = false
       this.isShowPopupLoading = true
       try {
-        this.payload.deadline_at = formatDate(this.payload.deadline_at, 'yyyy-MM-dd')
+        this.payload.deadline_at = formatDate(
+          this.payload.deadline_at,
+          'yyyy-MM-dd'
+        )
         const response = await this.$axios.post('/warga/ikp', {
           ...this.payload,
           user_id: this.$auth?.user?.identifier
         })
         this.dataIkp = response.data.data
         this.dataIkp.ikp_code = this.dataIkp.ikp_code.toString()
-        this.setDataDialog({ description: 'Pembuatan IKP Baru telah berhasil dilakukan', labelButtonSubmit: 'Saya mengerti', showCancelButton: false })
+        this.setDataDialog({
+          description: 'Pembuatan IKP Baru telah berhasil dilakukan',
+          labelButtonSubmit: 'Saya mengerti',
+          showCancelButton: false
+        })
         this.setIconPopup({ name: 'check-mark-circle', fill: '#069550' })
         this.resetFormIkp()
+        this.isShowPopupInformationSuccess = true
       } catch {
         this.dataIkp = {}
-        this.setDataDialog({ description: 'Pembuatan IKP Baru gagal dilakukan', labelButtonSubmit: 'Coba lagi', showCancelButton: true })
-        this.setIconPopup({ name: 'times-circle', fill: '#EF5350' })
-        this.isErrorInputIkp = true
+        this.setAlert({
+          variant: 'error',
+          message: 'Pembuatan IKP Baru Gagal'
+        })
+        this.setDataDialog({
+          description:
+            'Maaf, pembuatan IKP baru tidak dapat disimpan saat ini karena terjadi kesalahan pada sistem. Silakan coba lagi untuk menyimpan IKP baru.',
+          labelButtonSubmit: 'Coba Lagi',
+          labelButtonCancel: 'Batalkan'
+        })
+        this.isShowPopupInformationError = true
       } finally {
         this.isShowPopupLoading = false
       }
-      this.isShowPopupInformation = true
+    },
+    setAlert (newAlert) {
+      this.alert = { ...this.alert, ...newAlert }
     },
     setDataDialog (newDataDialog) {
       this.dataDialog = { ...this.dataDialog, ...newDataDialog }
