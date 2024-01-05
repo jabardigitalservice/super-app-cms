@@ -15,6 +15,7 @@
               :name="dataDialog.nameTextArea"
               :placeholder="dataDialog.placeholder"
               :error-message="errors[0]"
+              maxlength="500"
             />
           </ValidationProvider>
           <p class="text-xs text-gray-600">
