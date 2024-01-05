@@ -10,7 +10,7 @@
             rules="required"
           >
             <BaseTextArea
-              v-model="dataIkpNarrative"
+              v-model="fieldEditIKpNarrative"
               :label="dataDialog.labelTextArea"
               :name="dataDialog.nameTextArea"
               :placeholder="dataDialog.placeholder"
@@ -48,13 +48,16 @@ export default {
     }
   },
   computed: {
-    dataIkpNarrative: {
+    fieldEditIKpNarrative: {
       get () {
-        return this.$store.state['create-ikp'].ikpNarrative
+        return this.$store.state['edit-ikp-narrative'].fieldEditIkpNarrative
       },
       set (value) {
-        this.$store.commit('create-ikp/setIkpNarrative', value)
+        this.$store.commit('edit-ikp-narrative/setFieldEditIkpNarrative', value)
       }
+    },
+    dataIkpNarrative () {
+      return this.$store.state['create-ikp'].ikpNarrative
     }
   },
   methods: {
@@ -62,11 +65,12 @@ export default {
       this.isSubmit = true
       const isDataValid = await this.$refs.form.validate()
       if (isDataValid) {
-        this.$store.commit('create-ikp/setIkpNarrative', this.dataIkpNarrative)
+        this.$store.commit('create-ikp/setIkpNarrative', this.fieldEditIKpNarrative)
         this.$emit('submit')
       }
     },
     closePopupHandle () {
+      this.$store.commit('edit-ikp-narrative/setFieldEditIkpNarrative', this.dataIkpNarrative)
       this.$emit('close')
       this.$refs.form.reset()
     }

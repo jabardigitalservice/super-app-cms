@@ -104,6 +104,7 @@ export default {
         labelTextArea: 'Usulan Narasi IKP',
         placeholder: 'Masukkan Usulan Narasi IKP'
       }
+      this.$store.commit('edit-ikp-narrative/setFieldEditIkpNarrative', this.dataIkpNarrative)
       this.isShowPopupEditIkpNarrative = true
     },
     submitEditIkpNarrative () {
