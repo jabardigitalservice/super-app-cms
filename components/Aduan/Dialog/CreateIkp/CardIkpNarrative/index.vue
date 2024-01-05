@@ -31,7 +31,9 @@
         </button>
       </div>
       <div class="text-sm">
-        <span class="leading-[18px] line-clamp-2">{{ dataIkpNarrative }}</span>
+        <p class="leading-[18px] line-clamp-2 break-words">
+          {{ dataIkpNarrative }}
+        </p>
         <button
           type="button"
           class="text-sm font-bold text-green-600"
