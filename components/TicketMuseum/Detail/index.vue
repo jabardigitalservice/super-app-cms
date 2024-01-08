@@ -182,7 +182,7 @@ export default {
   props: {
     dataDetailTicket: {
       type: Object,
-      default: () => {}
+      default: () => ({})
     }
   },
   data () {
