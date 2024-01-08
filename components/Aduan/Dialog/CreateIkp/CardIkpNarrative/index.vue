@@ -31,7 +31,9 @@
         </button>
       </div>
       <div class="text-sm">
-        <span class="leading-[18px] line-clamp-2">{{ dataIkpNarrative }}</span>
+        <p class="leading-[18px] line-clamp-2 break-words">
+          {{ dataIkpNarrative }}
+        </p>
         <button
           type="button"
           class="text-sm font-bold text-green-600"
@@ -102,6 +104,7 @@ export default {
         labelTextArea: 'Usulan Narasi IKP',
         placeholder: 'Masukkan Usulan Narasi IKP'
       }
+      this.$store.commit('edit-ikp-narrative/setFieldEditIkpNarrative', this.dataIkpNarrative)
       this.isShowPopupEditIkpNarrative = true
     },
     submitEditIkpNarrative () {

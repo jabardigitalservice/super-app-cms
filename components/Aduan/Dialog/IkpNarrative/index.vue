@@ -2,7 +2,7 @@
   <BaseDialog :show-popup="showPopup">
     <BaseDialogPanel class="w-[510px]">
       <BaseDialogHeader :title="showTitleIkpNarrative()" />
-      <p class="p-6">
+      <p class="p-6 break-words">
         {{ dataIkp.narrative }}
       </p>
       <BaseDialogFooter :show-cancel-button="false" label-button-submit="Tutup" @close="$emit('close')" />
