@@ -19,7 +19,7 @@
             />
           </ValidationProvider>
           <p class="text-xs text-gray-600">
-            Tersisa {{ 500 - dataIkpNarrative.length }} Karakter
+            Tersisa {{ 500 - fieldEditIKpNarrative.length }} Karakter
           </p>
         </ValidationObserver>
       </div>
