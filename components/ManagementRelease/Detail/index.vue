@@ -135,7 +135,7 @@ export default {
   props: {
     dataDetailManagement: {
       type: Object,
-      default: () => {}
+      default: () => ({})
     }
   },
   data () {

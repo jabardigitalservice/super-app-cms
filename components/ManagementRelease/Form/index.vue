@@ -193,7 +193,7 @@ export default {
     },
     fieldForm: {
       type: Object,
-      default: null
+      default: () => ({})
     }
   },
   data () {

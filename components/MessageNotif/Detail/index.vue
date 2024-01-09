@@ -135,7 +135,7 @@ export default {
   props: {
     detailMessageNotif: {
       type: Object,
-      default: () => {}
+      default: () => ({})
     }
   },
   data () {

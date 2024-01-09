@@ -23,7 +23,7 @@ export default {
     },
     dataDialog: {
       type: Object,
-      default: () => {}
+      default: () => ({})
     }
   }
 }
