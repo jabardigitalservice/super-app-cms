@@ -49,6 +49,17 @@
       </div>
     </div>
     <BasePopup :show-popup="showPopupConfirmationInformation" @submit="submitHandle" @close="closeHandle" />
+
+    <DialogConfirmationReusable name-modals="confirmation" />
+    <DialogConfirmationReusable name-modals="delete-confirmation" />
+
+    <button @click="openModal('confirmation')">
+      Open Simple Modal
+    </button>
+
+    <button @click="openModal('delete-confirmation')">
+      Open Delete Modal
+    </button>
   </div>
 </template>
 
@@ -147,6 +158,9 @@ export default {
     this.pagination.itemsPerPageOptions = generateItemsPerPageOptions(this.pagination.itemsPerPage)
   },
   methods: {
+    openModal (name) {
+      this.$store.commit('modals/OPEN', name)
+    },
     filterTableAction (currentMessageStatus) {
       if (currentMessageStatus === messageStatus.published.id) {
         return this.menuTableAction.filter(item => item.menu !== 'Publikasikan')
