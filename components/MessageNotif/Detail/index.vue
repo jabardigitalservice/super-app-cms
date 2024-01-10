@@ -156,6 +156,12 @@ export default {
       }
       this.showPopupConfirmationInformation = false
       this.$emit('close', dataPopup)
+    },
+    goToBackHandle () {
+      this.$router.push({
+        path: '/message-notif',
+        query: this.$route.query
+      })
     }
   }
 }

@@ -5,6 +5,7 @@
         <TabBarList
           :list-tab="listStatistic"
           :type-aduan="typeAduanPage"
+          :tab-index="query.tabIndex"
           @selected="selectedTabHandle"
           @button-tab="listTabHandle"
         />
@@ -79,8 +80,8 @@
             :items="listData"
             :loading="$fetchState.pending"
             :pagination="pagination"
-            @next-page="nextPage"
-            @previous-page="previousPage"
+            @next-page="pageChange"
+            @previous-page="pageChange"
             @page-change="pageChange"
             @per-page-change="perPageChange"
             @change:sort="sortChange"
@@ -290,13 +291,11 @@ export default {
         limit: 5,
         page: 1,
         search: null,
-        complaint_category_id: null
+        complaint_category_id: null,
+        tabIndex: 0
       },
-      sortBy: '',
-      sortOrder: '',
       search: '',
       complaintHeader,
-      selectedTabIndex: 0,
       complaintDivertedToSpanHeader,
       complaintFromSpanHeader,
       determiningAuthorityHeader,
@@ -418,6 +417,7 @@ export default {
       handler (newQuery) {
         if (Object.keys(newQuery).length > 0) {
           this.query = { ...newQuery }
+          this.query.tabIndex = parseInt(this.query.tabIndex)
 
           this.search = this.query.search || ''
           if (newQuery.start_date && newQuery.end_date) {
@@ -451,11 +451,10 @@ export default {
     )
 
     this.getCategory()
-    this.selectedTabHandle(0)
   },
   methods: {
     selectedTabHandle (index) {
-      this.selectedTabIndex = index
+      this.query.tabIndex = index
     },
     checkTypeHeaderAduan (type) {
       switch (type) {
@@ -477,12 +476,6 @@ export default {
       const status = complaintStatus.find(item => item.id === statusId)
 
       return `text-${status?.statusColor}` || 'text-gray-100'
-    },
-    nextPage (value) {
-      this.query.page = value
-    },
-    previousPage (value) {
-      this.query.page = value
     },
     pageChange (value) {
       this.query.page = value
