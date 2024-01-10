@@ -64,7 +64,7 @@ export default {
   props: {
     listTab: {
       type: Array,
-      default: () => []
+      default: () => ([])
     },
     typeAduan: {
       type: String,

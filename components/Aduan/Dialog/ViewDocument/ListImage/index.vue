@@ -62,7 +62,7 @@ export default {
   props: {
     listImage: {
       type: Array,
-      default: () => []
+      default: () => ([])
     }
   },
   data () {

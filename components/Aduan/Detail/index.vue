@@ -135,7 +135,7 @@ export default {
     },
     listButton: {
       type: Array,
-      default: () => []
+      default: () => ([])
     }
   },
   data () {
