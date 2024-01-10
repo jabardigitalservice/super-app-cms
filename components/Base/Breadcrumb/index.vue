@@ -19,7 +19,7 @@ export default {
   props: {
     navigations: {
       type: Array,
-      default: () => []
+      default: () => ([])
     }
   }
 }

@@ -49,7 +49,7 @@ export default {
   props: {
     listTab: {
       type: Array,
-      default: () => []
+      default: () => ([])
     }
   },
   data () {

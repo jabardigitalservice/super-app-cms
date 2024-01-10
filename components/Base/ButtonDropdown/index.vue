@@ -53,7 +53,7 @@ export default {
   props: {
     listMenuPopOver: {
       type: Array,
-      default: () => []
+      default: () => ([])
     }
   },
   data () {

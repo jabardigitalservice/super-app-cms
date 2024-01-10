@@ -59,7 +59,7 @@ export default {
   props: {
     listTab: {
       type: Array,
-      default: () => []
+      default: () => ([])
     },
     tabIndex: {
       type: Number,

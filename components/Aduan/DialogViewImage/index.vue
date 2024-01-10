@@ -94,7 +94,7 @@ export default {
     },
     listPhoto: {
       type: Array,
-      default: () => []
+      default: () => ([])
     }
   },
   data () {

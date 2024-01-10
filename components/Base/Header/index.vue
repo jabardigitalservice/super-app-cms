@@ -13,7 +13,7 @@ export default {
   props: {
     navigations: {
       type: Array,
-      default: () => []
+      default: () => ([])
     },
     descriptionPage: {
       type: String,

@@ -12,7 +12,8 @@ export default {
   props: {
     listTab: {
       type: Array,
-      required: true
+      required: true,
+      default: () => ([])
     }
   },
   data () {
