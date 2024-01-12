@@ -9,6 +9,9 @@ const store = {
     },
     CLOSE (state, payload) {
       state.open = state.open.filter(e => e !== payload)
+    },
+    CLOSEALL (state) {
+      state.open = []
     }
   }
 }
