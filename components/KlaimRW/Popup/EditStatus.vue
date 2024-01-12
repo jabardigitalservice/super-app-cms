@@ -13,7 +13,7 @@
             placeholder="Pilih status"
             label="Status Akun RW"
             :options="statusOptions"
-            :value="getValueStatusRw"
+            :value="valueStatusRw"
             :error-message="errorMessage"
             @change="getStatusFromSelect"
           />
@@ -67,7 +67,7 @@ export default {
     }
   },
   computed: {
-    getValueStatusRw () {
+    valueStatusRw () {
       let result = this.accountStatus
       if (this.isChangeStatus) {
         result = this.statusRw

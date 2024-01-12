@@ -16,7 +16,7 @@
         <!-- HEADER -->
         <div class="h-[50px] rounded-t-lg bg-white py-[8px] px-[24px]">
           <h1 class="font-roboto text-[21px] font-bold text-green-800">
-            {{ getTitle }}
+            {{ title }}
           </h1>
         </div>
         <!-- BODY -->
@@ -24,18 +24,18 @@
           <div class="pt-[16px] pb-10 font-lato text-gray-800">
             <div class="flex items-start justify-start">
               <jds-icon
-                v-show="getIcon.name"
-                :name="getIcon.name"
+                v-show="icon.name"
+                :name="icon.name"
                 size="16px"
-                :fill="getIcon.fill"
+                :fill="icon.fill"
                 class="mt-1"
               />
-              <div :class="getIcon.name ? 'ml-[13px]' : ''">
+              <div :class="icon.name ? 'ml-[13px]' : ''">
                 <p class="font-lato text-[14px] text-gray-800">
-                  {{ getMessage.detailPopup }}
+                  {{ message.detailPopup }}
                 </p>
                 <div class="font-lato text-[16px] text-gray-800">
-                  <strong>{{ getMessage.titlePopup }}</strong>
+                  <strong>{{ message.titlePopup }}</strong>
                 </div>
               </div>
             </div>
@@ -44,21 +44,21 @@
         <!-- FOOTER -->
         <div
           class="flex h-fit justify-end rounded-b-lg bg-gray-50 px-[24px] py-[16px]"
-          :class="{ 'justify-center': getDialogType !== 'confirmation' }"
+          :class="{ 'justify-center': dialogType !== 'confirmation' }"
         >
           <div class="mr-[16px]">
             <jds-button
-              v-show="getDialogType === 'confirmation'"
-              :label="getButtonLeft.label"
-              :variant="getButtonLeft.variant"
+              v-show="dialogType === 'confirmation'"
+              :label="buttonLeft.label"
+              :variant="buttonLeft.variant"
               class="!font-lato !text-sm !font-bold"
               @click="closePopupHandle"
             />
           </div>
           <jds-button
-            v-show="getDialogType === 'confirmation' || 'information'"
-            :label="getButtonRight.label"
-            :variant="getButtonRight.variant"
+            v-show="dialogType === 'confirmation' || 'information'"
+            :label="buttonRight.label"
+            :variant="buttonRight.variant"
             class="!font-lato !text-sm !font-bold"
             @click="submitHandle"
           />
@@ -80,21 +80,21 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('dialog', [
-      'getIcon',
-      'getButtonLeft',
-      'getButtonRight',
-      'getMessage',
-      'getTitle',
-      'getDialogType'
-    ])
+    ...mapGetters('dialog', {
+      icon: 'getIcon',
+      buttonLeft: 'getButtonLeft',
+      buttonRight: 'getButtonRight',
+      message: 'getMessage',
+      title: 'getTitle',
+      dialogType: 'getDialogType'
+    })
   },
   methods: {
     closePopupHandle () {
       this.$emit('close')
     },
     submitHandle () {
-      if (this.getDialogType === 'confirmation') {
+      if (this.dialogType === 'confirmation') {
         this.$emit('submit')
       } else {
         this.$emit('close')

@@ -18,7 +18,7 @@
       <div class=" overflow-x-auto overflow-y-hidden">
         <JdsDataTable
           :headers="messageNotifHeader"
-          :items="getListMessageNotif"
+          :items="listMessageNotif"
           :loading="$fetchState.pending"
           :pagination="pagination"
           @next-page="pageChangeHandle"
@@ -106,7 +106,7 @@ export default {
     }
   },
   computed: {
-    getListMessageNotif () {
+    listMessageNotif () {
       return this.messageNotifList.map((item) => {
         return {
           ...item,
@@ -118,7 +118,7 @@ export default {
         }
       })
     },
-    getIsError () {
+    isError () {
       return this.$store.state.isError
     }
   },
