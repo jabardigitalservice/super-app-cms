@@ -21,7 +21,7 @@
     <div class="onverflow-x-auto rounded-lg font-roboto">
       <JdsDataTable
         :headers="headerTable"
-        :items="getListData"
+        :items="listManagementRelease"
         :pagination="pagination"
         @next-page="pageChange"
         @previous-page="pageChange"
@@ -82,7 +82,7 @@ export default {
   mixins: [popup],
   data () {
     return {
-      listData: [],
+      listDataManagementRelease: [],
       dummmyData,
       statusTable,
       headerTable,
@@ -120,25 +120,25 @@ export default {
         params: this.query
       })
 
-      const data = response.data.data
-      this.listData = data?.data || []
+      const dataManagementRelease = response.data.data
+      this.listDataManagementRelease = dataManagementRelease?.data || []
 
-      if (this.listData.length) {
+      if (this.listDataManagementRelease.length) {
         this.pagination.disabled = false
       } else {
         this.pagination.disabled = true
       }
-      this.pagination.currentPage = data?.page || 1
-      this.pagination.totalRows = data?.totalData || 0
-      this.pagination.itemsPerPage = data?.pageSize || this.query.pageSize
+      this.pagination.currentPage = dataManagementRelease?.page || 1
+      this.pagination.totalRows = dataManagementRelease?.totalData || 0
+      this.pagination.itemsPerPage = dataManagementRelease?.pageSize || this.query.pageSize
     } catch {
       this.listData = this.dummmyData
       this.pagination.disabled = true
     }
   },
   computed: {
-    getListData () {
-      return this.listData.map((item) => {
+    listManagementRelease () {
+      return this.listDataManagementRelease.map((item) => {
         return {
           ...item,
           date: formatDate(item.date || '', 'dd/MM/yyyy HH:mm'),

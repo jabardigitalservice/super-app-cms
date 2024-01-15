@@ -15,7 +15,7 @@
     <div class="overflow-x-auto rounded-lg font-roboto">
       <JdsDataTable
         :headers="headerTicketMuseum"
-        :items="getListTicket"
+        :items="listTicket"
         :loading="$fetchState.pending"
         :pagination="pagination"
         @next-page="pageChange"
@@ -99,7 +99,7 @@ export default {
     return {
       headerTicketMuseum,
       ticketStatus,
-      ticketList: [],
+      listDataTicket: [],
       pagination: {
         currentPage: 1,
         totalRows: 5,
@@ -140,9 +140,9 @@ export default {
       })
 
       const data = response.data.data
-      this.ticketList = data?.data || []
+      this.listDataTicket = data?.data || []
 
-      if (this.ticketList.length) {
+      if (this.listDataTicket.length) {
         this.pagination.disabled = false
       } else {
         this.pagination.disabled = true
@@ -155,8 +155,8 @@ export default {
     }
   },
   computed: {
-    getListTicket () {
-      return this.ticketList.map((item) => {
+    listTicket () {
+      return this.listDataTicket.map((item) => {
         return {
           ...item,
           orderedAt: formatDate(item.orderedAt || '', 'dd/MM/yyyy HH:mm'),

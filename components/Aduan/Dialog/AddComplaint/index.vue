@@ -18,7 +18,7 @@
       </template>
     </DialogWithStepper>
     <DialogConfirmation :show-popup="isShowPopupConfirmation" :data-dialog="dataDialog" @submit="submitPopupConfirmationHandle()" @close="closePopupConfirmationHandle()" />
-    <DialogLoading :show-popup="getIsLoading" />
+    <DialogLoading :show-popup="isLoading" />
     <DialogInformation :show-popup="isShowPopupInformation" :data-dialog="dataDialog" :icon-popup="iconPopup" @close="closePopupAddComplaintHandle ()" @submit="saveDataComplaintHandle()" />
   </div>
 </template>
@@ -50,13 +50,13 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('add-complaint', [
-      'getIsValidFormInformationComplaint',
-      'getIsValidFormLocationComplaint',
-      'getIsValidFormOtherComplaint',
-      'getIsLoading',
-      'getIsError'
-    ])
+    ...mapGetters('add-complaint', {
+      isValidFormInformationComplaint: 'getIsValidFormInformationComplaint',
+      isValidFormLocationComplaint: 'getIsValidFormLocationComplaint',
+      isValidFormOtherComplaint: 'getIsValidFormOtherComplaint',
+      isLoading: 'getIsLoading',
+      isError: 'getIsError'
+    })
   },
   methods: {
     submitFormAddComplaint () {
@@ -73,20 +73,20 @@ export default {
     },
     async submitFormInformationComplaintHandle () {
       await this.$refs.formInformationComplaint.inputDataInformationComplaintHandle()
-      if (this.getIsValidFormInformationComplaint) {
+      if (this.isValidFormInformationComplaint) {
         this.indexCurrentActive = 2
       }
     },
     async submitFormLocationComplaintHandle () {
       await this.$refs.formLocationComplaint.inputDataLocationComplaintHandle()
-      if (this.getIsValidFormLocationComplaint) {
+      if (this.isValidFormLocationComplaint) {
         this.indexCurrentActive = 3
         this.labelButton = 'Simpan'
       }
     },
     async submitFormOtherComplaintHandle () {
       await this.$refs.formOtherComplaint.inputDataOtherComplaintHandle()
-      if (this.getIsValidFormOtherComplaint) {
+      if (this.isValidFormOtherComplaint) {
         this.typeConfirmation = 'submit'
         this.showPopupConfirmationAddComplaint()
       }
@@ -138,7 +138,7 @@ export default {
         failed: this.setSucessFailedInformationHandle('Tambah Data Aduan gagal dilakukan', false)
       }
       this.dataDialog.title = 'Informasi Tambah Aduan'
-      if (this.getIsError) {
+      if (this.isError) {
         this.setDataDialog({ ...dataDialogInformation.failed })
         this.setIconPopup({ ...dataDialogInformation.failed.icon })
       } else {

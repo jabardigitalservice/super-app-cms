@@ -2,7 +2,7 @@
   <nuxt-link
     :to="{ path: link }"
     class="flex w-full min-w-[200px] items-center justify-between rounded-lg p-3 hover:bg-green-700 hover:font-bold hover:text-white"
-    :class="{ 'nuxt-link-exact-active': getActivePage == label }"
+    :class="{ 'nuxt-link-exact-active': pageActive == label }"
   >
     <div class="flex items-center">
       <BaseIconSvg
@@ -47,7 +47,7 @@ export default {
     }
   },
   computed: {
-    getActivePage () {
+    pageActive () {
       return this.$store.state.page
     }
   }
