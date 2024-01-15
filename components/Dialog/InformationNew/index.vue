@@ -27,7 +27,7 @@
                 type="button"
                 variant="primary"
                 class="!text-[14px] !font-bold"
-                @click="closeAllModal()"
+                @click="closeModalSuccess()"
               />
             </div>
           </template>
@@ -68,7 +68,7 @@ export default {
     isSuccess: { type: Boolean, default: false }
   },
   methods: {
-    closeAllModal () {
+    closeModalSuccess () {
       this.$store.commit('modals/CLOSEALL')
       this.$emit('close-all-modal')
     }

@@ -339,7 +339,11 @@ export default {
           buttonLeft: this.savedInformationPopup.buttonLeft
         }
         this.showPopupConfirmationInformation = true
-        this.informationPopupHandle(this.savedInformationPopup, this.isError, true)
+        this.informationPopupHandle(
+          this.savedInformationPopup,
+          this.isError,
+          true
+        )
         this.$store.commit('dialog/setMessage', this.popupMessage)
         this.$store.dispatch('dialog/showHandle', this.dataPopup)
       }
