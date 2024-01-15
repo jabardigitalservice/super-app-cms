@@ -16,10 +16,7 @@
         />
       </div>
       <div class="mt-3 rounded-b-lg bg-gray-50 px-6 py-4">
-        <div
-          class="flex justify-end"
-          :class="{ 'justify-center': isSuccess }"
-        >
+        <div class="flex justify-end" :class="{ 'justify-center': isSuccess }">
           <template v-if="isSuccess">
             <div>
               <jds-button
@@ -47,7 +44,9 @@
                 type="button"
                 variant="danger"
                 class="!text-[14px] !font-bold"
-                @click="$store.commit('modals/CLOSE', `${nameModal}-${typeModal}`)"
+                @click="
+                  $store.commit('modals/CLOSE', `${nameModal}-${typeModal}`)
+                "
               />
             </div>
           </template>
@@ -62,10 +61,14 @@ export default {
   name: 'DialogInformationNew',
   props: {
     nameModal: { type: String, default: '' },
-    typeModal: { type: String, default: 'information' },
     dialogModal: { type: Object, default: () => ({}) },
     detailItemModal: { type: Object, default: () => ({}) },
     isSuccess: { type: Boolean, default: false }
+  },
+  data () {
+    return {
+      typeModal: 'information'
+    }
   },
   methods: {
     closeModalSuccess () {

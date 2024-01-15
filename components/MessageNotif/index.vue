@@ -49,8 +49,15 @@
             <BaseTableAction
               :list-menu-pop-over="filterTableAction(item.status)"
               @detail="goToDetailPageHandle(item)"
-              @delete="openModalConfirmation('delete-confirmation', item)"
-              @publish="openModalConfirmation('publish-confirmation', item)"
+              @publish="
+                openModalConfirmation(
+                  publishedConfirmationPopup.nameModal,
+                  item
+                )
+              "
+              @delete="
+                openModalConfirmation(deleteConfirmationPopup.nameModal, item)
+              "
             />
           </template>
         </JdsDataTable>
@@ -62,16 +69,16 @@
       :detail-item-modal="detailItem"
       :path="`/messages/${detailItem.id}/send`"
       http-method="post"
-      @error="openModalInformation"
-      @success="openModalInformation"
+      @error="emitOpenModalInformation"
+      @success="emitOpenModalInformation"
     />
     <DialogConfirmationNew
       :dialog-modal="deleteConfirmationPopup"
       :detail-item-modal="detailItem"
       :path="`/messages/${detailItem.id}`"
       http-method="delete"
-      @error="openModalInformation"
-      @success="openModalInformation"
+      @error="emitOpenModalInformation"
+      @success="emitOpenModalInformation"
     />
 
     <DialogInformationNew
@@ -258,22 +265,25 @@ export default {
       this.detailItem.title = itemDetail.title
       this.$store.commit('modals/OPEN', modalName)
     },
-    openModalInformation (modalName, isSuccess) {
-      this.modalNameInformation = modalName
+    emitOpenModalInformation (modalNameEmitted, isSuccessEmitted) {
+      this.modalNameInformation = modalNameEmitted
       // check type modal
-      if (modalName === this.publishedConfirmationPopup.nameModal) {
-        this.dialogInformationPopup = isSuccess
-          ? this.publishedInformationPopup.successInformation
-          : this.publishedInformationPopup.failedInformation
-      } else {
-        this.dialogInformationPopup = isSuccess
-          ? this.deleteInformationPopup.successInformation
-          : this.deleteInformationPopup.failedInformation
-      }
+      const popupConfig =
+        modalNameEmitted === this.publishedConfirmationPopup.nameModal
+          ? this.publishedInformationPopup
+          : this.deleteInformationPopup
 
-      this.isSuccessConfirmation = isSuccess
+      const informationPopup = isSuccessEmitted
+        ? popupConfig.successInformation
+        : popupConfig.failedInformation
 
-      const modalFullName = `${modalName}-information`
+      this.dialogInformationPopup = informationPopup
+
+      // check staus for open modal information
+      this.isSuccessConfirmation = isSuccessEmitted
+
+      // open modal information
+      const modalFullName = `${modalNameEmitted}-information`
       this.$store.commit('modals/OPEN', modalFullName)
     }
   }

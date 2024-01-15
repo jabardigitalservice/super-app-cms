@@ -18,7 +18,10 @@
             variant="secondary"
             class="!h-[38px] !border-red-400 !py-1 !text-[14px] !font-bold !text-red-400"
             @click="
-              openModalConfirmation('delete-confirmation', detailMessageNotif)
+              openModalConfirmation(
+                deleteConfirmationPopup.nameModal,
+                detailMessageNotif
+              )
             "
           />
         </div>
@@ -28,7 +31,10 @@
           variant="primary"
           class="!h-[38px] !py-1 !text-[14px] !font-bold"
           @click="
-            openModalConfirmation('publish-confirmation', detailMessageNotif)
+            openModalConfirmation(
+              publishedConfirmationPopup.nameModal,
+              detailMessageNotif
+            )
           "
         />
       </div>
@@ -162,16 +168,16 @@
       :detail-item-modal="detailItem"
       :path="`/messages/${detailItem.id}/send`"
       http-method="post"
-      @error="openModalInformation"
-      @success="openModalInformation"
+      @error="emitOpenModalInformation"
+      @success="emitOpenModalInformation"
     />
     <DialogConfirmationNew
       :dialog-modal="deleteConfirmationPopup"
       :detail-item-modal="detailItem"
       :path="`/messages/${detailItem.id}`"
       http-method="delete"
-      @error="openModalInformation"
-      @success="openModalInformation"
+      @error="emitOpenModalInformation"
+      @success="emitOpenModalInformation"
     />
 
     <DialogInformationNew
@@ -179,7 +185,7 @@
       :dialog-modal="dialogInformationPopup"
       :detail-item-modal="detailItem"
       :is-success="isSuccessConfirmation"
-      @close-all-modal="handleInformation"
+      @close-all-modal="emitHandleInformation"
     />
   </div>
 </template>
@@ -210,17 +216,17 @@ export default {
       showImageCoverPopup: false,
       messageStatus,
       imageCover: '',
+      deleteConfirmationPopup,
+      deleteInformationPopup,
+      publishedConfirmationPopup,
+      publishedInformationPopup,
       detailItem: {
         id: '',
         title: ''
       },
       dialogInformationPopup: {},
       modalNameInformation: '',
-      isSuccessConfirmation: false,
-      deleteConfirmationPopup,
-      deleteInformationPopup,
-      publishedConfirmationPopup,
-      publishedInformationPopup
+      isSuccessConfirmation: false
     }
   },
   methods: {
@@ -240,25 +246,28 @@ export default {
       this.detailItem.title = itemDetail.title
       this.$store.commit('modals/OPEN', modalName)
     },
-    openModalInformation (modalName, isSuccess) {
-      this.modalNameInformation = modalName
+    emitOpenModalInformation (modalNameEmitted, isSuccessEmitted) {
+      this.modalNameInformation = modalNameEmitted
       // check type modal
-      if (modalName === this.publishedConfirmationPopup.nameModal) {
-        this.dialogInformationPopup = isSuccess
-          ? this.publishedInformationPopup.successInformation
-          : this.publishedInformationPopup.failedInformation
-      } else {
-        this.dialogInformationPopup = isSuccess
-          ? this.deleteInformationPopup.successInformation
-          : this.deleteInformationPopup.failedInformation
-      }
+      const popupConfig =
+        modalNameEmitted === this.publishedConfirmationPopup.nameModal
+          ? this.publishedInformationPopup
+          : this.deleteInformationPopup
 
-      this.isSuccessConfirmation = isSuccess
+      const informationPopup = isSuccessEmitted
+        ? popupConfig.successInformation
+        : popupConfig.failedInformation
 
-      const modalFullName = `${modalName}-information`
+      this.dialogInformationPopup = informationPopup
+
+      // check staus for open modal information
+      this.isSuccessConfirmation = isSuccessEmitted
+
+      // open modal information
+      const modalFullName = `${modalNameEmitted}-information`
       this.$store.commit('modals/OPEN', modalFullName)
     },
-    handleInformation () {
+    emitHandleInformation () {
       this.modalNameInformation === this.publishedConfirmationPopup.nameModal
         ? this.$emit('fetchData')
         : this.goToBackHandle()

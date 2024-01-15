@@ -1,5 +1,5 @@
 <template>
-  <BaseDialogFrame :name="`${dialogModal?.nameModal}-${dialogModal?.typeModal}`">
+  <BaseDialogFrame :name="dialogModal?.nameModal">
     <BaseDialogPanel>
       <BaseDialogHeader :title="dialogModal.title" />
       <BaseDialogDescription
@@ -7,7 +7,7 @@
         :sub-description="detailItemModal.title"
         class="p-6"
       />
-      <BaseDialogFooterNew :name="`${dialogModal.nameModal}-${dialogModal.typeModal}`">
+      <BaseDialogFooterNew :name="`${dialogModal.nameModal}`">
         <jds-button
           :label="dialogModal.button.label"
           type="button"
