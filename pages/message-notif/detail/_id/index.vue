@@ -1,5 +1,5 @@
 <template>
-  <MessageNotifDetail :detail-message-notif="detailMessageNotif" @close="closeHandle" />
+  <MessageNotifDetail :detail-message-notif="detailMessageNotif" @fetchData=" $fetch()" />
 </template>
 
 <script>
@@ -40,16 +40,6 @@ export default {
       navigations: this.navigations,
       descriptionPage: this.descriptionPage
     })
-  },
-  methods: {
-    closeHandle (value) {
-      this.$store.commit('dialog/clearState')
-      if (value.popupName === 'delete' && value.dialogType === 'information') {
-        this.$router.push('/message-notif')
-      } else {
-        this.$fetch()
-      }
-    }
   }
 }
 </script>

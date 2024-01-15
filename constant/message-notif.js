@@ -14,6 +14,8 @@ export const messageNotifHeader = [
 export const deleteConfirmationPopup = {
   title: 'Konfirmasi Hapus',
   descriptionText: 'Apakah Anda yakin ingin menghapus pesan ini?',
+  nameModal: 'delete',
+  typeModal: 'confirmation',
   button: {
     label: 'Hapus Pesan',
     variant: 'danger'
@@ -23,6 +25,8 @@ export const deleteConfirmationPopup = {
 export const publishedConfirmationPopup = {
   title: 'Konfirmasi Publikasi',
   descriptionText: 'Apakah Anda yakin ingin mempublikasi pesan ini?',
+  nameModal: 'publish',
+  typeModal: 'confirmation',
   button: {
     label: 'Ya Publikasikan',
     variant: 'primary'

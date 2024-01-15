@@ -59,8 +59,6 @@
 
     <DialogConfirmationNew
       :dialog-modal="publishedConfirmationPopup"
-      name-modal="publish"
-      type-modal="confirmation"
       :detail-item-modal="detailItem"
       :path="`/messages/${detailItem.id}/send`"
       http-method="post"
@@ -69,8 +67,6 @@
     />
     <DialogConfirmationNew
       :dialog-modal="deleteConfirmationPopup"
-      name-modal="delete"
-      type-modal="confirmation"
       :detail-item-modal="detailItem"
       :path="`/messages/${detailItem.id}`"
       http-method="delete"
@@ -264,8 +260,8 @@ export default {
     },
     openModalInformation (modalName, isSuccess) {
       this.modalNameInformation = modalName
-
-      if (modalName === 'publish') {
+      // check type modal
+      if (modalName === this.publishedConfirmationPopup.nameModal) {
         this.dialogInformationPopup = isSuccess
           ? this.publishedInformationPopup.successInformation
           : this.publishedInformationPopup.failedInformation
@@ -277,7 +273,8 @@ export default {
 
       this.isSuccessConfirmation = isSuccess
 
-      this.$store.commit('modals/OPEN', modalName + '-information')
+      const modalFullName = `${modalName}-information`
+      this.$store.commit('modals/OPEN', modalFullName)
     }
   }
 }

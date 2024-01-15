@@ -1,5 +1,5 @@
 <template>
-  <BaseDialogFrame :name="`${nameModal}-${typeModal}`">
+  <BaseDialogFrame :name="`${dialogModal?.nameModal}-${dialogModal?.typeModal}`">
     <BaseDialogPanel>
       <BaseDialogHeader :title="dialogModal.title" />
       <BaseDialogDescription
@@ -7,7 +7,7 @@
         :sub-description="detailItemModal.title"
         class="p-6"
       />
-      <BaseDialogFooterNew :name="`${nameModal}-${typeModal}`">
+      <BaseDialogFooterNew :name="`${dialogModal.nameModal}-${dialogModal.typeModal}`">
         <jds-button
           :label="dialogModal.button.label"
           type="button"
@@ -23,8 +23,6 @@
 export default {
   name: 'DialogConfirmationNew',
   props: {
-    nameModal: { type: String, required: true, default: '' },
-    typeModal: { type: String, required: true, default: '' },
     dialogModal: { type: Object, default: () => ({}) },
     detailItemModal: { type: Object, default: () => ({}) },
     path: { type: String, required: true },
@@ -34,9 +32,9 @@ export default {
     async confirmationButton () {
       try {
         await this.$axios[this.httpMethod](this.path)
-        this.$emit('success', this.nameModal, true)
+        this.$emit('success', this.dialogModal.nameModal, true)
       } catch (error) {
-        this.$emit('error', this.nameModal, false)
+        this.$emit('error', this.dialogModal.nameModal, false)
       }
     }
   }
