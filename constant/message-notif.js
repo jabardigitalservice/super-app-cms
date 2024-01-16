@@ -34,12 +34,8 @@ export const publishedConfirmationPopup = {
 export const savedConfirmationPopup = {
   title: 'Konfirmasi Simpan',
   descriptionText: 'Apakah Anda yakin ingin menyimpan pesan ini?',
-  dialogType: 'confirmation',
-  buttonLeft: {
-    label: 'Batal',
-    variant: 'secondary'
-  },
-  buttonRight: {
+  nameModal: 'save-confirmation',
+  button: {
     label: 'Ya Simpan',
     variant: 'primary'
   }
