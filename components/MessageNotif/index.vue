@@ -1,21 +1,24 @@
 <template>
   <div>
     <div class="mt-2">
-      <div class="flex justify-between mb-4">
+      <div class="mb-4 flex justify-between">
         <jds-search
           v-model="search"
           placeholder="Masukkan judul pesan"
           icon
           :button="false"
           small
-          class="w-[275px] h-[38px] text-gray-500"
+          class="h-[38px] w-[275px] text-gray-500"
           @input="searchHandle"
         />
-        <jds-button class="!bg-green-600 !w-[102px] !text-sm" @click.prevent="goToFormAddMessageNotifHandle">
+        <jds-button
+          class="!w-[102px] !bg-green-600 !text-sm"
+          @click.prevent="goToFormAddMessageNotifHandle"
+        >
           Buat Pesan
         </jds-button>
       </div>
-      <div class=" overflow-x-auto overflow-y-hidden">
+      <div class="overflow-x-auto overflow-y-hidden">
         <JdsDataTable
           :headers="messageNotifHeader"
           :items="listMessageNotif"
@@ -28,12 +31,12 @@
           @change:sort="sortHandle"
         >
           <!-- eslint-disable-next-line vue/valid-v-slot -->
-          <template #item.status="{item}">
+          <template #item.status="{ item }">
             <div class="flex items-center">
               <div
                 v-show="item?.status"
                 :class="{
-                  'mr-2 h-2 w-2 rounded-full':true,
+                  'mr-2 h-2 w-2 rounded-full': true,
                   'bg-green-600': item.status == messageStatus.published.id,
                   'bg-yellow-600': item.status == messageStatus.waiting.id,
                 }"
@@ -43,25 +46,69 @@
           </template>
           <!-- eslint-disable-next-line vue/valid-v-slot -->
           <template #item.action="{ item }">
-            <BaseTableAction :list-menu-pop-over="filterTableAction(item.status)" @detail="goToDetailPageHandle(item)" @delete="showDeletePopupHandle(item)" @publish="showPublishedPopupHandle(item)" />
+            <BaseTableAction
+              :list-menu-pop-over="filterTableAction(item.status)"
+              @detail="goToDetailPageHandle(item)"
+              @publish="
+                openModalConfirmation(
+                  publishedConfirmationPopup.nameModal,
+                  item
+                )
+              "
+              @delete="
+                openModalConfirmation(deleteConfirmationPopup.nameModal, item)
+              "
+            />
           </template>
         </JdsDataTable>
       </div>
     </div>
-    <BasePopup :show-popup="showPopupConfirmationInformation" @submit="submitHandle" @close="closeHandle" />
+
+    <DialogConfirmationNew
+      :dialog-modal="publishedConfirmationPopup"
+      :detail-item-modal="detailItem"
+      :path="`/messages/${detailItem.id}/send`"
+      http-method="post"
+      @error="emitOpenModalInformation"
+      @success="emitOpenModalInformation"
+    />
+    <DialogConfirmationNew
+      :dialog-modal="deleteConfirmationPopup"
+      :detail-item-modal="detailItem"
+      :path="`/messages/${detailItem.id}`"
+      http-method="delete"
+      @error="emitOpenModalInformation"
+      @success="emitOpenModalInformation"
+    />
+
+    <DialogInformationNew
+      :name-modal="modalNameInformation"
+      :dialog-modal="dialogInformationPopup"
+      :detail-item-modal="detailItem"
+      :is-success="isSuccessConfirmation"
+      @close-all-modal="$fetch()"
+    />
   </div>
 </template>
 
 <script>
 import debounce from 'lodash.debounce'
-import { messageNotifHeader, messageStatus, deleteConfirmationPopup, deleteInformationPopup, publishedConfirmationPopup, publishedInformationPopup } from '~/constant/message-notif'
-import { iconPopup } from '~/constant/icon-popup'
-import { formatDate, generateItemsPerPageOptions, resetQueryParamsUrl } from '~/utils'
-import popup from '~/mixins/message-notif'
+import {
+  messageNotifHeader,
+  messageStatus,
+  deleteConfirmationPopup,
+  deleteInformationPopup,
+  publishedConfirmationPopup,
+  publishedInformationPopup
+} from '~/constant/message-notif'
+import {
+  formatDate,
+  generateItemsPerPageOptions,
+  resetQueryParamsUrl
+} from '~/utils'
 
 export default {
   name: 'ListMessageNotif',
-  mixins: [popup],
   data () {
     return {
       messageNotifList: [],
@@ -87,15 +134,23 @@ export default {
       },
       deleteConfirmationPopup,
       deleteInformationPopup,
-      iconPopup,
       publishedInformationPopup,
       publishedConfirmationPopup,
-      search: ''
+      search: '',
+      detailItem: {
+        id: '',
+        title: ''
+      },
+      dialogInformationPopup: {},
+      modalNameInformation: '',
+      isSuccessConfirmation: false
     }
   },
   async fetch () {
     try {
-      const response = await this.$axios.get('/messages', { params: this.query })
+      const response = await this.$axios.get('/messages', {
+        params: this.query
+      })
       const dataMessageNotif = response.data
       this.messageNotifList = dataMessageNotif.data
       this.pagination.currentPage = dataMessageNotif.meta.page
@@ -140,22 +195,27 @@ export default {
           this.search = this.query.q || ''
         }
       }
-
     }
   },
   mounted () {
-    this.pagination.itemsPerPageOptions = generateItemsPerPageOptions(this.pagination.itemsPerPage)
+    this.pagination.itemsPerPageOptions = generateItemsPerPageOptions(
+      this.pagination.itemsPerPage
+    )
   },
   methods: {
     filterTableAction (currentMessageStatus) {
       if (currentMessageStatus === messageStatus.published.id) {
-        return this.menuTableAction.filter(item => item.menu !== 'Publikasikan')
+        return this.menuTableAction.filter(
+          item => item.menu !== 'Publikasikan'
+        )
       } else {
         return this.menuTableAction
       }
     },
     getStatusName (currentStatus) {
-      return Object.values(this.messageStatus).find(item => item.id === currentStatus).status
+      return Object.values(this.messageStatus).find(
+        item => item.id === currentStatus
+      ).status
     },
     pageChangeHandle (value) {
       this.query.page = value
@@ -199,29 +259,55 @@ export default {
     },
     goToFormAddMessageNotifHandle () {
       this.$router.push('/message-notif/create')
+    },
+    openModalConfirmation (modalName, itemDetail) {
+      this.detailItem.id = itemDetail.id
+      this.detailItem.title = itemDetail.title
+      this.$store.commit('modals/OPEN', modalName)
+    },
+    emitOpenModalInformation (modalNameEmitted, isSuccessEmitted) {
+      this.modalNameInformation = modalNameEmitted
+      // check type modal
+      const popupConfig =
+        modalNameEmitted === this.publishedConfirmationPopup.nameModal
+          ? this.publishedInformationPopup
+          : this.deleteInformationPopup
+
+      const informationPopup = isSuccessEmitted
+        ? popupConfig.successInformation
+        : popupConfig.failedInformation
+
+      this.dialogInformationPopup = informationPopup
+
+      // check staus for open modal information
+      this.isSuccessConfirmation = isSuccessEmitted
+
+      // open modal information
+      const modalFullName = `${modalNameEmitted}-information`
+      this.$store.commit('modals/OPEN', modalFullName)
     }
   }
 }
 </script>
 
 <style scoped>
-  .jds-data-table:deep{
-    border-spacing: 1px !important;
-    @apply rounded-lg;
-  }
+.jds-data-table:deep {
+  border-spacing: 1px !important;
+  @apply rounded-lg;
+}
 
-  .jds-data-table:deep tr th:first-child{
-    @apply rounded-tl-lg;
-  }
+.jds-data-table:deep tr th:first-child {
+  @apply rounded-tl-lg;
+}
 
-  .jds-data-table:deep tr th:last-child{
-    @apply rounded-tr-lg;
-  }
-  .jds-data-table:deep tr th {
-    @apply h-[42px] border-r border-white bg-green-600;
-  }
+.jds-data-table:deep tr th:last-child {
+  @apply rounded-tr-lg;
+}
+.jds-data-table:deep tr th {
+  @apply h-[42px] border-r border-white bg-green-600;
+}
 
-  .jds-data-table:deep tr td {
-    @apply border-r border-gray-200 max-w-[435px];
-  }
+.jds-data-table:deep tr td {
+  @apply max-w-[435px] border-r border-gray-200;
+}
 </style>

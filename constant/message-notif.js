@@ -1,3 +1,5 @@
+import { iconPopup } from '~/constant/icon-popup'
+
 export const messageNotifHeader = [
   { key: 'title', text: 'Judul Pesan', sortable: true },
   { key: 'createdAt', text: 'Dibuat pada', sortable: true },
@@ -12,12 +14,8 @@ export const messageNotifHeader = [
 export const deleteConfirmationPopup = {
   title: 'Konfirmasi Hapus',
   descriptionText: 'Apakah Anda yakin ingin menghapus pesan ini?',
-  dialogType: 'confirmation',
-  buttonLeft: {
-    label: 'Batal',
-    variant: 'secondary'
-  },
-  buttonRight: {
+  nameModal: 'delete-confirmation',
+  button: {
     label: 'Hapus Pesan',
     variant: 'danger'
   }
@@ -26,12 +24,8 @@ export const deleteConfirmationPopup = {
 export const publishedConfirmationPopup = {
   title: 'Konfirmasi Publikasi',
   descriptionText: 'Apakah Anda yakin ingin mempublikasi pesan ini?',
-  dialogType: 'confirmation',
-  buttonLeft: {
-    label: 'Batal',
-    variant: 'secondary'
-  },
-  buttonRight: {
+  nameModal: 'publish-confirmation',
+  button: {
     label: 'Ya Publikasikan',
     variant: 'primary'
   }
@@ -52,50 +46,28 @@ export const savedConfirmationPopup = {
 }
 
 export const publishedInformationPopup = {
-  title: 'Publikasi Pesan',
   successInformation: {
+    title: 'Publikasi Pesan',
     descriptionText: 'Pesan berhasil dipublikasikan',
-    dialogType: 'information',
-    buttonRight: {
-      label: 'Saya mengerti',
-      variant: 'primary'
-    }
+    icon: iconPopup[0]
   },
   failedInformation: {
+    title: 'Publikasi Pesan',
     descriptionText: 'Pesan gagal dipublikasikan',
-    dialogType: 'confirmation',
-    buttonRight: {
-      label: 'Coba Lagi',
-      variant: 'primary'
-    }
-  },
-  buttonLeft: {
-    label: 'Batal',
-    variant: 'secondary'
+    icon: iconPopup[1]
   }
 }
 
 export const deleteInformationPopup = {
-  title: 'Hapus Pesan',
   successInformation: {
+    title: 'Hapus Pesan',
     descriptionText: 'Pesan berhasil dihapus',
-    dialogType: 'information',
-    buttonRight: {
-      label: 'Saya mengerti',
-      variant: 'primary'
-    }
+    icon: iconPopup[0]
   },
   failedInformation: {
+    title: 'Hapus Pesan',
     descriptionText: 'Pesan gagal dihapus',
-    dialogType: 'confirmation',
-    buttonRight: {
-      label: 'Coba Lagi',
-      variant: 'primary'
-    }
-  },
-  buttonLeft: {
-    label: 'Batal',
-    variant: 'secondary'
+    icon: iconPopup[1]
   }
 }
 
@@ -110,7 +82,8 @@ export const savedInformationPopup = {
     }
   },
   warningInformation: {
-    descriptionText: 'Pastikan Anda mengisi field yang diminta terlebih dahulu.',
+    descriptionText:
+      'Pastikan Anda mengisi field yang diminta terlebih dahulu.',
     dialogType: 'information',
     buttonRight: {
       label: 'Saya mengerti',
