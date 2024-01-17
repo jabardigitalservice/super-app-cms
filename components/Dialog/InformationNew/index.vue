@@ -16,8 +16,8 @@
         />
       </div>
       <div class="mt-3 rounded-b-lg bg-gray-50 px-6 py-4">
-        <div class="flex justify-end" :class="{ 'justify-center': isSuccess }">
-          <template v-if="isSuccess">
+        <template v-if="isSuccess || isWarning">
+          <div class="flex justify-center">
             <div>
               <jds-button
                 label="Saya mengerti"
@@ -27,8 +27,10 @@
                 @click="closeModalSuccess()"
               />
             </div>
-          </template>
-          <template v-else>
+          </div>
+        </template>
+        <template v-else>
+          <div class="flex justify-end">
             <div class="mr-4">
               <jds-button
                 label="Batal"
@@ -49,8 +51,8 @@
                 "
               />
             </div>
-          </template>
-        </div>
+          </div>
+        </template>
       </div>
     </BaseDialogPanel>
   </BaseDialogFrame>
@@ -63,7 +65,8 @@ export default {
     nameModal: { type: String, default: '' },
     dialogModal: { type: Object, default: () => ({}) },
     detailItemModal: { type: Object, default: () => ({}) },
-    isSuccess: { type: Boolean, default: false }
+    isSuccess: { type: Boolean, default: false },
+    isWarning: { type: Boolean, default: false }
   },
   data () {
     return {

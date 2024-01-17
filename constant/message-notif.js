@@ -1,4 +1,4 @@
-import { iconPopup } from '~/constant/icon-popup'
+import { iconPopup } from '~/constant/icon-popup-new'
 
 export const messageNotifHeader = [
   { key: 'title', text: 'Judul Pesan', sortable: true },
@@ -45,12 +45,12 @@ export const publishedInformationPopup = {
   successInformation: {
     title: 'Publikasi Pesan',
     descriptionText: 'Pesan berhasil dipublikasikan',
-    icon: iconPopup[0]
+    icon: iconPopup.success
   },
   failedInformation: {
     title: 'Publikasi Pesan',
     descriptionText: 'Pesan gagal dipublikasikan',
-    icon: iconPopup[1]
+    icon: iconPopup.failed
   }
 }
 
@@ -58,45 +58,32 @@ export const deleteInformationPopup = {
   successInformation: {
     title: 'Hapus Pesan',
     descriptionText: 'Pesan berhasil dihapus',
-    icon: iconPopup[0]
+    icon: iconPopup.success
   },
   failedInformation: {
     title: 'Hapus Pesan',
     descriptionText: 'Pesan gagal dihapus',
-    icon: iconPopup[1]
+    icon: iconPopup.failed
   }
 }
 
 export const savedInformationPopup = {
-  title: 'Simpan Pesan',
+
   successInformation: {
+    title: 'Simpan Pesan',
     descriptionText: 'Pesan berhasil disimpan',
-    dialogType: 'information',
-    buttonRight: {
-      label: 'Saya mengerti',
-      variant: 'primary'
-    }
+    icon: iconPopup.success
   },
   warningInformation: {
+    title: 'Isian Belum Lengkap',
     descriptionText:
       'Pastikan Anda mengisi field yang diminta terlebih dahulu.',
-    dialogType: 'information',
-    buttonRight: {
-      label: 'Saya mengerti',
-      variant: 'primary'
-    }
+    icon: iconPopup.warning
   },
   failedInformation: {
+    title: 'Simpan Pesan',
     descriptionText: 'Pesan gagal disimpan',
-    dialogType: 'confirmation',
-    buttonRight: {
-      label: 'Coba Lagi',
-      variant: 'primary'
-    }
-  },
-  buttonLeft: {
-    label: 'Batal',
-    variant: 'secondary'
+    icon: iconPopup.failed
   }
 }
 
