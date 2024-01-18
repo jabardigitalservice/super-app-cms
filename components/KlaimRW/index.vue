@@ -1,71 +1,58 @@
 <template>
   <div>
-    <div class="mb-6 flex justify-between">
-      <jds-search
-        v-model="search"
-        small
-        icon
-        :button="false"
-        placeholder="Masukkan nama akun"
-        class="w-[275px] text-gray-500"
-        @input="onSearch"
-      />
-    </div>
-    <div class="overflow-x-auto rounded-lg font-roboto">
-      <JdsDataTable
-        :headers="headerTableKlaimRW"
-        :items="dataRW"
-        :pagination="pagination"
-        :loading="$fetchState.pending"
-        @next-page="pageChange"
-        @previous-page="pageChange"
-        @page-change="pageChange"
-        @per-page-change="perPageChange"
-        @change:sort="sortChange"
-      >
-        <!-- eslint-disable-next-line vue/valid-v-slot -->
-        <template #item.address="{ item }">
-          <button
-            class="rounded-lg border border-green-700 px-4 py-1 text-green-700 hover:bg-green-50"
-            @click="openModalDetailAddress(item)"
-          >
-            Lihat Alamat
-          </button>
-        </template>
-        <!-- eslint-disable-next-line vue/valid-v-slot -->
-        <template #item.document="{ item }">
-          <button
-            class="rounded-lg border border-green-700 px-4 py-1 text-green-700 hover:bg-green-50"
-            @click="onClickDocument(item?.rwDecree)"
-          >
-            Lihat Dokumen
-          </button>
-        </template>
-        <!-- eslint-disable-next-line vue/valid-v-slot -->
-        <template #item.status="{ item }">
-          <div class="flex items-center">
-            <span
-              :class="{
-                'mr-2 h-2 w-2 rounded-full': true,
-                'bg-green-600': item.rwStatus === userStatus.verified,
-                'bg-yellow-600': item.rwStatus === userStatus.waiting,
-                'bg-red-600': item.rwStatus === userStatus.rejected,
-              }"
-            />
-            {{ item.rwStatus }}
-          </div>
-        </template>
-        <!-- eslint-disable-next-line vue/valid-v-slot -->
-        <template #item.action="{ item }">
-          <KlaimRWTableAction
-            :status="item.rwStatus"
-            @detail="goToDetail(item.id)"
-            @verify="showVerifyPopupHandle(item)"
-            @reject="rejectUser(item)"
+    <BaseTableData
+      :header-table="headerTableKlaimRW"
+      :list-data="dataRW"
+      :list-slot="['address', 'document', 'status', 'action']"
+      placeholder-search="Masukkan nama akun"
+      :is-loading="$fetchState.pending"
+      @pageChange="$fetch()"
+      @perPageChange="$fetch()"
+      @search="$fetch()"
+      @sort="sortingDataRW"
+    >
+      <!-- eslint-disable-next-line vue/valid-v-slot -->
+      <template #item.address="{ item }">
+        <button
+          class="rounded-lg border border-green-700 px-4 py-1 text-green-700 hover:bg-green-50"
+          @click="openModalDetailAddress(item)"
+        >
+          Lihat Alamat
+        </button>
+      </template>
+      <!-- eslint-disable-next-line vue/valid-v-slot -->
+      <template #item.document="{ item }">
+        <button
+          class="rounded-lg border border-green-700 px-4 py-1 text-green-700 hover:bg-green-50"
+          @click="onClickDocument(item?.rwDecree)"
+        >
+          Lihat Dokumen
+        </button>
+      </template>
+      <!-- eslint-disable-next-line vue/valid-v-slot -->
+      <template #item.status="{ item }">
+        <div class="flex items-center">
+          <span
+            :class="{
+              'mr-2 h-2 w-2 rounded-full': true,
+              'bg-green-600': item?.rwStatus === userStatus.verified,
+              'bg-yellow-600': item?.rwStatus === userStatus.waiting,
+              'bg-red-600': item?.rwStatus === userStatus.rejected,
+            }"
           />
-        </template>
-      </JdsDataTable>
-    </div>
+          {{ item.rwStatus }}
+        </div>
+      </template>
+      <!-- eslint-disable-next-line vue/valid-v-slot -->
+      <template #item.action="{ item }">
+        <KlaimRWTableAction
+          :status="item.rwStatus"
+          @detail="goToDetail(item.id)"
+          @verify="showVerifyPopupHandle(item)"
+          @reject="rejectUser(item)"
+        />
+      </template>
+    </BaseTableData>
     <KlaimRWDetailAddress
       title="Alamat RW"
       :loading="isLoadingDetailData"
@@ -105,12 +92,15 @@
 </template>
 
 <script>
-import debounce from 'lodash.debounce'
 import PopupRejectRw from './Popup/RejectConfirmation.vue'
 import PopupInformation from './Popup/Information.vue'
 import popup from '~/mixins/klaim-rw'
 import { headerTableKlaimRW, userStatus } from '~/constant/klaim-rw'
-import { generateItemsPerPageOptions, formatDate, resetQueryParamsUrl } from '~/utils'
+import {
+  generateItemsPerPageOptions,
+  formatDate,
+  resetQueryParamsUrl
+} from '~/utils'
 
 export default {
   name: 'ComponentKlaimRW',
@@ -121,24 +111,9 @@ export default {
   mixins: [popup],
   data () {
     return {
-      search: '',
-      data: [],
+      listDataRw: [],
       detailData: {},
       isLoadingDetailData: false,
-      pagination: {
-        currentPage: 1,
-        totalRows: 0,
-        itemsPerPage: 5,
-        itemsPerPageOptions: [],
-        disabled: true
-      },
-      query: {
-        pageSize: 5,
-        page: 1,
-        nameFilter: '',
-        sortType: 'desc',
-        sortBy: 'date'
-      },
       headerTableKlaimRW,
       userStatus,
       showDetailAddress: false,
@@ -153,32 +128,62 @@ export default {
   },
   async fetch () {
     try {
+      this.$store.commit('data-table/setQuery', {
+        ...this.query,
+        nameFilter: this.search
+      })
       const response = await this.$axios.get('/user/rw', {
         params: this.query
       })
 
       const { data } = response.data
-      this.data = data?.data || []
-      if (this.data.length) {
-        this.pagination.disabled = false
+      this.listDataRw = data?.data || []
+      if (this.listDataRw.length) {
+        this.$store.commit('data-table/setPagination', {
+          ...this.pagination,
+          disabled: false
+        })
       } else {
-        this.pagination.disabled = true
+        this.$store.commit('data-table/setPagination', {
+          ...this.pagination,
+          disabled: true
+        })
       }
-      this.pagination.currentPage = data?.page || 1
-      this.pagination.totalRows = data?.totalData || 0
-      this.pagination.itemsPerPage = data?.pageSize || this.query.pageSize
+      this.$store.commit('data-table/setPagination', {
+        ...this.pagination,
+        currentPage: data?.page || 1,
+        totalRows: data?.totalData || 0,
+        itemsPerPage: data?.pageSize || 5
+      })
     } catch (error) {
-      this.pagination.disabled = true
+      this.$store.commit('data-table/setPagination', {
+        ...this.pagination,
+        disabled: true
+      })
     }
   },
   computed: {
     dataRW () {
-      return this.data.map((item) => {
+      return this.listDataRw.map((item) => {
         return {
           ...item,
           date: formatDate(item.createdAt || '')
         }
       })
+    },
+    pagination () {
+      return { ...this.$store.state['data-table'].pagination }
+    },
+    query: {
+      get () {
+        return { ...this.$store.state['data-table'].query }
+      },
+      set (value) {
+        this.$store.commit('data-table/setQuery', value)
+      }
+    },
+    search () {
+      return this.$store.state['data-table'].search
     }
   },
 
@@ -196,11 +201,10 @@ export default {
       immediate: true,
       handler (newQuery) {
         if (Object.keys(newQuery).length > 0) {
-          this.query = { ...newQuery }
-          this.search = this.query.nameFilter || ''
+          this.$store.commit('data-table/setQuery', { ...newQuery })
+          this.$store.commit('data-table/search', this.query.nameFilter || '')
         }
       }
-
     }
   },
   mounted () {
@@ -209,37 +213,14 @@ export default {
     )
   },
   methods: {
-    searchTitle: debounce(function (value) {
-      if (value.length > 2) {
-        this.query.page = 1
-        this.query.nameFilter = value
-        this.$fetch()
-      } else if (value.length === 0) {
-        this.query.nameFilter = null
-        this.$fetch()
+    sortingDataRW (sortBy) {
+      if (sortBy === 'status') {
+        this.$store.commit('data-table/setQuery', {
+          ...this.query,
+          sortBy: 'rwStatus'
+        })
       }
-    }, 500),
-    onSearch (value) {
-      this.searchTitle(value)
-    },
-    pageChange (value) {
-      this.query.page = value
-    },
-    perPageChange (value) {
-      if (value) {
-        this.query.pageSize = value
-      }
-      this.query.page = 1
-    },
-    sortChange (value) {
-      const key = Object.keys(value)[0]
-      if (key && value[key] !== 'no-sort') {
-        this.query.sortType = value[key]
-        this.query.sortBy = key === 'status' ? 'rwStatus' : key
-      } else {
-        this.query.sortType = 'desc'
-        this.query.sortBy = 'date'
-      }
+      this.$fetch()
     },
     async openModalDetailAddress (item) {
       const { name, email } = item
