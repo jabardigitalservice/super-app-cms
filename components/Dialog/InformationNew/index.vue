@@ -4,9 +4,9 @@
       <BaseDialogHeader :title="dialogModal?.title" />
       <div class="flex items-start px-6 pt-4 pb-10">
         <jds-icon
-          :name="dialogModal.icon?.name"
+          :name="dialogModal?.icon?.name"
           size="sm"
-          :fill="dialogModal.icon?.fill"
+          :fill="dialogModal?.icon?.fill"
           class="mr-3 mt-1"
           :class="{ 'mt-0': !dialogModal?.descriptionText }"
         />

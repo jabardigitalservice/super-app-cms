@@ -31,11 +31,14 @@ export default {
   },
   methods: {
     async confirmationButton () {
+      let isSuccess
       try {
-        await this.$axios[this.httpMethod](this?.path, { ...this.params })
-        this.$emit('success', this.dialogModal.nameModal, true)
+        const response = await this.$axios[this.httpMethod](this?.path, { ...this.params })
+        isSuccess = true
+        this.$emit('success', this.dialogModal.nameModal, isSuccess, response)
       } catch (error) {
-        this.$emit('error', this.dialogModal.nameModal, false)
+        isSuccess = false
+        this.$emit('error', this.dialogModal.nameModal, isSuccess)
       }
     }
   }
