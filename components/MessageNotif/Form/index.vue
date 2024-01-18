@@ -12,21 +12,6 @@
         </div>
       </jds-button>
       <div class="flex">
-        <!-- <div class="mr-3">
-          <jds-button
-            label="Simpan Pesan"
-            variant="secondary"
-            class="!font-lato !text-[14px] !font-bold"
-            @click="submitFormMessageNotifHandle('save')"
-          />
-        </div>
-        <jds-button
-          label="Publikasikan Pesan"
-          variant="primary"
-          class="!bg-green-600 !font-lato !text-[14px] !font-bold"
-          @click="submitFormMessageNotifHandle('publish')"
-        /> -->
-
         <div class="mr-3">
           <jds-button
             label="Simpan Pesan"
@@ -232,7 +217,7 @@
       :detail-item-modal="detailItem"
       :is-success="isSuccessConfirmation"
       :is-warning="isWarningInformation"
-      @close-all-modal="checkConfirmation()"
+      @close-all-modal="closeAllModalSuccess()"
     />
 
     <BaseViewFile
@@ -387,7 +372,7 @@ export default {
     goToBackHandle () {
       this.$router.push('/message-notif/')
     },
-    checkConfirmation () {
+    closeAllModalSuccess () {
       if (this.isSuccessConfirmation) {
         this.goToBackHandle()
       }

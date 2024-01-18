@@ -1,5 +1,5 @@
 <template>
-  <BaseDialogFrame :name="`${nameModal}-${typeModal}`" :only-close-on-button="isSuccess">
+  <BaseDialogFrame :name="`${nameModal}-${typeModal}`" :close-modal-self="!isSuccess">
     <BaseDialogPanel>
       <BaseDialogHeader :title="dialogModal?.title" />
       <div class="flex items-start px-6 pt-4 pb-10">

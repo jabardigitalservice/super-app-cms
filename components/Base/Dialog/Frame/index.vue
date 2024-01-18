@@ -23,7 +23,7 @@ export default {
   name: 'BaseDialogFrame',
   props: {
     name: { type: String, required: true },
-    onlyCloseOnButton: { type: Boolean, default: false }
+    closeModalSelf: { type: Boolean, default: true }
   },
   computed: {
     isOpen () {
@@ -37,7 +37,7 @@ export default {
   },
   methods: {
     close () {
-      if (!this.onlyCloseOnButton) {
+      if (this.closeModalSelf) {
         this.$store.commit('modals/CLOSE', this.name)
       }
     }
