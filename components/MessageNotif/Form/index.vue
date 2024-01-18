@@ -232,7 +232,7 @@
       :detail-item-modal="detailItem"
       :is-success="isSuccessConfirmation"
       :is-warning="isWarningInformation"
-      @close-all-modal="checkAll()"
+      @close-all-modal="checkConfirmation()"
     />
 
     <BaseViewFile
@@ -387,8 +387,10 @@ export default {
     goToBackHandle () {
       this.$router.push('/message-notif/')
     },
-    checkAll () {
-      this.goToBackHandle()
+    checkConfirmation () {
+      if (this.isSuccessConfirmation) {
+        this.goToBackHandle()
+      }
     },
     showConfirmation (typeForm) {
       this.detailItem.title = this.fieldMessageNotif.title
