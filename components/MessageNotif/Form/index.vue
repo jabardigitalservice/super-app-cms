@@ -220,6 +220,8 @@
     <DialogConfirmationNew
       :dialog-modal="publishedConfirmationPopup"
       :detail-item-modal="detailItem"
+      :path="'/messages'"
+      :params="fieldMessageNotif"
       @error="emitOpenModalInformation"
       @success="emitOpenModalInformation"
     />
@@ -246,7 +248,6 @@
 import Editor from '@tinymce/tinymce-vue'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import ArrowLeft from '~/assets/icon/arrow-left.svg?inline'
-import popup from '~/mixins/message-notif'
 import {
   savedConfirmationPopup,
   savedInformationPopup,
@@ -262,7 +263,6 @@ export default {
     ValidationObserver,
     ValidationProvider
   },
-  mixins: [popup],
   data () {
     return {
       fieldMessageNotif: {
@@ -379,35 +379,42 @@ export default {
       const modalName = 'warning'
       this.isWarningInformation = true
       this.modalNameInformation = modalName
-      this.dialogInformationPopup = this.savedInformationPopup.warningInformation
+      this.dialogInformationPopup =
+        this.savedInformationPopup.warningInformation
       const modalFullName = `${modalName}-information`
       this.$store.commit('modals/OPEN', modalFullName)
     },
+    goToBackHandle () {
+      this.$router.push('/message-notif/')
+    },
     checkAll () {
-      console.log('abcd')
+      this.goToBackHandle()
     },
     showConfirmation (typeForm) {
       this.detailItem.title = this.fieldMessageNotif.title
       this.$store.commit('modals/OPEN', typeForm)
     },
-    async emitOpenModalInformation (modalNameEmitted, isSuccessEmitted) {
+    async emitOpenModalInformation (
+      modalNameEmitted,
+      isSuccessEmitted,
+      response
+    ) {
       this.modalNameInformation = modalNameEmitted
+
+      if (modalNameEmitted === this.publishedConfirmationPopup.nameModal) {
+        const idMessage = await response.data.data.id
+        this.handlePublishedMessage(idMessage)
+      } else {
+        this.dialogInformationPopup = isSuccessEmitted
+          ? savedInformationPopup.successInformation
+          : savedInformationPopup.failedInformation
+        this.isSuccessConfirmation = isSuccessEmitted
+      }
       // check type modal
-      const popupConfig =
-        modalNameEmitted === this.publishedConfirmationPopup.nameModal
-          ? this.publishedInformationPopup
-          : this.savedInformationPopup
-
-      const informationPopup = isSuccessEmitted
-        ? popupConfig.successInformation
-        : popupConfig.failedInformation
-
-      this.dialogInformationPopup = informationPopup
-
-      // check staus for open modal information
-      this.isSuccessConfirmation = isSuccessEmitted
-
-      if (this.isSuccessConfirmation && Object.keys(this.dataImage).length > 0) {
+      if (
+        this.isSuccessConfirmation &&
+        Object.keys(this.dataImage).length > 0
+      ) {
         await this.$refs.BaseDragAndDropFile.uploadFile()
         this.$refs.BaseDragAndDropFile.resetDataFile()
       }
@@ -415,6 +422,18 @@ export default {
       // open modal information
       const modalFullName = `${modalNameEmitted}-information`
       this.$store.commit('modals/OPEN', modalFullName)
+    },
+    async handlePublishedMessage (id) {
+      try {
+        await this.$axios.post(`/messages/${id}/send`)
+        this.dialogInformationPopup =
+          publishedInformationPopup.successInformation
+        this.isSuccessConfirmation = true
+      } catch (error) {
+        this.dialogInformationPopup =
+          publishedInformationPopup.failedInformation
+        this.isSuccessConfirmation = false
+      }
     }
   }
 }
