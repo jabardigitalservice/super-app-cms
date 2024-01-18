@@ -8,7 +8,7 @@
       <button
         class="!ml-4 !mr-2 !w-fit"
         :class="{
-          'border-b border-b-[3px] border-green-700':
+          'border-b-[3px] border-green-700':
             indexTab === selectedTabIndex,
         }"
         @click="$emit('button-tab',dataTab.id)"

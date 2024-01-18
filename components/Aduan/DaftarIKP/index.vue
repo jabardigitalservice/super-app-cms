@@ -4,6 +4,7 @@
       <template #tab-list>
         <TabBarList
           :list-tab="listStatistic"
+          :tab-index="query.tabIndex"
           @selected="selectedTabHandle"
           @button-tab="listTabHandle"
         />
@@ -114,7 +115,8 @@ import {
   formatDate,
   generateItemsPerPageOptions,
   formatNumberToUnit,
-  convertToUnit
+  convertToUnit,
+  formatedStringDate
 } from '~/utils'
 import TabBarList from '~/components/Aduan/TabBar/List'
 import { headerDaftarIkp, ikpStatus } from '~/constant/daftar-ikp'
@@ -136,7 +138,8 @@ export default {
       query: {
         limit: 5,
         page: 1,
-        search: null
+        search: null,
+        tabIndex: 0
       },
       search: '',
       isShowPopupDate: false,
@@ -203,6 +206,25 @@ export default {
         this.$fetch()
       }
     },
+    '$route.query': {
+      deep: true,
+      immediate: true,
+      handler (newQuery) {
+        if (Object.keys(newQuery).length > 0) {
+          this.query = { ...newQuery }
+          this.query.tabIndex = parseInt(this.query.tabIndex)
+
+          this.search = this.query.search || ''
+          if (newQuery.start_date && newQuery.end_date) {
+            this.dateRange = [
+              formatedStringDate(newQuery.start_date),
+              formatedStringDate(newQuery.end_date)
+            ]
+          }
+        }
+      }
+
+    },
     dateRange () {
       if (!this.isShowPopupDateRange) {
         this.$refs.datepicker.closePopup()
@@ -227,7 +249,7 @@ export default {
   },
   methods: {
     selectedTabHandle (index) {
-      this.selectedTabIndex = index
+      this.query.tabIndex = index
     },
     filterTableAction (status) {
       if (status === 'finished') {
@@ -349,7 +371,10 @@ export default {
       this.$fetch()
     },
     goToPageDetail (id) {
-      this.$router.push(`/aduan/penginputan-ikp/detail-ikp/${id}`)
+      this.$router.push({
+        path: `/aduan/penginputan-ikp/detail-ikp/${id}`,
+        query: this.query
+      })
     },
     async getCount () {
       const queryCount = { ...this.query }
