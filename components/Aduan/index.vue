@@ -241,6 +241,10 @@ export default {
     linkPageDetail: {
       type: String,
       default: ''
+    },
+    tabName: {
+      type: String,
+      default: 'complaint'
     }
   },
   data () {
@@ -292,7 +296,8 @@ export default {
         page: 1,
         search: null,
         complaint_category_id: null,
-        tabIndex: 0
+        tabIndex: 0,
+        idTab: this.tabName
       },
       search: '',
       complaintHeader,
@@ -416,6 +421,7 @@ export default {
       immediate: true,
       handler (newQuery) {
         if (Object.keys(newQuery).length > 0) {
+          console.log(newQuery, 'aduan')
           this.query = { ...newQuery }
           this.query.tabIndex = parseInt(this.query.tabIndex)
 

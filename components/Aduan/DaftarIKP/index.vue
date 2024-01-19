@@ -116,13 +116,20 @@ import {
   generateItemsPerPageOptions,
   formatNumberToUnit,
   convertToUnit,
-  formatedStringDate
+  formatedStringDate,
+  resetQueryParamsUrl
 } from '~/utils'
 import TabBarList from '~/components/Aduan/TabBar/List'
 import { headerDaftarIkp, ikpStatus } from '~/constant/daftar-ikp'
 export default {
   name: 'DaftarIkpTable',
   components: { TabBarList },
+  props: {
+    tabName: {
+      type: String,
+      default: 'ikp'
+    }
+  },
   data () {
     return {
       menuTableAction: [{ menu: 'Lihat Detail IKP', value: 'detail' }],
@@ -139,7 +146,8 @@ export default {
         limit: 5,
         page: 1,
         search: null,
-        tabIndex: 0
+        tabIndex: 0,
+        idTab: this.tabName
       },
       search: '',
       isShowPopupDate: false,
@@ -203,6 +211,7 @@ export default {
     query: {
       deep: true,
       handler () {
+        resetQueryParamsUrl(this)
         this.$fetch()
       }
     },
@@ -244,8 +253,6 @@ export default {
     this.pagination.itemsPerPageOptions = generateItemsPerPageOptions(
       this.pagination.itemsPerPage
     )
-
-    this.selectedTabHandle(0)
   },
   methods: {
     selectedTabHandle (index) {
