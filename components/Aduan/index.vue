@@ -421,7 +421,6 @@ export default {
       immediate: true,
       handler (newQuery) {
         if (Object.keys(newQuery).length > 0) {
-          console.log(newQuery, 'aduan')
           this.query = { ...newQuery }
           this.query.tabIndex = parseInt(this.query.tabIndex)
 
