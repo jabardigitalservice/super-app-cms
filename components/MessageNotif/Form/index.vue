@@ -17,14 +17,14 @@
             label="Simpan Pesan"
             variant="secondary"
             class="!font-lato !text-[14px] !font-bold"
-            @click="submitFormMessageNotifHandle('save')"
+            @click="submitForm(savedConfirmationPopup.nameModal)"
           />
         </div>
         <jds-button
           label="Publikasikan Pesan"
           variant="primary"
           class="!bg-green-600 !font-lato !text-[14px] !font-bold"
-          @click="submitFormMessageNotifHandle('publish')"
+          @click="submitForm(publishedConfirmationPopup.nameModal)"
         />
       </div>
     </div>
@@ -192,11 +192,32 @@
         </div>
       </form>
     </ValidationObserver>
-    <BasePopupLoading :show-popup="isLoading" />
-    <BasePopup
-      :show-popup="showPopupConfirmationInformation"
-      @submit="confirmationSaveMessageNotifHandle"
-      @close="closeFormPopupHandle"
+
+    <DialogConfirmationNew
+      :dialog-modal="savedConfirmationPopup"
+      :detail-item-modal="detailItem"
+      :path="'/messages'"
+      :params="fieldMessageNotif"
+      @error="emitOpenModalInformation"
+      @success="emitOpenModalInformation"
+    />
+
+    <DialogConfirmationNew
+      :dialog-modal="publishedConfirmationPopup"
+      :detail-item-modal="detailItem"
+      :path="'/messages'"
+      :params="fieldMessageNotif"
+      @error="emitOpenModalInformation"
+      @success="emitOpenModalInformation"
+    />
+
+    <DialogInformationNew
+      :name-modal="modalNameInformation"
+      :dialog-modal="dialogInformationPopup"
+      :detail-item-modal="detailItem"
+      :is-success="isSuccessConfirmation"
+      :is-warning="isWarningInformation"
+      @close-all-modal="closeAllModalSuccess()"
     />
 
     <BaseViewFile
@@ -212,10 +233,11 @@
 import Editor from '@tinymce/tinymce-vue'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import ArrowLeft from '~/assets/icon/arrow-left.svg?inline'
-import popup from '~/mixins/message-notif'
 import {
   savedConfirmationPopup,
-  savedInformationPopup
+  savedInformationPopup,
+  publishedConfirmationPopup,
+  publishedInformationPopup
 } from '~/constant/message-notif'
 
 export default {
@@ -226,7 +248,6 @@ export default {
     ValidationObserver,
     ValidationProvider
   },
-  mixins: [popup],
   data () {
     return {
       fieldMessageNotif: {
@@ -260,17 +281,25 @@ export default {
       isInformationPopup: false,
       savedConfirmationPopup,
       savedInformationPopup,
+      publishedConfirmationPopup,
+      publishedInformationPopup,
       dataImage: {
         showDialog: false,
         fileId: '',
         mimeType: ''
       },
-      isLoading: false,
-      isPublished: false,
       tinymceApiKey: this.$config.tinymceApiKey,
       isDisabledPlatform: false,
       isDisabledTopic: false,
-      errMessageTarget: ''
+      errMessageTarget: '',
+      detailItem: {
+        id: '',
+        title: ''
+      },
+      dialogInformationPopup: {},
+      modalNameInformation: '',
+      isSuccessConfirmation: false,
+      isWarningInformation: false
     }
   },
   async fetch () {
@@ -290,18 +319,6 @@ export default {
       this.dataImage.fileId = this.$store.state.dataImage.data
       this.dataImage.mimeType = this.$store.state.dataImage.mimeType
     },
-    showSaveMessageNotifPopupHandle () {
-      this.$store.commit('dialog/clearState')
-      this.confirmationPopupHandle(
-        this.savedConfirmationPopup,
-        this.fieldMessageNotif,
-        this.fieldMessageNotif.title
-      )
-      this.$store.commit('dialog/setMessage', this.popupMessage)
-      this.$store.dispatch('dialog/showHandle', this.dataPopup)
-      this.showPopupConfirmationInformation = true
-      this.popupName = 'saveNotifMessage'
-    },
     getResponseImage (responseImage) {
       if (responseImage === 'error') {
         this.isError = true
@@ -312,6 +329,7 @@ export default {
     },
     async validHandle (fileCorrect = true) {
       const isDataValid = await this.$refs.form.validate()
+      // TODO:
       // if (this.fieldMessageNotif.target.platform === '' && this.fieldMessageNotif.target.topic === '') {
       //   this.errMessageTarget = 'wajib memilih salah satu target.'
       // }
@@ -319,101 +337,6 @@ export default {
         return false
       }
       return true
-    },
-    async submitFormMessageNotifHandle (submitType) {
-      this.$store.commit('dialog/clearState')
-      this.isPublished = false
-      this.showPopupConfirmationInformation = false
-      this.dataImage = this.$store.state.dataImage
-      this.fieldMessageNotif.originalFilename = this.dataImage.name
-      if (await this.validHandle(this.dataImage?.fileCorrect)) {
-        if (submitType === 'publish') {
-          this.showPublishedPopupHandle(this.fieldMessageNotif)
-        } else {
-          this.showSaveMessageNotifPopupHandle()
-        }
-      } else {
-        this.isLoading = false
-        this.dataPopup = {
-          title: 'Isian Belum Lengkap',
-          buttonLeft: this.savedInformationPopup.buttonLeft
-        }
-        this.showPopupConfirmationInformation = true
-        this.informationPopupHandle(
-          this.savedInformationPopup,
-          this.isError,
-          true
-        )
-        this.$store.commit('dialog/setMessage', this.popupMessage)
-        this.$store.dispatch('dialog/showHandle', this.dataPopup)
-      }
-    },
-    async confirmationSaveMessageNotifHandle () {
-      if (this.popupName === 'saveNotifMessage') {
-        await this.saveMessageNotificationHandle()
-      } else {
-        this.publishedFormMessageNotifHandle()
-      }
-    },
-    async saveMessageNotificationHandle () {
-      this.showPopupConfirmationInformation = false
-      this.popupMessage = {}
-      this.isLoading = true
-      this.popupMessage.titlePopup = this.fieldMessageNotif.title
-      try {
-        if (Object.keys(this.dataImage).length > 0) {
-          await this.$refs.BaseDragAndDropFile.uploadFile()
-        }
-
-        // TODO: comment code for production
-        // if (this.fieldMessageNotif.target.platform !== '') {
-        //   delete this.fieldMessageNotif.target.topic
-        // } else {
-        //   delete this.fieldMessageNotif.target.platform
-        // }
-
-        const response = await this.$axios.post('/messages', {
-          ...this.fieldMessageNotif
-        })
-        this.dataDetail.id = response.data.data.id
-        this.isInformationPopup = true
-        this.showPopupConfirmationInformation = !this.isPublished
-        this.$refs.BaseDragAndDropFile.resetDataFile()
-      } catch (error) {
-        this.isError = true
-        this.showPopupConfirmationInformation = true
-      } finally {
-        this.isLoading = !!this.isPublished
-      }
-      if (!this.isPublished) {
-        this.showInformationPopupHandle(
-          this.savedInformationPopup,
-          this.isError
-        )
-      }
-    },
-    showInformationPopupHandle (informationPopup, warning = false) {
-      this.dataPopup = {
-        title: informationPopup.title,
-        buttonLeft: informationPopup.buttonLeft
-      }
-      this.informationPopupHandle(informationPopup, this.isError, warning)
-      this.$store.commit('dialog/setMessage', this.popupMessage)
-      this.$store.dispatch('dialog/showHandle', this.dataPopup)
-    },
-    async publishedFormMessageNotifHandle () {
-      this.isPublished = true
-      await this.saveMessageNotificationHandle()
-      await this.publishedMessageNotifHandle()
-      this.isLoading = false
-      this.showPopupConfirmationInformation = true
-    },
-    closeFormPopupHandle () {
-      this.$store.commit('dialog/clearState')
-      this.showPopupConfirmationInformation = false
-      if (this.isInformationPopup) {
-        this.$router.push('/message-notif')
-      }
     },
     checkFormSelectPlatformDisabled (value) {
       if (value !== null) {
@@ -425,6 +348,78 @@ export default {
       if (value !== null) {
         this.isDisabledPlatform = true
         this.errMessageTarget = ''
+      }
+    },
+    async submitForm (typeForm) {
+      this.dataImage = this.$store.state.dataImage
+      this.fieldMessageNotif.originalFilename = this.dataImage.name
+
+      if (await this.validHandle(this.dataImage?.fileCorrect)) {
+        this.showConfirmation(typeForm)
+      } else {
+        this.openWarningInformationDialog()
+      }
+    },
+    openWarningInformationDialog () {
+      const modalName = 'warning'
+      this.isWarningInformation = true
+      this.modalNameInformation = modalName
+      this.dialogInformationPopup =
+        this.savedInformationPopup.warningInformation
+      const modalFullName = `${modalName}-information`
+      this.$store.commit('modals/OPEN', modalFullName)
+    },
+    goToBackHandle () {
+      this.$router.push('/message-notif/')
+    },
+    closeAllModalSuccess () {
+      if (this.isSuccessConfirmation) {
+        this.goToBackHandle()
+      }
+    },
+    showConfirmation (typeForm) {
+      this.detailItem.title = this.fieldMessageNotif.title
+      this.$store.commit('modals/OPEN', typeForm)
+    },
+    async emitOpenModalInformation (
+      modalNameEmitted,
+      isSuccessEmitted,
+      response
+    ) {
+      this.modalNameInformation = modalNameEmitted
+
+      if (modalNameEmitted === this.publishedConfirmationPopup.nameModal) {
+        const idMessage = response.data.data.id
+        this.handlePublishedMessage(idMessage)
+      } else {
+        this.dialogInformationPopup = isSuccessEmitted
+          ? savedInformationPopup.successInformation
+          : savedInformationPopup.failedInformation
+        this.isSuccessConfirmation = isSuccessEmitted
+      }
+      // check type modal
+      if (
+        this.isSuccessConfirmation &&
+        Object.keys(this.dataImage).length > 0
+      ) {
+        await this.$refs.BaseDragAndDropFile.uploadFile()
+        this.$refs.BaseDragAndDropFile.resetDataFile()
+      }
+
+      // open modal information
+      const modalFullName = `${modalNameEmitted}-information`
+      this.$store.commit('modals/OPEN', modalFullName)
+    },
+    async handlePublishedMessage (id) {
+      try {
+        await this.$axios.post(`/messages/${id}/send`)
+        this.dialogInformationPopup =
+          publishedInformationPopup.successInformation
+        this.isSuccessConfirmation = true
+      } catch (error) {
+        this.dialogInformationPopup =
+          publishedInformationPopup.failedInformation
+        this.isSuccessConfirmation = false
       }
     }
   }

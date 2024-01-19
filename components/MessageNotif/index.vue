@@ -182,7 +182,6 @@ export default {
       deep: true,
       handler () {
         resetQueryParamsUrl(this)
-
         this.$fetch()
       }
     },
