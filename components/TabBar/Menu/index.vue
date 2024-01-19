@@ -1,27 +1,26 @@
 <template>
-  <BaseTabList
+  <BaseTabListString
     class="h-12 bg-white"
     :list-tab="listTab"
     @selected="selectedTabHandle"
   >
-    <template #default="{ dataTab, indexTab }">
+    <template #default="{ dataTab }">
       <button
         class="!ml-4 !mr-2 !w-fit"
         :class="{
-          'border-b-[3px] border-green-700':
-            indexTab === selectedTabIndex,
+          'border-b-[3px] border-green-700': dataTab.id === selectedTabId,
         }"
-        @click="$emit('button-tab',dataTab.id)"
+        @click="$emit('button-tab', dataTab.id)"
       >
         <BaseTab
           class="!h-[45px] !min-w-[102px] rounded-none !bg-white !py-[10px] !px-2"
-          :selected="indexTab === selectedTabIndex"
+          :selected="dataTab.id === selectedTabId"
           :title="dataTab.name"
         >
           <div
             class="text-sm font-medium text-gray-700"
             :class="{
-              '!font-bold !text-green-700': indexTab === selectedTabIndex,
+              '!font-bold !text-green-700': dataTab.id === selectedTabId,
             }"
           >
             {{ dataTab.name }}
@@ -29,7 +28,7 @@
         </BaseTab>
       </button>
     </template>
-  </BaseTabList>
+  </BaseTabListString>
 </template>
 
 <script>
@@ -37,18 +36,22 @@ export default {
   name: 'TabBarMenu',
   props: {
     listTab: {
-      type: Array,
-      default: () => ([])
+      type: Object,
+      default: () => ({})
+    },
+    idTab: {
+      type: String,
+      default: ''
     }
   },
   data () {
     return {
-      selectedTabIndex: 0
+      selectedTabId: this.idTab
     }
   },
   methods: {
-    selectedTabHandle (index) {
-      this.selectedTabIndex = index
+    selectedTabHandle (dataTab) {
+      this.selectedTabId = dataTab.id
     }
   }
 }
