@@ -389,7 +389,7 @@ export default {
       this.modalNameInformation = modalNameEmitted
 
       if (modalNameEmitted === this.publishedConfirmationPopup.nameModal) {
-        const idMessage = await response.data.data.id
+        const idMessage = response.data.data.id
         this.handlePublishedMessage(idMessage)
       } else {
         this.dialogInformationPopup = isSuccessEmitted
