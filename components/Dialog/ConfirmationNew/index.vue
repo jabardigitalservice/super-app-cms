@@ -7,6 +7,8 @@
         :sub-description="detailItemModal.title"
         class="p-6"
       />
+
+      <slot />
       <BaseDialogFooterNew :name="`${dialogModal?.nameModal}`">
         <jds-button
           :label="dialogModal?.button.label"

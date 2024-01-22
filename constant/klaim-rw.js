@@ -1,3 +1,5 @@
+import { iconPopup } from '~/constant/icon-popup-new'
+
 export const headerTableKlaimRW = [
   {
     key: 'name',
@@ -34,38 +36,51 @@ export const headerTableKlaimRW = [
 export const verifyConfirmationPopup = {
   title: 'Verifikasi Akun RW',
   descriptionText: 'Apakah Anda yakin ingin memverifikasi akun RW ini?',
-  dialogType: 'confirmation',
-  buttonLeft: {
-    label: 'Batal',
-    variant: 'secondary'
-  },
-  buttonRight: {
+  nameModal: 'verification-confirmation',
+  button: {
     label: 'Ya, verifikasi akun RW ini',
     variant: 'primary'
   }
 }
 
 export const verificationInformationPopup = {
-  title: 'Verifikasi Akun RW',
+
   successInformation: {
-    info: 'Verifikasi akun RW telah berhasil dilakukan.',
-    message: 'Email terkait informasi verifikasi telah dikirimkan ke email akun RW bersangkutan.'
+    title: 'Verifikasi Akun RW',
+    descriptionText: 'Verifikasi akun RW telah berhasil dilakukan.',
+    message: 'Email terkait informasi verifikasi telah dikirimkan ke email akun RW bersangkutan.',
+    icon: iconPopup.success
   },
   failedInformation: {
-    info: 'Verifikasi akun RW gagal dilakukan.',
-    message: ''
+    title: 'Verifikasi Akun RW',
+    descriptionText: 'Verifikasi akun RW gagal dilakukan.',
+    message: '',
+    icon: iconPopup.failed
+  }
+}
+
+export const rejectConfirmationPopup = {
+  title: 'Tolak Akun Rw',
+  descriptionText: 'Apakah Anda yakin ingin menolak akun RW ini?',
+  nameModal: 'reject-confirmation',
+  button: {
+    label: 'Tolak akun RW ini',
+    variant: 'danger'
   }
 }
 
 export const rejectInformationPopup = {
-  title: 'Penolakan Akun RW',
   successInformation: {
-    info: 'Penolakan akun RW telah berhasil dilakukan.',
-    message: 'Email terkait informasi penolakan telah dikirimkan ke email akun RW bersangkutan'
+    title: 'Penolakan Akun RW',
+    descriptionText: 'Penolakan akun RW telah berhasil dilakukan.',
+    message: 'Email terkait informasi penolakan telah dikirimkan ke email akun RW bersangkutan',
+    icon: iconPopup.success
   },
   failedInformation: {
-    info: 'Penolakan akun RW gagal dilakukan',
-    message: ''
+    title: 'Penolakan Akun RW',
+    descriptionText: 'Penolakan akun RW gagal dilakukan',
+    message: '',
+    icon: iconPopup.success
   }
 }
 

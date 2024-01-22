@@ -57,11 +57,22 @@
         </template>
         <!-- eslint-disable-next-line vue/valid-v-slot -->
         <template #item.action="{ item }">
-          <KlaimRWTableAction
+          <!-- <KlaimRWTableAction
             :status="item.rwStatus"
             @detail="goToDetail(item.id)"
             @verify="showVerifyPopupHandle(item)"
             @reject="rejectUser(item)"
+          /> -->
+
+          <KlaimRWTableAction
+            :status="item.rwStatus"
+            @detail="goToDetail(item.id)"
+            @verify="
+              openModalConfirmation(verifyConfirmationPopup.nameModal, item)
+            "
+            @reject="
+              openModalConfirmation(rejectConfirmationPopup.nameModal, item)
+            "
           />
         </template>
       </JdsDataTable>
@@ -81,44 +92,86 @@
       :show="showDocument"
       @close="showDocument = false"
     />
-    <PopupRejectRw
-      :show-popup="showRejectRw"
-      :account-name="dataUser.name"
-      :account-email="dataUser.email"
-      @close="showRejectRw = false"
-      @submit="actionRejectUser"
-    />
-    <BasePopup
-      :show-popup="showPopupConfirmationInformation"
-      @submit="actionVerifyUser"
-      @close="onClosePopupInfo"
-    />
-    <PopupInformation
-      :show-popup="informationDialog.show"
-      :title="informationDialog.title"
-      :description-text="informationDialog.info"
-      :account-name="dataUser.name"
-      :message="informationDialog.message"
-      @close="onClosePopupInfo"
-    />
+
+    <DialogConfirmationNew
+      :dialog-modal="verifyConfirmationPopup"
+      :detail-item-modal="dataUser"
+      :path="`/user/role/verify-rw`"
+      :params="{ userId: dataUser.id }"
+      http-method="post"
+      @error="emitOpenModalInformation"
+      @success="emitOpenModalInformation"
+    >
+      <div class="px-6">
+        <p class="text-sm">
+          Alamat Email
+        </p>
+        <p class="text-sm font-bold">
+          {{ dataUser.email }}
+        </p>
+      </div>
+    </DialogConfirmationNew>
+
+    <DialogConfirmationNew
+      :dialog-modal="rejectConfirmationPopup"
+      :detail-item-modal="dataUser"
+      :path="`/user/role/reject-rw`"
+      :params="{ userId: dataUser.id }"
+      http-method="post"
+      @error="emitOpenModalInformation"
+      @success="emitOpenModalInformation"
+    >
+      <div class="px-6">
+        <p class="text-sm">
+          Alamat Email
+        </p>
+        <p class="text-sm font-bold">
+          {{ dataUser.email }}
+        </p>
+      </div>
+    </DialogConfirmationNew>
+
+    <DialogInformationNew
+      :name-modal="modalNameInformation"
+      :dialog-modal="dialogInformationPopup"
+      :detail-item-modal="dataUser"
+      :is-success="isSuccessConfirmation"
+      @close-all-modal="$fetch()"
+    >
+      <div v-if="dialogInformationPopup?.message" class="px-6">
+        <div class="bg-blue-50 border border-blue-500 h-fit w-full py-[8px] pr-[12px] pl-[14px] rounded-lg">
+          <div class="flex">
+            <jds-icon name="exclamation-mark-circle" class="w-[16px] h-[16px] mt-1 mr-[18px]" fill="#1565C0" />
+            <div class="text-[14px] font-lato">
+              {{ dialogInformationPopup?.message }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </DialogInformationNew>
   </div>
 </template>
 
 <script>
 import debounce from 'lodash.debounce'
-import PopupRejectRw from './Popup/RejectConfirmation.vue'
-import PopupInformation from './Popup/Information.vue'
-import popup from '~/mixins/klaim-rw'
-import { headerTableKlaimRW, userStatus } from '~/constant/klaim-rw'
-import { generateItemsPerPageOptions, formatDate, resetQueryParamsUrl } from '~/utils'
+import viewFile from '~/mixins/klaim-rw'
+import {
+  headerTableKlaimRW,
+  userStatus,
+  verifyConfirmationPopup,
+  verificationInformationPopup,
+  rejectConfirmationPopup,
+  rejectInformationPopup
+} from '~/constant/klaim-rw'
+import {
+  generateItemsPerPageOptions,
+  formatDate,
+  resetQueryParamsUrl
+} from '~/utils'
 
 export default {
   name: 'ComponentKlaimRW',
-  components: {
-    PopupRejectRw,
-    PopupInformation
-  },
-  mixins: [popup],
+  mixins: [viewFile],
   data () {
     return {
       search: '',
@@ -141,14 +194,22 @@ export default {
       },
       headerTableKlaimRW,
       userStatus,
+      verifyConfirmationPopup,
+      verificationInformationPopup,
+      rejectConfirmationPopup,
+      rejectInformationPopup,
       showDetailAddress: false,
       showDocument: false,
       showRejectRw: false,
       dataUser: {
         id: null,
         name: '',
-        email: ''
-      }
+        email: '',
+        title: ''
+      },
+      dialogInformationPopup: {},
+      modalNameInformation: '',
+      isSuccessConfirmation: false
     }
   },
   async fetch () {
@@ -200,7 +261,6 @@ export default {
           this.search = this.query.nameFilter || ''
         }
       }
-
     }
   },
   mounted () {
@@ -289,6 +349,34 @@ export default {
         path: `/detail/${id}`,
         query: this.query
       })
+    },
+    openModalConfirmation (modalName, itemDetail) {
+      const { id, name, email } = itemDetail
+      this.dataUser.id = id
+      this.dataUser.title = name
+      this.dataUser.email = email
+      this.$store.commit('modals/OPEN', modalName)
+    },
+    emitOpenModalInformation (modalNameEmitted, isSuccessEmitted) {
+      this.modalNameInformation = modalNameEmitted
+      // check type modal
+      const popupConfig =
+        modalNameEmitted === this.verifyConfirmationPopup.nameModal
+          ? this.verificationInformationPopup
+          : this.rejectInformationPopup
+
+      const informationPopup = isSuccessEmitted
+        ? popupConfig.successInformation
+        : popupConfig.failedInformation
+
+      this.dialogInformationPopup = informationPopup
+
+      // check staus for open modal information
+      this.isSuccessConfirmation = isSuccessEmitted
+
+      // open modal information
+      const modalFullName = `${modalNameEmitted}-information`
+      this.$store.commit('modals/OPEN', modalFullName)
     }
   }
 }

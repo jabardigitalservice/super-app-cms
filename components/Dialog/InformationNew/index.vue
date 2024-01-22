@@ -2,7 +2,7 @@
   <BaseDialogFrame :name="`${nameModal}-${typeModal}`" :close-modal-self="!isSuccess">
     <BaseDialogPanel>
       <BaseDialogHeader :title="dialogModal?.title" />
-      <div class="flex items-start px-6 pt-4 pb-10">
+      <div class="flex items-start px-6 pt-4 pb-4">
         <jds-icon
           :name="dialogModal?.icon?.name || 'warning'"
           size="sm"
@@ -15,6 +15,7 @@
           :sub-description="detailItemModal?.title"
         />
       </div>
+      <slot />
       <div class="mt-3 rounded-b-lg bg-gray-50 px-6 py-4">
         <template v-if="isSuccess || isWarning">
           <div class="flex justify-center">
