@@ -1,12 +1,12 @@
 <template>
   <div>
-    <TabBarMenu :list-tab="listTab" class="mb-[18px]" @button-tab="clickTab" />
+    <TabBarMenu :list-tab="listTab" class="mb-[18px]" :id-tab="nameTabId" @button-tab="clickTab" />
     <Aduan
-      v-if="idTab === 'complaint'"
+      v-if="nameTabId === listTab.complaintTab.id"
       :type-aduan-page="typeAduan.penginputanIkp.props"
       link-page-detail="/aduan/penginputan-ikp/detail"
     />
-    <AduanDaftarIKP v-else />
+    <AduanDaftarIKP v-if="nameTabId === listTab.ikpTab.id" />
   </div>
 </template>
 
@@ -17,6 +17,10 @@ export default {
   name: 'PagePenginputanIkp',
   layout: 'Dashboard',
   data () {
+    const listTab = {
+      complaintTab: { id: 'complaint', name: 'Semua Aduan' },
+      ikpTab: { id: 'ikp', name: 'Daftar Instruksi Khusus Pimpinan' }
+    }
     return {
       navigations: [
         {
@@ -27,11 +31,24 @@ export default {
       descriptionPage:
         'Berisi semua daftar aduan dari masyarakat Jabar yang perlu untuk dikoordinasikan.',
       typeAduan,
-      listTab: [
-        { id: 'complaint', name: 'Semua Aduan' },
-        { id: 'ikp', name: 'Daftar Instruksi Khusus Pimpinan' }
-      ],
-      idTab: ''
+      listTab: {
+        complaintTab: { id: 'complaint', name: 'Semua Aduan' },
+        ikpTab: { id: 'ikp', name: 'Daftar Instruksi Khusus Pimpinan' }
+      },
+      nameTabId: listTab.complaintTab.id
+    }
+  },
+  watch: {
+    '$route.query': {
+      deep: true,
+      immediate: true,
+      handler (newQuery) {
+        if (Object.keys(newQuery).length > 0) {
+          this.nameTabId = ''
+          const { idTab } = newQuery
+          this.nameTabId = idTab
+        }
+      }
     }
   },
   mounted () {
@@ -40,11 +57,10 @@ export default {
       navigations: this.navigations,
       descriptionPage: this.descriptionPage
     })
-    this.clickTab('complaint')
   },
   methods: {
     clickTab (idTab) {
-      this.idTab = idTab
+      this.nameTabId = idTab
     }
   }
 }
