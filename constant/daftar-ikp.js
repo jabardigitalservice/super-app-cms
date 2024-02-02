@@ -96,10 +96,6 @@ export const ikpStatus = Object.freeze({
     name: 'Selesai',
     value: 0,
     icon: '/icon/icon-aduan/complaint-status/complaint-finished-icon.svg',
-    statusColor: [
-      {
-        color: 'green'
-      }
-    ]
+    statusColor: 'green'
   }
 })
