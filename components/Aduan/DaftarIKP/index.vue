@@ -15,13 +15,14 @@
             <div class="flex">
               <jds-search
                 v-model="search"
-                placeholder="Cari ID atau narasi IKP"
+                placeholder="Cari ID atau narasi instruksi"
                 small
                 icon
                 :button="false"
                 class="w-[280px]"
               />
-              <div class="ml-4 flex items-center">
+              <!-- TO DO : to be discuss about filter by date -->
+              <!-- <div class="ml-4 flex items-center">
                 <jds-icon
                   name="filter-outline"
                   size="sm"
@@ -58,7 +59,7 @@
                     />
                   </template>
                 </date-picker>
-              </div>
+              </div> -->
             </div>
           </div>
 
@@ -74,12 +75,10 @@
             @change:sort="sortChange"
           >
             <!-- eslint-disable-next-line vue/valid-v-slot -->
-            <template #item.narasi_ikp="{ item }">
-              <div class="flex items-center">
-                <span class="font-lato text-[14px]">
-                  <strong>({{ item.ikp_code }})</strong> {{ item.narrative }}
-                </span>
-              </div>
+            <template #item.narrative="{ item }">
+              <p class="line-clamp-1">
+                {{ item.narrative }}
+              </p>
             </template>
             <!-- eslint-disable-next-line vue/valid-v-slot -->
             <template #item.complaint_status_id="{ item }">
@@ -120,7 +119,7 @@ import {
   resetQueryParamsUrl
 } from '~/utils'
 import TabBarList from '~/components/Aduan/TabBar/List'
-import { headerDaftarIkp, ikpStatus } from '~/constant/daftar-ikp'
+import { headerDaftarIkp, headerDaftarInstruksiAduan, ikpStatus } from '~/constant/daftar-ikp'
 export default {
   name: 'DaftarIkpTable',
   components: { TabBarList },
@@ -128,11 +127,15 @@ export default {
     tabName: {
       type: String,
       default: 'ikp'
+    },
+    ikpTypePage: {
+      type: String,
+      default: ''
     }
   },
   data () {
     return {
-      menuTableAction: [{ menu: 'Lihat Detail IKP', value: 'detail' }],
+      menuTableAction: [{ menu: 'Lihat Detail Instruksi', value: 'detail' }],
       listDataIkp: [],
       listStatisticIkp: [],
       pagination: {
@@ -156,7 +159,9 @@ export default {
         new Date(new Date().setFullYear(new Date().getFullYear() - 1)),
         new Date()
       ],
-      headerDaftarIkp
+      headerDaftarIkp,
+      headerDaftarInstruksiAduan,
+      ikpStatus
     }
   },
   async fetch () {
@@ -345,7 +350,17 @@ export default {
       }
     },
     getColorText (status) {
-      switch (ikpStatus[status].statusColor) {
+      const ikpStatusColor = this.ikpStatus[status].statusColor
+      let statusColor = {}
+      if (Array.isArray(ikpStatusColor)) {
+        statusColor = ikpStatusColor.find(
+          statusColor => statusColor.ikpType.includes(this.ikpTypePage)
+        )
+      }
+
+      const colorText = statusColor?.color || ikpStatusColor
+
+      switch (colorText) {
         case 'yellow':
           return 'text-[#FF7500]'
         case 'green':
@@ -355,7 +370,7 @@ export default {
         case 'light-blue':
           return 'text-[#1E88E5]'
         case 'dark-blue':
-          return 'text-blue-gray-500'
+          return 'text-[#1A4373]'
         case 'purple':
           return 'text-[#691B9A]'
         default:
@@ -407,4 +422,12 @@ export default {
 }
 </script>
 
-<style></style>
+<style scoped>
+  .jds-data-table::v-deep td:nth-child(2){
+    @apply !w-[237px]
+  }
+
+  .jds-data-table::v-deep td:nth-child(3){
+    @apply !w-[137px]
+  }
+</style>

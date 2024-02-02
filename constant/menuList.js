@@ -125,6 +125,14 @@ const aduanMenu = {
       showMenuAndAccessForRoles: ['admin'],
       icon: 'edit-pencil.svg',
       unleashVariable: 'SAPAWARGA-CMS__ADUAN'
+    },
+    {
+      name: 'Daftar Instruksi Aduan Warga',
+      path: '/aduan/instruksi-aduan-warga',
+      arrow: false,
+      showMenuAndAccessForRoles: ['admin'],
+      icon: 'bag.svg',
+      unleashVariable: 'SAPAWARGA-CMS__ADUAN'
     }
   ]
 }
