@@ -82,30 +82,14 @@ export const ikpStatus = Object.freeze({
     name: 'Pengerjaan Ditunda',
     value: 0,
     icon: '/icon/icon-aduan/complaint-status/complaint-postponed-icon.svg',
-    statusColor: [
-      {
-        color: 'purple',
-        ikpType: [
-          ikpType.penginputanInstruksi.props,
-          ikpType.instruksiAduanWarga.props
-        ]
-      }
-    ]
+    statusColor: 'purple'
   },
   review: {
     id: 'review',
     name: 'Ditinjau Ulang',
     value: 0,
     icon: '/icon/icon-aduan/complaint-status/complaint-review-icon.svg',
-    statusColor: [
-      {
-        color: 'dark-blue',
-        ikpType: [
-          ikpType.penginputanInstruksi.props,
-          ikpType.instruksiAduanWarga.props
-        ]
-      }
-    ]
+    statusColor: 'dark-blue'
   },
   finished: {
     id: 'finished',
@@ -114,11 +98,7 @@ export const ikpStatus = Object.freeze({
     icon: '/icon/icon-aduan/complaint-status/complaint-finished-icon.svg',
     statusColor: [
       {
-        color: 'green',
-        ikpType: [
-          ikpType.penginputanInstruksi.props,
-          ikpType.instruksiAduanWarga.props
-        ]
+        color: 'green'
       }
     ]
   }
