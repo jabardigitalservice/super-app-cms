@@ -350,14 +350,17 @@ export default {
       }
     },
     getColorText (status) {
-      let statusColor = this.ikpStatus[status].statusColor
-      if (Array.isArray(statusColor)) {
-        statusColor = statusColor.find(
+      const ikpStatusColor = this.ikpStatus[status].statusColor
+      let statusColor = {}
+      if (Array.isArray(ikpStatusColor)) {
+        statusColor = ikpStatusColor.find(
           statusColor => statusColor.ikpType.includes(this.ikpTypePage)
-        )?.color
+        )
       }
 
-      switch (statusColor) {
+      const colorText = statusColor?.color || ikpStatusColor
+
+      switch (colorText) {
         case 'yellow':
           return 'text-[#FF7500]'
         case 'green':
