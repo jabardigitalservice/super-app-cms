@@ -7,22 +7,22 @@ const rwMenu = {
       path: '/',
       arrow: false,
       showMenuAndAccessForRoles: ['admin'],
-      icon: 'item.svg'
+      icon: 'item.svg',
     },
     {
       name: 'Kegiatan RW',
       path: '/activities',
       arrow: false,
       showMenuAndAccessForRoles: ['admin'],
-      icon: 'item.svg'
-    }
+      icon: 'item.svg',
+    },
   ],
   childRoute: [
     {
       path: '/detail',
-      accessChildRouteForRoles: ['admin']
-    }
-  ]
+      accessChildRouteForRoles: ['admin'],
+    },
+  ],
 }
 
 const messageNotifMenu = {
@@ -34,9 +34,9 @@ const messageNotifMenu = {
       path: '/message-notif',
       arrow: false,
       showMenuAndAccessForRoles: ['admin'],
-      icon: 'item.svg'
-    }
-  ]
+      icon: 'item.svg',
+    },
+  ],
 }
 
 const tiketMuseumMenu = {
@@ -48,9 +48,9 @@ const tiketMuseumMenu = {
       path: '/ticket-museum',
       arrow: false,
       showMenuAndAccessForRoles: ['admin', 'admin:mraj_officer'],
-      icon: 'item.svg'
-    }
-  ]
+      icon: 'item.svg',
+    },
+  ],
 }
 
 const masterDataMenu = {
@@ -69,8 +69,8 @@ const masterDataMenu = {
       path: '/configuration',
       arrow: true,
       showMenuAndAccessForRoles: ['admin'],
-      icon: 'item.svg'
-    }
+      icon: 'item.svg',
+    },
     // TODO: api is currently not ready, so I hide the menu, until the configuration with the API is complete
     // {
     //   name: 'Manajemen Rilis',
@@ -78,7 +78,7 @@ const masterDataMenu = {
     //   arrow: false,
     // showMenuAndAccessForRoles: ['admin']
     // }
-  ]
+  ],
 }
 
 const aduanMenu = {
@@ -92,7 +92,7 @@ const aduanMenu = {
       arrow: false,
       showMenuAndAccessForRoles: ['admin'],
       icon: 'clipboard-list.svg',
-      unleashVariable: 'SAPAWARGA-CMS__ADUAN'
+      unleashVariable: 'SAPAWARGA-CMS__ADUAN',
     },
     {
       name: 'Daftar Penentuan Kewenangan',
@@ -100,7 +100,7 @@ const aduanMenu = {
       arrow: false,
       showMenuAndAccessForRoles: ['admin'],
       icon: 'clipboard-user.svg',
-      unleashVariable: 'SAPAWARGA-CMS__ADUAN'
+      unleashVariable: 'SAPAWARGA-CMS__ADUAN',
     },
     {
       name: 'Dialihkan ke SP4N',
@@ -108,7 +108,7 @@ const aduanMenu = {
       arrow: false,
       showMenuAndAccessForRoles: ['admin'],
       icon: 'clipboard-arrow-left.svg',
-      unleashVariable: 'SAPAWARGA-CMS__ADUAN'
+      unleashVariable: 'SAPAWARGA-CMS__ADUAN',
     },
     {
       name: 'Daftar Aduan dari SP4N',
@@ -116,7 +116,7 @@ const aduanMenu = {
       arrow: false,
       showMenuAndAccessForRoles: ['admin'],
       icon: 'clipboard-pencil.svg',
-      unleashVariable: 'SAPAWARGA-CMS__ADUAN'
+      unleashVariable: 'SAPAWARGA-CMS__ADUAN',
     },
     {
       name: 'Daftar Penginputan IKP',
@@ -124,9 +124,9 @@ const aduanMenu = {
       arrow: false,
       showMenuAndAccessForRoles: ['admin'],
       icon: 'edit-pencil.svg',
-      unleashVariable: 'SAPAWARGA-CMS__ADUAN'
-    }
-  ]
+      unleashVariable: 'SAPAWARGA-CMS__ADUAN',
+    },
+  ],
 }
 
 const tahuraMenu = {
@@ -138,29 +138,43 @@ const tahuraMenu = {
       path: '/tahura/dashboard',
       arrow: false,
       showMenuAndAccessForRoles: ['admin', 'tahura_officer'],
-      icon: 'speedo-meter.svg'
+      icon: 'speedo-meter.svg',
     },
     {
       name: 'Daftar Pesanan',
       path: '/tahura/daftar-pesanan',
       arrow: false,
       showMenuAndAccessForRoles: ['admin', 'tahura_officer'],
-      icon: 'ticket.svg'
+      icon: 'ticket.svg',
     },
     {
       name: 'Laporan Pendapatan',
       path: '/tahura/laporan-pendapatan',
       arrow: false,
       showMenuAndAccessForRoles: ['admin', 'tahura_officer'],
-      icon: 'news-paper.svg'
-    }
+      icon: 'news-paper.svg',
+    },
   ],
   childRoute: [
     {
       path: '/tahura/preview-pdf',
-      accessChildRouteForRoles: ['admin', 'tahura_officer']
-    }
-  ]
+      accessChildRouteForRoles: ['admin', 'tahura_officer'],
+    },
+  ],
+}
+
+const sriBadugaMenu = {
+  titleMenu: 'TICKETING SRIBADUGA',
+  showTitleMenuForRoles: ['admin'],
+  menu: [
+    {
+      name: 'Daftar Pesanan',
+      path: '/sribaduga/daftar-pesanan',
+      arrow: false,
+      showMenuAndAccessForRoles: ['admin'],
+      icon: 'ticket.svg',
+    },
+  ],
 }
 
 export const menu = [
@@ -169,5 +183,6 @@ export const menu = [
   tiketMuseumMenu,
   masterDataMenu,
   aduanMenu,
-  tahuraMenu
+  tahuraMenu,
+  sriBadugaMenu,
 ]

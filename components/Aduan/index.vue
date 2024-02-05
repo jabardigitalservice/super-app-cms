@@ -29,9 +29,7 @@
                   fill="#022B55"
                   class="flex-shrink-0"
                 />
-                <p class="ml-2 text-sm text-blue-gray-700">
-                  Filter :
-                </p>
+                <p class="ml-2 text-sm text-blue-gray-700">Filter :</p>
                 <jds-select
                   v-model="query.complaint_category_id"
                   placeholder="Semua Kategori Aduan"
@@ -205,7 +203,7 @@ import {
   formatNumberToUnit,
   convertToUnit,
   resetQueryParamsUrl,
-  formatedStringDate
+  formatedStringDate,
 } from '~/utils'
 import 'vue2-datepicker/index.css'
 import TabBarList from '~/components/Aduan/TabBar/List'
@@ -220,7 +218,7 @@ import {
   complaintFromSpanHeader,
   determiningAuthorityHeader,
   typeAduan,
-  complaintSource
+  complaintSource,
 } from '~/constant/aduan-masuk'
 import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
 
@@ -230,24 +228,24 @@ export default {
     TabBarList,
     DialogAddComplaint,
     DialogProcessComplaint,
-    DialogFollowupComplaint
+    DialogFollowupComplaint,
   },
   mixins: [popupAduanMasuk],
   props: {
     typeAduanPage: {
       type: String,
-      default: ''
+      default: '',
     },
     linkPageDetail: {
       type: String,
-      default: ''
+      default: '',
     },
     tabName: {
       type: String,
-      default: 'complaint'
-    }
+      default: 'complaint',
+    },
   },
-  data () {
+  data() {
     return {
       menuTableAction: [
         { menu: 'Lihat Detail Aduan', value: 'detail', typeAduan: ['all'] },
@@ -255,32 +253,32 @@ export default {
           menu: 'Terverifikasi',
           value: 'verify',
           typeAduan: [typeAduan.aduanMasuk.props],
-          complaintStatus: complaintStatus.unverified.id
+          complaintStatus: complaintStatus.unverified.id,
         },
         {
           menu: 'Gagal Diverifikasi',
           value: 'failed',
           typeAduan: [typeAduan.aduanMasuk.props],
-          complaintStatus: complaintStatus.unverified.id
+          complaintStatus: complaintStatus.unverified.id,
         },
         {
           menu: 'Tambahkan ID SP4N Lapor',
           value: 'add-span',
           typeAduan: [typeAduan.aduanDialihkanSpanLapor.props],
-          complaintStatus: 'no-id-span'
+          complaintStatus: 'no-id-span',
         },
         {
           menu: 'Proses Aduan',
           value: 'process-complaint',
           typeAduan: [typeAduan.penentuanKewenangan.props],
-          complaintStatus: complaintStatus.verified.id
+          complaintStatus: complaintStatus.verified.id,
         },
         {
           menu: 'Tindaklanjuti Aduan',
           value: 'followup-complaint',
           typeAduan: [typeAduan.penginputanIkp.props],
-          complaintStatus: complaintStatus.coordinated.id
-        }
+          complaintStatus: complaintStatus.coordinated.id,
+        },
       ],
       listDataComplaint: [],
       listDataCategory: [],
@@ -289,7 +287,7 @@ export default {
         totalRows: 5,
         itemsPerPage: 5,
         itemsPerPageOptions: [],
-        disabled: true
+        disabled: true,
       },
       query: {
         limit: 5,
@@ -297,7 +295,7 @@ export default {
         search: null,
         complaint_category_id: null,
         tabIndex: 0,
-        idTab: this.tabName
+        idTab: this.tabName,
       },
       search: '',
       complaintHeader,
@@ -313,11 +311,11 @@ export default {
       complaintSource,
       dateRange: [
         new Date(new Date().setFullYear(new Date().getFullYear() - 1)),
-        new Date()
-      ]
+        new Date(),
+      ],
     }
   },
-  async fetch () {
+  async fetch() {
     try {
       if (
         !JSON.stringify(Object.keys(this.query)).match('complaint_status_id')
@@ -336,7 +334,7 @@ export default {
 
       // handle list data complaint
       const responseListComplaint = await this.$axios.get('/warga/complaints', {
-        params: { ...this.query, is_admin: 1 }
+        params: { ...this.query, is_admin: 1 },
       })
       const { data } = responseListComplaint.data
       this.listDataComplaint = data?.data || []
@@ -356,7 +354,7 @@ export default {
     }
   },
   computed: {
-    listData () {
+    listData() {
       return this.listDataComplaint.map((item) => {
         if (
           this.typeAduan.aduanDialihkanSpanLapor.props === this.typeAduanPage
@@ -384,42 +382,42 @@ export default {
             : '',
           complaint_source_id: item?.complaint_source
             ? this.getComplaintSource(item).id
-            : ''
+            : '',
         }
       })
     },
-    listCategory () {
+    listCategory() {
       return this.listDataCategory.map((item) => {
         return {
           value: item.id,
-          label: item.name
+          label: item.name,
         }
       })
     },
-    listStatistic () {
+    listStatistic() {
       return this.listStatisticComplaint.map((item) => {
         return {
           ...complaintStatus[item.id],
           value: formatNumberToUnit(item.value),
           unit: convertToUnit(item.value),
           icon: complaintStatus[item.id].icon,
-          name: complaintStatus[item.id].name
+          name: complaintStatus[item.id].name,
         }
       })
-    }
+    },
   },
   watch: {
     query: {
       deep: true,
-      handler () {
+      handler() {
         resetQueryParamsUrl(this)
         this.$fetch()
-      }
+      },
     },
     '$route.query': {
       deep: true,
       immediate: true,
-      handler (newQuery) {
+      handler(newQuery) {
         if (Object.keys(newQuery).length > 0) {
           this.query = { ...newQuery }
           this.query.tabIndex = parseInt(this.query.tabIndex)
@@ -428,14 +426,13 @@ export default {
           if (newQuery.start_date && newQuery.end_date) {
             this.dateRange = [
               formatedStringDate(newQuery.start_date),
-              formatedStringDate(newQuery.end_date)
+              formatedStringDate(newQuery.end_date),
             ]
           }
         }
-      }
-
+      },
     },
-    dateRange () {
+    dateRange() {
       if (!this.isShowPopupDateRange) {
         this.$refs.datepicker.closePopup()
       } else {
@@ -448,9 +445,9 @@ export default {
         this.query.search = value.length > 2 ? value : null
         this.$fetch()
       }
-    }, 500)
+    }, 500),
   },
-  mounted () {
+  mounted() {
     this.pagination.itemsPerPageOptions = generateItemsPerPageOptions(
       this.pagination.itemsPerPage
     )
@@ -458,10 +455,10 @@ export default {
     this.getCategory()
   },
   methods: {
-    selectedTabHandle (index) {
+    selectedTabHandle(index) {
       this.query.tabIndex = index
     },
-    checkTypeHeaderAduan (type) {
+    checkTypeHeaderAduan(type) {
       switch (type) {
         case typeAduan.aduanMasuk.props:
           return this.complaintHeader
@@ -477,21 +474,21 @@ export default {
           return {}
       }
     },
-    getColor (statusId) {
-      const status = complaintStatus.find(item => item.id === statusId)
+    getColor(statusId) {
+      const status = complaintStatus.find((item) => item.id === statusId)
 
       return `text-${status?.statusColor}` || 'text-gray-100'
     },
-    pageChange (value) {
+    pageChange(value) {
       this.query.page = value
     },
-    perPageChange (value) {
+    perPageChange(value) {
       if (value) {
         this.query.limit = value
       }
       this.query.page = 1
     },
-    sortChange (value) {
+    sortChange(value) {
       const key = Object.keys(value)[0]
       if (key && value[key] !== 'no-sort') {
         if (key === 'created_at_format') {
@@ -508,7 +505,7 @@ export default {
 
       this.$fetch()
     },
-    filterCategoryHandle (value) {
+    filterCategoryHandle(value) {
       if (value) {
         this.query['complaint_category_id[0]'] = value
       } else {
@@ -517,15 +514,15 @@ export default {
       }
       this.$fetch()
     },
-    goToPageDetailHandle (item) {
+    goToPageDetailHandle(item) {
       this.$router.push({
         path: `${this.linkPageDetail}/${item.id}`,
-        query: this.query
+        query: this.query,
       })
     },
-    getColorText (statusId) {
+    getColorText(statusId) {
       const statusColor = complaintStatus[statusId].statusColor.find(
-        statusColor => statusColor.typeAduan === this.typeAduanPage
+        (statusColor) => statusColor.typeAduan === this.typeAduanPage
       )
       switch (statusColor.color) {
         case 'yellow':
@@ -544,15 +541,15 @@ export default {
           return 'text-gray-900'
       }
     },
-    menuTableActionHandle (complaintStatus) {
+    menuTableActionHandle(complaintStatus) {
       return this.menuTableAction.filter(
-        item =>
+        (item) =>
           item.typeAduan.includes('all') ||
           (item.typeAduan.includes(this.typeAduanPage) &&
             complaintStatus === item.complaintStatus)
       )
     },
-    getTotalStatistic () {
+    getTotalStatistic() {
       const total = this.listStatisticComplaint.reduce(
         (accumulator, object) => {
           return accumulator + object.value
@@ -561,16 +558,16 @@ export default {
       )
       return total
     },
-    addComplaintStatusFilterHandle () {
+    addComplaintStatusFilterHandle() {
       const listValueStatusComplaint = this.getStatusComplaintByComplaintType()
       for (let i = 0; i < listValueStatusComplaint.length; i++) {
         this.setQuery({
-          [`complaint_status_id[${i - 1}]`]: listValueStatusComplaint[i].id
+          [`complaint_status_id[${i - 1}]`]: listValueStatusComplaint[i].id,
         })
       }
       return this.query
     },
-    listTabHandle (status) {
+    listTabHandle(status) {
       const query = { page: 1, limit: 5 }
 
       this.deletePropertiesWithPrefix(this.query, 'complaint_status_id[')
@@ -583,61 +580,61 @@ export default {
       this.isShowPopupDateRange = false
       this.$fetch()
     },
-    filterDateHandle () {
+    filterDateHandle() {
       this.setQuery({
         start_date: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
-        end_date: formatDate(this.dateRange[1], 'yyyy-MM-dd')
+        end_date: formatDate(this.dateRange[1], 'yyyy-MM-dd'),
       })
       this.$fetch()
 
       this.$refs.datepicker.closePopup()
     },
-    closePopupDateHandle () {
+    closePopupDateHandle() {
       this.isShowPopupDateRange = false
       this.$refs.datepicker.closePopup()
     },
-    closePopupAddComplaint () {
+    closePopupAddComplaint() {
       this.isShowPopupAddComplaint = false
       this.$fetch()
     },
-    setQuery (params) {
+    setQuery(params) {
       this.query = { ...this.query, ...params }
     },
-    clearDateRangeHandle () {
+    clearDateRangeHandle() {
       this.dateRange = [
         new Date(new Date().setFullYear(new Date().getFullYear() - 1)),
-        new Date()
+        new Date(),
       ]
       this.setQuery({
         start_date: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
-        end_date: formatDate(this.dateRange[1], 'yyyy-MM-dd')
+        end_date: formatDate(this.dateRange[1], 'yyyy-MM-dd'),
       })
 
       this.isShowPopupDateRange = false
       this.$fetch()
     },
-    changeDateRangeHandle () {
+    changeDateRangeHandle() {
       this.isShowPopupDateRange = true
     },
-    checkPropsSortByUpdatedDate () {
+    checkPropsSortByUpdatedDate() {
       const listPropsSortByUpdatedDate = [
         this.typeAduan.penentuanKewenangan.props,
-        this.typeAduan.penginputanIkp.props
+        this.typeAduan.penginputanIkp.props,
       ]
       return listPropsSortByUpdatedDate.includes(this.typeAduanPage)
     },
-    getStatusComplaintByComplaintType () {
-      return Object.values(complaintStatus).filter(item =>
+    getStatusComplaintByComplaintType() {
+      return Object.values(complaintStatus).filter((item) =>
         item.typeAduan.includes(this.typeAduanPage)
       )
     },
-    getComplaintSource (dataComplaint) {
+    getComplaintSource(dataComplaint) {
       if (dataComplaint.complaint_source === 'sp4n') {
         return this.complaintSource.span
       }
       return this.complaintSource[dataComplaint.complaint_source]
     },
-    async getCount () {
+    async getCount() {
       const queryCount = { ...this.query, is_admin: 1 }
 
       this.deletePropertiesWithPrefix(queryCount, 'complaint_status_id[')
@@ -647,22 +644,22 @@ export default {
         const responseListStatisticComplaint = await this.$axios.get(
           '/warga/complaints/statistics',
           {
-            params: queryCount
+            params: queryCount,
           }
         )
         const listDataStatisticComplaint =
-        responseListStatisticComplaint.data.data
+          responseListStatisticComplaint.data.data
         const listComplaintStatus = this.getStatusComplaintByComplaintType()
         this.listStatisticComplaint = listDataStatisticComplaint.filter(
-          statisticComplaint =>
+          (statisticComplaint) =>
             listComplaintStatus.find(
-              complaintStatus => statisticComplaint.id === complaintStatus.id
+              (complaintStatus) => statisticComplaint.id === complaintStatus.id
             )
         )
         complaintStatus.total.value =
-        this.typeAduan.aduanDariSpanLapor.props === this.typeAduanPage
-          ? this.pagination.totalRows
-          : this.getTotalStatistic()
+          this.typeAduan.aduanDariSpanLapor.props === this.typeAduanPage
+            ? this.pagination.totalRows
+            : this.getTotalStatistic()
         this.listStatisticComplaint.unshift(complaintStatus.total)
         if (this.listStatisticComplaint.length === 2) {
           this.listStatisticComplaint.pop()
@@ -671,7 +668,7 @@ export default {
         console.error(error)
       }
     },
-    async getCategory () {
+    async getCategory() {
       try {
         // handle list data category
         const responseListCategoryComplaint = await this.$axios.get(
@@ -682,22 +679,22 @@ export default {
         this.listDataCategory = [
           {
             id: '',
-            name: 'Semua Kategori Aduan'
+            name: 'Semua Kategori Aduan',
           },
-          ...this.listDataCategory
+          ...this.listDataCategory,
         ]
       } catch (error) {
         console.error(error)
       }
     },
-    deletePropertiesWithPrefix (obj, prefix) {
+    deletePropertiesWithPrefix(obj, prefix) {
       for (const prop in obj) {
         if (prop.startsWith(prefix)) {
           delete obj[prop]
         }
       }
-    }
-  }
+    },
+  },
 }
 </script>
 

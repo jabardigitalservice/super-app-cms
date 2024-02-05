@@ -14,11 +14,11 @@ export default {
       navigations: [
         {
           label: 'Daftar Pesanan',
-          link: '/tahura/daftar-pesanan',
+          link: '/sribaduga/daftar-pesanan',
         },
         {
           label: 'Detail Pesanan ',
-          link: `/tahura/daftar-pesanan/detail/${this.$route.params.invoice}`,
+          link: `/sribaduga/daftar-pesanan/detail/${this.$route.params.invoice}`,
         },
       ],
       descriptionPage: `Detail pesanan untuk order “${this.$route.params.invoice}”`,
@@ -79,7 +79,7 @@ export default {
     }
   },
   mounted() {
-    this.$store.commit('setActivePage', 'Daftar Pesanan')
+    this.$store.commit('setActivePage', 'Daftar Pesanan Sribaduga')
     this.$store.commit('setHeader', {
       navigations: this.navigations,
       descriptionPage: this.descriptionPage,
