@@ -6,12 +6,13 @@
       :type-aduan-page="typeAduan.penginputanIkp.props"
       link-page-detail="/aduan/penginputan-ikp/detail"
     />
-    <AduanDaftarIKP v-if="nameTabId === listTab.ikpTab.id" />
+    <AduanDaftarIKP v-if="nameTabId === listTab.ikpTab.id" :ikp-type-page="ikpType.penginputanInstruksi.props" />
   </div>
 </template>
 
 <script>
 import { typeAduan } from '~/constant/aduan-masuk'
+import { ikpType } from '~/constant/daftar-ikp'
 
 export default {
   name: 'PagePenginputanIkp',
@@ -35,7 +36,8 @@ export default {
         complaintTab: { id: 'complaint', name: 'Semua Aduan' },
         ikpTab: { id: 'ikp', name: 'Daftar Instruksi Khusus Pimpinan' }
       },
-      nameTabId: listTab.complaintTab.id
+      nameTabId: listTab.complaintTab.id,
+      ikpType
     }
   },
   watch: {

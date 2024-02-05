@@ -119,7 +119,7 @@ import {
   resetQueryParamsUrl
 } from '~/utils'
 import TabBarList from '~/components/Aduan/TabBar/List'
-import { headerDaftarIkp, headerDaftarInstruksiAduan, ikpStatus } from '~/constant/daftar-ikp'
+import { headerDaftarIkp, ikpStatus } from '~/constant/daftar-ikp'
 export default {
   name: 'DaftarIkpTable',
   components: { TabBarList },
@@ -160,7 +160,6 @@ export default {
         new Date()
       ],
       headerDaftarIkp,
-      headerDaftarInstruksiAduan,
       ikpStatus
     }
   },
