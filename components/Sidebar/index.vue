@@ -3,11 +3,22 @@
     <SidebarHeader class="px-6 py-7" />
     <div class="sidebar-content overflow-y-auto px-6">
       <div v-for="(menuList, index) in menu" :key="index" class="mb-3">
-        <SidebarTitleMenu v-show="menuList?.showTitleMenuForRoles?.some(value => $role.includes(value)) && isUnleashEnabled(menuList.unleashVariable)" :title="menuList.titleMenu" />
+        <SidebarTitleMenu
+          v-show="
+            menuList?.showTitleMenuForRoles?.some((value) =>
+              $role.includes(value)
+            ) && isUnleashEnabled(menuList.unleashVariable)
+          "
+          :title="menuList.titleMenu"
+        />
         <div class="flex flex-col gap-2">
           <SidebarItem
             v-for="menuSidebar in menuList.menu"
-            v-show="menuSidebar?.showMenuAndAccessForRoles?.some(value => $role.includes(value)) && isUnleashEnabled(menuSidebar.unleashVariable)"
+            v-show="
+              menuSidebar?.showMenuAndAccessForRoles?.some((value) =>
+                $role.includes(value)
+              ) && isUnleashEnabled(menuSidebar.unleashVariable)
+            "
             :key="menuSidebar.path"
             :label="menuSidebar.name"
             :is-show-arrow="menuSidebar.arrow"
@@ -17,9 +28,7 @@
         </div>
       </div>
     </div>
-    <SidebarFooter
-      :name-user="profileName"
-    />
+    <SidebarFooter :name-user="profileName" />
   </div>
 </template>
 
@@ -28,24 +37,24 @@ import { menu } from '@/constant/menuList.js'
 
 export default {
   name: 'ComponentSidebar',
-  data () {
+  data() {
     return {
       menu,
-      profileName: ''
+      profileName: '',
     }
   },
-  mounted () {
+  mounted() {
     this.profileName = this.$auth?.user?.name
   },
   methods: {
-    isUnleashEnabled (unleashVariable) {
+    isUnleashEnabled(unleashVariable) {
       if (!unleashVariable) {
         return true
       }
 
       return this.$unleash.isEnabled(unleashVariable)
-    }
-  }
+    },
+  },
 }
 </script>
 

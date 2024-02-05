@@ -1,5 +1,5 @@
 <template>
-  <TahuraDaftarPesanan />
+  <SribadugaDaftarPesanan />
 </template>
 
 <script>
@@ -11,7 +11,7 @@ export default {
       navigations: [
         {
           label: 'Daftar Pesanan',
-          link: '/tahura/daftar-pesanan',
+          link: '/sribaduga/daftar-pesanan',
         },
       ],
     }

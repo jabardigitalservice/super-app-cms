@@ -2,7 +2,9 @@
   <nuxt-link
     :to="{ path: link }"
     class="flex w-full min-w-[200px] items-center justify-between rounded-lg p-3 hover:bg-green-700 hover:font-bold hover:text-white"
-    :class="{ 'nuxt-link-exact-active': pageActive == label }"
+    :class="{
+      'nuxt-link-exact-active': pageActive == label,
+    }"
   >
     <div class="flex items-center">
       <BaseIconSvg
@@ -26,36 +28,36 @@ import ChevronRight from '~/assets/icon/chevron-right.svg?inline'
 export default {
   name: 'ItemSidebar',
   components: {
-    ChevronRight
+    ChevronRight,
   },
   props: {
     label: {
       type: String,
-      default: 'item'
+      default: 'item',
     },
     icon: {
       type: String,
-      default: ''
+      default: '',
     },
     link: {
       type: String,
-      default: '#'
+      default: '#',
     },
     isShowArrow: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
   computed: {
-    pageActive () {
+    pageActive() {
       return this.$store.state.page
-    }
-  }
+    },
+  },
 }
 </script>
 
 <style scoped>
 a.nuxt-link-exact-active {
-  @apply bg-green-700 font-bold text-white p-3 !important;
+  @apply bg-green-700 p-3 font-bold text-white !important;
 }
 </style>

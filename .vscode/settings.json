@@ -1,4 +1,7 @@
 {
+   // Allow VSCode to format file on save
+  "editor.formatOnSave": true,
+
   "editor.codeActionsOnSave": {
     "source.fixAll": "explicit",
     "source.fixAll.eslint": "explicit"
