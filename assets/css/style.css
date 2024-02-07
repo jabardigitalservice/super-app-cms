@@ -131,6 +131,23 @@
  @apply !h-fit
 }
 
+.layout-content {
+  scrollbar-color: #e0e0e0 white;
+  scrollbar-width: thin;
+  scroll-margin-right: 10px;
+}
+
+.layout-content::-webkit-scrollbar {
+  @apply h-5 w-5;
+}
+
+.layout-content::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+.layout-content::-webkit-scrollbar-thumb {
+  @apply rounded-xl border-[6px] border-solid border-transparent bg-red-400 bg-clip-content;
+}
 /* for filterable style
 .form-add-complaint .jds-options__filter .jds-input-text__input-wrapper{
   @apply !w-[540px]
