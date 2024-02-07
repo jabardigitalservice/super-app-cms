@@ -131,6 +131,10 @@ export default {
     ikpTypePage: {
       type: String,
       default: ''
+    },
+    detailPage: {
+      type: String,
+      default: ''
     }
   },
   data () {
@@ -393,7 +397,7 @@ export default {
     },
     goToPageDetail (id) {
       this.$router.push({
-        path: `/aduan/penginputan-ikp/detail-ikp/${id}`,
+        path: `${this.detailPage}/${id}`,
         query: this.query
       })
     },

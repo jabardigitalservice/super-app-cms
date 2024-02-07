@@ -1,5 +1,8 @@
 <template>
-  <DaftarIkp :ikp-type-page="ikpType.instruksiAduanWarga.props" />
+  <DaftarIkp
+    :ikp-type-page="ikpType.instruksiAduanWarga.props"
+    detail-page="/aduan/instruksi-aduan-warga/detail"
+  />
 </template>
 
 <script>
@@ -18,7 +21,8 @@ export default {
           link: ikpType.instruksiAduanWarga.link
         }
       ],
-      descriptionPage: 'Berisi semua daftar instruksi aduan warga dari masyarakat Jabar yang perlu ditindaklanjuti.'
+      descriptionPage:
+        'Berisi semua daftar instruksi aduan warga dari masyarakat Jabar yang perlu ditindaklanjuti.'
     }
   },
   mounted () {
