@@ -1,16 +1,20 @@
 <template>
   <div>
-    <h1 class="my-4 font-roboto text-[16px] font-bold text-blue-gray-800">
-      Detail Intruksi Khusus Pimpinan
-    </h1>
     <div class="table-content">
       <BaseTableDetail header="Informasi Umum" class="mb-4">
         <tr>
           <td class="text-lato w-[164px] text-[14px]">
-            <strong>Narasi IKP </strong>
+            <strong>ID Instruksi</strong>
           </td>
           <td>
-            <strong>({{ dataDetail?.ikp_code || "-" }})</strong>
+            {{ dataDetail?.ikp_code || "-" }}
+          </td>
+        </tr>
+        <tr>
+          <td class="text-lato w-[164px] text-[14px]">
+            <strong>Narasi Instruksi </strong>
+          </td>
+          <td>
             {{ dataDetail?.narrative }}
           </td>
         </tr>
@@ -44,7 +48,7 @@
           </td>
           <td>{{ dataDetail?.description || "-" }}</td>
         </tr>
-      </basetabledetail>
+      </BaseTableDetail>
     </div>
 
     <BaseTableDetail header="Tanggal" class="mb-4">
@@ -86,43 +90,30 @@
       </tr>
     </BaseTableDetail>
 
-    <div v-if="dataDetail?.complaints?.length > 0 && showDaftarAduan" class="rounded-lg border border-gray-200">
-      <jds-simple-table>
-        <thead class="h-[42px] py-[6px]">
-          <tr>
-            <th>
-              <h1 class="font-roboto text-[10px] font-bold text-white">
-                Daftar Aduan
-              </h1>
-            </th>
-            <th>
-              <h1 class="font-roboto text-[10px] font-bold text-white">
-                Aksi
-              </h1>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(item, index) in dataDetail?.complaints" :key="index">
-            <td class="text-lato w-[80%] text-[14px]">
-              {{ item?.complaint_id }}
-            </td>
-            <td>
-              <BaseButton
-                class="w-full !py-[6px] !px-[10px]  border border-green-700 text-green-700 hover:bg-green-50"
-              >
-                Lihat Detail Aduan
-              </BaseButton>
-            </td>
-          </tr>
-        </tbody>
-      </jds-simple-table>
+    <div
+      v-if="dataDetail?.complaints?.length > 0 && showDaftarAduan"
+      class="rounded-lg border border-gray-200"
+    >
+      <jds-data-table
+        :headers="headerTableComplaint"
+        :items="dataDetail?.complaints"
+      >
+        <!-- eslint-disable-next-line vue/valid-v-slot -->
+        <template #item.action="{ item }">
+          <BaseButton
+            class="w-full border border-green-700 !py-[6px] !px-[10px] text-green-700 hover:bg-green-50"
+            @click="goToDetailComplaint(item.id)"
+          >
+            Lihat Detail Aduan
+          </BaseButton>
+        </template>
+      </jds-data-table>
     </div>
   </div>
 </template>
 
 <script>
-import { ikpStatus } from '~/constant/daftar-ikp'
+import { ikpStatus, ikpType } from '~/constant/daftar-ikp'
 import { formatDate } from '~/utils'
 export default {
   name: 'DaftarIKPTableDetail',
@@ -134,31 +125,31 @@ export default {
     ikpCode: {
       type: String,
       default: ''
+    },
+    ikpTypePage: {
+      type: String,
+      default: ''
     }
-
   },
   data () {
     return {
-      dataDetail: {}
+      dataDetail: {},
+      headerTableComplaint: [
+        { key: 'complaint_id', text: 'Daftar Aduan' },
+        { key: 'action', text: 'Aksi' }
+      ]
     }
   },
   async fetch () {
     try {
-      const response = await this.$axios.get(
-        `/warga/ikp/${this.ikpCode}`
-      )
+      const response = await this.$axios.get(`/warga/ikp/${this.ikpCode}`)
       this.dataDetail = response.data.data
       this.dataDetail.created_at =
-        formatDate(
-          this.dataDetail.created_at || '',
-          'dd/MM/yyyy HH:mm'
-        ) || '-'
+        formatDate(this.dataDetail.created_at || '', 'dd/MM/yyyy HH:mm') || '-'
 
       this.dataDetail.deadline_at =
-        formatDate(
-          this.dataDetail.deadline_at || '',
-          'dd/MM/yyyy HH:mm'
-        ) || '-'
+        formatDate(this.dataDetail.deadline_at || '', 'dd/MM/yyyy HH:mm') ||
+        '-'
     } catch (error) {
       this.dataDetail = {}
     }
@@ -181,7 +172,16 @@ export default {
       }
     },
     getStatusColorHandle (status) {
-      switch (ikpStatus[status]?.statusColor) {
+      const ikpStatusColor = ikpStatus[status].statusColor
+      let statusColor = {}
+      if (Array.isArray(ikpStatusColor)) {
+        statusColor = ikpStatusColor.find(statusColor =>
+          statusColor.ikpType.includes(this.ikpTypePage)
+        )
+      }
+
+      const colorBackground = statusColor?.color || ikpStatusColor
+      switch (colorBackground) {
         case 'yellow':
           return 'bg-[#FF7500]'
         case 'green':
@@ -197,6 +197,15 @@ export default {
         default:
           return 'bg-gray-900'
       }
+    },
+    goToDetailComplaint (id) {
+      this.$router.push(
+        `${
+          this.ikpTypePage === ikpType.instruksiAduanWarga.props
+            ? `/aduan/instruksi-aduan-warga/detail-aduan/${id}`
+            : `/aduan/penginputan-ikp/detail/${id}`
+        }`
+      )
     }
   }
 }
@@ -223,5 +232,9 @@ export default {
 
 .table-content tr td {
   @apply px-[8px] pt-[10px] pb-[9px] !important;
+}
+
+.jds-data-table::v-deep td:nth-child(2) {
+  @apply !w-[162px];
 }
 </style>
