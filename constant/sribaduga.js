@@ -14,7 +14,7 @@ export const listStatusSribaduga = [
     color: 'text-green-700',
   },
   {
-    statusCode: 'ordered',
+    statusCode: 'verified',
     label: 'Belum Scan',
     quantity: 0,
     icon: '/icon/failed-ticket.svg',
@@ -32,7 +32,7 @@ export const listKunjunganSribaduga = [
     label: 'Regular',
   },
   {
-    value: 'reservasi',
+    value: 'reservation',
     label: 'Reservasi',
   },
 ]
@@ -40,5 +40,5 @@ export const listKunjunganSribaduga = [
 export const statusSribaduga = {
   all: { ...listStatusSribaduga[0] },
   scanned: { ...listStatusSribaduga[1] },
-  ordered: { ...listStatusSribaduga[2] },
+  verified: { ...listStatusSribaduga[2] },
 }

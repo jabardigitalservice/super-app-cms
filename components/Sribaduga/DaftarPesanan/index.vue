@@ -188,7 +188,7 @@ export default {
         perPage: 25,
         sortOrder: 'desc',
         sortBy: 'orderedAt',
-        status: '',
+        statusCode: '',
         tabIndex: 0,
         visitType: 'all',
         attraction: 'c64143d6-d630-4ccf-8529-483b9b737a52',
@@ -209,10 +209,21 @@ export default {
       startDate: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
       endDate: formatDate(this.dateRange[1], 'yyyy-MM-dd'),
     })
+
     try {
-      const response = await this.$axios.get('/ticket/tms/admin/orders', {
-        params: this.query,
-      })
+      let response
+      if (this.query.statusCode === 'all' || this.query.statusCode === '') {
+        response = await this.$axios.get(
+          '/ticket/tms/admin/orders?statusCode=verified&statusCode=scanned',
+          {
+            params: this.query,
+          }
+        )
+      } else {
+        response = await this.$axios.get('/ticket/tms/admin/orders', {
+          params: this.query,
+        })
+      }
 
       const { data, meta } = response.data
       this.daftarPesananList = data || []
@@ -298,16 +309,16 @@ export default {
       this.query.tabIndex = index
     },
     showColorStatus(resStatus, statusHardCode) {
-      const getColorStatus = statusHardCode.find(
+      const colorStatus = statusHardCode.find(
         (status) => status.statusCode === resStatus
       )
-      return getColorStatus?.color
+      return colorStatus?.color
     },
     showLabelStatus(resStatus, statusHardCode) {
-      const getLabelStatus = statusHardCode.find(
+      const labelStatus = statusHardCode.find(
         (status) => status.statusCode === resStatus
       )
-      return getLabelStatus?.label
+      return labelStatus?.label
     },
     disabledRange: function (date, inputDate) {
       const endDate = new Date(
@@ -379,7 +390,7 @@ export default {
         perPage: 25,
         sortOrder: 'desc',
         sortBy: 'orderedAt',
-        status: status === 'all' ? '' : status,
+        statusCode: status,
       }
 
       this.isShowPopupDateRange = false
@@ -395,20 +406,24 @@ export default {
           )
           if (matchingStatus) {
             status.quantity = matchingStatus.quantity
-          } else if (statusCode === 'ordered') {
-            // get data from 'paid' status
+          } else if (statusCode === 'verified') {
             const matchingStatus = countFromApi.find(
-              (apiStatus) => apiStatus.statusCode === 'paid'
+              (apiStatus) => apiStatus.statusCode === 'verified'
             )
             if (matchingStatus) {
               status.quantity = matchingStatus.quantity
             }
           }
         } else {
-          status.quantity = countFromApi.reduce(
-            (total, apiStatus) => total + apiStatus.quantity,
-            0
-          )
+          status.quantity = countFromApi.reduce((total, item) => {
+            if (
+              item.statusCode === 'scanned' ||
+              item.statusCode === 'verified'
+            ) {
+              total += item.quantity
+            }
+            return total
+          }, 0)
         }
       })
     },
@@ -424,7 +439,10 @@ export default {
       })
     },
     async getCount() {
-      const queryCount = { ...this.query }
+      const queryCount = {
+        ...this.query,
+        statusCode: '',
+      }
       queryCount.status = ''
       try {
         const responseCountDaftarpesanan = await this.$axios.get(
