@@ -190,11 +190,6 @@ export default {
           name: 'Detail Order',
           icon: '/icon/ticket.svg',
         },
-        {
-          detailPage: 'qr-page',
-          name: 'QR Code',
-          icon: '/icon/qr-code.svg',
-        },
       ],
       selectedTabIndex: 0,
       statusSribaduga,
