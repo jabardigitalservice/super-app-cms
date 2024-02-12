@@ -27,15 +27,27 @@
             <BaseTableDetail header="Informasi Order" class="text-lato mb-4">
               <tr>
                 <td class="w-[180px]">
-                  <strong>Nama Pemesan</strong>
-                </td>
-                <td>{{ detailPesanan.orderBy }}</td>
-              </tr>
-              <tr>
-                <td class="w-[180px]">
                   <strong>No.Order</strong>
                 </td>
                 <td>{{ detailPesanan.invoice }}</td>
+              </tr>
+              <tr>
+                <td class="w-[180px]">
+                  <strong>Nama Pemesan</strong>
+                </td>
+                <td>{{ detailPesanan.customerName }}</td>
+              </tr>
+              <tr>
+                <td class="w-[180px]">
+                  <strong>Nama Instansi</strong>
+                </td>
+                <td>{{ '-' }}</td>
+              </tr>
+              <tr>
+                <td class="w-[180px]">
+                  <strong>Kunjungan</strong>
+                </td>
+                <td>{{ detailPesanan.visitType?.name }}</td>
               </tr>
               <tr>
                 <td>
@@ -56,16 +68,32 @@
                 <td>{{ detailPesanan.reservationDate }} WIB</td>
               </tr>
               <tr>
+                <td class="w-[226px]">
+                  <strong>Sesi Kunjungan</strong>
+                </td>
+                <td>{{ detailPesanan.session?.name }}</td>
+              </tr>
+              <tr>
                 <td>
                   <strong>Status Order</strong>
                 </td>
                 <td>
                   <p
-                    v-show="detailPesanan?.statusCode"
+                    v-show="detailPesanan?.orderStatus"
                     class="h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 text-xs font-semibold"
-                    :class="statusTahura[detailPesanan.statusCode]?.color"
+                    :class="
+                      showColorStatus(
+                        detailPesanan?.orderStatus?.code,
+                        listStatusSribaduga
+                      )
+                    "
                   >
-                    {{ statusTahura[detailPesanan.statusCode]?.label }}
+                    {{
+                      showLabelStatus(
+                        detailPesanan?.orderStatus?.code,
+                        listStatusSribaduga
+                      )
+                    }}
                   </p>
                 </td>
               </tr>
@@ -75,36 +103,30 @@
               header="Informasi Pengunjung"
               class="text-lato mb-4"
             >
-              <tr
-                v-for="(item, index) in detailPesanan.categories"
-                :key="index"
-              >
-                <td class="w-[180px]">
-                  <strong>{{ item.name }}</strong>
+              <tr v-for="(item, index) in detailPesanan.tickets" :key="index">
+                <td class="w-[226px]">
+                  <strong>{{ `Total Pengunjung ${item?.name}` }}</strong>
                 </td>
-                <td>{{ item.quantity ? item.quantity : '-' }}</td>
+                <td>{{ item.qty ? `${item.qty} orang` : '-' }}</td>
               </tr>
             </BaseTableDetail>
 
             <BaseTableDetail
-              v-if="
-                detailPesanan?.statusCode === 'scanned' &&
-                detailScanned?.scannedStatus === 'success'
-              "
+              v-if="detailPesanan?.scanner?.scanned"
               header="Informasi Scan"
               class="text-lato mb-4"
             >
               <tr>
-                <td class="w-[180px]">
+                <td class="w-[226px]">
                   <strong>Discan oleh</strong>
                 </td>
-                <td>{{ detailScanned?.scannedBy }}</td>
+                <td>{{ detailPesanan?.scanner?.scannedBy }}</td>
               </tr>
               <tr>
                 <td>
                   <strong>Di Pintu</strong>
                 </td>
-                <td>{{ detailScanned?.gateName }}</td>
+                <td>{{ detailPesanan?.scanner?.gateName }}</td>
               </tr>
               <tr>
                 <td>
@@ -112,7 +134,10 @@
                 </td>
                 <td>
                   {{
-                    formatDate(detailScanned?.scannedAt, 'eeee, dd MMMM yyyy')
+                    formatDate(
+                      detailPesanan?.scanner?.scannedAt,
+                      'eeee, dd MMMM yyyy'
+                    )
                   }}
                 </td>
               </tr>
@@ -120,7 +145,9 @@
                 <td>
                   <strong>Waktu Scan</strong>
                 </td>
-                <td>{{ formatDate(detailScanned?.scannedAt, 'HH:mm') }}</td>
+                <td>
+                  {{ formatDate(detailPesanan?.scanner?.scannedAt, 'HH:mm') }}
+                </td>
               </tr>
             </BaseTableDetail>
           </template>
@@ -136,12 +163,15 @@
 
 <script>
 import ArrowLeft from '~/assets/icon/arrow-left.svg?inline'
-import TabBarListDetail from '~/components/Tahura/TabBar/Detail/index.vue'
-import { statusTahura } from '@/constant/tahura.js'
+import TabBarListDetail from '~/components/Sribaduga/TabBar/Detail/index.vue'
+import { statusSribaduga, listStatusSribaduga } from '@/constant/sribaduga.js'
 import { formatDate } from '~/utils'
 export default {
   name: 'SribadugaDaftarPesananDetail',
-  components: { ArrowLeft, TabBarListDetail },
+  components: {
+    ArrowLeft,
+    TabBarListDetail,
+  },
   props: {
     detailPesanan: {
       type: Object,
@@ -167,7 +197,8 @@ export default {
         },
       ],
       selectedTabIndex: 0,
-      statusTahura,
+      statusSribaduga,
+      listStatusSribaduga,
       dataScanned: {},
       viewDetail: 'detail-page',
       base64String: '',
@@ -182,7 +213,7 @@ export default {
   methods: {
     goToBackHandle() {
       this.$router.push({
-        path: '/tahura/daftar-pesanan',
+        path: '/sribaduga/daftar-pesanan',
         query: this.$route.query,
       })
     },
@@ -190,14 +221,23 @@ export default {
     showViewDetailPage(namePage) {
       this.viewDetail = namePage
     },
+    showColorStatus(resStatus, statusHardCode) {
+      const getColorStatus = statusHardCode.find(
+        (status) => status.statusCode === resStatus
+      )
+      return getColorStatus?.color
+    },
+    showLabelStatus(resStatus, statusHardCode) {
+      const getLabelStatus = statusHardCode.find(
+        (status) => status.statusCode === resStatus
+      )
+      return getLabelStatus?.label
+    },
     generateQRCode() {
-      if (
-        this.detailPesanan?.tickets &&
-        this.detailPesanan.tickets.length > 0
-      ) {
-        const jsonString = JSON.stringify(this.detailPesanan?.tickets[0])
-
-        this.base64String = btoa(jsonString)
+      if (this.detailPesanan?.invoice) {
+        const jsonString = JSON.stringify(this.detailPesanan?.invoice)
+        const encodedString = Buffer.from(jsonString).toString('base64')
+        this.base64String = encodedString
       }
     },
   },
