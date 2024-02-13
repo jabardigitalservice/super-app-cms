@@ -119,9 +119,7 @@
                       <th scope="col" class="px-6 py-3 font-bold">
                         Tanggal Kunjungan
                       </th>
-                      <th scope="col" class="px-6 py-3 font-bold">
-                        No
-                      </th>
+                      <th scope="col" class="px-6 py-3 font-bold">No</th>
                       <th scope="col" class="px-6 py-3 font-bold">
                         Tipe Wisatawan
                       </th>
@@ -150,27 +148,27 @@
                       >
                         <td scope="row" class="whitespace-nowrap px-6 py-4">
                           {{
-                            formatDate(item.reservationDate, "dd MMMM yyyy") ||
-                              "-"
+                            formatDate(item.reservationDate, 'dd MMMM yyyy') ||
+                            '-'
                           }}
                         </td>
                         <td class="px-6 py-4">
                           {{ indexCategory + 1 }}
                         </td>
                         <td class="px-6 py-4">
-                          {{ itemCategories.name || "-" }}
+                          {{ itemCategories.name || '-' }}
                         </td>
                         <td class="px-6 py-4">
-                          {{ getTypeAssurance(selectAsurance) || "-" }}
+                          {{ getTypeAssurance(selectAsurance) || '-' }}
                         </td>
                         <td class="px-6 py-4">
-                          {{ itemCategories.quantity || "-" }}
+                          {{ itemCategories.quantity || '-' }}
                         </td>
                         <td class="px-6 py-4">
                           {{
                             convertToRupiah(
                               checkAsurance(itemCategories.price)
-                            ) || "-"
+                            ) || '-'
                           }}
                         </td>
                         <td class="px-6 py-4">
@@ -178,7 +176,7 @@
                             convertToRupiah(
                               checkAsurance(itemCategories.price) *
                                 itemCategories.quantity
-                            ) || "-"
+                            ) || '-'
                           }}
                         </td>
                       </tr>
@@ -187,14 +185,12 @@
                         class="font-[14px] border-b bg-gray-100 font-lato font-bold text-gray-800"
                       >
                         <td colspan="5" />
-                        <td class="px-6 py-4">
-                          Total
-                        </td>
+                        <td class="px-6 py-4">Total</td>
                         <td class="px-6 py-4">
                           {{
                             convertToRupiah(
                               calculateRowTotal(item.categories)
-                            ) || "-"
+                            ) || '-'
                           }}
                         </td>
                       </tr>
@@ -205,9 +201,7 @@
                       class="font-[14px] border-b font-lato font-bold text-gray-800"
                     >
                       <td colspan="5" />
-                      <td class="px-6 py-4">
-                        Grand Total
-                      </td>
+                      <td class="px-6 py-4">Grand Total</td>
                       <td class="px-6 py-4">
                         {{ convertToRupiah(grandTotal) }}
                       </td>
@@ -248,17 +242,13 @@
 </template>
 
 <script>
-import {
-  formatDate,
-  convertToRupiah,
-  formatExcelDate
-} from '~/utils'
+import { formatDate, convertToRupiah, formatExcelDate } from '~/utils'
 import { listStatusTahura } from '@/constant/tahura.js'
 import 'vue2-datepicker/index.css'
 
 export default {
   name: 'LaporanPendapatanTahura',
-  data () {
+  data() {
     const today = new Date()
     const oneMonthAgo = new Date(today)
     oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1)
@@ -266,17 +256,17 @@ export default {
       listDataTypeAssurance: [
         {
           value: 'with-assurance',
-          label: 'Dengan Asuransi'
+          label: 'Dengan Asuransi',
         },
         {
           value: 'without-assurance',
-          label: 'Tanpa Asuransi'
-        }
+          label: 'Tanpa Asuransi',
+        },
       ],
       listStatusTahura,
       query: {
         category: '',
-        status: ''
+        status: '',
       },
       isShowPopupDate: false,
       isShowPopupDateRange: false,
@@ -285,24 +275,22 @@ export default {
       assurancePrice: 0,
       grandTotal: 0,
       selectAsurance: 'with-assurance',
-      actionDownloadLaporan: [
-        { menu: 'Microsoft Excel (.xls)', value: 'xls' }
-      ],
+      actionDownloadLaporan: [{ menu: 'Microsoft Excel (.xls)', value: 'xls' }],
       listDataCategoryWisatawan: [],
-      loading: true
+      loading: true,
     }
   },
-  async fetch () {
+  async fetch() {
     this.loading = true
     this.setQuery({
       startDate: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
-      endDate: formatDate(this.dateRange[1], 'yyyy-MM-dd')
+      endDate: formatDate(this.dateRange[1], 'yyyy-MM-dd'),
     })
     try {
       const responseDataLaporan = await this.$axios.get(
         '/ticket/tahura/income',
         {
-          params: this.query
+          params: this.query,
         }
       )
 
@@ -320,9 +308,9 @@ export default {
       this.listDataCategoryWisatawan = [
         {
           code: '',
-          name: 'Semua Wisatawan'
+          name: 'Semua Wisatawan',
         },
-        ...this.listDataCategoryWisatawan
+        ...this.listDataCategoryWisatawan,
       ]
     } catch (error) {
       console.error(error)
@@ -331,37 +319,37 @@ export default {
     }
   },
   computed: {
-    listCategoryWisatawan () {
+    listCategoryWisatawan() {
       return this.listDataCategoryWisatawan.map((item) => {
         return {
           value: item.code,
-          label: item.name
+          label: item.name,
         }
       })
     },
-    listCategoryStatus () {
+    listCategoryStatus() {
       return this.listStatusTahura.map((item) => {
         return {
           value: item.statusCode,
-          label: item.label
+          label: item.label,
         }
       })
-    }
+    },
   },
   watch: {
     query: {
       deep: true,
-      handler () {
+      handler() {
         this.$fetch()
-      }
+      },
     },
-    dateRange () {
+    dateRange() {
       if (!this.isShowPopupDateRange) {
         this.$refs.datepicker.closePopup()
       } else {
         this.$refs.datepicker.openPopup()
       }
-    }
+    },
   },
   methods: {
     disabledRange: function (date, inputDate) {
@@ -371,63 +359,63 @@ export default {
       endDate.setMonth(endDate.getMonth() - 3)
       return date > new Date() || date < endDate
     },
-    checkMaxDate (date) {
+    checkMaxDate(date) {
       const endDate = new Date(date[1])
       endDate.setMonth(endDate.getMonth() - 3)
       if (date[0] < endDate) {
         date[0] = endDate
       }
     },
-    filterCategoryHandle () {
+    filterCategoryHandle() {
       this.$fetch()
     },
-    clearDateRangeHandle () {
+    clearDateRangeHandle() {
       this.dateRange = [this.oneMonthAgo, new Date()]
 
       this.setQuery({
         startDate: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
-        endDate: formatDate(this.dateRange[1], 'yyyy-MM-dd')
+        endDate: formatDate(this.dateRange[1], 'yyyy-MM-dd'),
       })
       this.isShowPopupDateRange = false
       this.$fetch()
     },
-    changeDateRangeHandle () {
+    changeDateRangeHandle() {
       this.isShowPopupDateRange = true
     },
-    closePopupDateHandle () {
+    closePopupDateHandle() {
       this.isShowPopupDateRange = false
       this.$refs.datepicker.closePopup()
     },
-    filterDateHandle () {
+    filterDateHandle() {
       this.setQuery({
         startDate: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
-        endDate: formatDate(this.dateRange[1], 'yyyy-MM-dd')
+        endDate: formatDate(this.dateRange[1], 'yyyy-MM-dd'),
       })
       this.$fetch()
       this.$refs.datepicker.closePopup()
     },
-    setQuery (params) {
+    setQuery(params) {
       this.query = { ...this.query, ...params }
     },
-    calculateRowTotal (categories) {
+    calculateRowTotal(categories) {
       let total = 0
       categories.forEach((category) => {
         total += category.quantity * this.checkAsurance(category.price)
       })
       return total || '-'
     },
-    getTypeAssurance (selectedType) {
+    getTypeAssurance(selectedType) {
       const selectedOption = this.listDataTypeAssurance.find(
-        option => option.value === selectedType
+        (option) => option.value === selectedType
       )
       return selectedOption ? selectedOption.label : '-'
     },
-    checkAsurance (price) {
+    checkAsurance(price) {
       return this.selectAsurance === 'with-assurance'
         ? price
         : price - this.assurancePrice
     },
-    calculateGrandTotal (dataLaporan) {
+    calculateGrandTotal(dataLaporan) {
       let grandTotal = 0
 
       for (const item of dataLaporan) {
@@ -441,11 +429,11 @@ export default {
     formatDate,
     convertToRupiah,
     formatExcelDate,
-    downloadExcelReport () {
+    downloadExcelReport() {
       /*eslint-disable*/
-      const table = document.getElementById("table-laporan-pendapatan");
-      const ws = XLSX.utils.table_to_sheet(table);
-      const wb = XLSX.utils.book_new();
+      const table = document.getElementById('table-laporan-pendapatan')
+      const ws = XLSX.utils.table_to_sheet(table)
+      const wb = XLSX.utils.book_new()
       const wscols = [
         { wch: 20 },
         { wch: 5 },
@@ -454,40 +442,39 @@ export default {
         { wch: 10 },
         { wch: 20 },
         { wch: 20 },
-      ];
-
+      ]
 
       // mengambil row
-      const rowCount = table.rows.length;
-   
+      const rowCount = table.rows.length
+
       // mengambil value row
       for (let rowIndex = 1; rowIndex < rowCount; rowIndex++) {
-        const cellAddress = XLSX.utils.encode_cell({ r: rowIndex, c: 0 });
+        const cellAddress = XLSX.utils.encode_cell({ r: rowIndex, c: 0 })
         // mengambil value, format pada row
 
         // mengubah data yg ada value nya dan berformat n (waktu pada excel)
         if (ws[cellAddress].v && ws[cellAddress].t === 'n') {
-          const originalValue = ws[cellAddress].v;
-          const formattedValue = formatExcelDate(originalValue); 
+          const originalValue = ws[cellAddress].v
+          const formattedValue = formatExcelDate(originalValue)
 
-          ws[cellAddress] = { v: formattedValue }; // mengubah value 
+          ws[cellAddress] = { v: formattedValue } // mengubah value
         }
       }
 
-      ws["!cols"] = wscols;
+      ws['!cols'] = wscols
 
-      XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+      XLSX.utils.book_append_sheet(wb, ws, 'Sheet1')
 
       XLSX.writeFile(
         wb,
         `Laporan Pendatapan Tahura Tanggal ${formatDate(
           this.query.startDate,
-          "dd MMMM yyyy"
-        )} - ${formatDate(this.query.endDate, "dd MMMM yyyy")}.xlsx`
-      );
+          'dd MMMM yyyy'
+        )} - ${formatDate(this.query.endDate, 'dd MMMM yyyy')}.xlsx`
+      )
     },
   },
-};
+}
 </script>
 
 <style scoped>

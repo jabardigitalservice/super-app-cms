@@ -1,5 +1,5 @@
 <template>
-  <TahuraDaftarPesananDetail
+  <SribadugaDaftarPesananDetail
     :detail-pesanan="detailDaftarPesanan"
     :detail-scanned="detailScanned"
   />
@@ -41,7 +41,7 @@ export default {
   async fetch() {
     try {
       const response = await this.$axios.get(
-        `/ticket/tahura/orders/${this.$route.params.invoice}`
+        `/ticket/tms/admin/orders/${this.$route.params.invoice}`
       )
       this.detailDaftarPesanan = response.data.data
       this.detailDaftarPesanan.orderedAt =
@@ -79,7 +79,7 @@ export default {
     }
   },
   mounted() {
-    this.$store.commit('setActivePage', 'Daftar Pesanan Sribaduga')
+    this.$store.commit('setActivePage', 'Daftar Pesanan')
     this.$store.commit('setHeader', {
       navigations: this.navigations,
       descriptionPage: this.descriptionPage,

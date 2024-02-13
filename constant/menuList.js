@@ -174,6 +174,7 @@ const tahuraMenu = {
 const sriBadugaMenu = {
   titleMenu: 'TICKETING SRIBADUGA',
   showTitleMenuForRoles: ['admin'],
+  unleashVariable: 'SAPAWARGA-CMS__TICKETING--SRIBADUGA',
   menu: [
     {
       name: 'Daftar Pesanan',
@@ -181,6 +182,7 @@ const sriBadugaMenu = {
       arrow: false,
       showMenuAndAccessForRoles: ['admin'],
       icon: 'ticket.svg',
+      unleashVariable: 'SAPAWARGA-CMS__TICKETING--SRIBADUGA--DAFTAR-PESANAN',
     },
   ],
 }
