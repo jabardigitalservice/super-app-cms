@@ -7,7 +7,7 @@
             <strong>ID Instruksi</strong>
           </td>
           <td>
-            {{ dataDetail?.ikp_code || "-" }}
+            {{ dataDetail?.ikp_code || '-' }}
           </td>
         </tr>
         <tr>
@@ -46,7 +46,7 @@
           <td class="text-lato w-[164px] text-[14px]">
             <strong>Keterangan </strong>
           </td>
-          <td>{{ dataDetail?.description || "-" }}</td>
+          <td>{{ dataDetail?.description || '-' }}</td>
         </tr>
       </BaseTableDetail>
     </div>
@@ -56,13 +56,13 @@
         <td class="text-lato w-[164px] text-[14px]">
           <strong>Tanggal Dibuat </strong>
         </td>
-        <td>{{ dataDetail?.created_at || "-" }}</td>
+        <td>{{ dataDetail?.created_at || '-' }}</td>
       </tr>
       <tr>
         <td class="text-lato w-[164px] text-[14px]">
           <strong>Tanggal Deadline </strong>
         </td>
-        <td>{{ dataDetail?.deadline_at || "-" }}</td>
+        <td>{{ dataDetail?.deadline_at || '-' }}</td>
       </tr>
     </BaseTableDetail>
 
@@ -71,13 +71,13 @@
         <td class="text-lato w-[164px] text-[14px]">
           <strong>Indikator Nilai </strong>
         </td>
-        <td>{{ dataDetail?.indicator_value || "-" }}</td>
+        <td>{{ dataDetail?.indicator_value || '-' }}</td>
       </tr>
       <tr>
         <td class="text-lato w-[164px] text-[14px]">
           <strong>Indikator Satuan </strong>
         </td>
-        <td>{{ dataDetail?.indicator_unit || "-" }}</td>
+        <td>{{ dataDetail?.indicator_unit || '-' }}</td>
       </tr>
     </BaseTableDetail>
 
@@ -86,7 +86,7 @@
         <td class="text-lato w-[164px] text-[14px]">
           <strong>Perangkat Daerah </strong>
         </td>
-        <td>{{ dataDetail?.opd_name || "-" }}</td>
+        <td>{{ dataDetail?.opd_name || '-' }}</td>
       </tr>
     </BaseTableDetail>
 
@@ -102,7 +102,7 @@
         <template #item.action="{ item }">
           <BaseButton
             class="w-full border border-green-700 !py-[6px] !px-[10px] text-green-700 hover:bg-green-50"
-            @click="goToDetailComplaint(item.id)"
+            @click="goToDetailComplaint(item.id, item.ikp_code)"
           >
             Lihat Detail Aduan
           </BaseButton>
@@ -113,34 +113,38 @@
 </template>
 
 <script>
-import { ikpStatus, ikpType } from '~/constant/daftar-ikp'
+import { ikpStatus } from '~/constant/daftar-ikp'
 import { formatDate } from '~/utils'
 export default {
   name: 'DaftarIKPTableDetail',
   props: {
     showDaftarAduan: {
       type: Boolean,
-      default: false
+      default: false,
     },
     ikpCode: {
       type: String,
-      default: ''
+      default: '',
     },
     ikpTypePage: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
+    detailComplaintLink: {
+      type: String,
+      default: '',
+    },
   },
-  data () {
+  data() {
     return {
       dataDetail: {},
       headerTableComplaint: [
         { key: 'complaint_id', text: 'Daftar Aduan' },
-        { key: 'action', text: 'Aksi' }
-      ]
+        { key: 'action', text: 'Aksi' },
+      ],
     }
   },
-  async fetch () {
+  async fetch() {
     try {
       const response = await this.$axios.get(`/warga/ikp/${this.ikpCode}`)
       this.dataDetail = response.data.data
@@ -148,14 +152,13 @@ export default {
         formatDate(this.dataDetail.created_at || '', 'dd/MM/yyyy HH:mm') || '-'
 
       this.dataDetail.deadline_at =
-        formatDate(this.dataDetail.deadline_at || '', 'dd/MM/yyyy HH:mm') ||
-        '-'
+        formatDate(this.dataDetail.deadline_at || '', 'dd/MM/yyyy HH:mm') || '-'
     } catch (error) {
       this.dataDetail = {}
     }
   },
   methods: {
-    getStatusText (status) {
+    getStatusText(status) {
       switch (status) {
         case ikpStatus.coordinated.id:
           return ikpStatus.coordinated.name
@@ -171,11 +174,11 @@ export default {
           return '-'
       }
     },
-    getStatusColorHandle (status) {
+    getStatusColorHandle(status) {
       const ikpStatusColor = ikpStatus[status].statusColor
       let statusColor = {}
       if (Array.isArray(ikpStatusColor)) {
-        statusColor = ikpStatusColor.find(statusColor =>
+        statusColor = ikpStatusColor.find((statusColor) =>
           statusColor.ikpType.includes(this.ikpTypePage)
         )
       }
@@ -198,16 +201,13 @@ export default {
           return 'bg-gray-900'
       }
     },
-    goToDetailComplaint (id) {
-      this.$router.push(
-        `${
-          this.ikpTypePage === ikpType.instruksiAduanWarga.props
-            ? `/aduan/instruksi-aduan-warga/detail-aduan/${id}`
-            : `/aduan/penginputan-ikp/detail/${id}`
-        }`
-      )
-    }
-  }
+    goToDetailComplaint(idComplaint, ikpCode) {
+      this.$router.push({
+        path: `${this.detailComplaintLink}/${idComplaint}`,
+        query: { ...this.$route.query, fromInstructionPage: true, ikpCode },
+      })
+    },
+  },
 }
 </script>
 
