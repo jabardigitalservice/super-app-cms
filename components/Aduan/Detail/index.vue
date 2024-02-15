@@ -46,7 +46,11 @@
             :type-aduan-page="typeAduanPage"
             @button-image="isShowPopupViewImage = true"
           />
-          <AduanDaftarIKPTableDetail v-else-if="idTab === 'input-ikp'" :show-daftar-aduan="false" :ikp-code="ikpCode" />
+          <AduanDaftarIKPTableDetail
+            v-else-if="idTab === 'input-ikp'"
+            :show-daftar-aduan="false"
+            :ikp-code="ikpCode"
+          />
         </BaseTabPanel>
       </template>
     </BaseTabGroup>
@@ -102,7 +106,7 @@
 import {
   complaintStatus,
   typeAduan,
-  complaintButtonDetail
+  complaintButtonDetail,
 } from '~/constant/aduan-masuk'
 import ArrowLeft from '~/assets/icon/arrow-left.svg?inline'
 import DialogViewImage from '~/components/Aduan/DialogViewImage'
@@ -123,42 +127,42 @@ export default {
     ArrowLeft,
     DialogProcessComplaint,
     TableComplaintDetail,
-    DialogFollowupComplaint
+    DialogFollowupComplaint,
   },
   mixins: [popupAduanMasuk],
   props: {
     typeAduanPage: {
       type: String,
-      default: ''
+      default: '',
     },
     listButton: {
       type: Array,
-      default: () => ([])
-    }
+      default: () => [],
+    },
   },
-  data () {
+  data() {
     return {
       listDataTab: [
         {
           id: 'all',
           name: 'Detail Aduan',
-          icon: '/icon/icon-aduan/complaint-detail.svg'
+          icon: '/icon/icon-aduan/complaint-detail.svg',
         },
         {
           id: 'input-ikp',
           name: 'Instruksi Khusus Pimpinan',
-          icon: '/icon/icon-aduan/complaint-detail.svg'
-        }
+          icon: '/icon/icon-aduan/complaint-detail.svg',
+        },
       ],
       detailComplaint: {},
       idTab: '',
       listPhoto: [],
       isShowPopupViewImage: false,
       isShowPopupDetailStatusComplaint: false,
-      ikpCode: ''
+      ikpCode: '',
     }
   },
-  async fetch () {
+  async fetch() {
     try {
       const response = await this.$axios.get(
         `/warga/complaints/${this.$route.params.id}`
@@ -192,7 +196,7 @@ export default {
         complaint_source:
           dataDetailComplaint.complaint_source === 'sp4n'
             ? 'SP4N Lapor'
-            : dataDetailComplaint.complaint_source
+            : dataDetailComplaint.complaint_source,
       }
 
       this.ikpCode = dataDetailComplaint?.ikp_code
@@ -205,7 +209,7 @@ export default {
   },
   computed: {
     // to get type aduan which will show status aduan
-    listTypeAduanStatusAduan () {
+    listTypeAduanStatusAduan() {
       const listTypeAduanStatusAduan = []
       Object.values(this.typeAduan).forEach((item) => {
         if (
@@ -217,27 +221,28 @@ export default {
       })
       return listTypeAduanStatusAduan
     },
-    listTab () {
-      return this.listDataTab.filter(item =>
-        this.checkShowTabIkp([complaintStatus.coordinated.id])
+    listTab() {
+      return this.listDataTab.filter((item) =>
+        this.checkShowTabIkp() && !this.$route.query?.fromInstructionPage
           ? item
           : item.id !== 'input-ikp'
       )
-    }
+    },
   },
-  mounted () {
+  mounted() {
     this.selectedTab('all')
   },
   methods: {
-    selectedTab (idTab) {
+    selectedTab(idTab) {
       this.idTab = idTab
     },
-    checkShowTabIkp () {
+    checkShowTabIkp() {
       return (
-        typeAduan.penginputanIkp.props === this.typeAduanPage && this.detailComplaint.ikp_code
+        typeAduan.penginputanIkp.props === this.typeAduanPage &&
+        this.detailComplaint.ikp_code
       )
     },
-    clickButtonConfirmationHandle (idButton) {
+    clickButtonConfirmationHandle(idButton) {
       switch (idButton) {
         case complaintButtonDetail.verified.idButton:
           return this.showPopupConfirmationVerificationComplaintHandle(
@@ -255,24 +260,24 @@ export default {
           return this.showPopupFollowupComplaint(this.detailComplaint)
       }
     },
-    showViewPhotoDialogHandle (url) {
+    showViewPhotoDialogHandle(url) {
       this.photo.showPopup = true
       this.photo.url = 'loading'
       this.photo.url = url
     },
-    showPopupDetailStatusComplaintHandle (detailComplaint) {
+    showPopupDetailStatusComplaintHandle(detailComplaint) {
       this.isShowPopupDetailStatusComplaint = true
       this.dataDialog = {
-        subDescription: detailComplaint.complaint_id
+        subDescription: detailComplaint.complaint_id,
       }
     },
-    goToBackHandle () {
+    goToBackHandle() {
       this.$router.push({
         path: this.$nuxt.context.from.path,
-        query: this.$route.query
+        query: this.$route.query,
       })
-    }
-  }
+    },
+  },
 }
 </script>
 
