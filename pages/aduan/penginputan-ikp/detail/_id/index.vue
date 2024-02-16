@@ -26,7 +26,7 @@ export default {
         {
           label: 'Detail Instruksi',
           link: `/aduan/penginputan-ikp/detail-ikp/${this.$route.query?.ikpCode}`,
-          disabled: trua,
+          disabled: true,
         },
         {
           label: 'Detail Aduan',
