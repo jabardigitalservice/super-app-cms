@@ -41,47 +41,48 @@ export default {
   name: 'PageDetailIKP',
   components: {
     TabBarDetail,
-    ArrowLeft
+    ArrowLeft,
   },
   layout: 'Dashboard',
-  data () {
+  data() {
     return {
       navigations: [
         {
           label: 'Daftar Instruksi Aduan Warga',
-          link: '/aduan/instruksi-aduan-warga'
+          link: '/aduan/instruksi-aduan-warga',
+          disabled: true,
         },
         {
           label: 'Detail Instruksi',
-          link: this.$route.fullPath
-        }
+          link: this.$route.fullPath,
+        },
       ],
       descriptionPage: 'Berisi detail Intruksi Aduan Warga.',
       listDataTab: [
         {
           id: 'instruksi-aduan-warga',
           name: 'Detail Instruksi Aduan',
-          icon: '/icon/icon-aduan/complaint-detail.svg'
-        }
+          icon: '/icon/icon-aduan/complaint-detail.svg',
+        },
       ],
-      ikpType
+      ikpType,
     }
   },
-  mounted () {
+  mounted() {
     this.$store.commit('setActivePage', 'Daftar Instruksi Aduan Warga')
     this.$store.commit('setHeader', {
       navigations: this.navigations,
-      descriptionPage: this.descriptionPage
+      descriptionPage: this.descriptionPage,
     })
   },
 
   methods: {
-    goToBackHandle () {
+    goToBackHandle() {
       this.$router.push({
         path: '/aduan/instruksi-aduan-warga',
-        query: this.$route.query
+        query: this.$route.query,
       })
-    }
-  }
+    },
+  },
 }
 </script>
