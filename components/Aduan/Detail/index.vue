@@ -223,9 +223,7 @@ export default {
     },
     listTab() {
       return this.listDataTab.filter((item) =>
-        this.checkShowTabIkp() && !this.$route.query?.fromInstructionPage
-          ? item
-          : item.id !== 'input-ikp'
+        this.checkShowTabIkp() ? item : item.id !== 'input-ikp'
       )
     },
   },
@@ -239,7 +237,10 @@ export default {
     checkShowTabIkp() {
       return (
         typeAduan.penginputanIkp.props === this.typeAduanPage &&
-        this.detailComplaint.ikp_code
+        this.detailComplaint.ikp_code &&
+        !Object.keys(this.$route.query).find(
+          (item) => item === 'fromInstructionPage'
+        )
       )
     },
     clickButtonConfirmationHandle(idButton) {

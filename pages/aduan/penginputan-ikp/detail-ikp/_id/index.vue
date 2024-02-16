@@ -20,7 +20,12 @@
         <BaseTabPanel
           class="layout-content h-[calc(100vh-280px)] overflow-y-auto py-4 px-[19px]"
         >
-          <AduanDaftarIKPTableDetail :show-daftar-aduan="true" :ikp-code="$route.params.id" />
+          <AduanDaftarIKPTableDetail
+            :show-daftar-aduan="true"
+            detail-complaint-link="/aduan/penginputan-ikp/detail"
+            :ikp-type-page="ikpType.penginputanInstruksi.props"
+            :ikp-code="$route.params.id"
+          />
         </BaseTabPanel>
       </template>
     </BaseTabGroup>
@@ -30,51 +35,54 @@
 <script>
 import TabBarDetail from '~/components/Aduan/TabBar/Detail'
 import ArrowLeft from '~/assets/icon/arrow-left.svg?inline'
+import { ikpType } from '~/constant/daftar-ikp'
 
 export default {
   name: 'PageDetailIKP',
   components: {
     TabBarDetail,
-    ArrowLeft
+    ArrowLeft,
   },
   layout: 'Dashboard',
-  data () {
+  data() {
     return {
       navigations: [
         {
           label: 'Daftar Penginputan IKP',
-          link: '/aduan/penginputan-ikp'
+          link: '/aduan/penginputan-ikp',
         },
         {
           label: 'Detail IKP',
-          link: `/aduan/penginputan-ikp/detail-ikp/${this.$route.params.id}`
-        }
+          link: `/aduan/penginputan-ikp/detail-ikp/${this.$route.params.id}`,
+          disabled: true,
+        },
       ],
       descriptionPage: 'Berisi detail Intruksi Khusus Pimpinan.',
       listDataTab: [
         {
           id: 'input-ikp',
           name: 'Instruksi Khusus Pimpinan',
-          icon: '/icon/icon-aduan/complaint-detail.svg'
-        }
-      ]
+          icon: '/icon/icon-aduan/complaint-detail.svg',
+        },
+      ],
+      ikpType,
     }
   },
-  mounted () {
+  mounted() {
     this.$store.commit('setActivePage', 'Daftar Penginputan IKP')
     this.$store.commit('setHeader', {
       navigations: this.navigations,
-      descriptionPage: this.descriptionPage
+      descriptionPage: this.descriptionPage,
     })
   },
 
   methods: {
-    goToBackHandle () {
+    goToBackHandle() {
       this.$router.push({
-        path: this.$nuxt.context.from.path,
-        query: this.$route.query
+        path: '/aduan/penginputan-ikp',
+        query: this.$route.query,
       })
-    }
-  }
+    },
+  },
 }
 </script>

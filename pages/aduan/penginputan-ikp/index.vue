@@ -1,12 +1,21 @@
 <template>
   <div>
-    <TabBarMenu :list-tab="listTab" class="mb-[18px]" :id-tab="nameTabId" @button-tab="clickTab" />
+    <TabBarMenu
+      :list-tab="listTab"
+      class="mb-[18px]"
+      :id-tab="nameTabId"
+      @button-tab="clickTab"
+    />
     <Aduan
       v-if="nameTabId === listTab.complaintTab.id"
       :type-aduan-page="typeAduan.penginputanIkp.props"
       link-page-detail="/aduan/penginputan-ikp/detail"
     />
-    <AduanDaftarIKP v-if="nameTabId === listTab.ikpTab.id" :ikp-type-page="ikpType.penginputanInstruksi.props" />
+    <AduanDaftarIKP
+      v-if="nameTabId === listTab.ikpTab.id"
+      :ikp-type-page="ikpType.penginputanInstruksi.props"
+      detail-page="/aduan/penginputan-ikp/detail-ikp"
+    />
   </div>
 </template>
 
@@ -17,53 +26,53 @@ import { ikpType } from '~/constant/daftar-ikp'
 export default {
   name: 'PagePenginputanIkp',
   layout: 'Dashboard',
-  data () {
+  data() {
     const listTab = {
       complaintTab: { id: 'complaint', name: 'Semua Aduan' },
-      ikpTab: { id: 'ikp', name: 'Daftar Instruksi Khusus Pimpinan' }
+      ikpTab: { id: 'ikp', name: 'Daftar Instruksi Khusus Pimpinan' },
     }
     return {
       navigations: [
         {
           label: typeAduan.penginputanIkp.label,
-          link: typeAduan.penginputanIkp.link
-        }
+          link: typeAduan.penginputanIkp.link,
+        },
       ],
       descriptionPage:
         'Berisi semua daftar aduan dari masyarakat Jabar yang perlu untuk dikoordinasikan.',
       typeAduan,
       listTab: {
         complaintTab: { id: 'complaint', name: 'Semua Aduan' },
-        ikpTab: { id: 'ikp', name: 'Daftar Instruksi Khusus Pimpinan' }
+        ikpTab: { id: 'ikp', name: 'Daftar Instruksi Khusus Pimpinan' },
       },
       nameTabId: listTab.complaintTab.id,
-      ikpType
+      ikpType,
     }
   },
   watch: {
     '$route.query': {
       deep: true,
       immediate: true,
-      handler (newQuery) {
+      handler(newQuery) {
         if (Object.keys(newQuery).length > 0) {
           this.nameTabId = ''
           const { idTab } = newQuery
           this.nameTabId = idTab
         }
-      }
-    }
+      },
+    },
   },
-  mounted () {
+  mounted() {
     this.$store.commit('setActivePage', 'Daftar Penginputan IKP')
     this.$store.commit('setHeader', {
       navigations: this.navigations,
-      descriptionPage: this.descriptionPage
+      descriptionPage: this.descriptionPage,
     })
   },
   methods: {
-    clickTab (idTab) {
+    clickTab(idTab) {
       this.nameTabId = idTab
-    }
-  }
+    },
+  },
 }
 </script>

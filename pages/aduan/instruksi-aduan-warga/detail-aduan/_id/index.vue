@@ -16,10 +16,12 @@ export default {
         {
           label: '...',
           link: '/aduan/instruksi-aduan-warga',
+          disabled: true,
         },
         {
           label: 'Detail Instruksi',
           link: `/aduan/instruksi-aduan-warga/detail/${this.$route.query.ikpCode}`,
+          disabled: true,
         },
         {
           label: 'Detail Aduan',

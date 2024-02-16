@@ -1,5 +1,8 @@
 <template>
-  <AduanDetail :type-aduan-page="typeAduan.penginputanIkp.props" :list-button="listButtonDetail" />
+  <AduanDetail
+    :type-aduan-page="typeAduan.penginputanIkp.props"
+    :list-button="listButtonDetail"
+  />
 </template>
 
 <script>
@@ -10,31 +13,47 @@ export default {
   name: 'PageDetailAduanMasuk',
   mixins: [popupAduanMasuk],
   layout: 'Dashboard',
-  data () {
+  data() {
     return {
       navigations: [
         {
-          label: typeAduan.penginputanIkp.label,
-          link: typeAduan.penginputanIkp.link
+          label: this.$route.query.fromInstructionPage
+            ? '...'
+            : typeAduan.penginputanIkp.label,
+          link: typeAduan.penginputanIkp.link,
+          disabled: true,
+        },
+        {
+          label: 'Detail Instruksi',
+          link: `/aduan/penginputan-ikp/detail-ikp/${this.$route.query?.ikpCode}`,
+          disabled: true,
         },
         {
           label: 'Detail Aduan',
-          link: `/aduan/penginputan-ikp/detail/${this.$route.params.id}`
-        }
+          link: `/aduan/penginputan-ikp/detail/${this.$route.params.id}`,
+        },
       ],
-      descriptionPage: 'Berisi detail aduan dari masyarakat Jabar yang perlu untuk dikoordinasikan.',
+      descriptionPage:
+        'Berisi detail aduan dari masyarakat Jabar yang perlu untuk dikoordinasikan.',
       typeAduan,
-      listButtonDetail: [
-        complaintButtonDetail.followup
-      ]
+      listButtonDetail: [complaintButtonDetail.followup],
     }
   },
-  mounted () {
-    this.$store.commit('setActivePage', typeAduan.aduanMasuk.label)
+  computed: {
+    listNavigation() {
+      return this.navigations.filter((item) => {
+        return !this.$route.query?.fromInstructionPage
+          ? item.label !== 'Detail Instruksi'
+          : item
+      })
+    },
+  },
+  mounted() {
+    this.$store.commit('setActivePage', typeAduan.penginputanIkp.label)
     this.$store.commit('setHeader', {
-      navigations: this.navigations,
-      descriptionPage: this.descriptionPage
+      navigations: this.listNavigation,
+      descriptionPage: this.descriptionPage,
     })
-  }
+  },
 }
 </script>
