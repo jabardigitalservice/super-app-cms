@@ -21,10 +21,12 @@ export default {
             ? '...'
             : typeAduan.penginputanIkp.label,
           link: typeAduan.penginputanIkp.link,
+          disabled: true,
         },
         {
           label: 'Detail Instruksi',
           link: `/aduan/penginputan-ikp/detail-ikp/${this.$route.query?.ikpCode}`,
+          disabled: trua,
         },
         {
           label: 'Detail Aduan',

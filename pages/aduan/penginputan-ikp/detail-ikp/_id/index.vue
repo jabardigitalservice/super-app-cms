@@ -54,6 +54,7 @@ export default {
         {
           label: 'Detail IKP',
           link: `/aduan/penginputan-ikp/detail-ikp/${this.$route.params.id}`,
+          disabled: true,
         },
       ],
       descriptionPage: 'Berisi detail Intruksi Khusus Pimpinan.',
