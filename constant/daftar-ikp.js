@@ -3,33 +3,32 @@ export const headerDaftarIkp = [
   {
     key: 'narrative',
     text: 'Narasi Instruksi',
-    sortable: true
+    sortable: true,
   },
   {
     key: 'complaints_count',
     text: 'Jml Aduan',
-    sortable: true
+    sortable: true,
   },
   {
     key: 'created_at',
     text: 'Tanggal Dibuat',
-    sortable: true
+    sortable: true,
   },
   {
     key: 'deadline_at',
     text: 'Tanggal Deadline',
-    sortable: true
+    sortable: true,
   },
   {
     key: 'complaint_status_id',
     text: 'Status',
-    sortable: true
   },
   {
     key: 'action',
     text: 'Aksi',
-    sortable: false
-  }
+    sortable: false,
+  },
 ]
 
 export const ikpType = {
@@ -37,14 +36,14 @@ export const ikpType = {
     props: 'penginputan-instruksi',
     label: 'Daftar Penginputan Instruksi',
     link: '/aduan/penginputan-ikp',
-    id: 'penginputanIkp'
+    id: 'penginputanIkp',
   },
   instruksiAduanWarga: {
     props: 'instruksi-aduan-warga',
     label: 'Daftar Instruksi Aduan Warga',
     link: '/aduan/instruksi-aduan-warga',
-    id: 'instruksiAduan'
-  }
+    id: 'instruksiAduan',
+  },
 }
 
 export const ikpStatus = Object.freeze({
@@ -53,7 +52,7 @@ export const ikpStatus = Object.freeze({
     name: 'Semua Instruksi',
     value: 0,
     icon: '/icon/icon-aduan/complaint-status/complaint-all-icon.svg',
-    statusColor: '-'
+    statusColor: '-',
   },
   coordinated: {
     id: 'coordinated',
@@ -61,8 +60,8 @@ export const ikpStatus = Object.freeze({
     value: 0,
     icon: '/icon/icon-aduan/complaint-status/complaint-coordinated-icon.svg',
     statusColor: [
-      { color: 'yellow', ikpType: [ikpType.penginputanInstruksi.props] }
-    ]
+      { color: 'yellow', ikpType: [ikpType.penginputanInstruksi.props] },
+    ],
   },
   followup: {
     id: 'followup',
@@ -72,30 +71,30 @@ export const ikpStatus = Object.freeze({
     statusColor: [
       {
         color: 'light-blue',
-        ikpType: [ikpType.penginputanInstruksi.props]
+        ikpType: [ikpType.penginputanInstruksi.props],
       },
-      { color: 'yellow', ikpType: [ikpType.instruksiAduanWarga.props] }
-    ]
+      { color: 'yellow', ikpType: [ikpType.instruksiAduanWarga.props] },
+    ],
   },
   postponed: {
     id: 'postponed',
     name: 'Pengerjaan Ditunda',
     value: 0,
     icon: '/icon/icon-aduan/complaint-status/complaint-postponed-icon.svg',
-    statusColor: 'purple'
+    statusColor: 'purple',
   },
   review: {
     id: 'review',
     name: 'Ditinjau Ulang',
     value: 0,
     icon: '/icon/icon-aduan/complaint-status/complaint-review-icon.svg',
-    statusColor: 'dark-blue'
+    statusColor: 'dark-blue',
   },
   finished: {
     id: 'finished',
     name: 'Selesai',
     value: 0,
     icon: '/icon/icon-aduan/complaint-status/complaint-finished-icon.svg',
-    statusColor: 'green'
-  }
+    statusColor: 'green',
+  },
 })
