@@ -309,10 +309,7 @@ export default {
       listStatusSribaduga,
       listKunjunganSribaduga,
       listKategoriTiketSribaduga,
-      //   query: {
-      //     category: '',
-      //     status: '',
-      //   },
+
       query: {
         forScan: true,
         page: 1,
