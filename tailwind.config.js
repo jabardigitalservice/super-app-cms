@@ -1,18 +1,20 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['components/**/*.{vue,js}',
+  content: [
+    'components/**/*.{vue,js}',
     'layouts/**/*.vue',
     'pages/**/*.vue',
     'composables/**/*.{js,ts}',
     'plugins/**/*.{js,ts}',
     'App.{js,ts,vue}',
-    'app.{js,ts,vue}'],
+    'app.{js,ts,vue}',
+  ],
   theme: {
     extend: {
       fontFamily: {
         lato: ['Lato', 'sans-serif'],
         roboto: ['Roboto', 'sans-serif'],
-        lora: ['Lora', 'serif']
+        lora: ['Lora', 'serif'],
       },
       colors: {
         green: {
@@ -25,7 +27,8 @@ module.exports = {
           600: '#16A75C',
           700: '#069550',
           800: '#008444',
-          900: '#006430'
+          900: '#006430',
+          jds: '#16A75C',
         },
         gray: {
           50: '#FAFAFA',
@@ -37,7 +40,7 @@ module.exports = {
           600: '#757575',
           700: '#616161',
           800: '#424242',
-          900: '#212121'
+          900: '#212121',
         },
         'blue-gray': {
           50: '#E3E7ED',
@@ -49,15 +52,13 @@ module.exports = {
           600: '#133C6B',
           700: '#083461',
           800: '#022B55',
-          900: '#001B3D'
-        }
-      }
+          900: '#001B3D',
+        },
+      },
     },
     container: {
-      padding: '2rem'
-    }
+      padding: '2rem',
+    },
   },
-  plugins: [
-    require('@tailwindcss/line-clamp')
-  ]
+  plugins: [require('@tailwindcss/line-clamp')],
 }

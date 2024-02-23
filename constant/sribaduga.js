@@ -36,6 +36,24 @@ export const listKunjunganSribaduga = [
     label: 'Reservasi',
   },
 ]
+export const listKategoriTiketSribaduga = [
+  {
+    value: '',
+    label: 'Semua Kategori Tiket',
+  },
+  {
+    value: 'Anak-anak',
+    label: 'Anak-anak',
+  },
+  {
+    value: 'Dewasa',
+    label: 'Dewasa',
+  },
+  {
+    value: 'Wisatawan Mancanegara',
+    label: 'Wisatawan Mancanegara',
+  },
+]
 
 export const statusSribaduga = {
   all: { ...listStatusSribaduga[0] },

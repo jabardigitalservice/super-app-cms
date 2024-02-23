@@ -184,6 +184,15 @@ const sriBadugaMenu = {
       icon: 'ticket.svg',
       unleashVariable: 'SAPAWARGA-CMS__TICKETING--SRIBADUGA--DAFTAR-PESANAN',
     },
+    {
+      name: 'Laporan Pendapatan',
+      path: '/sribaduga/laporan-pendapatan',
+      arrow: false,
+      showMenuAndAccessForRoles: ['admin'],
+      icon: 'news-paper.svg',
+      unleashVariable:
+        'SAPAWARGA-CMS__TICKETING--SRIBADUGA--LAPORAN-PENDAPATAN',
+    },
   ],
 }
 
