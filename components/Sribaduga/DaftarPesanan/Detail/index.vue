@@ -238,17 +238,17 @@ export default {
       }
     },
     getDataFromCustomerData(data, item) {
-      if (item.customerData) {
-        if (data === 'instance-name') {
-          return item?.customerData.find(
-            (info) => info.questionId === 'instance-name'
-          )?.answer
-        } else if (data === 'name') {
-          return item?.customerData.find((info) => info.questionId === 'name')
-            ?.answer
-        }
-      } else {
-        return '-'
+      if (!item.customerData) return '-'
+
+      if (data === 'instance-name') {
+        return item.customerData.find(
+          (info) => info.questionId === 'instance-name'
+        )?.answer
+      }
+
+      if (data === 'name') {
+        return item.customerData.find((info) => info.questionId === 'name')
+          ?.answer
       }
     },
   },
