@@ -35,13 +35,15 @@
                 <td class="w-[180px]">
                   <strong>Nama Pemesan</strong>
                 </td>
-                <td>{{ detailPesanan.customerName }}</td>
+                <td>{{ getDataFromCustomerData('name', detailPesanan) }}</td>
               </tr>
               <tr>
                 <td class="w-[180px]">
                   <strong>Nama Instansi</strong>
                 </td>
-                <td>{{ '-' }}</td>
+                <td>
+                  {{ getDataFromCustomerData('instance-name', detailPesanan) }}
+                </td>
               </tr>
               <tr>
                 <td class="w-[180px]">
@@ -233,6 +235,20 @@ export default {
         const jsonString = JSON.stringify(this.detailPesanan?.invoice)
         const encodedString = Buffer.from(jsonString).toString('base64')
         this.base64String = encodedString
+      }
+    },
+    getDataFromCustomerData(data, item) {
+      if (item.customerData) {
+        if (data === 'instance-name') {
+          return item?.customerData.find(
+            (info) => info.questionId === 'instance-name'
+          )?.answer
+        } else if (data === 'name') {
+          return item?.customerData.find((info) => info.questionId === 'name')
+            ?.answer
+        }
+      } else {
+        return '-'
       }
     },
   },

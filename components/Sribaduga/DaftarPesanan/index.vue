@@ -145,7 +145,7 @@ export default {
         },
         {
           text: 'nama instansi',
-          key: '-',
+          key: 'instanceName',
           sortable: true,
         },
         {
@@ -253,6 +253,9 @@ export default {
             'dd MMMM yyyy'
           ),
           visitTypeName: item.visitType?.name || '',
+          instanceName: item.customerInformation.find(
+            (info) => info.questionId === 'instance-name'
+          )?.answer,
         }
       })
     },
