@@ -177,7 +177,7 @@
                               v-for="(
                                 ticketCategory, indexTicketCategory
                               ) in item.tickets"
-                              :key="`index-${indexTicketCategory}`"
+                              :key="`index1-${indexTicketCategory}`"
                               class="flex-1 border px-6 py-4 font-lato"
                             >
                               {{ ticketCategory?.name }}
@@ -191,7 +191,7 @@
                               v-for="(
                                 ticketQuantity, indexQuantity
                               ) in item.tickets"
-                              :key="`index-${indexQuantity}`"
+                              :key="`index2-${indexQuantity}`"
                               class="flex-1 border px-6 py-4 font-lato"
                             >
                               {{ ticketQuantity?.qty }}
@@ -203,7 +203,7 @@
                           <div class="font-[14px] h-full flex-col">
                             <p
                               v-for="(ticketPrice, indexPrice) in item.tickets"
-                              :key="`index-${indexPrice}`"
+                              :key="`index3-${indexPrice}`"
                               class="flex-1 border px-6 py-4 font-lato"
                             >
                               {{ convertToRupiah(ticketPrice?.price) }}
@@ -214,7 +214,7 @@
                           <div class="font-[14px] h-full flex-col">
                             <p
                               v-for="(ticketTotal, indexTotal) in item.tickets"
-                              :key="`index-${indexTotal}`"
+                              :key="`index4-${indexTotal}`"
                               class="flex-1 px-6 py-4 font-lato"
                             >
                               {{ convertToRupiah(ticketTotal?.totalPrice) }}
@@ -224,7 +224,7 @@
                       </tr>
 
                       <tr
-                        :key="index"
+                        :key="`index5-${index}`"
                         class="font-[14px] border-b bg-gray-100 font-lato font-bold text-gray-800"
                       >
                         <td colspan="4" />
@@ -350,7 +350,6 @@ export default {
       )
 
       const { data } = responseDataLaporan.data
-      console.log(data)
       this.listDataLaporan = data || []
       this.assurancePrice = data?.assurancePrice
       this.calculateGrandTotal(this.listDataLaporan)
@@ -472,34 +471,36 @@ export default {
     convertToRupiah,
     formatExcelDate,
     downloadExcelReport() {
-      /*eslint-disable*/
-      const table = document.getElementById('table-laporan-pendapatan')
-
-      const wscols = [
-        { wch: 20 },
-        { wch: 5 },
-        { wch: 20 },
-        { wch: 20 },
-        { wch: 10 },
-        { wch: 20 },
-        { wch: 20 },
-      ]
-      // create nested table rows for each item in listDataLaporan
-      const rows = []
-      for (let i = 0; i < table.rows.length; i++) {
-        const row = table.rows[i]
-        const cells = []
-        for (let j = 0; j < row.cells.length; j++) {
-          cells.push(row.cells[j].innerText)
-        }
-        rows.push(cells)
-      }
-
-      const ws = XLSX.utils.aoa_to_sheet(rows)
-      ws['!cols'] = wscols
-      const wb = XLSX.utils.book_new()
-      XLSX.utils.book_append_sheet(wb, ws, 'Laporan Pendapatan')
-      XLSX.writeFile(wb, 'Laporan Pendapatan.xlsx')
+      this.loading = true
+      const url = '/ticket/tms/admin/orders/incomes/excel'
+      this.setQuery({
+        startDate: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
+        endDate: formatDate(this.dateRange[1], 'yyyy-MM-dd'),
+      })
+      this.$axios
+        .get(url, {
+          params: this.query,
+          responseType: 'blob',
+        })
+        .then((response) => {
+          const url = window.URL.createObjectURL(new Blob([response.data]))
+          const link = document.createElement('a')
+          link.href = url
+          link.setAttribute(
+            'download',
+            `Laporan Pendapatan ${formatDate(
+              this.dateRange[0],
+              'dd-MM-yyyy'
+            )} - ${formatDate(this.dateRange[1], 'dd-MM-yyyy')}.xls`
+          )
+          document.body.appendChild(link)
+          link.click()
+          this.loading = false
+        })
+        .catch((error) => {
+          console.error(error)
+          this.loading = false
+        })
     },
   },
 }
