@@ -238,7 +238,7 @@ export default {
       }
     },
     getDataFromCustomerData(data, item) {
-      if (!item.customerData) return '-'
+      if (!Array.isArray(item.customerData) || !item.customerData) return '-'
 
       if (data === 'instance-name') {
         return item.customerData.find(
