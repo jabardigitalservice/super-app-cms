@@ -134,6 +134,14 @@ const aduanMenu = {
       icon: 'bag.svg',
       unleashVariable: 'SAPAWARGA-CMS__ADUAN',
     },
+    {
+      name: 'Management Akun',
+      path: '/aduan/management-akun',
+      arrow: false,
+      showMenuAndAccessForRoles: ['admin'],
+      icon: 'user.svg',
+      unleashVariable: 'SAPAWARGA-CMS__ADUAN',
+    },
   ],
 }
 
