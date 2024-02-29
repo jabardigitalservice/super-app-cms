@@ -358,23 +358,24 @@ export default {
       }
       this.query.page = 1
     },
-    sortChange(value) {
-      const key = Object.keys(value)[0]
-      if (key && value[key] !== 'no-sort') {
-        if (key === 'created_at_format') {
-          this.query.sort_by = 'created_at'
-        } else {
-          this.query.sort_by = key
-        }
+    // TO DO : if API already
+    // sortChange(value) {
+    //   const key = Object.keys(value)[0]
+    //   if (key && value[key] !== 'no-sort') {
+    //     if (key === 'created_at_format') {
+    //       this.query.sort_by = 'created_at'
+    //     } else {
+    //       this.query.sort_by = key
+    //     }
 
-        this.query.sort_type = value[key]
-      } else {
-        delete this.query.sort_by
-        delete this.query.sort_type
-      }
+    //     this.query.sort_type = value[key]
+    //   } else {
+    //     delete this.query.sort_by
+    //     delete this.query.sort_type
+    //   }
 
-      this.$fetch()
-    },
+    //   this.$fetch()
+    // },
     setQuery(params) {
       this.query = { ...this.query, ...params }
     },
@@ -412,27 +413,28 @@ export default {
           return 'text-gray-900'
       }
     },
-    listTabHandle(statusId) {
-      const query = {
-        page: 1,
-      }
+    // TO DO : if API already
+    // listTabHandle(statusId) {
+    //   const query = {
+    //     page: 1,
+    //   }
 
-      if (statusId !== 'total') {
-        query.status = statusId
-      } else {
-        delete this.query.status
-      }
+    //   if (statusId !== 'total') {
+    //     query.status = statusId
+    //   } else {
+    //     delete this.query.status
+    //   }
 
-      this.isShowPopupDateRange = false
-      this.setQuery(query)
-      this.$fetch()
-    },
-    goToPageDetail(id) {
-      this.$router.push({
-        path: `${this.detailPage}/${id}`,
-        query: this.query,
-      })
-    },
+    //   this.isShowPopupDateRange = false
+    //   this.setQuery(query)
+    //   this.$fetch()
+    // },
+    // goToPageDetail(id) {
+    //   this.$router.push({
+    //     path: `${this.detailPage}/${id}`,
+    //     query: this.query,
+    //   })
+    // },
     showPopupConfirmation(modalName, detailAccount) {
       this.detailItem.title = `${detailAccount.name} - ${detailAccount.email}`
       this.$store.commit('modals/OPEN', modalName)
