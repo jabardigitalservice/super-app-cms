@@ -1,16 +1,18 @@
 <template>
   <div class="mt-3 rounded-b-lg bg-gray-50 px-6 py-4">
     <div class="flex justify-end">
-      <div class="mr-4">
-        <jds-button
-          label="Batal"
-          type="button"
-          variant="secondary"
-          class="!text-[14px] !font-bold"
-          @click="$store.commit('modals/CLOSE', name)"
-        />
-      </div>
-      <slot />
+      <slot>
+        <div class="mr-4">
+          <jds-button
+            label="Batal"
+            type="button"
+            variant="secondary"
+            class="!text-[14px] !font-bold"
+            @click="handleCancelButton()"
+          />
+        </div>
+        <slot name="button-right" />
+      </slot>
     </div>
   </div>
 </template>
@@ -19,8 +21,14 @@
 export default {
   name: 'BaseDialogFooterNew',
   props: {
-    name: { type: String, required: true }
-  }
+    name: { type: String, required: true },
+  },
+  methods: {
+    handleCancelButton() {
+      this.$emit('cancel')
+      this.$store.commit('modals/CLOSE', this.name)
+    },
+  },
 }
 </script>
 
