@@ -37,7 +37,11 @@
                 />
               </div>
             </div>
-            <jds-button label="Tambah Akun" variant="primary" />
+            <jds-button
+              label="Tambah Akun"
+              variant="primary"
+              @click="showPopupFormAccount(modalNameAddAccount)"
+            />
           </div>
           <JdsDataTable
             :headers="managementAccountComplaintHeader"
@@ -95,6 +99,10 @@
       :dialog-modal="confirmationDialog.delete"
       :detail-item-modal="detailItem"
     />
+    <DialogFormAccount
+      :title="modalForm.title"
+      :modal-name="modalForm.modalName"
+    />
   </div>
 </template>
 
@@ -107,10 +115,11 @@ import {
   managementAccountComplaintStatus,
   confirmationDialog,
 } from '~/constant/management-user'
+import DialogFormAccount from '~/components/Aduan/Dialog/Account'
 
 export default {
   name: 'AcountManagementTable',
-  components: { TabBarList },
+  components: { TabBarList, DialogFormAccount },
   data() {
     return {
       menuTableAction: [
@@ -252,6 +261,11 @@ export default {
         id: '',
         title: '',
       },
+      modalForm: {
+        title: '',
+        modalName: '',
+      },
+      modalNameAddAccount: 'tambah-akun',
     }
   },
   // TO DO : if API already
@@ -437,6 +451,15 @@ export default {
     // },
     showPopupConfirmation(modalName, detailAccount) {
       this.detailItem.title = `${detailAccount.name} - ${detailAccount.email}`
+      this.$store.commit('modals/OPEN', modalName)
+    },
+    showPopupFormAccount(modalName) {
+      this.modalForm.modalName = modalName
+      if (modalName === this.modalNameAddAccount) {
+        this.modalForm.title = 'Tambah Akun'
+      } else {
+        this.modalForm.title = 'Kirim Ulang Email'
+      }
       this.$store.commit('modals/OPEN', modalName)
     },
     // TO DO : if API already
