@@ -1,6 +1,6 @@
 <template>
   <BaseDialogFrame :name="dialogModal?.nameModal">
-    <BaseDialogPanel>
+    <BaseDialogPanel class="w-[510px]">
       <BaseDialogHeader :title="dialogModal?.title" />
       <BaseDialogDescription
         :description="dialogModal?.descriptionText"
@@ -8,12 +8,16 @@
         class="p-6"
       />
       <BaseDialogFooterNew :name="`${dialogModal?.nameModal}`">
-        <jds-button
-          :label="dialogModal?.button.label"
-          type="button"
-          :variant="dialogModal?.button.variant"
-          @click.prevent="confirmationButton()"
-        />
+        <template #button-right>
+          <jds-button
+            :label="dialogModal?.button.label"
+            type="button"
+            :variant="dialogModal?.button.variant"
+            @click.prevent="confirmationButton()"
+          />
+        </template>
+
+        <slot name="footer-custom" />
       </BaseDialogFooterNew>
     </BaseDialogPanel>
   </BaseDialogFrame>
@@ -27,20 +31,22 @@ export default {
     detailItemModal: { type: Object, default: () => ({}) },
     path: { type: String, default: '' },
     httpMethod: { type: String, default: 'post' },
-    params: { type: Object, default: () => ({}) }
+    params: { type: Object, default: () => ({}) },
   },
   methods: {
-    async confirmationButton () {
+    async confirmationButton() {
       let isSuccess
       try {
-        const response = await this.$axios[this.httpMethod](this?.path, { ...this.params })
+        const response = await this.$axios[this.httpMethod](this?.path, {
+          ...this.params,
+        })
         isSuccess = true
         this.$emit('success', this.dialogModal.nameModal, isSuccess, response)
       } catch (error) {
         isSuccess = false
         this.$emit('error', this.dialogModal.nameModal, isSuccess)
       }
-    }
-  }
+    },
+  },
 }
 </script>
