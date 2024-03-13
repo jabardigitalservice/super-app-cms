@@ -152,3 +152,19 @@
 .form-add-complaint .jds-options__filter .jds-input-text__input-wrapper{
   @apply !w-[540px]
 } */
+
+
+.jds-input-text{
+  @apply !w-full
+}
+
+.jds-input-text.jds-input-text--error .jds-input-text__input-wrapper {
+  @apply !border !border-red-400;
+}
+
+.jds-input-text .jds-input-text__input-wrapper {
+  @apply rounded-lg border !border-gray-400 !bg-white;
+}
+.jds-input-text input {
+  @apply placeholder:!text-sm;
+}

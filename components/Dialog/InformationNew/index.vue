@@ -1,8 +1,8 @@
 <template>
-  <BaseDialogFrame :name="`${nameModal}-${typeModal}`" :close-modal-self="!isSuccess">
-    <BaseDialogPanel>
+  <BaseDialogFrame :name="nameModal" :close-modal-self="!isSuccess">
+    <BaseDialogPanel class="w-[510px]">
       <BaseDialogHeader :title="dialogModal?.title" />
-      <div class="flex items-start px-6 pt-4 pb-10">
+      <div class="flex max-h-[122px] min-h-[94px] items-start px-6 py-4">
         <jds-icon
           :name="dialogModal?.icon?.name || 'warning'"
           size="sm"
@@ -15,7 +15,7 @@
           :sub-description="detailItemModal?.title"
         />
       </div>
-      <div class="mt-3 rounded-b-lg bg-gray-50 px-6 py-4">
+      <div class="rounded-b-lg bg-gray-50 px-6 py-4">
         <template v-if="isSuccess || isWarning">
           <div class="flex justify-center">
             <div>
@@ -46,9 +46,7 @@
                 type="button"
                 variant="danger"
                 class="!text-[14px] !font-bold"
-                @click="
-                  $store.commit('modals/CLOSE', `${nameModal}-${typeModal}`)
-                "
+                @click="$store.commit('modals/CLOSE', nameModal)"
               />
             </div>
           </div>
@@ -66,18 +64,13 @@ export default {
     dialogModal: { type: Object, default: () => ({}) },
     detailItemModal: { type: Object, default: () => ({}) },
     isSuccess: { type: Boolean, default: false },
-    isWarning: { type: Boolean, default: false }
-  },
-  data () {
-    return {
-      typeModal: 'information'
-    }
+    isWarning: { type: Boolean, default: false },
   },
   methods: {
-    closeModalSuccess () {
+    closeModalSuccess() {
       this.$store.commit('modals/CLOSEALL')
       this.$emit('close-all-modal')
-    }
-  }
+    },
+  },
 }
 </script>
