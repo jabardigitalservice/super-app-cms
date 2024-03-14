@@ -201,6 +201,14 @@ const sriBadugaMenu = {
       unleashVariable:
         'SAPAWARGA-CMS__TICKETING--SRIBADUGA--LAPORAN-PENDAPATAN',
     },
+
+    {
+      name: 'Kalender Reservasi',
+      path: '/sribaduga/kalender-reservasi',
+      arrow: false,
+      showMenuAndAccessForRoles: ['admin'],
+      icon: 'news-paper.svg',
+    },
   ],
 }
 
