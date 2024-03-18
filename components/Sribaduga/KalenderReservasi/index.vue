@@ -45,29 +45,36 @@
             <table id="main-table" class="main-table">
               <thead>
                 <tr>
-                  <th scope="col">SESI</th>
+                  <th scope="col" class="session-head">SESI</th>
                   <th
-                    v-for="(headerDate, index) in DateDataList"
-                    :key="index"
+                    v-for="(headerDate, index1) in DateDataList"
+                    :key="index1"
                     scope="col"
                   >
                     {{ headerDate.dateData }}
                   </th>
                 </tr>
               </thead>
-              <tbody>
-                <tr v-for="(headerDate, index) in DateDataList" :key="index">
-                  <td>
-                    {{ headerDate.sessionName }} <br />
-                    {{ headerDate.sessionTime }}
+              <tbody
+                v-for="(sessionData, index2) in sessionDataList"
+                :key="index2"
+              >
+                <tr>
+                  <td class="text-[14px]">
+                    <p class="font-[600]">
+                      {{ sessionData.sessionName }}
+                    </p>
+                    <p>{{ sessionData.sessionTime }}</p>
                   </td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-
-                  <td></td>
+                  <td
+                    v-for="(dateData, index3) in DateDataList"
+                    :key="index3"
+                    @click="handleClickDate(dateData, sessionData)"
+                  >
+                    <p class="font-[600]">
+                      {{ getEventTitle(dateData, sessionData.event) }}
+                    </p>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -79,13 +86,6 @@
 </template>
 
 <script>
-// import allLocales from '@fullcalendar/core/locales-all'
-
-// import { formatTime } from '~/utils'
-// import { formatInTimeZone } from 'date-fns-tz'
-// import { isValid, parse } from 'date-fns'
-// import id from 'date-fns/locale/id'
-
 export default {
   name: 'SribadugaKalenderReservasi',
   data() {
@@ -95,6 +95,20 @@ export default {
         {
           sessionName: 'Sesi 1',
           sessionTime: '08:00 - 09:00',
+          event: [
+            {
+              title: 'test 1',
+              date: '2024-03-18',
+            },
+            {
+              title: 'test 2',
+              date: '2024-03-19',
+            },
+            {
+              title: 'test 4',
+              date: '2024-03-21',
+            },
+          ],
         },
         {
           sessionName: 'Sesi 2',
@@ -103,6 +117,20 @@ export default {
         {
           sessionName: 'Sesi 3',
           sessionTime: '10:00 - 11:00',
+          event: [
+            {
+              title: 'test 1',
+              date: '2024-03-18',
+            },
+            {
+              title: 'test 2',
+              date: '2024-03-19',
+            },
+            {
+              title: 'test 4',
+              date: '2024-03-21',
+            },
+          ],
         },
         {
           sessionName: 'Sesi 4',
@@ -137,29 +165,31 @@ export default {
             dateData: `${newDate.toLocaleDateString('id-ID', {
               weekday: 'long',
             })} - ${newDate.getDate()}`,
+            rawDateData: newDate,
           }
         )
-
-        // push 'SESI' in the first array
-        // if (i === 0) {
-        //   dateList[0].dateData = 'SESI'
-        // }
-        // if array is same with sessionDataList, push sessionDataList into dateList
-        this.sessionDataList.forEach((session, index) => {
-          if (i === index) {
-            dateList[i].sessionName = session.sessionName
-            dateList[i].sessionTime = session.sessionTime
-          }
-        })
       }
       this.DateDataList = dateList
       console.log('dateList', dateList)
+    },
+    getEventTitle(dateData, eventList) {
+      console.log('dateData', dateData)
+      console.log('eventList', eventList)
+      const event = eventList?.find(
+        (event) =>
+          event.date === dateData.rawDateData.toISOString().split('T')[0]
+      )
+      return event ? event.title : ''
+    },
+    handleClickDate(dateData, sessionData) {
+      console.log('dateData', dateData)
+      console.log('sessionData', sessionData)
     },
   },
 }
 </script>
 <style>
-.table-scroll {
+/* .table-scroll {
   height: 250px;
   max-width: 100vw;
   width: 100%;
@@ -190,7 +220,6 @@ export default {
   position: sticky;
   top: 0;
 }
-/* safari and ios need the tfoot itself to be position:sticky also */
 .table-scroll tfoot,
 .table-scroll tfoot th,
 .table-scroll tfoot td {
@@ -204,9 +233,9 @@ export default {
 
 a:focus {
   background: red;
-} /* testing links*/
+} 
 
-/* th:first-child {
+th:first-child {
   position: -webkit-sticky;
   position: sticky;
   left: 0;
@@ -219,12 +248,80 @@ td:first-child {
   position: sticky;
   left: 0;
   z-index: 2;
-} */
-/* thead th:first-child,
+}
+thead th:first-child,
 tfoot th:first-child {
   z-index: 5;
 }
 .fc .fc-button-group .fc--button {
   display: none;
+} */
+/* .table-scroll {
+  position: relative;
+  width: 100%;
+  z-index: 1;
+  margin: auto;
+  overflow: auto;
+  height: 350px;
+} */
+.session-head {
+  width: 120px;
+}
+.table-scroll table {
+  width: 100%;
+  min-width: 500px;
+  margin: auto;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+/* .table-wrap {
+  position: relative;
+} */
+.table-scroll th,
+.table-scroll td {
+  padding: 5px 10px;
+  border: 1px solid #000;
+  background: #fff;
+  vertical-align: top;
+}
+
+/* safari and ios need the tfoot itself to be position:sticky also */
+/* .table-scroll tfoot,
+.table-scroll tfoot th,
+.table-scroll tfoot td {
+  position: -webkit-sticky;
+  position: sticky;
+  bottom: 0;
+  background: #666;
+  color: #fff;
+  z-index: 4;
+} */
+
+a:focus {
+  background: red;
+} /* testing links*/
+
+/* th:first-child {
+  position: -webkit-sticky;
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background: #ccc;
+}
+thead th:first-child,
+tfoot th:first-child {
+  z-index: 5;
+}
+.fc .fc-button-group .fc--button {
+  display: none;
+} */
+/* .fc .fc-scrollgrid .fc-col-header tr:nth-child(1) {
+  display: none;
+} */
+/* .fc .fc-scrollgrid .fc-scrollgrid-sync-table {
+  display: none;
+} */
+/* .fc .fc-scrollgrid .fc-timegrid-now-indicator-container {
+  height: 200px;
 } */
 </style>
