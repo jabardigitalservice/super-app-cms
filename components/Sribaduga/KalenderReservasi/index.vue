@@ -159,96 +159,72 @@ export default {
 }
 </script>
 <style>
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 10px;
-}
-
-div {
-  height: 206px;
+.table-scroll {
+  height: 250px;
   max-width: 100vw;
+  width: 100%;
   overflow-x: auto;
   overflow-y: auto;
   position: relative;
   margin-top: 100px;
 }
-
-table {
+.table-scroll table {
   border-collapse: collapse;
   color: lightgrey;
   table-layout: fixed;
 }
-
-thead {
-  // thead and tr don't currently support sticky
-  // position: -webkit-sticky;
-  // position: sticky;
-  // left: 0; top: 0;
-
-  th {
-    position: -webkit-sticky; // for safari
-    position: sticky;
-    top: 0;
-    left: 0;
-
-    &:first-child {
-      z-index: 3;
-    }
-  }
+.table-wrap {
+  position: relative;
+}
+.table-scroll th,
+.table-scroll td {
+  padding: 5px 10px;
+  border: 1px solid #000;
+  background: #fff;
+  vertical-align: top;
+}
+.table-scroll thead th {
+  background: #333;
+  color: #fff;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+}
+/* safari and ios need the tfoot itself to be position:sticky also */
+.table-scroll tfoot,
+.table-scroll tfoot th,
+.table-scroll tfoot td {
+  position: -webkit-sticky;
+  position: sticky;
+  bottom: 0;
+  background: #666;
+  color: #fff;
+  z-index: 4;
 }
 
-th,
-td {
-  padding: 10px 100px;
-  text-transform: capitalize;
-}
+a:focus {
+  background: red;
+} /* testing links*/
 
-th {
-  background: black;
-  color: white;
-  white-space: nowrap;
-}
-
-tr {
-  background: hsl(0, 0%, 20%);
-
-  &:nth-child(even) {
-    background: hsl(0, 0%, 15%);
-  }
-
-  &:not(:last-of-type) {
-    border-bottom: 2px solid rgba(yellow, 0.25);
-  }
-}
-
-th,
-td {
-  &:first-child {
-    position: -webkit-sticky; // for safari
-    position: sticky;
-    left: 0px;
-    // top: 0px; -> doesn't work in Safari 11
-    /*
-      thanks to https://github.com/jonjohnjohnson
-      explanation: https://github.com/w3c/csswg-drafts/issues/865 
-    */
-    z-index: 2;
-    width: 200px;
-  }
+/* th:first-child {
+  position: -webkit-sticky;
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background: #ccc;
 }
 
 td:first-child {
-  tr:nth-child(odd) & {
-    background: hsl(0, 0%, 20%);
-    box-shadow: inset -2px 0px rgba(black, 0.25);
-  }
-
-  tr:nth-child(even) & {
-    background: hsl(0, 0%, 15%);
-    box-shadow: inset -2px 0px rgba(black, 0.25);
-  }
+  position: -webkit-sticky;
+  position: sticky;
+  left: 0;
+  z-index: 2;
+} */
+/* thead th:first-child,
+tfoot th:first-child {
+  z-index: 5;
 }
+.fc .fc-button-group .fc--button {
+  display: none;
+} */
 </style>
