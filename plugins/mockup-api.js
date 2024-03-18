@@ -4,6 +4,6 @@ export default function ({ $axios, $config }, inject) {
     baseURL: $config.urlMockApi,
   })
 
-  // Inject to context as $api
+  // Inject to context as $mockApi
   inject('mockApi', api)
 }
