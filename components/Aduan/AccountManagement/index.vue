@@ -46,6 +46,7 @@
           <JdsDataTable
             :headers="managementAccountComplaintHeader"
             :items="listData"
+            :pagination="pagination"
           >
             <!-- eslint-disable-next-line vue/valid-v-slot -->
             <template #item.status_name="{ item }">
@@ -141,98 +142,8 @@ export default {
         },
       ],
       listStatisticManagementAccount: [{}],
-      listDataManagementAccount: [
-        {
-          id: '13i41g3rv1i3y4gr139r13r',
-          name: 'Budi Samsudin',
-          email: 'timrespon@yopmail.com',
-          role: {
-            id: 1,
-            name: 'Tim Respon dan Verifikator',
-          },
-          opd: {
-            id: 1,
-            name: 'Diskominfo -JDS',
-          },
-          status: {
-            id: 'unverified',
-            name: 'Belum Verifikasi',
-          },
-        },
-        {
-          id: '13i41g3rv1i3y4gr139r13r',
-          name: 'Heru Handoko',
-          email: 'timpenentu@yopmail.com',
-          role: {
-            id: 1,
-            name: 'Tim Penentu Kewenangan',
-          },
-          opd: {
-            id: 1,
-            name: 'Diskominfo-Bidang IKP',
-          },
-          status: {
-            id: 'not_active',
-            name: 'Tidak Aktif',
-          },
-        },
-        {
-          id: '13i41g3rv1i3y4gr139r13r',
-          name: 'Hendra Gunawan',
-          email: 'timpengendali@yopmail.com',
-          role: {
-            id: 1,
-            name: 'Tim Pengendali Aduan',
-          },
-          opd: {
-            id: 1,
-            name: 'Tim Sekertariat Daerah',
-          },
-          status: {
-            id: 'active',
-            name: 'Aktif',
-          },
-        },
-        {
-          id: '13i41g3rv1i3y4gr139r13r',
-          name: 'Agus Sutisna',
-          email: 'perangkatdaerah@yopmail.com',
-          role: {
-            id: 1,
-            name: 'Perangkat Daerah',
-          },
-          opd: {
-            id: 1,
-            name: 'Dinas Kesehatan Provinsi Jawa Barat',
-          },
-          status: {
-            id: 'unverified',
-            name: 'Belum Verifikasi',
-          },
-        },
-      ],
-      listDataRole: [
-        {
-          id: '-',
-          name: 'Semua Role',
-        },
-        {
-          id: 'respon-verifikator',
-          name: 'Tim Respon dan Verifikator',
-        },
-        {
-          id: 'penentu-Kewenangan',
-          name: 'Tim Penentu Kewenangan',
-        },
-        {
-          id: 'pengendali-aduan',
-          name: 'Tim Pengendali Aduan',
-        },
-        {
-          id: 'perangkat-daerah',
-          name: 'Perangkat Daerah',
-        },
-      ],
+      listDataManagementAccount: [],
+      listDataRole: [],
       pagination: {
         currentPage: 1,
         totalRows: 5,
@@ -241,7 +152,7 @@ export default {
         disabled: true,
       },
       query: {
-        limit: 5,
+        limit: 10,
         page: 1,
         search: null,
         tabIndex: 0,
@@ -268,36 +179,41 @@ export default {
       modalNameAddAccount: 'tambah-akun',
     }
   },
-  // TO DO : if API already
-  // async fetch() {
-  //   try {
-  //     const responseList = await this.$axios.get('/users/admin', {
-  //       params: { ...this.query },
-  //     })
-  //     const { data } = responseList.data
-  //     this.listDataManagementAccount = data?.data || []
-  //     if (this.listDataManagementAccount.length) {
-  //       this.pagination.disabled = false
-  //     } else {
-  //       this.pagination.disabled = true
-  //     }
+  async fetch() {
+    try {
+      // get data management account
+      const responseDataManagementAccount = await this.$mockApi.get(
+        '/users/admin/complaints',
+        {
+          params: { ...this.query },
+        }
+      )
+      this.listDataManagementAccount = responseDataManagementAccount.data?.data
+      this.pagination = {
+        currentPage: responseDataManagementAccount.data.meta?.current_page || 1,
+        totalRows: responseDataManagementAccount.data.meta?.total || 0,
+        itemsPerPage:
+          responseDataManagementAccount.data.meta?.per_page || this.query.limit,
+      }
 
-  //     this.pagination.currentPage = data?.page || 1
-  //     this.pagination.totalRows = data?.total_data || 0
-  //     this.pagination.itemsPerPage = data?.page_size || this.query.limit
-
-  //     this.getCount()
-  //   } catch {
-  //     this.pagination.disabled = true
-  //   }
-  // },
+      // get data role
+      const responseDataRole = await this.$mockApi.get(
+        '/users/admin/complaints/roles'
+      )
+      this.listDataRole = responseDataRole.data?.data
+      this.listDataRole.unshift({ id: '-', name: 'Semua Role' })
+    } catch {
+      this.pagination.disabled = true
+    }
+  },
   computed: {
     listData() {
       return this.listDataManagementAccount.map((item) => {
         return {
           ...item,
           role: item.role.name,
-          instance: item.opd.name,
+          organization: item.organization.name,
+          status_name: item.status.name,
           status_id: item.status.id,
         }
       })
@@ -355,6 +271,12 @@ export default {
     )
   },
   methods: {
+    goToPageDetail(id) {
+      this.$router.push({
+        path: `management-akun/detail/${id}`,
+        query: this.query,
+      })
+    },
     selectedTabHandle(index) {
       this.query.tabIndex = index
     },
