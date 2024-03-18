@@ -10,7 +10,7 @@ export const managementAccountComplaintHeader = [
   { key: 'name', text: 'Nama', sortable: true },
   { key: 'email', text: 'Email', sortable: true },
   { key: 'role', text: 'Role' },
-  { key: 'instance', text: 'Instansi' },
+  { key: 'organization', text: 'Instansi' },
   { key: 'status_name', text: 'Status' },
   { key: 'action', text: 'Aksi' },
 ]
