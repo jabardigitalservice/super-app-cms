@@ -105,7 +105,7 @@ export default {
         case 'red':
           return 'text-[#DD5E5E]'
         default:
-          return 'bg-gray-900'
+          return 'text-gray-900'
       }
     },
   },
