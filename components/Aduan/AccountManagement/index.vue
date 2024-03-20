@@ -64,6 +64,7 @@
             <template #item.action="{ item }">
               <BaseTableAction
                 :list-menu-pop-over="filterTableAction(item?.status_id)"
+                @detail-account="goToPageDetail(item.id)"
                 @non-active-account="
                   showPopupConfirmation(
                     confirmationDialog.nonActive.nameModal,
