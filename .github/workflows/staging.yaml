@@ -60,6 +60,7 @@ jobs:
           chmod 600 /tmp/gitlab-deploy-ssh-key
           export GIT_SSH_COMMAND="ssh -i /tmp/gitlab-deploy-ssh-key -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
           git clone ${{ secrets.GITLAB_ARGOCD_REPOSITORY }}
+          
       - name: GitOps ArgoCD Update Image Tag
         uses: mikefarah/yq@master
         with:
