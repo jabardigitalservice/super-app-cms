@@ -83,6 +83,7 @@
                     item
                   )
                 "
+                @resend-email="showPopupFormAccount(modalNameResendEmail, item)"
               />
             </template>
           </JdsDataTable>
@@ -104,6 +105,7 @@
     <DialogFormAccount
       :title="modalForm.title"
       :modal-name="modalForm.modalName"
+      :id-account="idAccount"
     />
   </div>
 </template>
@@ -141,6 +143,11 @@ export default {
           value: 'delete-account',
           status: managementAccountComplaintStatus.not_active.id,
         },
+        {
+          menu: 'Kirim Ulang Email Verifikasi',
+          value: 'resend-email',
+          status: managementAccountComplaintStatus.unverified.id,
+        },
       ],
       listStatisticManagementAccount: [{}],
       listDataManagementAccount: [],
@@ -177,7 +184,9 @@ export default {
         title: '',
         modalName: '',
       },
-      modalNameAddAccount: 'tambah-akun',
+      idAccount: '',
+      modalNameAddAccount: 'addAccount',
+      modalNameResendEmail: 'resendEmail',
     }
   },
   async fetch() {
@@ -212,10 +221,14 @@ export default {
       return this.listDataManagementAccount.map((item) => {
         return {
           ...item,
-          role: item.role.name,
-          organization: item.organization.name,
+          role_name: item.role.name,
+          role_id: item.role.id,
+          organization_name: item.organization.name,
+          organization_id: item.organization.id,
           status_name: item.status.name,
           status_id: item.status.id,
+          employee_number: item.employee_number,
+          employee_status: item.employee_status.id,
         }
       })
     },
@@ -376,13 +389,24 @@ export default {
       this.detailItem.title = `${detailAccount.name} - ${detailAccount.email}`
       this.$store.commit('modals/OPEN', modalName)
     },
-    showPopupFormAccount(modalName) {
+    showPopupFormAccount(modalName, dataAccount = null) {
       this.modalForm.modalName = modalName
       if (modalName === this.modalNameAddAccount) {
         this.modalForm.title = 'Tambah Akun'
       } else {
         this.modalForm.title = 'Kirim Ulang Email'
+        this.idAccount = dataAccount.id
+        const payload = {
+          name: dataAccount.name,
+          email: dataAccount.email,
+          roleId: dataAccount.role_id,
+          organizationId: dataAccount.organization_id,
+          employeeStatus: dataAccount.employee_status,
+          employeeNumber: dataAccount.employee_number,
+        }
+        this.$store.commit('management-account/setPayload', payload)
       }
+
       this.$store.commit('modals/OPEN', modalName)
     },
     // TO DO : if API already
