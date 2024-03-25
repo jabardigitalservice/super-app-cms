@@ -2,6 +2,14 @@ import { confirmationDialog } from '~/constant/management-user'
 
 export const state = () => ({
   detailItem: {},
+  payload: {
+    name: '',
+    email: '',
+    roleId: '',
+    organizationId: '',
+    employeeStatus: '',
+    employeeNumber: '',
+  },
 })
 
 export const getters = {
@@ -21,5 +29,8 @@ export const actions = {
 export const mutations = {
   setDetailItem(state, detailItem) {
     state.detailItem = detailItem
+  },
+  setPayload(state, payload) {
+    state.payload = payload
   },
 }
