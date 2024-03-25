@@ -32,7 +32,7 @@
             name="Status Kepegawaian"
           >
             <jds-radio-button-group
-              v-model="payload.employmentStatus"
+              v-model="payload.employeeStatus"
               :error-message="errors[0]"
               class="full-width"
               label="Pilih Status Kepegawaian"
@@ -44,17 +44,18 @@
               placeholder-key="label"
               name="Status Kepegawaian"
               orientation="horizontal"
+              @change="handleChangeRadioButton"
             />
           </ValidationProvider>
           <ValidationProvider
-            v-if="payload.employmentStatus === 'asn'"
+            v-if="payload.employeeStatus === 'asn'"
             v-slot="{ errors }"
             rules="required"
             name="Nip"
             tag="div"
           >
             <jds-input-text
-              v-model="payload.employmentNumber"
+              v-model="payload.employeeNumber"
               name="Nip"
               label="NIP"
               placeholder="Masukkan NIP"
@@ -94,6 +95,7 @@
               :options="listRole"
               class="pb-4"
               :class="{ '!pb-6': errors.length > 0 }"
+              @change="handleChangeSelectRole()"
             />
           </ValidationProvider>
           <ValidationProvider
@@ -144,20 +146,33 @@
           type="button"
           variant="primary"
           class="!text-[14px] !font-bold"
-          @click="showPopupInformation()"
+          @click="submitAccount()"
         />
       </template>
     </DialogConfirmationNew>
     <DialogInformationNew
-      :name-modal="dialogInformationSuccess.nameModal"
-      :dialog-modal="dialogInformationSuccess"
-      :is-success="true"
-    />
+      :name-modal="dialogInformation?.nameModal"
+      :dialog-modal="dialogInformation"
+      :is-success="isSuccess"
+    >
+      <template #button-error>
+        <jds-button
+          label="Ulangi"
+          type="button"
+          variant="primary"
+          class="!text-[14px] !font-bold"
+          @click="backToForm()"
+        />
+      </template>
+    </DialogInformationNew>
+    <DialogLoading :show-popup="isLoading" />
   </div>
 </template>
 
 <script>
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
+import { iconPopup } from '~/constant/icon-popup-new'
+
 export default {
   name: 'DialogAccount',
   components: { ValidationObserver, ValidationProvider },
@@ -171,94 +186,87 @@ export default {
       default: '',
       required: true,
       validator(value) {
-        return ['kirim-ulang-email', 'tambah-akun'].includes(value)
+        return ['resendEmail', 'addAccount'].includes(value)
       },
+    },
+    idAccount: {
+      type: String,
+      default: '',
     },
   },
   data() {
     return {
-      payload: {
-        name: '',
-        email: '',
-        roleId: '',
-        organizationId: '',
-        employmentStatus: '',
-        employmentNumber: '',
-      },
-      listDataRole: [
-        {
-          id: 'role1',
-          name: 'Tim Respon dan Verifikator',
-        },
-        {
-          id: 'role2',
-          name: 'Tim Penentu Kewenangan',
-        },
-        {
-          id: 'role3',
-          name: 'Tim Pengendali Aduan',
-        },
-        {
-          id: 'role4',
-          name: 'Perangkat Daerah',
-        },
-      ],
-      listDataOrganization: [
-        {
-          id: 'organization1',
-          name: 'Diskominfo - JDS',
-        },
-        {
-          id: 'organization2',
-          name: 'Diskominfo - Bidang IKP',
-        },
-        {
-          id: 'organization3',
-          name: 'Tim Sekretariat Daerah',
-        },
-        {
-          id: 'organization4',
-          name: 'Tim Administrasi Pimpinan',
-        },
-        {
-          id: 'organization5',
-          name: 'Tim Badan Kepegawaian Daerah',
-        },
-        {
-          id: 'organization6',
-          name: 'Dinas Komunikasi dan Informatika Provinsi Jawa Barat',
-        },
-        {
-          id: 'organization7',
-          name: 'Dinas Pendidikan Provinsi Jawa Barat',
-        },
-        {
-          id: 'organization8',
-          name: 'Dinas Kesehatan Provinsi Jawa Barat',
-        },
-      ],
+      listDataRole: [],
+      listDataOrganization: [],
       detailItem: {
         title: '',
       },
-      dialogConfirmation: {
-        title: 'Konfirmasi Tambah Akun',
-        descriptionText:
-          'Apakah Anda yakin ingin menambahkan akun ini? Link verifikasi akan dikirimkan ke email dibawah ini:',
-        nameModal: `${this.nameModal}-confirmation`,
-        button: {
-          label: 'Simpan',
-          variant: 'primary',
+      addAccount: {
+        nameModal: 'add-account',
+        methodApi: 'post',
+        dialogConfirmation: {
+          title: 'Konfirmasi Tambah Akun',
+          descriptionText:
+            'Apakah Anda yakin ingin menambahkan akun ini? Link verifikasi akan dikirimkan ke email dibawah ini:',
+        },
+        dialogInformation: {
+          success: {
+            title: 'Pembuatan Akun berhasil',
+            descriptionText:
+              'Email telah berhasil dikirimkan, silahkan melakukan konfirmasi kepada pemilik email yang bersangkutan.',
+            icon: iconPopup.success,
+          },
+          error: {
+            title: 'Pembuatan Akun Gagal',
+            descriptionText:
+              'Terjadi kesalahan saat membuat akun baru. Silakan coba lagi',
+            icon: iconPopup.failed,
+          },
         },
       },
-      isSuccessInformation: true,
-      dialogInformationSuccess: {
-        title: 'Pembuatan Akun Berhasil',
-        descriptionText:
-          'Email telah berhasil dikirimkan, silahkan melakukan konfirmasi kepada pemilik email yang bersangkutan.',
-        nameModal: 'add-account-information-success',
-        icon: { name: 'check-mark-circle', fill: '#069550' },
+      resendEmail: {
+        nameModal: 'resend-email',
+        methodApi: 'put',
+        dialogConfirmation: {
+          title: 'Konfirmasi Kirim Ulang Email Verifikasi',
+          descriptionText:
+            'Apakah Anda yakin ingin mengirimkan ulang email verifikasi? Link verifikasi akan dikirimkan ke email dibawah ini:',
+        },
+        dialogInformation: {
+          success: {
+            title: 'Kirim Ulang Email Verifikasi Berhasil',
+            descriptionText:
+              'Email verifikasi telah berhasil dikirimkan, silahkan melakukan konfirmasi kepada pemilik email yang bersangkutan.',
+            icon: iconPopup.success,
+          },
+          error: {
+            title: 'Kirim Ulang Email Verifikasi Gagal',
+            descriptionText:
+              'Terjadi kesalahan saat mengirimkan ulang email verifikasi. Silakan coba lagi',
+            icon: iconPopup.failed,
+          },
+        },
       },
-      employmentStatus: '',
+      dialogConfirmation: {},
+      dialogInformation: {},
+      isLoading: false,
+      isSuccess: false,
+    }
+  },
+  async fetch() {
+    try {
+      const responseDataRole = await this.$mockApi.get(
+        '/users/admin/complaints/roles'
+      )
+      this.listDataRole = responseDataRole.data?.data
+
+      const responseDataOrganization = await this.$mockApi.get(
+        `/users/admin/complaints/organizations?roleId=${this.roleId}`
+      )
+      this.listDataOrganization = responseDataOrganization.data?.data
+    } catch {
+      this.listDataRole = []
+      this.listDataOrganization = []
     }
   },
   computed: {
@@ -274,6 +282,14 @@ export default {
       return this.listDataOrganization.map((item) => {
         return { value: item.id, label: item.name }
       })
+    },
+    payload: {
+      get() {
+        return { ...this.$store.state['management-account'].payload }
+      },
+      set(value) {
+        this.$store.commit('management-account/setPayload', value)
+      },
     },
   },
   watch: {
@@ -292,25 +308,73 @@ export default {
       if (isValid) {
         this.$store.commit('modals/CLOSE', this.modalName)
         this.detailItem.title = this.payload.email
+        this.setDialogConfirmation()
         this.$store.commit('modals/OPEN', this.dialogConfirmation.nameModal)
       }
     },
+    setDialogConfirmation() {
+      const { dialogConfirmation, nameModal } = this[this.modalName]
+      this.dialogConfirmation = {
+        title: dialogConfirmation.title,
+        descriptionText: dialogConfirmation.descriptionText,
+        nameModal: `${nameModal}-confirmation`,
+        button: { label: 'Konfirmasi', variant: 'primary' },
+      }
+    },
+    setDialogInformation(typeInformation) {
+      const { dialogInformation, nameModal } = this[this.modalName]
+      this.dialogInformation = {
+        title: dialogInformation[typeInformation].title,
+        descriptionText: dialogInformation[typeInformation].descriptionText,
+        nameModal: `${nameModal}-${typeInformation}-information`,
+        icon: dialogInformation[typeInformation].icon,
+      }
+    },
+    handleChangeRadioButton(value) {
+      this.$store.commit('management-account/setPayload', {
+        ...this.payload,
+        employeeStatus: value,
+      })
+    },
+    handleChangeSelectRole() {
+      this.$store.commit('management-account/setPayload', {
+        ...this.payload,
+        organizationId: '',
+      })
+      this.$fetch()
+    },
+    async submitAccount() {
+      this.$store.commit('modals/CLOSEALL')
+      this.isLoading = true
+      const methodApi = this[this.modalName].methodApi
+      try {
+        const idAccount = `/${this.idAccount}` || ''
+        await this.$mockApi[methodApi](`/users/admin/complaints${idAccount}`, {
+          ...this.payload,
+        })
+        this.isSuccess = true
+        this.setDialogInformation('success')
+        this.clearForm()
+      } catch (error) {
+        this.isSuccess = false
+        this.setDialogInformation('error')
+      } finally {
+        this.isLoading = false
+      }
+      this.$store.commit('modals/OPEN', this.dialogInformation.nameModal)
+    },
     backToForm() {
-      this.$store.commit('modals/CLOSE', this.dialogConfirmation.nameModal)
+      this.$store.commit('modals/CLOSEALL')
       this.$store.commit('modals/OPEN', this.modalName)
     },
+
     clearForm() {
       this.payload = {
         name: '',
         email: '',
         roleId: '',
-        opdId: '',
+        organizationId: '',
       }
-    },
-    showPopupInformation() {
-      this.$store.commit('modals/CLOSE', this.dialogConfirmation.nameModal)
-      this.clearForm()
-      this.$store.commit('modals/OPEN', this.dialogInformationSuccess.nameModal)
     },
   },
 }
