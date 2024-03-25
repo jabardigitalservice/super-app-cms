@@ -1,19 +1,20 @@
 const store = {
   namespaced: true,
   state: {
-    open: []
+    open: [],
   },
+
   mutations: {
-    OPEN (state, payload) {
+    OPEN(state, payload) {
       state.open.unshift(payload)
     },
-    CLOSE (state, payload) {
-      state.open = state.open.filter(e => e !== payload)
+    CLOSE(state, payload) {
+      state.open = state.open.filter((e) => e !== payload)
     },
-    CLOSEALL (state) {
+    CLOSEALL(state) {
       state.open = []
-    }
-  }
+    },
+  },
 }
 
 export default store
