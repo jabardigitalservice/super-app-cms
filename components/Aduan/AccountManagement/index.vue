@@ -204,8 +204,8 @@ export default {
       }
 
       // get data role
-      const responseDataRole = await this.$mockApi.get(
-        '/users/admin/complaints/roles'
+      const responseDataRole = await this.$axios.get(
+        '/users/admin/complaint/roles'
       )
       this.listDataRole = responseDataRole.data?.data
       this.listDataRole.unshift({ id: '-', name: 'Semua Role' })

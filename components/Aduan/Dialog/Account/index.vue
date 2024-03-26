@@ -255,13 +255,13 @@ export default {
   },
   async fetch() {
     try {
-      const responseDataRole = await this.$mockApi.get(
-        '/users/admin/complaints/roles'
+      const responseDataRole = await this.$axios.get(
+        '/users/admin/complaint/roles'
       )
       this.listDataRole = responseDataRole.data?.data
 
-      const responseDataOrganization = await this.$mockApi.get(
-        `/users/admin/complaints/organizations?roleId=${this.roleId}`
+      const responseDataOrganization = await this.$axios.get(
+        `/users/admin/complaint/organizations?roleId=${this.payload.roleId}`
       )
       this.listDataOrganization = responseDataOrganization.data?.data
     } catch {
