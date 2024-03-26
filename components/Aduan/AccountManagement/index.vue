@@ -83,6 +83,7 @@
                     item
                   )
                 "
+                @resend-email="showPopupFormAccount(modalNameResendEmail, item)"
               />
             </template>
           </JdsDataTable>
@@ -104,11 +105,13 @@
     <DialogFormAccount
       :title="modalForm.title"
       :modal-name="modalForm.modalName"
+      :id-account="idAccount"
     />
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import debounce from 'lodash.debounce'
 import { generateItemsPerPageOptions, resetQueryParamsUrl } from '~/utils'
 import TabBarList from '~/components/Aduan/TabBar/List'
@@ -140,6 +143,11 @@ export default {
           menu: 'Hapus',
           value: 'delete-account',
           status: managementAccountComplaintStatus.not_active.id,
+        },
+        {
+          menu: 'Kirim Ulang Email Verifikasi',
+          value: 'resend-email',
+          status: managementAccountComplaintStatus.unverified.id,
         },
       ],
       listStatisticManagementAccount: [{}],
@@ -173,11 +181,9 @@ export default {
         id: '',
         title: '',
       },
-      modalForm: {
-        title: '',
-        modalName: '',
-      },
-      modalNameAddAccount: 'tambah-akun',
+      idAccount: '',
+      modalNameAddAccount: 'addAccount',
+      modalNameResendEmail: 'resendEmail',
     }
   },
   async fetch() {
@@ -212,10 +218,14 @@ export default {
       return this.listDataManagementAccount.map((item) => {
         return {
           ...item,
-          role: item.role.name,
-          organization: item.organization.name,
+          role_name: item.role.name,
+          role_id: item.role.id,
+          organization_name: item.organization.name,
+          organization_id: item.organization.id,
           status_name: item.status.name,
           status_id: item.status.id,
+          employee_number: item.employee_number,
+          employee_status: item.employee_status.id,
         }
       })
     },
@@ -235,6 +245,9 @@ export default {
         }
       })
     },
+    ...mapGetters('management-account', {
+      modalForm: 'getModalForm',
+    }),
   },
   watch: {
     query: {
@@ -376,14 +389,23 @@ export default {
       this.detailItem.title = `${detailAccount.name} - ${detailAccount.email}`
       this.$store.commit('modals/OPEN', modalName)
     },
-    showPopupFormAccount(modalName) {
-      this.modalForm.modalName = modalName
-      if (modalName === this.modalNameAddAccount) {
-        this.modalForm.title = 'Tambah Akun'
-      } else {
-        this.modalForm.title = 'Kirim Ulang Email'
+    showPopupFormAccount(modalName, dataAccount = null) {
+      let payload = {}
+      if (modalName === this.modalNameResendEmail) {
+        payload = {
+          name: dataAccount.name,
+          email: dataAccount.email,
+          roleId: dataAccount.role_id,
+          organizationId: dataAccount.organization_id,
+          employeeStatus: dataAccount.employee_status,
+          employeeNumber: dataAccount.employee_number,
+        }
+        this.idAccount = dataAccount.id
       }
-      this.$store.commit('modals/OPEN', modalName)
+      this.$store.dispatch('management-account/showPopupFormAccount', {
+        modalName,
+        payload,
+      })
     },
     // TO DO : if API already
     // async getCount() {

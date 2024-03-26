@@ -68,20 +68,29 @@
                 variant="primary"
                 class="!text-[14px]"
                 label="Kirim Ulang Email Verifikasi"
+                @click="showPopupFormAccount()"
               />
             </div>
           </td>
         </tr>
       </BaseTableDetail>
     </div>
+    <DialogFormAccount
+      :title="modalForm.title"
+      :modal-name="modalForm.modalName"
+      :id-account="dataDetail.id"
+    />
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { managementAccountComplaintStatus } from '~/constant/management-user'
+import DialogFormAccount from '~/components/Aduan/Dialog/Account'
 
 export default {
   name: 'AccountManagementTableDetail',
+  components: { DialogFormAccount },
   props: {
     dataDetail: {
       type: Object,
@@ -93,6 +102,11 @@ export default {
     return {
       managementAccountComplaintStatus,
     }
+  },
+  computed: {
+    ...mapGetters('management-account', {
+      modalForm: 'getModalForm',
+    }),
   },
   methods: {
     getStatusColor(status) {
@@ -107,6 +121,20 @@ export default {
         default:
           return 'text-gray-900'
       }
+    },
+    showPopupFormAccount() {
+      const payload = {
+        name: this.dataDetail.name,
+        email: this.dataDetail.email,
+        roleId: this.dataDetail.role?.id,
+        organizationId: this.dataDetail.organization.id,
+        employeeStatus: this.dataDetail.employee_status.id,
+        employeeNumber: this.dataDetail.employee_number,
+      }
+      this.$store.dispatch('management-account/showPopupFormAccount', {
+        modalName: 'resendEmail',
+        payload,
+      })
     },
   },
 }

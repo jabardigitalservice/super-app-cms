@@ -41,13 +41,15 @@
               />
             </div>
             <div>
-              <jds-button
-                label="Coba Lagi"
-                type="button"
-                variant="danger"
-                class="!text-[14px] !font-bold"
-                @click="$store.commit('modals/CLOSE', nameModal)"
-              />
+              <slot name="button-error">
+                <jds-button
+                  label="Coba Lagi"
+                  type="button"
+                  variant="danger"
+                  class="!text-[14px] !font-bold"
+                  @click="$store.commit('modals/CLOSE', nameModal)"
+                />
+              </slot>
             </div>
           </div>
         </template>

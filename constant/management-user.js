@@ -9,8 +9,8 @@ export const managementUserHeader = [
 export const managementAccountComplaintHeader = [
   { key: 'name', text: 'Nama', sortable: true },
   { key: 'email', text: 'Email', sortable: true },
-  { key: 'role', text: 'Role' },
-  { key: 'organization', text: 'Instansi' },
+  { key: 'role_name', text: 'Role' },
+  { key: 'organization_name', text: 'Instansi' },
   { key: 'status_name', text: 'Status' },
   { key: 'action', text: 'Aksi' },
 ]
