@@ -111,6 +111,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import debounce from 'lodash.debounce'
 import { generateItemsPerPageOptions, resetQueryParamsUrl } from '~/utils'
 import TabBarList from '~/components/Aduan/TabBar/List'
@@ -180,10 +181,6 @@ export default {
         id: '',
         title: '',
       },
-      modalForm: {
-        title: '',
-        modalName: '',
-      },
       idAccount: '',
       modalNameAddAccount: 'addAccount',
       modalNameResendEmail: 'resendEmail',
@@ -248,6 +245,9 @@ export default {
         }
       })
     },
+    ...mapGetters('management-account', {
+      modalForm: 'getModalForm',
+    }),
   },
   watch: {
     query: {
@@ -390,13 +390,9 @@ export default {
       this.$store.commit('modals/OPEN', modalName)
     },
     showPopupFormAccount(modalName, dataAccount = null) {
-      this.modalForm.modalName = modalName
-      if (modalName === this.modalNameAddAccount) {
-        this.modalForm.title = 'Tambah Akun'
-      } else {
-        this.modalForm.title = 'Kirim Ulang Email'
-        this.idAccount = dataAccount.id
-        const payload = {
+      let payload = {}
+      if (modalName === this.modalNameResendEmail) {
+        payload = {
           name: dataAccount.name,
           email: dataAccount.email,
           roleId: dataAccount.role_id,
@@ -404,10 +400,12 @@ export default {
           employeeStatus: dataAccount.employee_status,
           employeeNumber: dataAccount.employee_number,
         }
-        this.$store.commit('management-account/setPayload', payload)
+        this.idAccount = dataAccount.id
       }
-
-      this.$store.commit('modals/OPEN', modalName)
+      this.$store.dispatch('management-account/showPopupFormAccount', {
+        modalName,
+        payload,
+      })
     },
     // TO DO : if API already
     // async getCount() {
