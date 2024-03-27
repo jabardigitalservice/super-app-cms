@@ -18,7 +18,7 @@
             {{ dataDetail?.email || '-' }}
           </td>
         </tr>
-        <tr>
+        <tr v-show="dataDetail?.employee_number">
           <td class="text-lato w-[164px] text-[14px]">
             <strong>NIP </strong>
           </td>
