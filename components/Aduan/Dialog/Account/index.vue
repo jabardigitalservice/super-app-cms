@@ -261,7 +261,8 @@ export default {
       this.listDataRole = responseDataRole.data?.data
 
       const responseDataOrganization = await this.$axios.get(
-        `/users/admin/complaint/organizations?roleId=${this.payload.roleId}`
+        `/users/admin/complaint/organizations`,
+        { params: { roleId: this.payload.roleId } }
       )
       this.listDataOrganization = responseDataOrganization.data?.data
     } catch {
