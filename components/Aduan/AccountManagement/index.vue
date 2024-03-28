@@ -189,8 +189,8 @@ export default {
   async fetch() {
     try {
       // get data management account
-      const responseDataManagementAccount = await this.$mockApi.get(
-        '/users/admin/complaints',
+      const responseDataManagementAccount = await this.$axios.get(
+        '/users/admin/complaint',
         {
           params: { ...this.query },
         }
@@ -223,7 +223,7 @@ export default {
           organization_name: item.organization.name,
           organization_id: item.organization.id,
           status_name: item.status.name,
-          status_id: item.status.id,
+          status_id: item.status.code,
           employee_number: item.employee_number,
           employee_status: item.employee_status.id,
         }
