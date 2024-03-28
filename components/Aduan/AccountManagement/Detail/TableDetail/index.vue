@@ -53,16 +53,16 @@
           <td>
             <div class="flex items-center">
               <p
-                v-if="dataDetail?.status?.id"
+                v-if="dataDetail?.status?.code"
                 class="mr-4 h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 text-xs font-semibold"
-                :class="getStatusColor(dataDetail?.status?.id)"
+                :class="getStatusColor(dataDetail?.status?.code)"
               >
                 {{ dataDetail?.status?.name }}
               </p>
               <p v-else>-</p>
               <jds-button
                 v-if="
-                  dataDetail?.status?.id ===
+                  dataDetail?.status?.code ===
                   managementAccountComplaintStatus.unverified.id
                 "
                 variant="primary"

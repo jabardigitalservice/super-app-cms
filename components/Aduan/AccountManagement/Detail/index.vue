@@ -102,8 +102,8 @@ export default {
   },
   async fetch() {
     try {
-      const response = await this.$mockApi.get(
-        `/users/admin/complaints/${this.$route.params.id}`
+      const response = await this.$axios.get(
+        `/users/admin/complaint/${this.$route.params.id}`
       )
       this.dataDetail = response.data.data
     } catch (error) {
