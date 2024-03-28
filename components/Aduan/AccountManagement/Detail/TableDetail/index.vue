@@ -12,13 +12,13 @@
         </tr>
         <tr>
           <td class="text-lato w-[164px] text-[14px]">
-            <strong>Email </strong>
+            <strong>Status Kepegawaian </strong>
           </td>
           <td>
-            {{ dataDetail?.email || '-' }}
+            {{ dataDetail?.employee_status?.name || '-' }}
           </td>
         </tr>
-        <tr>
+        <tr v-show="dataDetail?.employee_number">
           <td class="text-lato w-[164px] text-[14px]">
             <strong>NIP </strong>
           </td>
@@ -28,10 +28,10 @@
         </tr>
         <tr>
           <td class="text-lato w-[164px] text-[14px]">
-            <strong>Status Kepegawaian </strong>
+            <strong>Email </strong>
           </td>
           <td>
-            {{ dataDetail?.employee_status?.name || '-' }}
+            {{ dataDetail?.email || '-' }}
           </td>
         </tr>
         <tr>
