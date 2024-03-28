@@ -225,7 +225,7 @@ export default {
           status_name: item.status.name,
           status_id: item.status.code,
           employee_number: item.employee_number,
-          employee_status: item.employee_status.id,
+          employee_status: item.employee_status.code,
         }
       })
     },
