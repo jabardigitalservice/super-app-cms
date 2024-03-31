@@ -136,11 +136,11 @@
                   >
                     <div
                       v-if="
-                        !getEventData(
+                        getEventData(
                           dateData,
                           sessionData.orders,
                           'mediaReservasi'
-                        )
+                        ) === null
                       "
                       class="flex h-[88px] items-center justify-center text-[14px] font-[600] text-gray-500 opacity-0 hover:opacity-100"
                     >
@@ -183,6 +183,20 @@
                         }"
                       ></div>
                       <div class="ml-2 font-lato">
+                        <BaseIconSvg
+                          v-if="
+                            getEventData(
+                              dateData,
+                              sessionData.orders,
+                              'reschedule'
+                            )
+                          "
+                          icon="/icon/reschedule.svg"
+                          mode="image"
+                          :width="90"
+                          :height="17"
+                          class="mt-[2px]"
+                        />
                         <p class="text-[14px] font-[600]">
                           {{
                             getEventData(dateData, sessionData.orders, 'title')
@@ -232,6 +246,7 @@ export default {
       )
 
       const { data } = calendarResponse.data
+      console.log('data', data)
       this.sessionDataList = data
     } catch (error) {
       console.error(error)
@@ -325,6 +340,8 @@ export default {
           return event ? event.isOrderedByAdmin : null
         } else if (type === 'ticket') {
           return event ? `${event.ticketCount} Tiket` : ''
+        } else if (type === 'reschedule') {
+          return event ? event.isRescheduled : null
         }
       } else {
         return null
