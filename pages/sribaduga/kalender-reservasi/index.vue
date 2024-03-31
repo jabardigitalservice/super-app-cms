@@ -16,10 +16,13 @@ export default {
       ],
     }
   },
+
   mounted() {
     this.$store.commit('setActivePage', 'Kalender Reservasi')
     this.$store.commit('setHeader', {
       navigations: this.navigations,
+      descriptionPage:
+        'Berisikan informasi reservasi dari Aplikasi Sapawarga dan reservasi manual.',
     })
   },
 }

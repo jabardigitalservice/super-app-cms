@@ -9,7 +9,7 @@
                 <div
                   class="relative overflow-x-auto rounded-lg border border-gray-300"
                 >
-                  <BaseButton>
+                  <BaseButton @click="handleClickPreviousDateList()">
                     <BaseIconSvg
                       icon="/icon/arrow-left.svg"
                       mode="image"
@@ -24,7 +24,7 @@
                 <div
                   class="relative overflow-x-auto rounded-lg border border-gray-300"
                 >
-                  <BaseButton>
+                  <BaseButton @click="handleClickNextDateList()">
                     <BaseIconSvg
                       icon="/icon/arrow-right.svg"
                       mode="image"
@@ -37,21 +37,79 @@
               </div>
 
               <div class="ml-2 flex flex-col">
-                <p>November</p>
+                <p class="font-lato text-[18px] font-[700]">
+                  {{ monthAndYearTitle }}
+                </p>
+              </div>
+            </div>
+            <div class="ml-4 flex items-center">
+              <div class="mr-2 flex flex-col">
+                <date-picker
+                  v-model="initialDateValue"
+                  format="DD/MM/YYYY"
+                  :clearable="false"
+                />
+              </div>
+              <div class="flex flex-col">
+                <div class="flex">
+                  <div
+                    class="relative w-[80px] overflow-x-auto rounded-tl-lg rounded-bl-lg border border-green-jds"
+                    :class="{
+                      'bg-green-jds': initialTabValue === 'hari',
+                    }"
+                  >
+                    <BaseButton @click="handleClickTabDay()">
+                      <p
+                        :class="
+                          initialTabValue === 'hari'
+                            ? 'text-white'
+                            : 'text-green-jds'
+                        "
+                      >
+                        Hari
+                      </p>
+                    </BaseButton>
+                  </div>
+
+                  <div
+                    class="relative w-[80px] overflow-x-auto rounded-tr-lg rounded-br-lg border border-l-0 border-green-jds"
+                    :class="{
+                      'bg-green-jds': initialTabValue === 'minggu',
+                    }"
+                  >
+                    <BaseButton @click="handleClickTabWeek()">
+                      <p
+                        :class="
+                          initialTabValue === 'minggu'
+                            ? 'text-white'
+                            : 'text-green-jds'
+                        "
+                      >
+                        Minggu
+                      </p>
+                    </BaseButton>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          <div id="table-scroll" class="table-scroll">
+          <div>
             <table id="main-table" class="main-table">
               <thead>
                 <tr>
-                  <th scope="col" class="session-head">SESI</th>
+                  <th scope="col" class="session-head">
+                    <p>SESI</p>
+                  </th>
                   <th
                     v-for="(headerDate, index1) in DateDataList"
                     :key="index1"
                     scope="col"
                   >
-                    {{ headerDate.dateData }}
+                    <div class="ml-2 flex justify-center">
+                      <p>{{ headerDate.dateName }}</p>
+                      <p class="ml-3 mr-3">-</p>
+                      <p>{{ headerDate.dateNumber }}</p>
+                    </div>
                   </th>
                 </tr>
               </thead>
@@ -60,24 +118,88 @@
                 :key="index2"
               >
                 <tr>
-                  <td class="text-[14px]">
-                    <p class="font-[600]">
-                      {{ sessionData.sessionName }}
+                  <td class="pl-2 font-roboto text-[14px]">
+                    <p class="mb-3 font-[600]">
+                      {{ sessionData.session.name }}
                     </p>
-                    <p>{{ sessionData.sessionTime }}</p>
+                    <p>
+                      {{
+                        `${sessionData.session.startTime} - ${sessionData.session.endTime}`
+                      }}
+                    </p>
                   </td>
                   <td
                     v-for="(dateData, index3) in DateDataList"
                     :key="index3"
+                    class="cursor-pointer"
                     @click="handleClickDate(dateData, sessionData)"
                   >
-                    <p class="font-[600]">
-                      {{ getEventTitle(dateData, sessionData.event) }}
-                    </p>
+                    <div
+                      v-if="
+                        !getEventData(
+                          dateData,
+                          sessionData.orders,
+                          'mediaReservasi'
+                        )
+                      "
+                      class="flex h-[88px] items-center justify-center text-[14px] font-[600] text-gray-500 opacity-0 hover:opacity-100"
+                    >
+                      <p>{{ sessionData.session.name }}</p>
+                    </div>
+                    <div
+                      v-else
+                      class="flex h-[88px] items-center"
+                      :class="{
+                        'bg-[#E6F6EC]':
+                          getEventData(
+                            dateData,
+                            sessionData.orders,
+                            'mediaReservasi'
+                          ) === false,
+                        'bg-[#E3F2FD]':
+                          getEventData(
+                            dateData,
+                            sessionData.orders,
+                            'mediaReservasi'
+                          ) === true,
+                      }"
+                      @click="openDialogDetailReservasi()"
+                    >
+                      <div
+                        class="ml-[3px] h-[75px] w-[3px] rounded-t-[3px] rounded-b-[3px]"
+                        :class="{
+                          'bg-green-jds':
+                            getEventData(
+                              dateData,
+                              sessionData.orders,
+                              'mediaReservasi'
+                            ) === false,
+                          'bg-[#1E88E5]':
+                            getEventData(
+                              dateData,
+                              sessionData.orders,
+                              'mediaReservasi'
+                            ) === true,
+                        }"
+                      ></div>
+                      <div class="ml-2 font-lato">
+                        <p class="text-[14px] font-[600]">
+                          {{
+                            getEventData(dateData, sessionData.orders, 'title')
+                          }}
+                        </p>
+                        <p class="text-[12px] font-[400] text-[#424242]">
+                          {{
+                            getEventData(dateData, sessionData.orders, 'ticket')
+                          }}
+                        </p>
+                      </div>
+                    </div>
                   </td>
                 </tr>
               </tbody>
             </table>
+            <DialogDetailReservasi @close="closeDialogDetailReservasi()" />
           </div>
         </BaseTabPanel>
       </template>
@@ -86,242 +208,283 @@
 </template>
 
 <script>
+import DialogDetailReservasi from '~/components/Sribaduga/DialogDetailReservasi'
 export default {
   name: 'SribadugaKalenderReservasi',
+  components: {
+    DialogDetailReservasi,
+  },
   data() {
     return {
       DateDataList: [],
-      sessionDataList: [
-        {
-          sessionName: 'Sesi 1',
-          sessionTime: '08:00 - 09:00',
-          event: [
-            {
-              title: 'test 1',
-              date: '2024-03-18',
-            },
-            {
-              title: 'test 2',
-              date: '2024-03-19',
-            },
-            {
-              title: 'test 4',
-              date: '2024-03-21',
-            },
-          ],
-        },
-        {
-          sessionName: 'Sesi 2',
-          sessionTime: '09:00 - 10:00',
-        },
-        {
-          sessionName: 'Sesi 3',
-          sessionTime: '10:00 - 11:00',
-          event: [
-            {
-              title: 'test 1',
-              date: '2024-03-18',
-            },
-            {
-              title: 'test 2',
-              date: '2024-03-19',
-            },
-            {
-              title: 'test 4',
-              date: '2024-03-21',
-            },
-          ],
-        },
-        {
-          sessionName: 'Sesi 4',
-          sessionTime: '11:00 - 12:00',
-        },
-        {
-          sessionName: 'Sesi 5',
-          sessionTime: '12:00 - 13:00',
-        },
-        {
-          sessionName: 'Sesi 6',
-          sessionTime: '13:00 - 14:00',
-        },
-      ],
+      monthAndYearTitle: '',
+      initialDateValue: new Date(),
+      initialTabValue: 'minggu',
+      sessionDataList: [],
     }
+  },
+  async fetch() {
+    this.loading = true
+
+    try {
+      const calendarResponse = await this.$axios.get(
+        '/ticket/tms/admin/orders/calendar'
+      )
+
+      const { data } = calendarResponse.data
+      this.sessionDataList = data
+    } catch (error) {
+      console.error(error)
+    } finally {
+      this.loading = false
+    }
+  },
+  watch: {
+    initialDateValue() {
+      if (this.initialTabValue === 'hari') {
+        this.getDataInDayList()
+      } else {
+        this.getDateDataInWeekList()
+      }
+    },
+    initialTabValue() {
+      if (this.initialTabValue === 'hari') {
+        this.getDataInDayList()
+      } else {
+        this.getDateDataInWeekList()
+      }
+    },
   },
 
   mounted() {
-    this.getDateDataList()
+    this.getDateDataInWeekList()
   },
   methods: {
-    getDateDataList() {
+    getDateDataInWeekList() {
       // get six date list with format DD - dd
       const dateList = []
-      const date = new Date()
+      const date = this.initialDateValue
       for (let i = 0; i < 6; i++) {
         const newDate = new Date(date)
         newDate.setDate(date.getDate() + i)
         dateList.push(
           // push into dateData
           {
-            dateData: `${newDate.toLocaleDateString('id-ID', {
+            dateName: newDate.toLocaleDateString('id-ID', {
               weekday: 'long',
-            })} - ${newDate.getDate()}`,
+            }),
+            dateNumber: newDate.getDate(),
             rawDateData: newDate,
           }
         )
       }
       this.DateDataList = dateList
-      console.log('dateList', dateList)
+      this.monthAndYearTitle = `${dateList[0].rawDateData.toLocaleDateString(
+        'id-ID',
+        {
+          month: 'long',
+        }
+      )} ${dateList[0].rawDateData.getFullYear()}`
     },
-    getEventTitle(dateData, eventList) {
-      console.log('dateData', dateData)
-      console.log('eventList', eventList)
-      const event = eventList?.find(
-        (event) =>
-          event.date === dateData.rawDateData.toISOString().split('T')[0]
-      )
-      return event ? event.title : ''
+    getDataInDayList() {
+      const dateList = []
+      const date = this.initialDateValue
+      for (let i = 0; i < 1; i++) {
+        const newDate = new Date(date)
+        newDate.setDate(date.getDate() + i)
+        dateList.push(
+          // push into dateData
+          {
+            dateName: newDate.toLocaleDateString('id-ID', {
+              weekday: 'long',
+            }),
+            dateNumber: newDate.getDate(),
+            rawDateData: newDate,
+          }
+        )
+      }
+      this.DateDataList = dateList
+      this.monthAndYearTitle = `${dateList[0].rawDateData.toLocaleDateString(
+        'id-ID',
+        {
+          month: 'long',
+        }
+      )} ${dateList[0].rawDateData.getFullYear()}`
+    },
+
+    getEventData(dateData, eventList, type) {
+      if (eventList) {
+        const event = eventList?.find(
+          (event) =>
+            event.reservationDate ===
+            dateData.rawDateData.toISOString().split('T')[0]
+        )
+        if (type === 'title') {
+          return event ? event.instanceName : ''
+        } else if (type === 'mediaReservasi') {
+          return event ? event.isOrderedByAdmin : null
+        } else if (type === 'ticket') {
+          return event ? `${event.ticketCount} Tiket` : ''
+        }
+      } else {
+        return null
+      }
     },
     handleClickDate(dateData, sessionData) {
+      // @TODO: handle click date
       console.log('dateData', dateData)
       console.log('sessionData', sessionData)
+    },
+    handleClickNextDateList() {
+      const dateList = []
+      if (this.initialTabValue === 'minggu') {
+        const date = new Date(this.DateDataList[5].rawDateData)
+        for (let i = 0; i < 6; i++) {
+          const newDate = new Date(date)
+          newDate.setDate(date.getDate() + i)
+          dateList.push(
+            // push into dateData
+            {
+              dateName: newDate.toLocaleDateString('id-ID', {
+                weekday: 'long',
+              }),
+              dateNumber: newDate.getDate(),
+              rawDateData: newDate,
+            }
+          )
+        }
+      } else {
+        const date = new Date(this.DateDataList[0].rawDateData)
+        date.setDate(date.getDate() + 1) // add 1 days before the loop
+        for (let i = 0; i < 1; i++) {
+          const newDate = new Date(date)
+          newDate.setDate(date.getDate() + i) // add i days in the loop
+          dateList.push(
+            // push into dateData
+            {
+              dateName: newDate.toLocaleDateString('id-ID', {
+                weekday: 'long',
+              }),
+              dateNumber: newDate.getDate(),
+              rawDateData: newDate,
+            }
+          )
+        }
+      }
+
+      this.DateDataList = dateList
+
+      this.monthAndYearTitle = `${dateList[0].rawDateData.toLocaleDateString(
+        'id-ID',
+        {
+          month: 'long',
+        }
+      )} ${dateList[0].rawDateData.getFullYear()}`
+      this.initialDateValue = dateList[0].rawDateData
+    },
+
+    handleClickPreviousDateList() {
+      // get six date list with format DD - dd
+
+      const dateList = []
+      if (this.initialTabValue === 'minggu') {
+        const date = new Date(this.DateDataList[0].rawDateData)
+        date.setDate(date.getDate() - 5) // subtract 5 days before the loop
+        for (let i = 0; i < 6; i++) {
+          const newDate = new Date(date)
+          newDate.setDate(date.getDate() + i) // add i days in the loop
+          dateList.push(
+            // push into dateData
+            {
+              dateName: newDate.toLocaleDateString('id-ID', {
+                weekday: 'long',
+              }),
+              dateNumber: newDate.getDate(),
+              rawDateData: newDate,
+            }
+          )
+        }
+      } else {
+        const date = new Date(this.DateDataList[0].rawDateData)
+        date.setDate(date.getDate() - 1) // subtract 1 days before the loop
+        for (let i = 0; i < 1; i++) {
+          const newDate = new Date(date)
+          newDate.setDate(date.getDate() + i) // add i days in the loop
+          dateList.push(
+            // push into dateData
+            {
+              dateName: newDate.toLocaleDateString('id-ID', {
+                weekday: 'long',
+              }),
+              dateNumber: newDate.getDate(),
+              rawDateData: newDate,
+            }
+          )
+        }
+      }
+      this.DateDataList = dateList
+      this.monthAndYearTitle = `${dateList[0].rawDateData.toLocaleDateString(
+        'id-ID',
+        {
+          month: 'long',
+        }
+      )} ${dateList[0].rawDateData.getFullYear()}`
+      this.initialDateValue = dateList[0].rawDateData
+    },
+    handleClickTabDay() {
+      this.initialTabValue = 'hari'
+    },
+    handleClickTabWeek() {
+      this.initialTabValue = 'minggu'
+    },
+    openDialogDetailReservasi() {
+      this.$store.commit('modals/OPEN', 'detail-reservasi')
+    },
+    closeDialogDetailReservasi() {
+      this.$store.commit('modals/CLOSE', 'detail-reservasi')
     },
   },
 }
 </script>
-<style>
-/* .table-scroll {
-  height: 250px;
-  max-width: 100vw;
-  width: 100%;
-  overflow-x: auto;
-  overflow-y: auto;
-  position: relative;
-  margin-top: 100px;
-}
-.table-scroll table {
-  border-collapse: collapse;
-  color: lightgrey;
-  table-layout: fixed;
-}
-.table-wrap {
-  position: relative;
-}
-.table-scroll th,
-.table-scroll td {
-  padding: 5px 10px;
-  border: 1px solid #000;
-  background: #fff;
-  vertical-align: top;
-}
-.table-scroll thead th {
-  background: #333;
-  color: #fff;
-  position: -webkit-sticky;
-  position: sticky;
-  top: 0;
-}
-.table-scroll tfoot,
-.table-scroll tfoot th,
-.table-scroll tfoot td {
-  position: -webkit-sticky;
-  position: sticky;
-  bottom: 0;
-  background: #666;
-  color: #fff;
-  z-index: 4;
-}
-
-a:focus {
-  background: red;
-} 
-
-th:first-child {
-  position: -webkit-sticky;
-  position: sticky;
-  left: 0;
-  z-index: 2;
-  background: #ccc;
-}
-
-td:first-child {
-  position: -webkit-sticky;
-  position: sticky;
-  left: 0;
-  z-index: 2;
-}
-thead th:first-child,
-tfoot th:first-child {
-  z-index: 5;
-}
-.fc .fc-button-group .fc--button {
-  display: none;
-} */
-/* .table-scroll {
-  position: relative;
-  width: 100%;
-  z-index: 1;
-  margin: auto;
-  overflow: auto;
-  height: 350px;
-} */
+<style lang="scss" scoped>
 .session-head {
   width: 120px;
 }
-.table-scroll table {
+
+table {
   width: 100%;
   min-width: 500px;
   margin: auto;
+  border: 1px solid #ddd;
   border-collapse: separate;
-  border-spacing: 0;
+  border-left: 0;
+  border-radius: 10px;
+  border-spacing: 0px;
 }
-/* .table-wrap {
-  position: relative;
-} */
-.table-scroll th,
-.table-scroll td {
-  padding: 5px 10px;
-  border: 1px solid #000;
-  background: #fff;
-  vertical-align: top;
+thead {
+  display: table-header-group;
+  vertical-align: middle;
+  border-color: inherit;
+  border-collapse: separate;
 }
-
-/* safari and ios need the tfoot itself to be position:sticky also */
-/* .table-scroll tfoot,
-.table-scroll tfoot th,
-.table-scroll tfoot td {
-  position: -webkit-sticky;
-  position: sticky;
-  bottom: 0;
-  background: #666;
-  color: #fff;
-  z-index: 4;
-} */
-
-a:focus {
-  background: red;
-} /* testing links*/
-
-/* th:first-child {
-  position: -webkit-sticky;
-  position: sticky;
-  left: 0;
-  z-index: 2;
-  background: #ccc;
+tr {
+  display: table-row;
+  vertical-align: inherit;
+  border-color: inherit;
 }
-thead th:first-child,
-tfoot th:first-child {
-  z-index: 5;
+th,
+td {
+  border-left: 1px solid #ddd;
 }
-.fc .fc-button-group .fc--button {
-  display: none;
-} */
-/* .fc .fc-scrollgrid .fc-col-header tr:nth-child(1) {
-  display: none;
-} */
-/* .fc .fc-scrollgrid .fc-scrollgrid-sync-table {
-  display: none;
-} */
-/* .fc .fc-scrollgrid .fc-timegrid-now-indicator-container {
-  height: 200px;
-} */
+td {
+  border-top: 1px solid #ddd;
+}
+thead:first-child tr:first-child th:first-child,
+tbody:first-child tr:first-child td:first-child {
+  border-radius: 10px 0 0 0;
+}
+thead:last-child tr:last-child th:first-child,
+tbody:last-child tr:last-child td:first-child {
+  border-radius: 0 0 0 10px;
+}
 </style>

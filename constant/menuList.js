@@ -208,6 +208,8 @@ const sriBadugaMenu = {
       arrow: false,
       showMenuAndAccessForRoles: ['admin'],
       icon: 'news-paper.svg',
+      unleashVariable:
+        'SAPAWARGA-CMS__TICKETING--SRIBADUGA--KALENDER-RESERVASI',
     },
   ],
 }
