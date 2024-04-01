@@ -3,9 +3,9 @@
     <BaseDialogPanel>
       <BaseDialogHeader>
         <div class="flex items-center justify-between">
-          <h5 class="font-roboto text-[21px] font-bold text-green-jds">
+          <h1 class="font-roboto text-[21px] font-bold text-green-jds">
             Detail Reservasi
-          </h5>
+          </h1>
 
           <button @click="$emit('close')">
             <BaseIconSvg
