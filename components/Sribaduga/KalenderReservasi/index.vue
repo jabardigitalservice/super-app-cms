@@ -101,8 +101,8 @@
                     <p>SESI</p>
                   </th>
                   <th
-                    v-for="(headerDate, index1) in DateDataList"
-                    :key="index1"
+                    v-for="headerDate in dateDataList"
+                    :key="headerDate.dateNumber"
                     scope="col"
                   >
                     <div class="ml-2 flex justify-center">
@@ -114,8 +114,8 @@
                 </tr>
               </thead>
               <tbody
-                v-for="(sessionData, index2) in sessionDataList"
-                :key="index2"
+                v-for="sessionData in sessionDataList"
+                :key="sessionData.session.id"
               >
                 <tr>
                   <td class="pl-2 font-roboto text-[14px]">
@@ -129,18 +129,15 @@
                     </p>
                   </td>
                   <td
-                    v-for="(dateData, index3) in DateDataList"
-                    :key="index3"
+                    v-for="dateData in dateDataList"
+                    :key="dateData.dateNumber"
                     class="cursor-pointer"
                     @click="handleClickDate(dateData, sessionData)"
                   >
                     <div
                       v-if="
-                        getEventData(
-                          dateData,
-                          sessionData.orders,
-                          'mediaReservasi'
-                        ) === null
+                        getIsOrderedByAdmin(dateData, sessionData.orders) ===
+                        null
                       "
                       class="flex h-[88px] items-center justify-center text-[14px] font-[600] text-gray-500 opacity-0 hover:opacity-100"
                     >
@@ -151,17 +148,11 @@
                       class="flex h-[88px] items-center"
                       :class="{
                         'bg-[#E6F6EC]':
-                          getEventData(
-                            dateData,
-                            sessionData.orders,
-                            'mediaReservasi'
-                          ) === false,
+                          getIsOrderedByAdmin(dateData, sessionData.orders) ===
+                          false,
                         'bg-[#E3F2FD]':
-                          getEventData(
-                            dateData,
-                            sessionData.orders,
-                            'mediaReservasi'
-                          ) === true,
+                          getIsOrderedByAdmin(dateData, sessionData.orders) ===
+                          true,
                       }"
                       @click="openDialogDetailReservasi()"
                     >
@@ -169,28 +160,20 @@
                         class="ml-[3px] h-[75px] w-[3px] rounded-t-[3px] rounded-b-[3px]"
                         :class="{
                           'bg-green-jds':
-                            getEventData(
+                            getIsOrderedByAdmin(
                               dateData,
-                              sessionData.orders,
-                              'mediaReservasi'
+                              sessionData.orders
                             ) === false,
                           'bg-[#1E88E5]':
-                            getEventData(
+                            getIsOrderedByAdmin(
                               dateData,
-                              sessionData.orders,
-                              'mediaReservasi'
+                              sessionData.orders
                             ) === true,
                         }"
                       ></div>
                       <div class="ml-2 font-lato">
                         <BaseIconSvg
-                          v-if="
-                            getEventData(
-                              dateData,
-                              sessionData.orders,
-                              'reschedule'
-                            )
-                          "
+                          v-if="getIsRescheduled(dateData, sessionData.orders)"
                           icon="/icon/reschedule.svg"
                           mode="image"
                           :width="90"
@@ -198,14 +181,10 @@
                           class="mt-[2px]"
                         />
                         <p class="text-[14px] font-[600]">
-                          {{
-                            getEventData(dateData, sessionData.orders, 'title')
-                          }}
+                          {{ getInstanceName(dateData, sessionData.orders) }}
                         </p>
                         <p class="text-[12px] font-[400] text-[#424242]">
-                          {{
-                            getEventData(dateData, sessionData.orders, 'ticket')
-                          }}
+                          {{ getTicketCount(dateData, sessionData.orders) }}
                         </p>
                       </div>
                     </div>
@@ -230,7 +209,7 @@ export default {
   },
   data() {
     return {
-      DateDataList: [],
+      dateDataList: [],
       monthAndYearTitle: '',
       initialDateValue: new Date(),
       initialTabValue: 'minggu',
@@ -246,7 +225,6 @@ export default {
       )
 
       const { data } = calendarResponse.data
-      console.log('data', data)
       this.sessionDataList = data
     } catch (error) {
       console.error(error)
@@ -293,7 +271,7 @@ export default {
           }
         )
       }
-      this.DateDataList = dateList
+      this.dateDataList = dateList
       this.monthAndYearTitle = `${dateList[0].rawDateData.toLocaleDateString(
         'id-ID',
         {
@@ -318,7 +296,7 @@ export default {
           }
         )
       }
-      this.DateDataList = dateList
+      this.dateDataList = dateList
       this.monthAndYearTitle = `${dateList[0].rawDateData.toLocaleDateString(
         'id-ID',
         {
@@ -327,22 +305,50 @@ export default {
       )} ${dateList[0].rawDateData.getFullYear()}`
     },
 
-    getEventData(dateData, eventList, type) {
+    getInstanceName(dateData, eventList) {
       if (eventList) {
         const event = eventList?.find(
           (event) =>
             event.reservationDate ===
             dateData.rawDateData.toISOString().split('T')[0]
         )
-        if (type === 'title') {
-          return event ? event.instanceName : ''
-        } else if (type === 'mediaReservasi') {
-          return event ? event.isOrderedByAdmin : null
-        } else if (type === 'ticket') {
-          return event ? `${event.ticketCount} Tiket` : ''
-        } else if (type === 'reschedule') {
-          return event ? event.isRescheduled : null
-        }
+        return event ? event.instanceName : ''
+      } else {
+        return null
+      }
+    },
+    getIsOrderedByAdmin(dateData, eventList) {
+      if (eventList) {
+        const event = eventList?.find(
+          (event) =>
+            event.reservationDate ===
+            dateData.rawDateData.toISOString().split('T')[0]
+        )
+        return event ? event.isOrderedByAdmin : null
+      } else {
+        return null
+      }
+    },
+    getTicketCount(dateData, eventList) {
+      if (eventList) {
+        const event = eventList?.find(
+          (event) =>
+            event.reservationDate ===
+            dateData.rawDateData.toISOString().split('T')[0]
+        )
+        return event ? `${event.ticketCount} Tiket` : ''
+      } else {
+        return null
+      }
+    },
+    getIsRescheduled(dateData, eventList) {
+      if (eventList) {
+        const event = eventList?.find(
+          (event) =>
+            event.reservationDate ===
+            dateData.rawDateData.toISOString().split('T')[0]
+        )
+        return event ? event.isRescheduled : null
       } else {
         return null
       }
@@ -355,7 +361,7 @@ export default {
     handleClickNextDateList() {
       const dateList = []
       if (this.initialTabValue === 'minggu') {
-        const date = new Date(this.DateDataList[5].rawDateData)
+        const date = new Date(this.dateDataList[5].rawDateData)
         for (let i = 0; i < 6; i++) {
           const newDate = new Date(date)
           newDate.setDate(date.getDate() + i)
@@ -371,7 +377,7 @@ export default {
           )
         }
       } else {
-        const date = new Date(this.DateDataList[0].rawDateData)
+        const date = new Date(this.dateDataList[0].rawDateData)
         date.setDate(date.getDate() + 1) // add 1 days before the loop
         for (let i = 0; i < 1; i++) {
           const newDate = new Date(date)
@@ -389,7 +395,7 @@ export default {
         }
       }
 
-      this.DateDataList = dateList
+      this.dateDataList = dateList
 
       this.monthAndYearTitle = `${dateList[0].rawDateData.toLocaleDateString(
         'id-ID',
@@ -405,7 +411,7 @@ export default {
 
       const dateList = []
       if (this.initialTabValue === 'minggu') {
-        const date = new Date(this.DateDataList[0].rawDateData)
+        const date = new Date(this.dateDataList[0].rawDateData)
         date.setDate(date.getDate() - 5) // subtract 5 days before the loop
         for (let i = 0; i < 6; i++) {
           const newDate = new Date(date)
@@ -422,7 +428,7 @@ export default {
           )
         }
       } else {
-        const date = new Date(this.DateDataList[0].rawDateData)
+        const date = new Date(this.dateDataList[0].rawDateData)
         date.setDate(date.getDate() - 1) // subtract 1 days before the loop
         for (let i = 0; i < 1; i++) {
           const newDate = new Date(date)
@@ -439,7 +445,7 @@ export default {
           )
         }
       }
-      this.DateDataList = dateList
+      this.dateDataList = dateList
       this.monthAndYearTitle = `${dateList[0].rawDateData.toLocaleDateString(
         'id-ID',
         {
