@@ -106,6 +106,7 @@
       :title="modalForm.title"
       :modal-name="modalForm.modalName"
       :id-account="idAccount"
+      @close="$fetch()"
     />
   </div>
 </template>
