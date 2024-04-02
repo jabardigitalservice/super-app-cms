@@ -70,8 +70,8 @@ export default {
   },
   methods: {
     closeModalSuccess() {
-      this.$store.commit('modals/CLOSEALL')
       this.$emit('close-all-modal')
+      this.$store.commit('modals/CLOSEALL')
     },
   },
 }
