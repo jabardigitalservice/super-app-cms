@@ -32,7 +32,7 @@
             name="Status Kepegawaian"
           >
             <jds-radio-button-group
-              v-model="payload.employeeStatus"
+              v-model="payload.employee_status"
               :error-message="errors[0]"
               class="full-width"
               label="Pilih Status Kepegawaian"
@@ -48,14 +48,14 @@
             />
           </ValidationProvider>
           <ValidationProvider
-            v-if="payload.employeeStatus === 'asn'"
+            v-if="payload.employee_status === 'asn'"
             v-slot="{ errors }"
             rules="required"
             name="Nip"
             tag="div"
           >
             <jds-input-text
-              v-model="payload.employeeNumber"
+              v-model="payload.employee_number"
               name="Nip"
               label="NIP"
               placeholder="Masukkan NIP"
@@ -87,7 +87,7 @@
             tag="div"
           >
             <jds-select
-              v-model="payload.roleId"
+              v-model="payload.role_id"
               name="role"
               label="Role"
               placeholder="Pilih Role"
@@ -105,7 +105,7 @@
             tag="div"
           >
             <jds-select
-              v-model="payload.organizationId"
+              v-model="payload.organization_id"
               name="instansi"
               label="Instansi"
               placeholder="Pilih Instansi"
@@ -154,6 +154,7 @@
       :name-modal="dialogInformation?.nameModal"
       :dialog-modal="dialogInformation"
       :is-success="isSuccess"
+      @close-all-modal="$emit('close')"
     >
       <template #button-error>
         <jds-button
@@ -259,10 +260,11 @@ export default {
         '/users/admin/complaint/roles'
       )
       this.listDataRole = responseDataRole.data?.data
+      // this.listDataRole.unshift({ id: '-', name: 'Semua Role' })
 
       const responseDataOrganization = await this.$axios.get(
         `/users/admin/complaint/organizations`,
-        { params: { roleId: this.payload.roleId } }
+        { params: { role_id: this.payload.role_id } }
       )
       this.listDataOrganization = responseDataOrganization.data?.data
     } catch {
@@ -274,8 +276,8 @@ export default {
     listRole() {
       return this.listDataRole.map((item) => {
         return {
-          label: item.name,
           value: item.id,
+          label: item.name,
         }
       })
     },
@@ -350,7 +352,7 @@ export default {
       const methodApi = this[this.modalName].methodApi
       try {
         const idAccount = `/${this.idAccount}` || ''
-        await this.$mockApi[methodApi](`/users/admin/complaints${idAccount}`, {
+        await this.$axios[methodApi](`/users/admin/complaint${idAccount}`, {
           ...this.payload,
         })
         this.isSuccess = true
