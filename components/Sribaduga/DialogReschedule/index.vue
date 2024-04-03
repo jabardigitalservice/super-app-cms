@@ -24,12 +24,10 @@
             :clearable="false"
             class="date-picker"
           />
-        </div>
-        <div class="px-6 py-2">
           <jds-select
             v-model="data.session"
             placeholder="Pilih sesi"
-            class="session-select"
+            class="session-select mt-3"
             :options="options"
           />
         </div>
