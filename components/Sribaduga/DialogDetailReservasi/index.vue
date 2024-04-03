@@ -113,11 +113,18 @@
           </div>
         </div>
       </div>
-      <div class="flex justify-between px-6 py-4">
-        <div class="relative overflow-x-auto bg-transparent text-red-700">
+      <div
+        class="flex px-6 py-4"
+        :class="isOrderedByAdmin ? 'justify-end' : 'justify-between'"
+      >
+        <div
+          v-if="!isOrderedByAdmin"
+          class="relative overflow-x-auto bg-transparent text-red-700"
+        >
           <BaseButton> Batalkan Reservasi </BaseButton>
         </div>
         <div
+          v-if="!isOrderedByAdmin"
           class="relative overflow-x-auto rounded-lg bg-green-jds text-white"
         >
           <BaseButton class="flex items-center gap-2">
@@ -131,7 +138,37 @@
             Ubah Detail
           </BaseButton>
         </div>
+
+        <div
+          v-else
+          class="relative overflow-x-auto rounded-lg bg-green-jds text-white"
+          @click="$emit('dialog-reschedule')"
+        >
+          <BaseButton class="flex items-center gap-2">
+            <BaseIconSvg
+              icon="/icon/calendar.svg"
+              mode="image"
+              :width="18"
+              :height="18"
+              class="mt-[2px]"
+            />
+            Reschedule
+          </BaseButton>
+        </div>
       </div>
     </BaseDialogPanel>
   </BaseDialogFrame>
 </template>
+
+<script>
+export default {
+  name: 'DialogDetailReservasi',
+
+  props: {
+    isOrderedByAdmin: {
+      type: Boolean,
+      default: false,
+    },
+  },
+}
+</script>

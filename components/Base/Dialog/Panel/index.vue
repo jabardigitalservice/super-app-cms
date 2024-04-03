@@ -1,11 +1,20 @@
 <template>
-  <div class="min-w-[510px] h-fit bg-white rounded-lg">
+  <div
+    class="h-fit rounded-lg bg-white"
+    :class="customWidth === '' ? 'min-w-[510px]' : customWidth"
+  >
     <slot />
   </div>
 </template>
 
 <script>
 export default {
-  name: 'BaseDialogPanel'
+  name: 'BaseDialogPanel',
+  props: {
+    customWidth: {
+      type: String,
+      default: '',
+    },
+  },
 }
 </script>
