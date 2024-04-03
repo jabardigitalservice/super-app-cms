@@ -1,5 +1,5 @@
 import { extend } from 'vee-validate'
-import { required, min, max, numeric, email } from 'vee-validate/dist/rules'
+import { required, min, max, numeric } from 'vee-validate/dist/rules'
 
 extend('required', {
   ...required,
@@ -10,10 +10,10 @@ extend('requiredSelectForm', {
   ...required,
   message: (_, values) => `${values._field_} wajib dipilih`,
 })
-
 extend('email', {
-  ...email,
-  message: (_, values) => `Format email tidak sesuai`,
+  validate: (value) => /^[a-zA-Z0-9.]+@[a-zA-Z0-9.]+\.[a-zA-Z]+$/.test(value),
+  message: (_, values) =>
+    `Format email tidak sesuai, hanya menggunakan huruf (a-z), angka (0-9), dan titik (.)`,
 })
 
 extend('min', {
