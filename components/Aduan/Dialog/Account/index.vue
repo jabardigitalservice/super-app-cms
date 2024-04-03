@@ -50,14 +50,15 @@
           <ValidationProvider
             v-if="payload.employee_status === 'asn'"
             v-slot="{ errors }"
-            rules="required"
+            rules="required|numeric"
             name="Nip"
             tag="div"
           >
-            <jds-input-text
+            <BaseInputText
               v-model="payload.employee_number"
               name="Nip"
               label="NIP"
+              maxlength="18"
               placeholder="Masukkan NIP"
               :error-message="errors[0]"
               class="pb-4"
@@ -390,5 +391,9 @@ export default {
 
 .form-add-account .jds-radio-button-group__list--horizontal {
   @apply !grid grid-cols-2;
+}
+
+.form-add-account .form-input-text input {
+  @apply !bg-white;
 }
 </style>
