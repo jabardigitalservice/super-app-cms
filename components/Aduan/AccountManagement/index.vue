@@ -30,10 +30,11 @@
                 />
                 <p class="ml-2 text-sm text-blue-gray-700">Filter :</p>
                 <jds-select
-                  v-model="query.roleId"
+                  v-model="query.role_id"
                   placeholder="Pilih Role"
                   :options="listRole"
                   class="select-form-complaint !ml-2 mr-2 !w-[260px]"
+                  @change="filterRole"
                 />
               </div>
             </div>
@@ -164,10 +165,10 @@ export default {
       query: {
         limit: 10,
         page: 1,
-        search: null,
+        q: null, // query params for search
         tabIndex: 0,
         idTab: this.tabName,
-        roleId: '-',
+        role_id: null,
       },
       search: '',
       isShowPopupDate: false,
@@ -209,7 +210,7 @@ export default {
         '/users/admin/complaint/roles'
       )
       this.listDataRole = responseDataRole.data?.data
-      this.listDataRole.unshift({ id: '-', name: 'Semua Role' })
+      this.listDataRole.unshift({ id: null, name: 'Semua Role' })
     } catch {
       this.pagination.disabled = true
     }
@@ -274,9 +275,8 @@ export default {
     search: debounce(function (value) {
       if (value.length > 2 || value.length === 0) {
         this.query.page = 1
-        this.query.search = value.length > 2 ? value : null
-        // TODO : if API already
-        // this.$fetch()
+        this.query.q = value.length > 2 ? value : null
+        this.$fetch()
       }
     }, 500),
   },
@@ -294,6 +294,10 @@ export default {
     },
     selectedTabHandle(index) {
       this.query.tabIndex = index
+    },
+    filterRole(value) {
+      this.query.role_id = value
+      this.$fetch()
     },
     filterTableAction(statusId) {
       return this.menuTableAction.filter((item) => {
