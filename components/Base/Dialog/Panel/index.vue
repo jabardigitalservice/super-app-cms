@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="h-fit rounded-lg bg-white"
-    :class="customWidth === '' ? 'min-w-[510px]' : customWidth"
-  >
+  <div class="h-fit rounded-lg bg-white" :class="customWidth">
     <slot />
   </div>
 </template>
@@ -13,7 +10,7 @@ export default {
   props: {
     customWidth: {
       type: String,
-      default: '',
+      default: 'min-w-[510px]',
     },
   },
 }
