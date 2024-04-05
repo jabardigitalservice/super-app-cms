@@ -1,7 +1,7 @@
 <template>
   <div class="pb-[16px]">
     <BaseBreadcrumb :navigations="navigations" />
-    <p class="text-[16px] font-roboto mt-1 text-blue-gray-400">
+    <p class="mt-1 font-roboto text-[16px] text-blue-gray-400">
       {{ descriptionPage }}
     </p>
   </div>
@@ -13,12 +13,12 @@ export default {
   props: {
     navigations: {
       type: Array,
-      default: () => ([])
+      default: () => [],
     },
     descriptionPage: {
       type: String,
-      default: ''
-    }
-  }
+      default: '',
+    },
+  },
 }
 </script>

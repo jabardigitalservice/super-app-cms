@@ -153,87 +153,88 @@
                       </th>
                     </tr>
                   </thead>
-                  <tbody class="overflow-y-auto">
-                    <template v-for="(item, index) in listDataLaporan">
-                      <tr
-                        :key="index"
-                        class="font-[14px] border-b bg-gray-50 font-lato font-medium text-gray-800"
+                  <tbody
+                    v-for="(item, index) in listDataLaporan"
+                    :key="index"
+                    class="overflow-y-auto"
+                  >
+                    <tr
+                      class="font-[14px] border-b bg-gray-50 font-lato font-medium text-gray-800"
+                    >
+                      <td
+                        scope="row"
+                        class="whitespace-nowrap border px-6 py-4"
                       >
-                        <td
-                          scope="row"
-                          class="whitespace-nowrap border px-6 py-4"
-                        >
-                          {{
-                            formatDate(item.reservationDate, 'dd MMMM yyyy') ||
-                            '-'
-                          }}
-                        </td>
-                        <td class="px-6 py-4">
-                          {{ item.visitType?.name || '-' }}
-                        </td>
-                        <td>
-                          <div class="font-[14px] h-full flex-col">
-                            <p
-                              v-for="(
-                                ticketCategory, indexTicketCategory
-                              ) in item.tickets"
-                              :key="`index1-${indexTicketCategory}`"
-                              class="flex-1 border px-6 py-4 font-lato"
-                            >
-                              {{ ticketCategory?.name }}
-                            </p>
-                          </div>
-                        </td>
+                        {{
+                          formatDate(item.reservationDate, 'dd MMMM yyyy') ||
+                          '-'
+                        }}
+                      </td>
+                      <td class="px-6 py-4">
+                        {{ item.visitType?.name || '-' }}
+                      </td>
+                      <td>
+                        <div class="font-[14px] h-full flex-col">
+                          <p
+                            v-for="(
+                              ticketCategory, indexTicketCategory
+                            ) in item.tickets"
+                            :key="`index1-${indexTicketCategory}`"
+                            class="flex-1 border px-6 py-4 font-lato"
+                          >
+                            {{ ticketCategory?.name }}
+                          </p>
+                        </div>
+                      </td>
 
-                        <td>
-                          <div class="font-[14px] h-full flex-col">
-                            <p
-                              v-for="(
-                                ticketQuantity, indexQuantity
-                              ) in item.tickets"
-                              :key="`index2-${indexQuantity}`"
-                              class="flex-1 border px-6 py-4 font-lato"
-                            >
-                              {{ ticketQuantity?.qty }}
-                            </p>
-                          </div>
-                        </td>
+                      <td>
+                        <div class="font-[14px] h-full flex-col">
+                          <p
+                            v-for="(
+                              ticketQuantity, indexQuantity
+                            ) in item.tickets"
+                            :key="`index2-${indexQuantity}`"
+                            class="flex-1 border px-6 py-4 font-lato"
+                          >
+                            {{ ticketQuantity?.qty }}
+                          </p>
+                        </div>
+                      </td>
 
-                        <td>
-                          <div class="font-[14px] h-full flex-col">
-                            <p
-                              v-for="(ticketPrice, indexPrice) in item.tickets"
-                              :key="`index3-${indexPrice}`"
-                              class="flex-1 border px-6 py-4 font-lato"
-                            >
-                              {{ convertToRupiah(ticketPrice?.price) }}
-                            </p>
-                          </div>
-                        </td>
-                        <td>
-                          <div class="font-[14px] h-full flex-col">
-                            <p
-                              v-for="(ticketTotal, indexTotal) in item.tickets"
-                              :key="`index4-${indexTotal}`"
-                              class="flex-1 px-6 py-4 font-lato"
-                            >
-                              {{ convertToRupiah(ticketTotal?.totalPrice) }}
-                            </p>
-                          </div>
-                        </td>
-                      </tr>
+                      <td>
+                        <div class="font-[14px] h-full flex-col">
+                          <p
+                            v-for="(ticketPrice, indexPrice) in item.tickets"
+                            :key="`index3-${indexPrice}`"
+                            class="flex-1 border px-6 py-4 font-lato"
+                          >
+                            {{ convertToRupiah(ticketPrice?.price) }}
+                          </p>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="font-[14px] h-full flex-col">
+                          <p
+                            v-for="(ticketTotal, indexTotal) in item.tickets"
+                            :key="`index4-${indexTotal}`"
+                            class="flex-1 px-6 py-4 font-lato"
+                          >
+                            {{ convertToRupiah(ticketTotal?.totalPrice) }}
+                          </p>
+                        </div>
+                      </td>
+                    </tr>
 
-                      <tr
-                        :key="`index5-${index}`"
-                        class="font-[14px] border-b bg-gray-100 font-lato font-bold text-gray-800"
-                      >
-                        <td colspan="4" />
-                        <td class="px-6 py-4">Total</td>
-                        <td class="px-6 py-4">
-                          {{ convertToRupiah(calculateRowTotal(item)) || '-' }}
-                        </td>
-                      </tr>
-                    </template>
+                    <tr
+                      :key="`index5-${index}`"
+                      class="font-[14px] border-b bg-gray-100 font-lato font-bold text-gray-800"
+                    >
+                      <td colspan="4" />
+                      <td class="px-6 py-4">Total</td>
+                      <td class="px-6 py-4">
+                        {{ convertToRupiah(calculateRowTotal(item)) || '-' }}
+                      </td>
+                    </tr>
                   </tbody>
                   <tfoot class="sticky bottom-0 bg-gray-200">
                     <tr
