@@ -154,7 +154,11 @@
                           getIsOrderedByAdmin(dateData, sessionData.orders) ===
                           true,
                       }"
-                      @click="openDialogDetailReservasi()"
+                      @click="
+                        openDialogDetailReservasi(
+                          getIsOrderedByAdmin(dateData, sessionData.orders)
+                        )
+                      "
                     >
                       <div
                         class="ml-[3px] h-[75px] w-[3px] rounded-t-[3px] rounded-b-[3px]"
@@ -192,7 +196,17 @@
                 </tr>
               </tbody>
             </table>
-            <DialogDetailReservasi @close="closeDialogDetailReservasi()" />
+            <DialogDetailReservasi
+              :is-ordered-by-admin="isOrderedByAdmin"
+              @close="closeDialogDetailReservasi()"
+              @dialog-reschedule="openDialogReschedule()"
+            />
+            <DialogReschedule
+              :reschedule-value="rescheduleValue"
+              :options="sessionDataListForReschedule"
+              @close="closeDialogReschedule()"
+              @save="onSaveReschedule()"
+            />
           </div>
         </BaseTabPanel>
       </template>
@@ -202,10 +216,12 @@
 
 <script>
 import DialogDetailReservasi from '~/components/Sribaduga/DialogDetailReservasi'
+import DialogReschedule from '~/components/Sribaduga/DialogReschedule'
 export default {
   name: 'SribadugaKalenderReservasi',
   components: {
     DialogDetailReservasi,
+    DialogReschedule,
   },
   data() {
     return {
@@ -214,6 +230,14 @@ export default {
       initialDateValue: new Date(),
       initialTabValue: 'minggu',
       sessionDataList: [],
+      isOrderedByAdmin: false,
+      rescheduleValue: [
+        {
+          id: 1,
+          date: new Date(),
+          session: '',
+        },
+      ],
     }
   },
   async fetch() {
@@ -231,6 +255,16 @@ export default {
     } finally {
       this.loading = false
     }
+  },
+  computed: {
+    sessionDataListForReschedule() {
+      return this.sessionDataList.map((sessionData) => {
+        return {
+          label: `${sessionData.session.name}  (${sessionData.session.startTime} - ${sessionData.session.endTime})`,
+          value: `${sessionData.session.name}-${sessionData.session.startTime}-${sessionData.session.endTime})`,
+        }
+      })
+    },
   },
   watch: {
     initialDateValue() {
@@ -354,9 +388,13 @@ export default {
       }
     },
     handleClickDate(dateData, sessionData) {
-      // @TODO: handle click date
-      console.log('dateData', dateData)
-      console.log('sessionData', sessionData)
+      this.rescheduleValue = [
+        {
+          id: 1,
+          date: dateData.rawDateData,
+          session: `${sessionData.session.name}-${sessionData.session.startTime}-${sessionData.session.endTime})`,
+        },
+      ]
     },
     handleClickNextDateList() {
       const dateList = []
@@ -460,11 +498,22 @@ export default {
     handleClickTabWeek() {
       this.initialTabValue = 'minggu'
     },
-    openDialogDetailReservasi() {
+    openDialogDetailReservasi(isOrderedByAdmin) {
+      this.isOrderedByAdmin = isOrderedByAdmin
       this.$store.commit('modals/OPEN', 'detail-reservasi')
     },
     closeDialogDetailReservasi() {
       this.$store.commit('modals/CLOSE', 'detail-reservasi')
+    },
+    openDialogReschedule() {
+      this.$store.commit('modals/OPEN', 'dialog-reschedule')
+    },
+    closeDialogReschedule() {
+      this.$store.commit('modals/CLOSE', 'dialog-reschedule')
+    },
+    onSaveReschedule() {
+      this.closeDialogReschedule()
+      this.closeDialogDetailReservasi()
     },
   },
 }
