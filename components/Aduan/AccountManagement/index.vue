@@ -48,6 +48,11 @@
             :headers="managementAccountComplaintHeader"
             :items="listData"
             :pagination="pagination"
+            @next-page="pageChange"
+            @previous-page="pageChange"
+            @page-change="pageChange"
+            @per-page-change="perPageChange"
+            @change:sort="sortChange"
           >
             <!-- eslint-disable-next-line vue/valid-v-slot -->
             <template #item.status_name="{ item }">
@@ -163,8 +168,8 @@ export default {
         disabled: true,
       },
       query: {
-        limit: 10,
-        page: 1,
+        per_page: 10, // limit data
+        page: 1, // current page
         q: null, // query params for search
         tabIndex: 0,
         idTab: this.tabName,
@@ -200,7 +205,7 @@ export default {
       this.listDataManagementAccount = responseDataManagementAccount.data?.data
       this.pagination = {
         currentPage: responseDataManagementAccount.data.meta?.current_page || 1,
-        totalRows: responseDataManagementAccount.data.meta?.total || 0,
+        totalRows: responseDataManagementAccount.data.meta?.total_count || 0,
         itemsPerPage:
           responseDataManagementAccount.data.meta?.per_page || this.query.limit,
       }
@@ -256,22 +261,20 @@ export default {
       deep: true,
       handler() {
         resetQueryParamsUrl(this)
-        // TODO : if API already
-        // this.$fetch()
+        this.$fetch()
       },
     },
-    // TODO : if API already
-    // '$route.query': {
-    //   deep: true,
-    //   immediate: true,
-    //   handler(newQuery) {
-    //     if (Object.keys(newQuery).length > 0) {
-    //       this.query = { ...newQuery }
-    //       this.query.tabIndex = parseInt(this.query.tabIndex)
-    //       this.search = this.query.search || ''
-    //     }
-    //   },
-    // },
+    '$route.query': {
+      deep: true,
+      immediate: true,
+      handler(newQuery) {
+        if (Object.keys(newQuery).length > 0) {
+          this.query = { ...newQuery }
+          this.query.tabIndex = parseInt(this.query.tabIndex)
+          this.search = this.query.q || ''
+        }
+      },
+    },
     search: debounce(function (value) {
       if (value.length > 2 || value.length === 0) {
         this.query.page = 1
@@ -306,31 +309,26 @@ export default {
     },
     pageChange(value) {
       this.query.page = value
+      this.$fetch()
     },
     perPageChange(value) {
       if (value) {
-        this.query.limit = value
+        this.query.per_page = value
       }
       this.query.page = 1
+      this.$fetch()
     },
-    // TO DO : if API already
-    // sortChange(value) {
-    //   const key = Object.keys(value)[0]
-    //   if (key && value[key] !== 'no-sort') {
-    //     if (key === 'created_at_format') {
-    //       this.query.sort_by = 'created_at'
-    //     } else {
-    //       this.query.sort_by = key
-    //     }
+    sortChange(value) {
+      const key = Object.keys(value)[0]
+      if (key && value[key] !== 'no-sort') {
+        this.query.sort_by = key
+        this.query.sort_order = value[key]
+      } else {
+        this.setQuery({ sort_by: null, sort_order: null })
+      }
 
-    //     this.query.sort_type = value[key]
-    //   } else {
-    //     delete this.query.sort_by
-    //     delete this.query.sort_type
-    //   }
-
-    //   this.$fetch()
-    // },
+      this.$fetch()
+    },
     setQuery(params) {
       this.query = { ...this.query, ...params }
     },
