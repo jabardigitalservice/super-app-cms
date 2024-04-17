@@ -140,6 +140,7 @@
                         null
                       "
                       class="flex h-[88px] items-center justify-center text-[14px] font-[600] text-gray-500 opacity-0 hover:opacity-100"
+                      @click="handleOpenDialogTambahReservasi()"
                     >
                       <p>{{ sessionData.session.name }}</p>
                     </div>
@@ -211,17 +212,26 @@
         </BaseTabPanel>
       </template>
     </BaseTabGroup>
+
+    <DialogTambahReservasi
+      :is-open="tambahReservasiIsOpen"
+      :date-value="dateValue"
+      :order-and-session-value="orderAndSessionValue"
+      @close="handleCloseDialogTambahReservasi()"
+    />
   </div>
 </template>
 
 <script>
 import DialogDetailReservasi from '~/components/Sribaduga/DialogDetailReservasi'
 import DialogReschedule from '~/components/Sribaduga/DialogReschedule'
+import DialogTambahReservasi from '~/components/Sribaduga/DialogTambahReservasi'
 export default {
   name: 'SribadugaKalenderReservasi',
   components: {
     DialogDetailReservasi,
     DialogReschedule,
+    DialogTambahReservasi,
   },
   data() {
     return {
@@ -231,6 +241,9 @@ export default {
       initialTabValue: 'minggu',
       sessionDataList: [],
       isOrderedByAdmin: false,
+      tambahReservasiIsOpen: false,
+      dateValue: null,
+      orderAndSessionValue: null,
       rescheduleValue: [
         {
           id: 1,
@@ -388,11 +401,13 @@ export default {
       }
     },
     handleClickDate(dateData, sessionData) {
+      this.dateValue = dateData
+      this.orderAndSessionValue = sessionData
       this.rescheduleValue = [
         {
           id: 1,
           date: dateData.rawDateData,
-          session: `${sessionData.session.name}-${sessionData.session.startTime}-${sessionData.session.endTime})`,
+          session: `${sessionData.session.name}-(${sessionData.session.startTime}-${sessionData.session.endTime})`,
         },
       ]
     },
@@ -514,6 +529,12 @@ export default {
     onSaveReschedule() {
       this.closeDialogReschedule()
       this.closeDialogDetailReservasi()
+    },
+    handleOpenDialogTambahReservasi() {
+      this.tambahReservasiIsOpen = true
+    },
+    handleCloseDialogTambahReservasi() {
+      this.tambahReservasiIsOpen = false
     },
   },
 }
