@@ -4,7 +4,7 @@
     class="fixed inset-0 z-10 flex w-full items-center justify-center bg-black bg-opacity-75 transition-opacity"
   >
     <div
-      class="absolute top-0 z-50 h-screen w-[510px] bg-white transition-transform duration-300"
+      class="absolute top-0 z-50 h-screen w-[510px] bg-white"
       :class="isOpen ? 'right-0' : 'right-[-700px]'"
     >
       <BaseDialogPanel>
