@@ -139,7 +139,7 @@ export default {
         {
           menu: 'Non-aktifkan Akun',
           value: 'non-active-account',
-          status: managementAccountComplaintStatus.active.id,
+          status: managementAccountComplaintStatus.verified.id,
         },
         {
           menu: 'Aktifkan Akun',
@@ -343,8 +343,8 @@ export default {
     },
     getStatusText(status) {
       switch (status) {
-        case managementAccountComplaintStatus.active.id:
-          return managementAccountComplaintStatus.active.name
+        case managementAccountComplaintStatus.verified.id:
+          return managementAccountComplaintStatus.verified.name
         case managementAccountComplaintStatus.not_active.id:
           return managementAccountComplaintStatus.not_active.name
         case managementAccountComplaintStatus.unverified.id:
