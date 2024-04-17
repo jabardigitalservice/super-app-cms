@@ -29,8 +29,8 @@ export const managementAccountComplaintStatus = Object.freeze({
     statusColor: 'yellow',
     icon: '/icon/icon-aduan/management-account/unverified-account-icon.svg',
   },
-  active: {
-    id: 'active',
+  verified: {
+    id: 'verified',
     name: 'Aktif',
     value: 0,
     statusColor: 'green',

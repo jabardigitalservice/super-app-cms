@@ -14,7 +14,7 @@
       <div class="flex">
         <div v-for="button in listButton" :key="button.id" class="ml-3">
           <jds-button
-            v-show="button.status === dataDetail.status?.id"
+            v-show="button.status === dataDetail.status?.code"
             :variant="button.variant"
             :label="button.label"
             class="!text-[14px] !font-bold"
@@ -93,7 +93,7 @@ export default {
           id: 'nonActive',
           label: 'Non-aktifkan',
           variant: 'secondary',
-          status: managementAccountComplaintStatus.active.id,
+          status: managementAccountComplaintStatus.verified.id,
         },
       ],
       dataDetail: {},
