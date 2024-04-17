@@ -2,6 +2,8 @@ export const state = () => ({
   childrenCatagory: 0,
   matureCatagory: 0,
   foreignerCatagory: 0,
+  isOpenForm: false,
+  refetchCalendar: false,
 })
 
 export const getters = {
@@ -14,6 +16,12 @@ export const getters = {
   getForeignerCatagory: (state) => {
     return state.foreignerCatagory
   },
+  getIsOpenForm: (state) => {
+    return state.isOpenForm
+  },
+  getRefetchCalendar: (state) => {
+    return state.refetchCalendar
+  },
 }
 export const actions = {
   setChildrenCatagory({ commit }, childrenCatagory) {
@@ -25,6 +33,12 @@ export const actions = {
   setForeignerCatagory({ commit }, foreignerCatagory) {
     commit('setForeignerCatagory', foreignerCatagory)
   },
+  setIsOpenForm({ commit }, isOpenForm) {
+    commit('setIsOpenForm', isOpenForm)
+  },
+  setRefetchCalendar({ commit }, refetchCalendar) {
+    commit('setRefetchCalendar', refetchCalendar)
+  },
 }
 export const mutations = {
   setChildrenCatagory(state, childrenCatagory) {
@@ -35,5 +49,11 @@ export const mutations = {
   },
   setForeignerCatagory(state, foreignerCatagory) {
     state.foreignerCatagory = foreignerCatagory
+  },
+  setIsOpenForm(state, isOpenForm) {
+    state.isOpenForm = isOpenForm
+  },
+  setRefetchCalendar(state, refetchCalendar) {
+    state.refetchCalendar = refetchCalendar
   },
 }

@@ -1,8 +1,9 @@
 <template>
   <transition name="fade">
     <div
-      v-if="isOpen"
+      v-if="isOpenForm"
       class="opacity-1 fixed inset-0 z-10 flex w-full items-center justify-center bg-black bg-opacity-75 transition-opacity"
+      @click.self="handleCloseDialogTambahReservasi()"
     >
       <div
         class="content absolute top-0 right-0 z-50 h-screen w-[510px] transition-all duration-700 ease-in-out"
@@ -194,21 +195,68 @@
                 <label
                   for="kategori-instansi"
                   class="mb-1 font-lato text-[14px] font-[400]"
-                  >Kategori Instansi
+                >
+                  Kategori Instansi
                 </label>
                 <div>
                   <jds-select
                     id="kategori-instansi"
                     placeholder="Pilih Kategori Instansi"
-                    class="kategori-instansi mb-4"
+                    class="add-reservation-select mb-4"
                   />
                 </div>
+
                 <label
                   for="nama-instansi"
                   class="mb-1 font-lato text-[14px] font-[400]"
-                  >Nama Instansi
+                >
+                  Nama Instansi
                 </label>
                 <jds-input-text id="nama-instansi" class="mb-4" />
+
+                <p class="mb-4 font-lato text-[16px] font-[700]">
+                  Alamat Pemesan
+                </p>
+                <label
+                  for="provinsi"
+                  class="mb-1 font-lato text-[14px] font-[400]"
+                >
+                  Provinsi
+                </label>
+                <div>
+                  <jds-select
+                    id="provinsi"
+                    placeholder="Pilih Provinsi"
+                    class="add-reservation-select mb-4"
+                  />
+                </div>
+
+                <label
+                  for="kabupaten"
+                  class="mb-1 font-lato text-[14px] font-[400]"
+                >
+                  Kota/Kabupaten
+                </label>
+                <div>
+                  <jds-select
+                    id="kabupaten"
+                    placeholder="Pilih Kota/Kabupaten"
+                    class="add-reservation-select mb-4"
+                  />
+                </div>
+                <label
+                  for="alamat-instansi"
+                  class="mb-1 font-lato text-[14px] font-[400]"
+                >
+                  Detail Alamat Instansi
+                </label>
+                <p class="mb-1 text-[13px] font-[400] text-[#757575]">
+                  Masukan informasi jalan, dusun atau gang
+                </p>
+                <textarea
+                  id="alamat-instansi"
+                  class="mb-4 w-full rounded-lg border-2 border-gray-300"
+                />
               </div>
             </div>
             <BaseDialogFooter class="sticky bottom-0 z-50">
@@ -218,13 +266,13 @@
                     label="Batal"
                     variant="secondary"
                     class="font-lato text-sm font-bold"
-                    @click="$emit('close')"
+                    @click="handleCloseDialogTambahReservasi()"
                   />
                   <jds-button
                     label="Simpan"
                     variant="primary"
                     class="ml-3 font-lato text-sm font-bold"
-                    @click="$emit('save')"
+                    @click="handleSave()"
                   />
                 </div>
               </div>
@@ -241,10 +289,6 @@ import { mapState } from 'vuex'
 export default {
   name: 'DialogTambahReservasi',
   props: {
-    isOpen: {
-      type: Boolean,
-      default: false,
-    },
     dateValue: {
       type: Object,
       default: () => {},
@@ -259,6 +303,7 @@ export default {
       childrenCatagory: (state) => state.add_reservation.childrenCatagory,
       matureCatagory: (state) => state.add_reservation.matureCatagory,
       foreignerCatagory: (state) => state.add_reservation.foreignerCatagory,
+      isOpenForm: (state) => state.add_reservation.isOpenForm,
     }),
     getSessionName() {
       return `${this.orderAndSessionValue?.session.name} (${this.orderAndSessionValue?.session.startTime} - ${this.orderAndSessionValue?.session.endTime})`
@@ -316,12 +361,19 @@ export default {
         )
       }
     },
+    handleCloseDialogTambahReservasi() {
+      this.$store.commit('add_reservation/setIsOpenForm', false)
+    },
+    handleSave() {
+      this.$store.commit('add_reservation/setIsOpenForm', false)
+      this.$store.commit('add_reservation/setRefetchCalendar', true)
+    },
   },
 }
 </script>
-<style scoped>
-.kategori-instansi .jds-select,
-.kategori-instansi .jds-input-text {
+<style>
+.add-reservation-select .jds-select,
+.add-reservation-select .jds-input-text {
   width: 430px !important;
   border-radius: 8px;
 }
