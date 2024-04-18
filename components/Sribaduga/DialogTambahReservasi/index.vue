@@ -371,9 +371,9 @@ export default {
   },
 }
 </script>
-<style>
-.add-reservation-select .jds-select,
-.add-reservation-select .jds-input-text {
+<style scoped>
+.add-reservation-select :deep(.jds-select),
+.add-reservation-select :deep(.jds-input-text) {
   width: 430px !important;
   border-radius: 8px;
 }
