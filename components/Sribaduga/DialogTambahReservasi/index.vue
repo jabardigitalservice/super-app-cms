@@ -152,7 +152,10 @@
                   </div>
                 </div>
                 <div class="mt-4 flex items-center justify-between font-lato">
-                  <p class="text-[14px] font-[400]">Total Tiket Dipesan</p>
+                  <div>
+                    <p class="text-[14px] font-[400]">Total Tiket Dipesan</p>
+                    <small class="text-red-600">{{ errorTicket }}</small>
+                  </div>
 
                   <p class="mr-5 pr-[38px] text-[14px] font-[700]">
                     {{ getTotalTicket }} Tiket
@@ -161,102 +164,181 @@
               </div>
 
               <div class="mt-4 rounded-[12px] border border-[#EEEEEE] p-4">
-                <p class="mb-4 font-lato text-[16px] font-[700]">
-                  Informasi Pemesan
-                </p>
-                <label
-                  for="nama-pemesan"
-                  class="mb-1 font-lato text-[14px] font-[400]"
-                  >Nama lengkap
-                </label>
-                <jds-input-text id="nama-pemesan" class="mb-4" />
-                <label
-                  for="no-tlp"
-                  class="mb-1 font-lato text-[14px] font-[400]"
-                  >No. Tlp
-                </label>
-                <div
-                  class="relative mb-4 block text-gray-400 focus-within:text-gray-600"
-                >
-                  <div
-                    class="pointer-events-none absolute top-1/2 flex h-[35px] w-10 -translate-y-1/2 transform items-center justify-center rounded-l-lg border-2 bg-[#F5F5F5]"
+                <ValidationObserver ref="form_informasi_pemesan" tag="div">
+                  <p class="mb-4 font-lato text-[16px] font-[700]">
+                    Informasi Pemesan
+                  </p>
+
+                  <label
+                    for="nama-lengkap"
+                    class="mb-1 font-lato text-[14px] font-[400]"
+                    >Nama lengkap
+                  </label>
+                  <ValidationProvider
+                    v-slot="{ errors }"
+                    rules="required"
+                    name="Nama lengkap"
+                    tag="div"
                   >
-                    <p class="font-lato text-[14px] font-[400] text-[#424242]">
-                      +62
-                    </p>
-                  </div>
+                    <jds-input-text
+                      id="nama-lengkap"
+                      v-model="fullName"
+                      class="mb-4"
+                      name="Nama lengkap"
+                      :error-message="errors[0]"
+                    />
+                  </ValidationProvider>
+                  <label
+                    for="no-tlp"
+                    class="mb-1 font-lato text-[14px] font-[400]"
+                    >No. Tlp
+                  </label>
+                  <ValidationProvider
+                    v-slot="{ errors }"
+                    rules="required|numeric"
+                    name="Telepon"
+                    tag="div"
+                    class="mb-4"
+                  >
+                    <div
+                      class="relative block text-gray-400 focus-within:text-gray-600"
+                    >
+                      <div
+                        class="pointer-events-none absolute top-1/2 flex h-[35px] w-10 -translate-y-1/2 transform items-center justify-center rounded-l-lg border-2 bg-[#F5F5F5]"
+                      >
+                        <p
+                          class="font-lato text-[14px] font-[400] text-[#424242]"
+                        >
+                          +62
+                        </p>
+                      </div>
 
-                  <input
-                    id="no-tlp"
-                    type="number"
-                    class="form-input block h-[35px] w-full appearance-none rounded-lg border-2 border-gray-300 bg-white px-4 pl-12 text-gray-500 placeholder-gray-400 focus:outline-none"
-                  />
-                </div>
-                <label
-                  for="kategori-instansi"
-                  class="mb-1 font-lato text-[14px] font-[400]"
-                >
-                  Kategori Instansi
-                </label>
-                <div>
-                  <jds-select
-                    id="kategori-instansi"
-                    placeholder="Pilih Kategori Instansi"
-                    class="add-reservation-select mb-4"
-                  />
-                </div>
+                      <input
+                        id="no-tlp"
+                        v-model="phoneNumber"
+                        name="Telepon"
+                        class="form-input block h-[35px] w-full appearance-none rounded-lg border-2 border-gray-300 bg-white px-4 pl-12 text-gray-500 placeholder-gray-400 focus:outline-none"
+                      />
+                    </div>
+                    <small class="text-red-600">{{ errors[0] }}</small>
+                  </ValidationProvider>
 
-                <label
-                  for="nama-instansi"
-                  class="mb-1 font-lato text-[14px] font-[400]"
-                >
-                  Nama Instansi
-                </label>
-                <jds-input-text id="nama-instansi" class="mb-4" />
+                  <label
+                    for="kategori-instansi"
+                    class="mb-1 font-lato text-[14px] font-[400]"
+                  >
+                    Kategori Instansi
+                  </label>
+                  <ValidationProvider
+                    v-slot="{ errors }"
+                    rules="requiredSelectForm"
+                    name="Kategori instansi"
+                    tag="div"
+                    class="mb-4"
+                  >
+                    <jds-select
+                      id="kategori-instansi"
+                      v-model="instanceCatagory"
+                      name="Kategori instansi"
+                      placeholder="Pilih Kategori Instansi"
+                      class="add-reservation-select mb-4"
+                      :error-message="errors[0]"
+                    />
+                  </ValidationProvider>
 
-                <p class="mb-4 font-lato text-[16px] font-[700]">
-                  Alamat Pemesan
-                </p>
-                <label
-                  for="provinsi"
-                  class="mb-1 font-lato text-[14px] font-[400]"
-                >
-                  Provinsi
-                </label>
-                <div>
-                  <jds-select
-                    id="provinsi"
-                    placeholder="Pilih Provinsi"
-                    class="add-reservation-select mb-4"
-                  />
-                </div>
+                  <label
+                    for="nama-instansi"
+                    class="mb-1 font-lato text-[14px] font-[400]"
+                  >
+                    Nama Instansi
+                  </label>
+                  <ValidationProvider
+                    v-slot="{ errors }"
+                    rules="required"
+                    name="Nama instansi"
+                    tag="div"
+                  >
+                    <jds-input-text
+                      id="nama-instansi"
+                      v-model="instanceName"
+                      name="Nama instansi"
+                      class="mb-4"
+                      :error-message="errors[0]"
+                    />
+                  </ValidationProvider>
 
-                <label
-                  for="kabupaten"
-                  class="mb-1 font-lato text-[14px] font-[400]"
-                >
-                  Kota/Kabupaten
-                </label>
-                <div>
-                  <jds-select
-                    id="kabupaten"
-                    placeholder="Pilih Kota/Kabupaten"
-                    class="add-reservation-select mb-4"
-                  />
-                </div>
-                <label
-                  for="alamat-instansi"
-                  class="mb-1 font-lato text-[14px] font-[400]"
-                >
-                  Detail Alamat Instansi
-                </label>
-                <p class="mb-1 text-[13px] font-[400] text-[#757575]">
-                  Masukan informasi jalan, dusun atau gang
-                </p>
-                <textarea
-                  id="alamat-instansi"
-                  class="mb-4 w-full rounded-lg border-2 border-gray-300"
-                />
+                  <p class="mb-4 font-lato text-[16px] font-[700]">
+                    Alamat Pemesan
+                  </p>
+                  <label
+                    for="provinsi"
+                    class="mb-1 font-lato text-[14px] font-[400]"
+                  >
+                    Provinsi
+                  </label>
+                  <ValidationProvider
+                    v-slot="{ errors }"
+                    rules="requiredSelectForm"
+                    name="Provinsi"
+                    tag="div"
+                    class="mb-4"
+                  >
+                    <jds-select
+                      id="provinsi"
+                      v-model="provinsiValue"
+                      name="Provinsi"
+                      placeholder="Pilih Provinsi"
+                      class="add-reservation-select mb-4"
+                      :error-message="errors[0]"
+                    />
+                  </ValidationProvider>
+
+                  <label
+                    for="kabupaten"
+                    class="mb-1 font-lato text-[14px] font-[400]"
+                  >
+                    Kota/Kabupaten
+                  </label>
+                  <ValidationProvider
+                    v-slot="{ errors }"
+                    rules="requiredSelectForm"
+                    name="Kota/kabupaten"
+                    tag="div"
+                    class="mb-4"
+                  >
+                    <jds-select
+                      id="kabupaten"
+                      v-model="cityValue"
+                      name="Kota/kabupaten"
+                      placeholder="Pilih Kota/Kabupaten"
+                      class="add-reservation-select mb-4"
+                      :error-message="errors[0]"
+                    />
+                  </ValidationProvider>
+                  <label
+                    for="alamat-instansi"
+                    class="mb-1 font-lato text-[14px] font-[400]"
+                  >
+                    Detail Alamat Instansi
+                  </label>
+                  <p class="mb-1 text-[13px] font-[400] text-[#757575]">
+                    Masukan informasi jalan, dusun atau gang
+                  </p>
+                  <ValidationProvider
+                    v-slot="{ errors }"
+                    rules="required"
+                    name="Alamat instansi"
+                    tag="div"
+                  >
+                    <textarea
+                      id="alamat-instansi"
+                      v-model="instanceAddress"
+                      name="Alamat instansi"
+                      class="w-full rounded-lg border-2 border-gray-300"
+                    />
+                    <small class="text-red-600">{{ errors[0] }}</small>
+                  </ValidationProvider>
+                </ValidationObserver>
               </div>
             </div>
             <BaseDialogFooter class="sticky bottom-0 z-50">
@@ -286,8 +368,13 @@
 
 <script>
 import { mapState } from 'vuex'
+import { ValidationProvider, ValidationObserver } from 'vee-validate'
 export default {
   name: 'DialogTambahReservasi',
+  components: {
+    ValidationProvider,
+    ValidationObserver,
+  },
   props: {
     dateValue: {
       type: Object,
@@ -297,6 +384,18 @@ export default {
       type: Object,
       default: () => {},
     },
+  },
+  data() {
+    return {
+      fullName: '',
+      phoneNumber: '',
+      instanceCatagory: '',
+      instanceName: '',
+      provinsiValue: '',
+      cityValue: '',
+      instanceAddress: '',
+      errorTicket: '',
+    }
   },
   computed: {
     ...mapState({
@@ -312,6 +411,18 @@ export default {
       return (
         this.childrenCatagory + this.matureCatagory + this.foreignerCatagory
       )
+    },
+  },
+
+  watch: {
+    getTotalTicket: {
+      handler(val) {
+        if (val > 700) {
+          this.errorTicket = 'Maksimal tiket yang dipesan adalah 700'
+        } else {
+          this.errorTicket = ''
+        }
+      },
     },
   },
 
@@ -361,12 +472,39 @@ export default {
         )
       }
     },
+    clearForm() {
+      this.fullName = ''
+      this.phoneNumber = ''
+      this.instanceCatagory = ''
+      this.instanceName = ''
+      this.provinsiValue = ''
+      this.cityValue = ''
+      this.instanceAddress = ''
+      this.$store.commit('add_reservation/setChildrenCatagory', 0)
+      this.$store.commit('add_reservation/setMatureCatagory', 0)
+      this.$store.commit('add_reservation/setForeignerCatagory', 0)
+    },
     handleCloseDialogTambahReservasi() {
       this.$store.commit('add_reservation/setIsOpenForm', false)
+      this.clearForm()
     },
-    handleSave() {
-      this.$store.commit('add_reservation/setIsOpenForm', false)
-      this.$store.commit('add_reservation/setRefetchCalendar', true)
+    async handleSave() {
+      const formInformasiIsValid =
+        await this.$refs.form_informasi_pemesan.validate()
+      if (this.getTotalTicket === 0) {
+        this.errorTicket = 'Tiket tidak boleh kosong'
+      }
+
+      if (
+        formInformasiIsValid &&
+        this.getTotalTicket > 0 &&
+        this.errorTicket === ''
+      ) {
+        this.$store.commit('add_reservation/setIsOpenForm', false)
+        this.$store.commit('add_reservation/setRefetchCalendar', true)
+        this.errorTicket = ''
+        this.clearForm()
+      }
     },
   },
 }
