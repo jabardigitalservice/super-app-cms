@@ -93,7 +93,10 @@
               </div>
             </div>
           </div>
-          <div>
+
+          <SkeletonLoadingKalender v-if="loading" />
+
+          <div v-else>
             <table id="main-table" class="main-table">
               <thead>
                 <tr>
@@ -214,24 +217,25 @@
     </BaseTabGroup>
 
     <DialogTambahReservasi
-      :is-open="tambahReservasiIsOpen"
       :date-value="dateValue"
       :order-and-session-value="orderAndSessionValue"
-      @close="handleCloseDialogTambahReservasi()"
     />
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import DialogDetailReservasi from '~/components/Sribaduga/DialogDetailReservasi'
 import DialogReschedule from '~/components/Sribaduga/DialogReschedule'
 import DialogTambahReservasi from '~/components/Sribaduga/DialogTambahReservasi'
+import SkeletonLoadingKalender from '~/components/Sribaduga/SkeletonLoadingKalender'
 export default {
   name: 'SribadugaKalenderReservasi',
   components: {
     DialogDetailReservasi,
     DialogReschedule,
     DialogTambahReservasi,
+    SkeletonLoadingKalender,
   },
   data() {
     return {
@@ -241,7 +245,6 @@ export default {
       initialTabValue: 'minggu',
       sessionDataList: [],
       isOrderedByAdmin: false,
-      tambahReservasiIsOpen: false,
       dateValue: null,
       orderAndSessionValue: null,
       rescheduleValue: [
@@ -251,6 +254,7 @@ export default {
           session: '',
         },
       ],
+      loading: false,
     }
   },
   async fetch() {
@@ -270,6 +274,9 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      refetchCalendar: (state) => state.add_reservation.refetchCalendar,
+    }),
     sessionDataListForReschedule() {
       return this.sessionDataList.map((sessionData) => {
         return {
@@ -293,6 +300,14 @@ export default {
       } else {
         this.getDateDataInWeekList()
       }
+    },
+    refetchCalendar: {
+      handler(val) {
+        if (val) {
+          this.$fetch()
+        }
+      },
+      deep: true,
     },
   },
 
@@ -531,10 +546,8 @@ export default {
       this.closeDialogDetailReservasi()
     },
     handleOpenDialogTambahReservasi() {
-      this.tambahReservasiIsOpen = true
-    },
-    handleCloseDialogTambahReservasi() {
-      this.tambahReservasiIsOpen = false
+      this.$store.commit('add_reservation/setIsOpenForm', true)
+      this.$store.commit('add_reservation/setRefetchCalendar', false)
     },
   },
 }
