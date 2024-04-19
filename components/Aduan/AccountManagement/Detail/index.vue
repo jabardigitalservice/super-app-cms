@@ -18,7 +18,7 @@
             :variant="button.variant"
             :label="button.label"
             class="!text-[14px] !font-bold"
-            @click="showPopupConfirmation(button.id)"
+            @click="showPopupConfirmation(button.id, button.httpMethod)"
           />
         </div>
       </div>
@@ -36,17 +36,30 @@
       </template>
     </BaseTabGroup>
     <DialogConfirmationNew
-      :dialog-modal="confirmationDialog.active"
+      :dialog-modal="confirmationDialog"
       :detail-item-modal="detailItem"
+      :path="apiPath"
+      :http-method="httpMethod"
+      @success="showPopupInformation"
+      @error="showPopupInformation"
     />
-    <DialogConfirmationNew
-      :dialog-modal="confirmationDialog.nonActive"
+    <DialogInformationNew
+      :name-modal="informationDialog.nameModal"
+      :dialog-modal="informationDialog"
       :detail-item-modal="detailItem"
-    />
-    <DialogConfirmationNew
-      :dialog-modal="confirmationDialog.delete"
-      :detail-item-modal="detailItem"
-    />
+      :is-success="isSuccessInformation"
+      @close-all-modal="refreshPage"
+    >
+      <template #button-error>
+        <jds-button
+          :label="informationDialog?.button?.label"
+          type="button"
+          :variant="informationDialog?.button?.variant"
+          class="!text-[14px] !font-bold"
+          @click="backToPopupConfirmation"
+        />
+      </template>
+    </DialogInformationNew>
   </div>
 </template>
 
@@ -55,10 +68,7 @@ import { mapGetters } from 'vuex'
 import TabBarDetail from '~/components/Aduan/TabBar/Detail'
 import ArrowLeft from '~/assets/icon/arrow-left.svg?inline'
 import DetailTableAccount from '~/components/Aduan/AccountManagement/Detail/TableDetail'
-import {
-  managementAccountComplaintStatus,
-  confirmationDialog,
-} from '~/constant/management-user'
+import { managementAccountComplaintStatus } from '~/constant/management-user'
 
 export default {
   name: 'PageDetailManagementAccount',
@@ -81,23 +91,25 @@ export default {
           id: 'active',
           label: 'Aktifkan',
           variant: 'secondary',
+          httpMethod: 'post',
           status: managementAccountComplaintStatus.not_active.id,
         },
         {
           id: 'delete',
           label: 'Hapus',
           variant: 'danger',
+          httpMethod: 'delete',
           status: managementAccountComplaintStatus.not_active.id,
         },
         {
           id: 'nonActive',
           label: 'Non-aktifkan',
           variant: 'secondary',
-          status: managementAccountComplaintStatus.verified.id,
+          httpMethod: 'post',
+          status: managementAccountComplaintStatus.active.id,
         },
       ],
       dataDetail: {},
-      confirmationDialog,
     }
   },
   async fetch() {
@@ -113,6 +125,12 @@ export default {
   computed: {
     ...mapGetters('management-account', {
       detailItem: 'getDetailItem',
+      httpMethod: 'getHttpMethod',
+      apiPath: 'getApiPath',
+      confirmationDialog: 'getConfirmationDialog',
+      informationDialog: 'getInformationDialog',
+      isSuccessInformation: 'getSuccessInformation',
+      typeDialog: 'getTypeDialog',
     }),
   },
   methods: {
@@ -122,14 +140,31 @@ export default {
         query: this.$route.query,
       })
     },
-    showPopupConfirmation(typeDialog) {
+    showPopupConfirmation(typeDialog, httpMethod) {
+      this.$store.commit('management-account/setTypeDialog', typeDialog)
       this.$store.commit('management-account/setDetailItem', {
         title: `${this.dataDetail.name} - ${this.dataDetail.email}`,
       })
+      this.$store.commit('management-account/setHttpMethod', httpMethod)
+      this.$store.dispatch('management-account/showConfirmationDialog', {
+        typeDialog,
+        detailAccount: this.dataDetail,
+      })
+    },
+    showPopupInformation(modalName = null, isSuccess) {
       this.$store.dispatch(
-        'management-account/showConfirmationDialog',
-        typeDialog
+        'management-account/showInformationDialog',
+        isSuccess
       )
+    },
+    backToPopupConfirmation() {
+      this.$store.dispatch('management-account/backToPopupConfirmation')
+    },
+    refreshPage() {
+      if (this.typeDialog === 'delete') {
+        this.goToBackHandle()
+      }
+      this.$fetch()
     },
   },
 }
