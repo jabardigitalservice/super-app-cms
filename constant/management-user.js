@@ -1,3 +1,5 @@
+import { iconPopup } from './icon-popup-new'
+
 export const managementUserHeader = [
   { key: 'account', text: 'Nama Akun', sortable: true },
   { key: 'phone_number', text: 'No. Handphone', sortable: true },
@@ -29,8 +31,8 @@ export const managementAccountComplaintStatus = Object.freeze({
     statusColor: 'yellow',
     icon: '/icon/icon-aduan/management-account/unverified-account-icon.svg',
   },
-  verified: {
-    id: 'verified',
+  active: {
+    id: 'active',
     name: 'Aktif',
     value: 0,
     statusColor: 'green',
@@ -74,3 +76,56 @@ export const confirmationDialog = {
     },
   },
 }
+
+export const informationDialog = {
+  success: {
+    icon: iconPopup.success,
+    delete: {
+      title: 'Berhasil Dihapus',
+      descriptionText: 'Akun berhasil dihapus',
+      nameModal: 'delete-success-information',
+    },
+    nonActive: {
+      title: 'Berhasil Dinon-aktifkan',
+      descriptionText: 'Akun berhasil dinon-aktifkan',
+      nameModal: 'non-active-success-information',
+    },
+    active: {
+      title: 'Berhasil Diaktifkan',
+      descriptionText: 'Akun berhasil diaktifkan',
+      nameModal: 'active-success-information',
+    },
+  },
+  error: {
+    icon: iconPopup.failed,
+    delete: {
+      title: 'Gagal Dihapus',
+      descriptionText: 'Akun gagal dihapus',
+      nameModal: 'delete-error-information',
+      button: {
+        label: 'Ulangi,Hapus',
+        variant: 'danger',
+      },
+    },
+    nonActive: {
+      title: 'Gagal Menon-aktifkan',
+      descriptionText: 'Akun gagal dinon-aktifkan',
+      nameModal: 'non-active-error-information',
+      button: {
+        label: 'Ulangi, Nonaktifkan',
+        variant: 'danger',
+      },
+    },
+    active: {
+      title: 'Gagal Mengaktifkan',
+      descriptionText: 'Akun gagal diaktifkan',
+      nameModal: 'active-error-information',
+      button: {
+        label: 'Ulangi, Aktifkan',
+        variant: 'primary',
+      },
+    },
+  },
+}
+
+export const apiPathAdminComplaint = '/users/admin/complaint'
