@@ -72,22 +72,11 @@
                 :list-menu-pop-over="filterTableAction(item?.status_id)"
                 @detail-account="goToPageDetail(item.id)"
                 @non-active-account="
-                  showPopupConfirmation(
-                    confirmationDialog.nonActive.nameModal,
-                    item
-                  )
+                  showPopupConfirmation('nonActive', item, 'post')
                 "
-                @active-account="
-                  showPopupConfirmation(
-                    confirmationDialog.active.nameModal,
-                    item
-                  )
-                "
+                @active-account="showPopupConfirmation('active', item, 'post')"
                 @delete-account="
-                  showPopupConfirmation(
-                    confirmationDialog.delete.nameModal,
-                    item
-                  )
+                  showPopupConfirmation('delete', item, 'delete')
                 "
                 @resend-email="showPopupFormAccount(modalNameResendEmail, item)"
               />
@@ -97,22 +86,35 @@
       </template>
     </BaseTabGroup>
     <DialogConfirmationNew
-      :dialog-modal="confirmationDialog.active"
+      :dialog-modal="confirmationDialog"
       :detail-item-modal="detailItem"
+      :path="apiPath"
+      :http-method="httpMethod"
+      @success="showPopupInformation"
+      @error="showPopupInformation"
     />
-    <DialogConfirmationNew
-      :dialog-modal="confirmationDialog.nonActive"
+    <DialogInformationNew
+      :name-modal="informationDialog.nameModal"
+      :dialog-modal="informationDialog"
       :detail-item-modal="detailItem"
-    />
-    <DialogConfirmationNew
-      :dialog-modal="confirmationDialog.delete"
-      :detail-item-modal="detailItem"
-    />
+      :is-success="isSuccessInformation"
+      @close-all-modal="refreshPage"
+    >
+      <template #button-error>
+        <jds-button
+          :label="informationDialog?.button?.label"
+          type="button"
+          :variant="informationDialog?.button?.variant"
+          class="!text-[14px] !font-bold"
+          @click="backToPopupConfirmation"
+        />
+      </template>
+    </DialogInformationNew>
     <DialogFormAccount
       :title="modalForm.title"
       :modal-name="modalForm.modalName"
       :id-account="idAccount"
-      @close="$fetch()"
+      @close="refreshPage"
     />
   </div>
 </template>
@@ -125,7 +127,6 @@ import TabBarList from '~/components/Aduan/TabBar/List'
 import {
   managementAccountComplaintHeader,
   managementAccountComplaintStatus,
-  confirmationDialog,
 } from '~/constant/management-user'
 import DialogFormAccount from '~/components/Aduan/Dialog/Account'
 
@@ -139,7 +140,7 @@ export default {
         {
           menu: 'Non-aktifkan Akun',
           value: 'non-active-account',
-          status: managementAccountComplaintStatus.verified.id,
+          status: managementAccountComplaintStatus.active.id,
         },
         {
           menu: 'Aktifkan Akun',
@@ -183,14 +184,10 @@ export default {
         new Date(),
       ],
       managementAccountComplaintHeader,
-      confirmationDialog,
-      detailItem: {
-        id: '',
-        title: '',
-      },
       idAccount: '',
       modalNameAddAccount: 'addAccount',
       modalNameResendEmail: 'resendEmail',
+      detailAccount: {},
     }
   },
   async fetch() {
@@ -254,6 +251,13 @@ export default {
     },
     ...mapGetters('management-account', {
       modalForm: 'getModalForm',
+      detailItem: 'getDetailItem',
+      httpMethod: 'getHttpMethod',
+      apiPath: 'getApiPath',
+      confirmationDialog: 'getConfirmationDialog',
+      informationDialog: 'getInformationDialog',
+      isSuccessInformation: 'getSuccessInformation',
+      typeDialog: 'getTypeDialog',
     }),
   },
   watch: {
@@ -343,8 +347,8 @@ export default {
     },
     getStatusText(status) {
       switch (status) {
-        case managementAccountComplaintStatus.verified.id:
-          return managementAccountComplaintStatus.verified.name
+        case managementAccountComplaintStatus.active.id:
+          return managementAccountComplaintStatus.active.name
         case managementAccountComplaintStatus.not_active.id:
           return managementAccountComplaintStatus.not_active.name
         case managementAccountComplaintStatus.unverified.id:
@@ -388,9 +392,29 @@ export default {
     //     query: this.query,
     //   })
     // },
-    showPopupConfirmation(modalName, detailAccount) {
-      this.detailItem.title = `${detailAccount.name} - ${detailAccount.email}`
-      this.$store.commit('modals/OPEN', modalName)
+    showPopupConfirmation(typeDialog, detailAccount, httpMethod) {
+      this.$store.commit('management-account/setTypeDialog', typeDialog)
+      this.$store.commit('management-account/setDetailItem', {
+        title: `${detailAccount.name} - ${detailAccount.email}`,
+      })
+      this.$store.commit('management-account/setHttpMethod', httpMethod)
+      this.$store.dispatch('management-account/showConfirmationDialog', {
+        typeDialog,
+        detailAccount,
+      })
+    },
+    showPopupInformation(modalName = null, isSuccess) {
+      this.$store.dispatch(
+        'management-account/showInformationDialog',
+        isSuccess
+      )
+    },
+    backToPopupConfirmation() {
+      this.$store.dispatch('management-account/backToPopupConfirmation')
+    },
+    refreshPage() {
+      this.query.page = 1
+      this.$fetch()
     },
     showPopupFormAccount(modalName, dataAccount = null) {
       let payload = {}
