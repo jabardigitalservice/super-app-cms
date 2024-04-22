@@ -70,15 +70,15 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .date-picker {
   width: 412px !important;
 }
 .date-picker .mx-input-wrapper .mx-input {
   border-color: #e0e0e0 !important;
 }
-.session-select .jds-select,
-.session-select .jds-input-text {
+.session-select :deep(.jds-select),
+.session-select :deep(.jds-input-text) {
   width: 412px !important;
   border-radius: 8px;
 }

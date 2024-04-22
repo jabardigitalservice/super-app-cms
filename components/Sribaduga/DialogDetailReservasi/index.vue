@@ -115,17 +115,18 @@
       </div>
       <div
         class="flex px-6 py-4"
-        :class="isOrderedByAdmin ? 'justify-end' : 'justify-between'"
+        :class="!isOrderedByAdmin ? 'justify-end' : 'justify-between'"
       >
         <div
-          v-if="!isOrderedByAdmin"
+          v-if="isOrderedByAdmin"
           class="relative overflow-x-auto bg-transparent text-red-700"
         >
           <BaseButton> Batalkan Reservasi </BaseButton>
         </div>
         <div
-          v-if="!isOrderedByAdmin"
+          v-if="isOrderedByAdmin"
           class="relative overflow-x-auto rounded-lg bg-green-jds text-white"
+          @click="$emit('dialog-ubah-detail')"
         >
           <BaseButton class="flex items-center gap-2">
             <BaseIconSvg
