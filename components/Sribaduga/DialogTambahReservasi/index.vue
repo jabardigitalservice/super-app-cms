@@ -204,7 +204,12 @@
                       class="relative block text-gray-400 focus-within:text-gray-600"
                     >
                       <div
-                        class="pointer-events-none absolute top-1/2 flex h-[35px] w-10 -translate-y-1/2 transform items-center justify-center rounded-l-lg border-2 bg-[#F5F5F5]"
+                        class="pointer-events-none absolute top-1/2 flex h-[35px] w-10 -translate-y-1/2 transform items-center justify-center rounded-l-lg bg-[#F5F5F5]"
+                        :class="
+                          errors[0]
+                            ? 'border border-red-600'
+                            : 'border-2 border-gray-300'
+                        "
                       >
                         <p
                           class="font-lato text-[14px] font-[400] text-[#424242]"
@@ -217,7 +222,12 @@
                         id="no-tlp"
                         v-model="phoneNumber"
                         name="Telepon"
-                        class="form-input block h-[35px] w-full appearance-none rounded-lg border-2 border-gray-300 bg-white px-4 pl-12 text-gray-500 placeholder-gray-400 focus:outline-none"
+                        class="form-input block h-[35px] w-full appearance-none rounded-lg bg-white px-4 pl-12 text-gray-500 placeholder-gray-400 focus:outline-none"
+                        :class="
+                          errors[0]
+                            ? 'border border-red-600'
+                            : 'border-2 border-gray-300'
+                        "
                       />
                     </div>
                     <small class="text-red-600">{{ errors[0] }}</small>
@@ -334,7 +344,12 @@
                       id="alamat-instansi"
                       v-model="instanceAddress"
                       name="Alamat instansi"
-                      class="w-full rounded-lg border-2 border-gray-300"
+                      class="w-full rounded-lg"
+                      :class="
+                        errors[0]
+                          ? 'border border-red-600'
+                          : 'border-2 border-gray-300'
+                      "
                     />
                     <small class="text-red-600">{{ errors[0] }}</small>
                   </ValidationProvider>
