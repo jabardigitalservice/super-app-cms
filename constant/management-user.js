@@ -26,7 +26,7 @@ export const managementAccountComplaintStatus = Object.freeze({
   },
   unverified: {
     id: 'unverified',
-    name: 'Belum Terverifikasi',
+    name: 'Belum Verifikasi',
     value: 0,
     statusColor: 'yellow',
     icon: '/icon/icon-aduan/management-account/unverified-account-icon.svg',
