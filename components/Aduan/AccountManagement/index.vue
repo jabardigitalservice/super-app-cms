@@ -5,8 +5,8 @@
         <TabBarList
           :list-tab="listStatistic"
           :tab-index="query.tabIndex"
-          @selected="selectedTabHandle"
-          @button-tab="listTabHandle"
+          @selected="selectedTab"
+          @button-tab="filterStatus"
         />
       </template>
       <template #tab-panel>
@@ -158,7 +158,7 @@ export default {
           status: managementAccountComplaintStatus.unverified.id,
         },
       ],
-      listStatisticManagementAccount: [{}],
+      listStatistic: [],
       listDataManagementAccount: [],
       listDataRole: [],
       pagination: {
@@ -213,6 +213,47 @@ export default {
       )
       this.listDataRole = responseDataRole.data?.data
       this.listDataRole.unshift({ id: null, name: 'Semua Role' })
+
+      // get data statistic
+      const responseDataStatistic = await this.$axios.get(
+        '/users/admin/complaint/statistic'
+      )
+      const dataStatistic = responseDataStatistic.data?.data
+      this.listStatistic = []
+      const keyObjectManagementAccountStatus = Object.keys(
+        managementAccountComplaintStatus
+      )
+      keyObjectManagementAccountStatus.forEach((item) => {
+        switch (item) {
+          case 'unverified':
+            this.listStatistic.push({
+              ...managementAccountComplaintStatus.unverified,
+              value: dataStatistic.total_unverified_user,
+            })
+            break
+          case 'active':
+            this.listStatistic.push({
+              ...managementAccountComplaintStatus.active,
+              value: dataStatistic.total_active_user,
+            })
+            break
+          case 'not_active':
+            this.listStatistic.push({
+              ...managementAccountComplaintStatus.not_active,
+              value: dataStatistic.total_not_active_user,
+            })
+            break
+          case 'total':
+            this.listStatistic.unshift({
+              ...managementAccountComplaintStatus.total,
+              value: dataStatistic.total_user,
+            })
+            break
+          default:
+            this.listStatistic = []
+            break
+        }
+      })
     } catch {
       this.pagination.disabled = true
     }
@@ -232,14 +273,6 @@ export default {
           employee_status: item.employee_status.code,
         }
       })
-    },
-    listStatistic() {
-      return [
-        { ...managementAccountComplaintStatus.total, value: 2 },
-        { ...managementAccountComplaintStatus.unverified, value: 2 },
-        { ...managementAccountComplaintStatus.active, value: 2 },
-        { ...managementAccountComplaintStatus.not_active, value: 2 },
-      ]
     },
     listRole() {
       return this.listDataRole.map((item) => {
@@ -299,7 +332,7 @@ export default {
         query: this.query,
       })
     },
-    selectedTabHandle(index) {
+    selectedTab(index) {
       this.query.tabIndex = index
     },
     filterRole(value) {
@@ -336,15 +369,6 @@ export default {
     setQuery(params) {
       this.query = { ...this.query, ...params }
     },
-    getTotalStatistic() {
-      const total = this.listStatisticManagementAccount.reduce(
-        (accumulator, object) => {
-          return accumulator + object.value
-        },
-        0
-      )
-      return total
-    },
     getStatusText(status) {
       switch (status) {
         case managementAccountComplaintStatus.active.id:
@@ -370,28 +394,16 @@ export default {
           return 'text-gray-900'
       }
     },
-    // TO DO : if API already
-    // listTabHandle(statusId) {
-    //   const query = {
-    //     page: 1,
-    //   }
-
-    //   if (statusId !== 'total') {
-    //     query.status = statusId
-    //   } else {
-    //     delete this.query.status
-    //   }
-
-    //   this.isShowPopupDateRange = false
-    //   this.setQuery(query)
-    //   this.$fetch()
-    // },
-    // goToPageDetail(id) {
-    //   this.$router.push({
-    //     path: `${this.detailPage}/${id}`,
-    //     query: this.query,
-    //   })
-    // },
+    filterStatus(statusId) {
+      const query = {
+        page: 1,
+      }
+      if (statusId !== 'total') {
+        query.status = statusId
+      }
+      this.setQuery(query)
+      this.$fetch()
+    },
     showPopupConfirmation(typeDialog, detailAccount, httpMethod) {
       this.$store.commit('management-account/setTypeDialog', typeDialog)
       this.$store.commit('management-account/setDetailItem', {
@@ -434,27 +446,6 @@ export default {
         payload,
       })
     },
-    // TO DO : if API already
-    // async getCount() {
-    //   const queryCount = { ...this.query }
-    //   queryCount.status = ''
-    //   try {
-    //     const responseDataStatistics = await this.$axios.get(
-    //       '/users/admin/statistic',
-    //       {
-    //         params: queryCount,
-    //       }
-    //     )
-    //     this.listStatisticManagementAccount = responseDataStatistics.data.data
-    //     managementAccountStatus.total.value = this.getTotalStatistic()
-    //     this.listStatisticManagementAccount.unshift(managementAccountStatus.total)
-    //     if (this.listStatisticManagementAccount.length === 2) {
-    //       this.listStatisticManagementAccount.pop()
-    //     }
-    //   } catch (error) {
-    //     console.error(error)
-    //   }
-    // },
   },
 }
 </script>
