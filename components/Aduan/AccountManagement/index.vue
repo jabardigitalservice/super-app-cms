@@ -400,6 +400,8 @@ export default {
       }
       if (statusId !== 'total') {
         query.status = statusId
+      } else {
+        query.status = null
       }
       this.setQuery(query)
       this.$fetch()
