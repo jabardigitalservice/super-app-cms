@@ -6,65 +6,9 @@
         <ValidationObserver
           ref="form"
           tag="div"
-          class="form-add-account w-full px-6 pb-6"
+          class="form-add-account w-full px-6"
         >
-          <ValidationProvider
-            v-slot="{ errors }"
-            rules="required"
-            name="Nama"
-            tag="div"
-          >
-            <jds-input-text
-              v-model="payload.name"
-              name="Nama"
-              label="Nama"
-              placeholder="Masukkan Nama"
-              :error-message="errors[0]"
-              class="pb-4"
-              :class="{ '!pb-3': errors.length > 0 }"
-            />
-          </ValidationProvider>
-          <ValidationProvider
-            v-slot="{ errors }"
-            tag="div"
-            class="pb-4"
-            rules="requiredSelectForm"
-            name="Status Kepegawaian"
-          >
-            <jds-radio-button-group
-              v-model="payload.employee_status"
-              :error-message="errors[0]"
-              class="full-width"
-              label="Pilih Status Kepegawaian"
-              :items="[
-                { label: 'ASN', val: 'asn' },
-                { label: 'Non-ASN', val: 'non-asn' },
-              ]"
-              value-key="val"
-              placeholder-key="label"
-              name="Status Kepegawaian"
-              orientation="horizontal"
-              @change="handleChangeRadioButton"
-            />
-          </ValidationProvider>
-          <ValidationProvider
-            v-if="payload.employee_status === 'asn'"
-            v-slot="{ errors }"
-            rules="required|numeric"
-            name="Nip"
-            tag="div"
-          >
-            <BaseInputText
-              v-model="payload.employee_number"
-              name="Nip"
-              label="NIP"
-              maxlength="18"
-              placeholder="Masukkan NIP"
-              :error-message="errors[0]"
-              class="pb-4"
-              :class="{ '!pb-3': errors.length > 0 }"
-            />
-          </ValidationProvider>
+          <!-- START CHECK EMAIL -->
           <ValidationProvider
             v-slot="{ errors }"
             rules="required|email"
@@ -72,59 +16,144 @@
             tag="div"
           >
             <div class="pb-4" :class="{ '!pb-3': errors.length > 0 }">
-              <jds-input-text
+              <BaseInputText
                 v-model="payload.email"
                 name="Email"
                 label="Email"
                 placeholder="Masukkan Email"
+                class="form-input-text"
                 :error-message="errors[0]"
+                :disabled="typeDialog === 'form'"
               />
             </div>
+            <SectionMessage
+              v-show="typeDialog === 'sectionMessage'"
+              :message="sectionMessage.message"
+              :icon="sectionMessage.icon"
+              :class="{
+                '!border !border-green-800 !bg-green-50':
+                  sectionMessage.variant === 'success',
+              }"
+            />
           </ValidationProvider>
-          <ValidationProvider
-            v-slot="{ errors }"
-            name="Role"
-            rules="requiredSelectForm"
-            tag="div"
-          >
-            <jds-select
-              v-model="payload.role_id"
-              name="role"
-              label="Role"
-              placeholder="Pilih Role"
-              :error-message="errors[0]"
-              :options="listRole"
+          <!-- END CHECK EMAIL -->
+          <div v-show="typeDialog === 'form'">
+            <ValidationProvider
+              v-slot="{ errors }"
+              rules="required"
+              name="Nama"
+              tag="div"
+            >
+              <jds-input-text
+                v-model="payload.name"
+                name="Nama"
+                label="Nama"
+                placeholder="Masukkan Nama"
+                :error-message="errors[0]"
+                class="pb-4"
+                :class="{ '!pb-3': errors.length > 0 }"
+              />
+            </ValidationProvider>
+            <ValidationProvider
+              v-slot="{ errors }"
+              tag="div"
               class="pb-4"
-              :class="{ '!pb-6': errors.length > 0 }"
-              @change="handleChangeSelectRole()"
-            />
-          </ValidationProvider>
-          <ValidationProvider
-            v-slot="{ errors }"
-            name="Instansi"
-            rules="requiredSelectForm"
-            tag="div"
-          >
-            <jds-select
-              v-model="payload.organization_id"
-              name="instansi"
-              label="Instansi"
-              placeholder="Pilih Instansi"
-              :error-message="errors[0]"
-              :options="listOrganization"
-            />
-          </ValidationProvider>
+              rules="requiredSelectForm"
+              name="Status Kepegawaian"
+            >
+              <jds-radio-button-group
+                v-model="payload.employee_status"
+                :error-message="errors[0]"
+                class="full-width"
+                label="Pilih Status Kepegawaian"
+                :items="[
+                  { label: 'ASN', val: 'asn' },
+                  { label: 'Non-ASN', val: 'non_asn' },
+                ]"
+                value-key="val"
+                placeholder-key="label"
+                name="Status Kepegawaian"
+                orientation="horizontal"
+                @change="handleChangeRadioButton"
+              />
+            </ValidationProvider>
+            <ValidationProvider
+              v-if="payload.employee_status === 'asn'"
+              v-slot="{ errors }"
+              rules="required|numeric"
+              name="Nip"
+              tag="div"
+            >
+              <BaseInputText
+                v-model="payload.employee_number"
+                name="Nip"
+                label="NIP"
+                maxlength="18"
+                placeholder="Masukkan NIP"
+                :error-message="errors[0]"
+                class="pb-4"
+                :class="{ '!pb-3': errors.length > 0 }"
+              />
+            </ValidationProvider>
+            <ValidationProvider
+              v-slot="{ errors }"
+              name="Role"
+              rules="requiredSelectForm"
+              tag="div"
+            >
+              <jds-select
+                v-model="payload.role_id"
+                name="role"
+                label="Role"
+                placeholder="Pilih Role"
+                :error-message="errors[0]"
+                :options="listRole"
+                class="pb-4"
+                :class="{ '!pb-6': errors.length > 0 }"
+                @change="handleChangeSelectRole()"
+              />
+            </ValidationProvider>
+            <ValidationProvider
+              v-slot="{ errors }"
+              name="Instansi"
+              rules="requiredSelectForm"
+              tag="div"
+            >
+              <jds-select
+                v-model="payload.organization_id"
+                name="instansi"
+                label="Instansi"
+                placeholder="Pilih Instansi"
+                :error-message="errors[0]"
+                :options="listOrganization"
+              />
+            </ValidationProvider>
+          </div>
         </ValidationObserver>
         <BaseDialogFooterNew :name="modalName" @cancel="clearForm">
-          <template #button-right>
-            <jds-button
-              label="Simpan"
-              type="button"
-              variant="primary"
-              class="!text-[14px] !font-bold"
-              @click="showPopupConfirmation()"
-            />
-          </template>
+          <div
+            v-for="button in listButton"
+            :key="button.id"
+            class="flex justify-end"
+          >
+            <div v-show="button.typeDialog.includes(typeDialog)" class="ml-3">
+              <jds-button
+                type="button"
+                :variant="button.variant"
+                @click="handleButtonAction(button.id)"
+              >
+                <div
+                  v-if="isLoadingCheck && button.id === 'checkEmail'"
+                  class="flex"
+                >
+                  <jds-spinner size="14" />
+                  <p class="ml-2">Loading...</p>
+                </div>
+
+                <p v-else class="!text-[14px] !font-bold">{{ button.label }}</p>
+              </jds-button>
+            </div>
+          </div>
         </BaseDialogFooterNew>
       </BaseDialogPanel>
     </BaseDialogFrame>
@@ -167,7 +196,7 @@
         />
       </template>
     </DialogInformationNew>
-    <DialogLoading :show-popup="isLoading" />
+    <DialogLoading :show-popup="isLoadingSubmit" />
   </div>
 </template>
 
@@ -251,7 +280,47 @@ export default {
       },
       dialogConfirmation: {},
       dialogInformation: {},
-      isLoading: false,
+      sectionMessage: {},
+      listButton: [
+        {
+          id: 'back',
+          label: 'Kembali',
+          variant: 'secondary',
+          typeDialog: ['sectionMessage'],
+        },
+        {
+          id: 'cancel',
+          label: 'Batal',
+          variant: 'secondary',
+          typeDialog: ['checkEmail', 'form'],
+        },
+        {
+          id: 'checkEmail',
+          label: 'Periksa',
+          variant: 'primary',
+          typeDialog: ['checkEmail'],
+        },
+        {
+          id: 'verified',
+          label: 'Verifikasi Akun',
+          variant: 'primary',
+          typeDialog: ['form'],
+        },
+        {
+          id: 'resendEmail',
+          label: 'Kirim Ulang Email Verifikasi',
+          variant: 'primary',
+          typeDialog: ['resendEmail'],
+        },
+        {
+          id: 'sectionMessage',
+          label: 'Ya, Gunakan',
+          variant: 'primary',
+          typeDialog: ['sectionMessage'],
+        },
+      ],
+      isLoadingSubmit: false,
+      isLoadingCheck: false,
       isSuccess: false,
     }
   },
@@ -261,8 +330,6 @@ export default {
         '/users/admin/complaint/roles'
       )
       this.listDataRole = responseDataRole.data?.data
-      // this.listDataRole.unshift({ id: '-', name: 'Semua Role' })
-
       const responseDataOrganization = await this.$axios.get(
         `/users/admin/complaint/organizations`,
         { params: { role_id: this.payload.role_id } }
@@ -295,6 +362,14 @@ export default {
         this.$store.commit('management-account/setPayload', value)
       },
     },
+    typeDialog: {
+      get() {
+        return this.$store.state['management-account'].typeDialog
+      },
+      set(value) {
+        this.$store.commit('management-account/setTypeDialog', value)
+      },
+    },
   },
   watch: {
     payload: {
@@ -307,6 +382,48 @@ export default {
     },
   },
   methods: {
+    handleButtonAction(idButton) {
+      switch (idButton) {
+        case 'checkEmail':
+          return this.checkEmail()
+        case 'sectionMessage':
+          return this.handleSectionMessage()
+        case 'verified':
+          return this.showPopupConfirmation()
+        case 'back':
+          return this.$store.commit(
+            'management-account/setTypeDialog',
+            'checkEmail'
+          )
+        case 'cancel':
+          return this.handleCancelButton()
+        default:
+          return ''
+      }
+    },
+    async checkEmail() {
+      this.isLoadingCheck = true
+
+      try {
+        const response = await this.$axios.get(
+          `/users/admin/complaint/email/${this.payload.email}`
+        )
+        this.payload.name = response.data.data.name
+        this.setSectionMessage('emailSso')
+      } catch (error) {
+        this.setSectionMessage('emailNotExist')
+      } finally {
+        this.isLoadingCheck = false
+      }
+      this.$store.commit('management-account/setTypeDialog', 'sectionMessage') // show section message
+    },
+    handleSectionMessage() {
+      this.$store.commit('management-account/setTypeDialog', 'form')
+    },
+    handleCancelButton() {
+      this.clearForm()
+      this.$store.commit('modals/CLOSEALL')
+    },
     async showPopupConfirmation() {
       const isValid = await this.$refs.form.validate()
       if (isValid) {
@@ -334,6 +451,25 @@ export default {
         icon: dialogInformation[typeInformation].icon,
       }
     },
+    setSectionMessage(typeSection) {
+      const sectionMessage = {
+        emailSso: {
+          variant: 'success',
+          message:
+            'Email ini sudah terdaftar dalam database Sapawarga. Apakah Anda ingin menggunakannya sebagai akun admin untuk aduan?',
+          icon: {
+            path: '/icon/default/success-icon.svg',
+            fill: '#069550',
+          },
+        },
+        emailNotExist: {
+          variant: 'info',
+          message:
+            'Email belum terdaftar dalam database Sapawarga. Apakah Anda ingin menggunakannya sebagai akun admin untuk aduan?',
+        },
+      }
+      this.sectionMessage = sectionMessage[typeSection]
+    },
     handleChangeRadioButton(value) {
       this.$store.commit('management-account/setPayload', {
         ...this.payload,
@@ -349,7 +485,7 @@ export default {
     },
     async submitAccount() {
       this.$store.commit('modals/CLOSEALL')
-      this.isLoading = true
+      this.isLoadingSubmit = true
       const methodApi = this[this.modalName].methodApi
       try {
         const idAccount = `/${this.idAccount}` || ''
@@ -363,7 +499,7 @@ export default {
         this.isSuccess = false
         this.setDialogInformation('error')
       } finally {
-        this.isLoading = false
+        this.isLoadingSubmit = false
       }
       this.$store.commit('modals/OPEN', this.dialogInformation.nameModal)
     },
@@ -376,9 +512,10 @@ export default {
       this.payload = {
         name: '',
         email: '',
-        roleId: '',
-        organizationId: '',
+        role_id: '',
+        organization_id: '',
       }
+      this.$store.commit('management-account/setTypeDialog', '')
     },
   },
 }
@@ -395,5 +532,9 @@ export default {
 
 .form-add-account .form-input-text input {
   @apply !bg-white;
+}
+
+.form-add-account .form-input-text input:disabled {
+  @apply !cursor-not-allowed !border !border-gray-300 !bg-gray-200;
 }
 </style>
