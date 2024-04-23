@@ -408,7 +408,10 @@ export default {
         const response = await this.$axios.get(
           `/users/admin/complaint/email/${this.payload.email}`
         )
-        this.payload.name = response.data.data.name
+        this.$store.commit('management-account/setPayload', {
+          ...this.payload,
+          name: response.data.data.name,
+        })
         this.setSectionMessage('emailSso')
       } catch (error) {
         this.setSectionMessage('emailNotExist')
