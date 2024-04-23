@@ -144,7 +144,7 @@
               >
                 <div
                   v-if="isLoadingCheck && button.id === 'checkEmail'"
-                  class="flex"
+                  class="flex items-center"
                 >
                   <jds-spinner size="14" />
                   <p class="ml-2">Loading...</p>
