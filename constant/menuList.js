@@ -193,6 +193,15 @@ const sriBadugaMenu = {
       unleashVariable: 'SAPAWARGA-CMS__TICKETING--SRIBADUGA--DAFTAR-PESANAN',
     },
     {
+      name: 'Kalender Reservasi',
+      path: '/sribaduga/kalender-reservasi',
+      arrow: false,
+      showMenuAndAccessForRoles: ['admin'],
+      icon: 'kalender.svg',
+      unleashVariable:
+        'SAPAWARGA-CMS__TICKETING--SRIBADUGA--KALENDER-RESERVASI',
+    },
+    {
       name: 'Laporan Pendapatan',
       path: '/sribaduga/laporan-pendapatan',
       arrow: false,
@@ -200,16 +209,6 @@ const sriBadugaMenu = {
       icon: 'news-paper.svg',
       unleashVariable:
         'SAPAWARGA-CMS__TICKETING--SRIBADUGA--LAPORAN-PENDAPATAN',
-    },
-
-    {
-      name: 'Kalender Reservasi',
-      path: '/sribaduga/kalender-reservasi',
-      arrow: false,
-      showMenuAndAccessForRoles: ['admin'],
-      icon: 'news-paper.svg',
-      unleashVariable:
-        'SAPAWARGA-CMS__TICKETING--SRIBADUGA--KALENDER-RESERVASI',
     },
   ],
 }
