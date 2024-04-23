@@ -3,7 +3,7 @@
     <div class="flex items-start">
       <BaseIconSvg
         :icon="icon.path"
-        size="20"
+        :size="20"
         class="flex-shrink-0"
         :fill-color="icon.fill"
       />
