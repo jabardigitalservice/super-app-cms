@@ -442,6 +442,9 @@ export default {
           employeeNumber: dataAccount.employee_number,
         }
         this.idAccount = dataAccount.id
+        this.$store.commit('management-account/setTypeDialog', this.modalName)
+      } else {
+        this.$store.commit('management-account/setTypeDialog', 'checkEmail')
       }
       this.$store.dispatch('management-account/showPopupFormAccount', {
         modalName,
