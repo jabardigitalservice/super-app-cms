@@ -151,6 +151,7 @@ const tahuraMenu = {
   menu: [
     {
       name: 'Dashboard',
+      titleMenu: 'Ticketing Tahura',
       path: '/tahura/dashboard',
       arrow: false,
       showMenuAndAccessForRoles: ['admin', 'tahura_officer'],
@@ -158,6 +159,7 @@ const tahuraMenu = {
     },
     {
       name: 'Daftar Pesanan',
+      titleMenu: 'Ticketing Tahura',
       path: '/tahura/daftar-pesanan',
       arrow: false,
       showMenuAndAccessForRoles: ['admin', 'tahura_officer'],
@@ -165,6 +167,7 @@ const tahuraMenu = {
     },
     {
       name: 'Laporan Pendapatan',
+      titleMenu: 'Ticketing Tahura',
       path: '/tahura/laporan-pendapatan',
       arrow: false,
       showMenuAndAccessForRoles: ['admin', 'tahura_officer'],
@@ -186,6 +189,7 @@ const sriBadugaMenu = {
   menu: [
     {
       name: 'Daftar Pesanan',
+      titleMenu: 'TICKETING SRIBADUGA',
       path: '/sribaduga/daftar-pesanan',
       arrow: false,
       showMenuAndAccessForRoles: ['admin'],
@@ -194,6 +198,7 @@ const sriBadugaMenu = {
     },
     {
       name: 'Kalender Reservasi',
+      titleMenu: 'TICKETING SRIBADUGA',
       path: '/sribaduga/kalender-reservasi',
       arrow: false,
       showMenuAndAccessForRoles: ['admin'],
@@ -203,6 +208,7 @@ const sriBadugaMenu = {
     },
     {
       name: 'Laporan Pendapatan',
+      titleMenu: 'TICKETING SRIBADUGA',
       path: '/sribaduga/laporan-pendapatan',
       arrow: false,
       showMenuAndAccessForRoles: ['admin'],
