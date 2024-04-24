@@ -2,9 +2,7 @@
   <nuxt-link
     :to="{ path: link }"
     class="flex w-full min-w-[200px] items-center justify-between rounded-lg p-3 hover:bg-green-700 hover:font-bold hover:text-white"
-    :class="{
-      'nuxt-link-exact-active': pageActive == label,
-    }"
+    :exact="link === '/' && $route.name !== 'detail-id'"
   >
     <div class="flex items-center">
       <BaseIconSvg
@@ -47,6 +45,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    menuTitle: {
+      type: String,
+      default: null,
+    },
   },
   computed: {
     pageActive() {
@@ -57,7 +59,7 @@ export default {
 </script>
 
 <style scoped>
-a.nuxt-link-exact-active {
+a.nuxt-link-active {
   @apply bg-green-700 p-3 font-bold text-white !important;
 }
 </style>
