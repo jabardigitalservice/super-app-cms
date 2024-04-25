@@ -23,24 +23,25 @@ export default {
   name: 'BaseDialogFrame',
   props: {
     name: { type: String, required: true },
-    closeModalSelf: { type: Boolean, default: true }
+    closeModalSelf: { type: Boolean, default: true },
   },
   computed: {
-    isOpen () {
+    isOpen() {
       return this.$store.state.modals.open.includes(this.name)
-    }
+    },
   },
-  beforeDestroy () {
+  beforeDestroy() {
     if (this.isOpen) {
       this.close()
     }
   },
   methods: {
-    close () {
+    close() {
       if (this.closeModalSelf) {
+        this.$emit('close')
         this.$store.commit('modals/CLOSE', this.name)
       }
-    }
-  }
+    },
+  },
 }
 </script>

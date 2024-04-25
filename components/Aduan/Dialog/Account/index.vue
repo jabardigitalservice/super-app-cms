@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BaseDialogFrame :name="modalName">
+    <BaseDialogFrame :name="modalName" @close="handleCancelButton()">
       <BaseDialogPanel class="w-[510px]">
         <BaseDialogHeader :title="title" />
         <ValidationObserver
@@ -14,6 +14,7 @@
             rules="required|email"
             name="Email"
             tag="div"
+            mode="passive"
           >
             <div class="pb-4" :class="{ '!pb-3': errors.length > 0 }">
               <BaseInputText
@@ -23,11 +24,14 @@
                 placeholder="Masukkan Email"
                 class="form-input-text"
                 :error-message="errors[0]"
-                :disabled="typeDialog === 'form'"
+                :disabled="
+                  typeDialog === 'form' ||
+                  typeDialog === 'informationCheckEmailSuccess'
+                "
               />
             </div>
             <SectionMessage
-              v-show="typeDialog === 'sectionMessage'"
+              v-show="typeDialog === 'informationCheckEmailSuccess'"
               :message="sectionMessage.message"
               :icon="sectionMessage.icon"
               :class="{
@@ -37,7 +41,7 @@
             />
           </ValidationProvider>
           <!-- END CHECK EMAIL -->
-          <div v-show="typeDialog === 'form'">
+          <div v-if="typeDialog === 'form' || typeDialog === 'resendEmail'">
             <ValidationProvider
               v-slot="{ errors }"
               rules="required"
@@ -140,17 +144,17 @@
               <jds-button
                 type="button"
                 :variant="button.variant"
+                :disabled="button.disabled"
                 @click="handleButtonAction(button.id)"
               >
-                <div
-                  v-if="isLoadingCheck && button.id === 'checkEmail'"
-                  class="flex items-center"
-                >
-                  <jds-spinner size="14" />
-                  <p class="ml-2">Loading...</p>
+                <div class="flex items-center">
+                  <jds-spinner
+                    v-if="isLoadingCheck && button.id === 'checkEmail'"
+                    class="mr-2"
+                    size="14"
+                  />
+                  <p class="!text-[14px] !font-bold">{{ button.label }}</p>
                 </div>
-
-                <p v-else class="!text-[14px] !font-bold">{{ button.label }}</p>
               </jds-button>
             </div>
           </div>
@@ -286,19 +290,19 @@ export default {
           id: 'back',
           label: 'Kembali',
           variant: 'secondary',
-          typeDialog: ['sectionMessage'],
+          typeDialog: ['informationCheckEmailSuccess'],
         },
         {
           id: 'cancel',
           label: 'Batal',
           variant: 'secondary',
-          typeDialog: ['checkEmail', 'form'],
+          typeDialog: ['checkEmail', 'informationCheckEmailError', 'form'],
         },
         {
           id: 'checkEmail',
           label: 'Periksa',
           variant: 'primary',
-          typeDialog: ['checkEmail'],
+          typeDialog: ['checkEmail', 'informationCheckEmailError'],
         },
         {
           id: 'verified',
@@ -313,10 +317,10 @@ export default {
           typeDialog: ['resendEmail'],
         },
         {
-          id: 'sectionMessage',
+          id: 'informationCheckEmailSuccess',
           label: 'Ya, Gunakan',
           variant: 'primary',
-          typeDialog: ['sectionMessage'],
+          typeDialog: ['informationCheckEmailSuccess'],
         },
       ],
       isLoadingSubmit: false,
@@ -385,8 +389,8 @@ export default {
     handleButtonAction(idButton) {
       switch (idButton) {
         case 'checkEmail':
-          return this.checkEmail()
-        case 'sectionMessage':
+          return this.submitCheckEmail()
+        case 'informationCheckEmailSuccess':
           return this.handleSectionMessage()
         case 'verified':
           return this.showPopupConfirmation()
@@ -401,24 +405,42 @@ export default {
           return ''
       }
     },
-    async checkEmail() {
-      this.isLoadingCheck = true
-
-      try {
-        const response = await this.$axios.get(
-          `/users/admin/complaint/email/${this.payload.email}`
-        )
-        this.$store.commit('management-account/setPayload', {
-          ...this.payload,
-          name: response.data.data.name,
-        })
-        this.setSectionMessage('emailSso')
-      } catch (error) {
-        this.setSectionMessage('emailNotExist')
-      } finally {
-        this.isLoadingCheck = false
+    async submitCheckEmail() {
+      const isValid = await this.$refs.form.validate()
+      if (isValid) {
+        this.isLoadingCheck = true
+        this.setDisabledButton('cancel', this.isLoadingCheck)
+        try {
+          const response = await this.$axios.get(
+            `/users/admin/complaint/email/${this.payload.email}`
+          )
+          this.$store.commit('management-account/setPayload', {
+            ...this.payload,
+            name: response.data.data.name,
+          })
+          this.$store.commit(
+            'management-account/setTypeDialog',
+            'informationCheckEmailSuccess'
+          )
+          this.setSectionMessage('emailSso')
+        } catch (error) {
+          if (error.response.status === 404) {
+            this.setSectionMessage('emailNotExist')
+            this.$store.commit(
+              'management-account/setTypeDialog',
+              'informationCheckEmailSuccess'
+            )
+          } else if (error.response.status === 422) {
+            this.$store.commit(
+              'management-account/setTypeDialog',
+              'informationCheckEmailError'
+            )
+          }
+        } finally {
+          this.isLoadingCheck = false
+          this.setDisabledButton('cancel', this.isLoadingCheck)
+        }
       }
-      this.$store.commit('management-account/setTypeDialog', 'sectionMessage') // show section message
     },
     handleSectionMessage() {
       this.$store.commit('management-account/setTypeDialog', 'form')
@@ -435,6 +457,11 @@ export default {
         this.setDialogConfirmation()
         this.$store.commit('modals/OPEN', this.dialogConfirmation.nameModal)
       }
+    },
+    setDisabledButton(idButton, isDisabled) {
+      this.listButton = this.listButton.map((item) =>
+        item.id === idButton ? { ...item, disabled: isDisabled } : item
+      )
     },
     setDialogConfirmation() {
       const { dialogConfirmation, nameModal } = this[this.modalName]
@@ -456,6 +483,7 @@ export default {
     },
     setSectionMessage(typeSection) {
       const sectionMessage = {
+        // email is already in sso
         emailSso: {
           variant: 'success',
           message:
@@ -465,6 +493,7 @@ export default {
             fill: '#069550',
           },
         },
+        // email not registered
         emailNotExist: {
           variant: 'info',
           message:
@@ -518,6 +547,7 @@ export default {
         role_id: '',
         organization_id: '',
       }
+      this.$store.commit('management-account/setPayload', { ...this.payload })
       this.$store.commit('management-account/setTypeDialog', '')
     },
   },
