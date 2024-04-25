@@ -4,6 +4,8 @@ export const state = () => ({
   foreignerCatagory: 0,
   isOpenForm: false,
   refetchCalendar: false,
+  reservationDateValue: new Date(),
+  sessionValue: null,
 })
 
 export const getters = {
@@ -22,6 +24,12 @@ export const getters = {
   getRefetchCalendar: (state) => {
     return state.refetchCalendar
   },
+  getReservationDateValue: (state) => {
+    return state.reservationDateValue
+  },
+  getSessionValue: (state) => {
+    return state.sessionValue
+  },
 }
 export const actions = {
   setChildrenCatagory({ commit }, childrenCatagory) {
@@ -39,6 +47,12 @@ export const actions = {
   setRefetchCalendar({ commit }, refetchCalendar) {
     commit('setRefetchCalendar', refetchCalendar)
   },
+  setReservationDateValue({ commit }, reservationDateValue) {
+    commit('setReservationDateValue', reservationDateValue)
+  },
+  setSessionValue({ commit }, sessionValue) {
+    commit('setSessionValue', sessionValue)
+  },
 }
 export const mutations = {
   setChildrenCatagory(state, childrenCatagory) {
@@ -55,5 +69,11 @@ export const mutations = {
   },
   setRefetchCalendar(state, refetchCalendar) {
     state.refetchCalendar = refetchCalendar
+  },
+  setReservationDateValue(state, reservationDateValue) {
+    state.reservationDateValue = reservationDateValue
+  },
+  setSessionValue(state, sessionValue) {
+    state.sessionValue = sessionValue
   },
 }

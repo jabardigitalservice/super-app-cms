@@ -13,12 +13,12 @@
             <BaseDialogHeader class="sticky top-0 z-50">
               <div class="flex items-center justify-between">
                 <h1 class="font-roboto text-[21px] font-bold text-green-jds">
-                  Tambah Reservasi
+                  {{ isNewReservation ? 'Tambah' : 'Ubah' }} Reservasi
                 </h1>
               </div>
             </BaseDialogHeader>
             <div class="flex-1 overflow-y-auto px-6 py-2">
-              <div class="font-lato">
+              <div v-if="isNewReservation" class="font-lato">
                 <p class="text-[14px] font-[500]">
                   {{
                     `${dateValue?.dateName} - ${
@@ -28,7 +28,28 @@
                 </p>
                 <p class="text-[16px] font-[700]">{{ getSessionName }}</p>
               </div>
-
+              <div
+                v-else
+                class="mt-4 rounded-[12px] border border-[#EEEEEE] p-4"
+              >
+                <div class="py-2">
+                  <p class="mb-4 font-lato text-[16px] font-[700]">
+                    Tanggal & Sesi Reservasi
+                  </p>
+                  <date-picker
+                    v-model="reservationDateValue"
+                    format="DD/MM/YYYY"
+                    :clearable="false"
+                    class="date-picker"
+                  />
+                  <jds-select
+                    v-model="sessionValue"
+                    placeholder="Pilih sesi"
+                    class="add-reservation-select mt-3"
+                    :options="sessionDataListForReschedule"
+                  />
+                </div>
+              </div>
               <div class="mt-4 rounded-[12px] border border-[#EEEEEE] p-4">
                 <div class="flex items-center justify-between font-lato">
                   <p class="text-[16px] font-[700]">Kategori Tiket</p>
@@ -399,6 +420,10 @@ export default {
       type: Object,
       default: () => {},
     },
+    isNewReservation: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -410,6 +435,7 @@ export default {
       cityValue: '',
       instanceAddress: '',
       errorTicket: '',
+      sessionDataList: [],
     }
   },
   computed: {
@@ -419,6 +445,22 @@ export default {
       foreignerCatagory: (state) => state.add_reservation.foreignerCatagory,
       isOpenForm: (state) => state.add_reservation.isOpenForm,
     }),
+    reservationDateValue: {
+      set(value) {
+        this.$store.commit('add_reservation/setReservationDateValue', value)
+      },
+      get() {
+        return this.$store.state.add_reservation.reservationDateValue
+      },
+    },
+    sessionValue: {
+      set(value) {
+        this.$store.commit('add_reservation/setSessionValue', value)
+      },
+      get() {
+        return this.$store.state.add_reservation.sessionValue
+      },
+    },
     getSessionName() {
       return `${this.orderAndSessionValue?.session.name} (${this.orderAndSessionValue?.session.startTime} - ${this.orderAndSessionValue?.session.endTime})`
     },
@@ -426,6 +468,14 @@ export default {
       return (
         this.childrenCatagory + this.matureCatagory + this.foreignerCatagory
       )
+    },
+    sessionDataListForReschedule() {
+      return this.sessionDataList.map((sessionData) => {
+        return {
+          label: `${sessionData.session.name}  (${sessionData.session.startTime} - ${sessionData.session.endTime})`,
+          value: sessionData.session.id,
+        }
+      })
     },
   },
 
@@ -439,6 +489,9 @@ export default {
         }
       },
     },
+  },
+  mounted() {
+    this.fetchSessionList()
   },
 
   methods: {
@@ -521,6 +574,22 @@ export default {
         this.clearForm()
       }
     },
+    async fetchSessionList() {
+      this.loading = true
+
+      try {
+        const calendarResponse = await this.$axios.get(
+          '/ticket/tms/admin/orders/calendar'
+        )
+
+        const { data } = calendarResponse.data
+        this.sessionDataList = data
+      } catch (error) {
+        console.error(error)
+      } finally {
+        this.loading = false
+      }
+    },
   },
 }
 </script>
@@ -544,5 +613,8 @@ export default {
 .fade-enter .content,
 .fade-leave-to .content {
   @apply right-[-700px];
+}
+.date-picker {
+  width: 430px !important;
 }
 </style>

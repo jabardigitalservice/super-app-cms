@@ -204,6 +204,7 @@
               :is-ordered-by-admin="isOrderedByAdmin"
               @close="closeDialogDetailReservasi()"
               @dialog-reschedule="openDialogReschedule()"
+              @dialog-ubah-detail="handleOpenDialogUbahDetail()"
             />
             <DialogReschedule
               :reschedule-value="rescheduleValue"
@@ -219,6 +220,7 @@
     <DialogTambahReservasi
       :date-value="dateValue"
       :order-and-session-value="orderAndSessionValue"
+      :is-new-reservation="isNewReservation"
     />
   </div>
 </template>
@@ -255,6 +257,7 @@ export default {
         },
       ],
       loading: false,
+      isNewReservation: false,
     }
   },
   async fetch() {
@@ -281,7 +284,7 @@ export default {
       return this.sessionDataList.map((sessionData) => {
         return {
           label: `${sessionData.session.name}  (${sessionData.session.startTime} - ${sessionData.session.endTime})`,
-          value: `${sessionData.session.name}-${sessionData.session.startTime}-${sessionData.session.endTime})`,
+          value: sessionData.session.id,
         }
       })
     },
@@ -422,9 +425,17 @@ export default {
         {
           id: 1,
           date: dateData.rawDateData,
-          session: `${sessionData.session.name}-(${sessionData.session.startTime}-${sessionData.session.endTime})`,
+          session: sessionData.session.id,
         },
       ]
+      this.$store.commit(
+        'add_reservation/setReservationDateValue',
+        dateData.rawDateData
+      )
+      this.$store.commit(
+        'add_reservation/setSessionValue',
+        sessionData.session.id
+      )
     },
     handleClickNextDateList() {
       const dateList = []
@@ -548,6 +559,13 @@ export default {
     handleOpenDialogTambahReservasi() {
       this.$store.commit('add_reservation/setIsOpenForm', true)
       this.$store.commit('add_reservation/setRefetchCalendar', false)
+      this.isNewReservation = true
+    },
+    handleOpenDialogUbahDetail() {
+      this.$store.commit('modals/CLOSE', 'detail-reservasi')
+      this.$store.commit('add_reservation/setIsOpenForm', true)
+      this.$store.commit('add_reservation/setRefetchCalendar', false)
+      this.isNewReservation = false
     },
   },
 }
