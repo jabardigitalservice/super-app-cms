@@ -31,12 +31,17 @@
               />
             </div>
             <SectionMessage
-              v-show="typeDialog === 'informationCheckEmailSuccess'"
+              v-show="
+                typeDialog === 'informationCheckEmailError' ||
+                typeDialog === 'informationCheckEmailSuccess'
+              "
               :message="sectionMessage.message"
               :icon="sectionMessage.icon"
               :class="{
                 '!border !border-green-800 !bg-green-50':
                   sectionMessage.variant === 'success',
+                '!border !border-red-700 !bg-red-50':
+                  sectionMessage.variant === 'error',
               }"
             />
           </ValidationProvider>
@@ -431,6 +436,7 @@ export default {
               'informationCheckEmailSuccess'
             )
           } else if (error.response.status === 422) {
+            this.setSectionMessage('emailManagementAccount')
             this.$store.commit(
               'management-account/setTypeDialog',
               'informationCheckEmailError'
@@ -483,7 +489,7 @@ export default {
     },
     setSectionMessage(typeSection) {
       const sectionMessage = {
-        // email is already in sso
+        // email has already in sso
         emailSso: {
           variant: 'success',
           message:
@@ -498,6 +504,16 @@ export default {
           variant: 'info',
           message:
             'Email belum terdaftar dalam database Sapawarga. Apakah Anda ingin menggunakannya sebagai akun admin untuk aduan?',
+        },
+        // email has already in list management account complaint
+        emailManagementAccount: {
+          variant: 'error',
+          message:
+            'Email ini telah terdaftar dalam database Sapawarga dan telah digunakan sebagai akun admin aduan. Mohon untuk melakukan pengecekan kembali.',
+          icon: {
+            path: '/icon/default/Info-icon.svg',
+            fill: '#D32F2F',
+          },
         },
       }
       this.sectionMessage = sectionMessage[typeSection]
