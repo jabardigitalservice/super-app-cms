@@ -45,10 +45,6 @@ export default {
       type: Boolean,
       default: true,
     },
-    menuTitle: {
-      type: String,
-      default: null,
-    },
   },
   computed: {
     pageActive() {

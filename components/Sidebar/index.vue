@@ -24,7 +24,6 @@
             :is-show-arrow="menuSidebar.arrow"
             :link="menuSidebar.path"
             :icon="menuSidebar.icon"
-            :menu-title="menuSidebar?.titleMenu"
           />
         </div>
       </div>
