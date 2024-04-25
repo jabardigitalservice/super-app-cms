@@ -147,15 +147,14 @@
                 :disabled="button.disabled"
                 @click="handleButtonAction(button.id)"
               >
-                <div
-                  v-if="isLoadingCheck && button.id === 'checkEmail'"
-                  class="flex items-center"
-                >
-                  <jds-spinner size="14" />
-                  <p class="ml-2">Loading...</p>
+                <div class="flex items-center">
+                  <jds-spinner
+                    v-if="isLoadingCheck && button.id === 'checkEmail'"
+                    class="mr-2"
+                    size="14"
+                  />
+                  <p class="!text-[14px] !font-bold">{{ button.label }}</p>
                 </div>
-
-                <p v-else class="!text-[14px] !font-bold">{{ button.label }}</p>
               </jds-button>
             </div>
           </div>
