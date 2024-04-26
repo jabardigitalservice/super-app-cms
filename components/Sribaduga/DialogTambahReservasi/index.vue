@@ -1,405 +1,395 @@
 <template>
-  <transition name="fade">
-    <div
-      v-if="isOpenForm"
-      class="opacity-1 fixed inset-0 z-10 flex w-full items-center justify-center bg-black bg-opacity-75 transition-opacity"
-      @click.self="handleCloseDialogTambahReservasi()"
-    >
-      <div
-        class="content absolute top-0 right-0 z-50 h-screen w-[510px] transition-all duration-700 ease-in-out"
-      >
-        <BaseDialogPanel>
-          <div class="flex h-screen flex-col">
-            <BaseDialogHeader class="sticky top-0 z-50">
-              <div class="flex items-center justify-between">
-                <h1 class="font-roboto text-[21px] font-bold text-green-jds">
-                  {{ isNewReservation ? 'Tambah' : 'Ubah' }} Reservasi
-                </h1>
-              </div>
-            </BaseDialogHeader>
-            <div class="flex-1 overflow-y-auto px-6 py-2">
-              <div v-if="isNewReservation" class="font-lato">
-                <p class="text-[14px] font-[500]">
-                  {{
-                    `${dateValue?.dateName} - ${
-                      dateValue?.dateNumber
-                    } ${getMonthName(dateValue?.rawDateData)}`
-                  }}
+  <BaseDialogSlideRight
+    :is-open-form="isOpenForm"
+    @close-dialog="handleCloseDialogTambahReservasi()"
+  >
+    <template #body>
+      <BaseDialogPanel>
+        <div class="flex h-screen flex-col">
+          <BaseDialogHeader class="sticky top-0 z-50">
+            <div class="flex items-center justify-between">
+              <h1 class="font-roboto text-[21px] font-bold text-green-jds">
+                {{ isNewReservation ? 'Tambah' : 'Ubah' }} Reservasi
+              </h1>
+            </div>
+          </BaseDialogHeader>
+          <div class="flex-1 overflow-y-auto px-6 py-2">
+            <div v-if="isNewReservation" class="font-lato">
+              <p class="text-[14px] font-[500]">
+                {{
+                  `${dateValue?.dateName} - ${
+                    dateValue?.dateNumber
+                  } ${getMonthName(dateValue?.rawDateData)}`
+                }}
+              </p>
+              <p class="text-[16px] font-[700]">{{ getSessionName }}</p>
+            </div>
+            <div v-else class="mt-4 rounded-[12px] border border-[#EEEEEE] p-4">
+              <div class="py-2">
+                <p class="mb-4 font-lato text-[16px] font-[700]">
+                  Tanggal & Sesi Reservasi
                 </p>
-                <p class="text-[16px] font-[700]">{{ getSessionName }}</p>
+                <date-picker
+                  v-model="reservationDateValue"
+                  format="DD/MM/YYYY"
+                  :clearable="false"
+                  class="date-picker"
+                />
+                <jds-select
+                  v-model="sessionValue"
+                  placeholder="Pilih sesi"
+                  class="add-reservation-select mt-3"
+                  :options="sessionDataListForReschedule"
+                />
               </div>
-              <div
-                v-else
-                class="mt-4 rounded-[12px] border border-[#EEEEEE] p-4"
-              >
-                <div class="py-2">
-                  <p class="mb-4 font-lato text-[16px] font-[700]">
-                    Tanggal & Sesi Reservasi
-                  </p>
-                  <date-picker
-                    v-model="reservationDateValue"
-                    format="DD/MM/YYYY"
-                    :clearable="false"
-                    class="date-picker"
+            </div>
+            <div class="mt-4 rounded-[12px] border border-[#EEEEEE] p-4">
+              <div class="flex items-center justify-between font-lato">
+                <p class="text-[16px] font-[700]">Kategori Tiket</p>
+                <div class="flex">
+                  <BaseIconSvg
+                    icon="/icon/info.svg"
+                    mode="image"
+                    :width="16"
+                    :height="16"
                   />
-                  <jds-select
-                    v-model="sessionValue"
-                    placeholder="Pilih sesi"
-                    class="add-reservation-select mt-3"
-                    :options="sessionDataListForReschedule"
-                  />
+                  <p class="ml-2 text-[12px] font-[400]">Maksimal 700 Tiket</p>
                 </div>
               </div>
-              <div class="mt-4 rounded-[12px] border border-[#EEEEEE] p-4">
-                <div class="flex items-center justify-between font-lato">
-                  <p class="text-[16px] font-[700]">Kategori Tiket</p>
-                  <div class="flex">
-                    <BaseIconSvg
-                      icon="/icon/info.svg"
-                      mode="image"
-                      :width="16"
-                      :height="16"
+              <div class="mt-4 flex items-center justify-between font-lato">
+                <div>
+                  <p class="text-[15px] font-[400]">Anak-anak</p>
+                  <p class="text-[13px] font-[400] text-[#757575]">
+                    TK, SD, SMP/MTS
+                  </p>
+                </div>
+                <div class="flex items-center">
+                  <BaseButton
+                    class="flex h-[38px] w-[38px] items-center justify-center overflow-x-auto rounded-lg border border-gray-300"
+                    @click="handleSubtractChildrenCatagory()"
+                  >
+                    <jds-icon
+                      name="minus"
+                      class="h-[2.26px] w-[12px]"
+                      fill="#BDBDBD"
                     />
-                    <p class="ml-2 text-[12px] font-[400]">
-                      Maksimal 700 Tiket
-                    </p>
+                  </BaseButton>
+                  <div
+                    class="ml-2 mr-2 flex h-[38px] w-[60px] items-center justify-center rounded-lg border border-gray-300"
+                  >
+                    <p>{{ childrenCatagory }}</p>
                   </div>
-                </div>
-                <div class="mt-4 flex items-center justify-between font-lato">
-                  <div>
-                    <p class="text-[15px] font-[400]">Anak-anak</p>
-                    <p class="text-[13px] font-[400] text-[#757575]">
-                      TK, SD, SMP/MTS
-                    </p>
-                  </div>
-                  <div class="flex items-center">
-                    <BaseButton
-                      class="flex h-[38px] w-[38px] items-center justify-center overflow-x-auto rounded-lg border border-gray-300"
-                      @click="handleSubtractChildrenCatagory()"
-                    >
-                      <jds-icon
-                        name="minus"
-                        class="h-[2.26px] w-[12px]"
-                        fill="#BDBDBD"
-                      />
-                    </BaseButton>
-                    <div
-                      class="ml-2 mr-2 flex h-[38px] w-[60px] items-center justify-center rounded-lg border border-gray-300"
-                    >
-                      <p>{{ childrenCatagory }}</p>
-                    </div>
-                    <BaseButton
-                      class="flex h-[38px] w-[38px] items-center justify-center overflow-x-auto rounded-lg border border-gray-300"
-                      @click="handleAddChildrenCatagory()"
-                    >
-                      <jds-icon
-                        name="plus"
-                        class="h-[2.26px] w-[12px]"
-                        fill="#069550"
-                      />
-                    </BaseButton>
-                  </div>
-                </div>
-
-                <div class="mt-4 flex items-center justify-between font-lato">
-                  <div>
-                    <p class="text-[15px] font-[400]">Dewasa</p>
-                    <p class="text-[13px] font-[400] text-[#757575]">
-                      SMA/SMK/MA, Mahasiswa, Umum
-                    </p>
-                  </div>
-                  <div class="flex items-center">
-                    <BaseButton
-                      class="flex h-[38px] w-[38px] items-center justify-center overflow-x-auto rounded-lg border border-gray-300"
-                      @click="handleSubtractMatureCatagory()"
-                    >
-                      <jds-icon
-                        name="minus"
-                        class="h-[2.26px] w-[12px]"
-                        fill="#BDBDBD"
-                      />
-                    </BaseButton>
-                    <div
-                      class="ml-2 mr-2 flex h-[38px] w-[60px] items-center justify-center rounded-lg border border-gray-300"
-                    >
-                      <p>{{ matureCatagory }}</p>
-                    </div>
-                    <BaseButton
-                      class="flex h-[38px] w-[38px] items-center justify-center overflow-x-auto rounded-lg border border-gray-300"
-                      @click="handleAddMatureCatagory()"
-                    >
-                      <jds-icon
-                        name="plus"
-                        class="h-[2.26px] w-[12px]"
-                        fill="#069550"
-                      />
-                    </BaseButton>
-                  </div>
-                </div>
-
-                <div class="mt-4 flex items-center justify-between font-lato">
-                  <div>
-                    <p class="text-[15px] font-[400]">Wisatawan Mancanegara</p>
-                    <p class="text-[13px] font-[400] text-[#757575]">
-                      Wisatawan dari luar negeri
-                    </p>
-                  </div>
-                  <div class="flex items-center">
-                    <BaseButton
-                      class="flex h-[38px] w-[38px] items-center justify-center overflow-x-auto rounded-lg border border-gray-300"
-                      @click="handleSubtractForeignerCatagory()"
-                    >
-                      <jds-icon
-                        name="minus"
-                        class="h-[2.26px] w-[12px]"
-                        fill="#BDBDBD"
-                      />
-                    </BaseButton>
-                    <div
-                      class="ml-2 mr-2 flex h-[38px] w-[60px] items-center justify-center rounded-lg border border-gray-300"
-                    >
-                      <p>{{ foreignerCatagory }}</p>
-                    </div>
-                    <BaseButton
-                      class="flex h-[38px] w-[38px] items-center justify-center overflow-x-auto rounded-lg border border-gray-300"
-                      @click="handleAddForeignerCatagory()"
-                    >
-                      <jds-icon
-                        name="plus"
-                        class="h-[2.26px] w-[12px]"
-                        fill="#069550"
-                      />
-                    </BaseButton>
-                  </div>
-                </div>
-                <div class="mt-4 flex items-center justify-between font-lato">
-                  <div>
-                    <p class="text-[14px] font-[400]">Total Tiket Dipesan</p>
-                    <small class="text-red-600">{{ errorTicket }}</small>
-                  </div>
-
-                  <p class="mr-5 pr-[38px] text-[14px] font-[700]">
-                    {{ getTotalTicket }} Tiket
-                  </p>
+                  <BaseButton
+                    class="flex h-[38px] w-[38px] items-center justify-center overflow-x-auto rounded-lg border border-gray-300"
+                    @click="handleAddChildrenCatagory()"
+                  >
+                    <jds-icon
+                      name="plus"
+                      class="h-[2.26px] w-[12px]"
+                      fill="#069550"
+                    />
+                  </BaseButton>
                 </div>
               </div>
 
-              <div class="mt-4 rounded-[12px] border border-[#EEEEEE] p-4">
-                <ValidationObserver ref="form_informasi_pemesan" tag="div">
-                  <p class="mb-4 font-lato text-[16px] font-[700]">
-                    Informasi Pemesan
+              <div class="mt-4 flex items-center justify-between font-lato">
+                <div>
+                  <p class="text-[15px] font-[400]">Dewasa</p>
+                  <p class="text-[13px] font-[400] text-[#757575]">
+                    SMA/SMK/MA, Mahasiswa, Umum
                   </p>
+                </div>
+                <div class="flex items-center">
+                  <BaseButton
+                    class="flex h-[38px] w-[38px] items-center justify-center overflow-x-auto rounded-lg border border-gray-300"
+                    @click="handleSubtractMatureCatagory()"
+                  >
+                    <jds-icon
+                      name="minus"
+                      class="h-[2.26px] w-[12px]"
+                      fill="#BDBDBD"
+                    />
+                  </BaseButton>
+                  <div
+                    class="ml-2 mr-2 flex h-[38px] w-[60px] items-center justify-center rounded-lg border border-gray-300"
+                  >
+                    <p>{{ matureCatagory }}</p>
+                  </div>
+                  <BaseButton
+                    class="flex h-[38px] w-[38px] items-center justify-center overflow-x-auto rounded-lg border border-gray-300"
+                    @click="handleAddMatureCatagory()"
+                  >
+                    <jds-icon
+                      name="plus"
+                      class="h-[2.26px] w-[12px]"
+                      fill="#069550"
+                    />
+                  </BaseButton>
+                </div>
+              </div>
 
-                  <label
-                    for="nama-lengkap"
-                    class="mb-1 font-lato text-[14px] font-[400]"
-                    >Nama lengkap
-                  </label>
-                  <ValidationProvider
-                    v-slot="{ errors }"
-                    rules="required"
+              <div class="mt-4 flex items-center justify-between font-lato">
+                <div>
+                  <p class="text-[15px] font-[400]">Wisatawan Mancanegara</p>
+                  <p class="text-[13px] font-[400] text-[#757575]">
+                    Wisatawan dari luar negeri
+                  </p>
+                </div>
+                <div class="flex items-center">
+                  <BaseButton
+                    class="flex h-[38px] w-[38px] items-center justify-center overflow-x-auto rounded-lg border border-gray-300"
+                    @click="handleSubtractForeignerCatagory()"
+                  >
+                    <jds-icon
+                      name="minus"
+                      class="h-[2.26px] w-[12px]"
+                      fill="#BDBDBD"
+                    />
+                  </BaseButton>
+                  <div
+                    class="ml-2 mr-2 flex h-[38px] w-[60px] items-center justify-center rounded-lg border border-gray-300"
+                  >
+                    <p>{{ foreignerCatagory }}</p>
+                  </div>
+                  <BaseButton
+                    class="flex h-[38px] w-[38px] items-center justify-center overflow-x-auto rounded-lg border border-gray-300"
+                    @click="handleAddForeignerCatagory()"
+                  >
+                    <jds-icon
+                      name="plus"
+                      class="h-[2.26px] w-[12px]"
+                      fill="#069550"
+                    />
+                  </BaseButton>
+                </div>
+              </div>
+              <div class="mt-4 flex items-center justify-between font-lato">
+                <div>
+                  <p class="text-[14px] font-[400]">Total Tiket Dipesan</p>
+                  <small class="text-red-600">{{ errorTicket }}</small>
+                </div>
+
+                <p class="mr-5 pr-[38px] text-[14px] font-[700]">
+                  {{ getTotalTicket }} Tiket
+                </p>
+              </div>
+            </div>
+
+            <div class="mt-4 rounded-[12px] border border-[#EEEEEE] p-4">
+              <ValidationObserver ref="form_informasi_pemesan" tag="div">
+                <p class="mb-4 font-lato text-[16px] font-[700]">
+                  Informasi Pemesan
+                </p>
+
+                <label
+                  for="nama-lengkap"
+                  class="mb-1 font-lato text-[14px] font-[400]"
+                  >Nama lengkap
+                </label>
+                <ValidationProvider
+                  v-slot="{ errors }"
+                  rules="required"
+                  name="Nama lengkap"
+                  tag="div"
+                >
+                  <jds-input-text
+                    id="nama-lengkap"
+                    v-model="fullName"
+                    class="mb-4"
                     name="Nama lengkap"
-                    tag="div"
-                  >
-                    <jds-input-text
-                      id="nama-lengkap"
-                      v-model="fullName"
-                      class="mb-4"
-                      name="Nama lengkap"
-                      :error-message="errors[0]"
-                    />
-                  </ValidationProvider>
-                  <label
-                    for="no-tlp"
-                    class="mb-1 font-lato text-[14px] font-[400]"
-                    >No. Tlp
-                  </label>
-                  <ValidationProvider
-                    v-slot="{ errors }"
-                    rules="required|numeric"
-                    name="Telepon"
-                    tag="div"
-                    class="mb-4"
+                    :error-message="errors[0]"
+                  />
+                </ValidationProvider>
+                <label
+                  for="no-tlp"
+                  class="mb-1 font-lato text-[14px] font-[400]"
+                  >No. Tlp
+                </label>
+                <ValidationProvider
+                  v-slot="{ errors }"
+                  rules="required|numeric"
+                  name="Telepon"
+                  tag="div"
+                  class="mb-4"
+                >
+                  <div
+                    class="relative block text-gray-400 focus-within:text-gray-600"
                   >
                     <div
-                      class="relative block text-gray-400 focus-within:text-gray-600"
+                      class="pointer-events-none absolute top-1/2 flex h-[35px] w-10 -translate-y-1/2 transform items-center justify-center rounded-l-lg bg-[#F5F5F5]"
+                      :class="
+                        errors[0]
+                          ? 'border border-red-600'
+                          : 'border-2 border-gray-300'
+                      "
                     >
-                      <div
-                        class="pointer-events-none absolute top-1/2 flex h-[35px] w-10 -translate-y-1/2 transform items-center justify-center rounded-l-lg bg-[#F5F5F5]"
-                        :class="
-                          errors[0]
-                            ? 'border border-red-600'
-                            : 'border-2 border-gray-300'
-                        "
+                      <p
+                        class="font-lato text-[14px] font-[400] text-[#424242]"
                       >
-                        <p
-                          class="font-lato text-[14px] font-[400] text-[#424242]"
-                        >
-                          +62
-                        </p>
-                      </div>
-
-                      <input
-                        id="no-tlp"
-                        v-model="phoneNumber"
-                        name="Telepon"
-                        class="form-input block h-[35px] w-full appearance-none rounded-lg bg-white px-4 pl-12 text-gray-500 placeholder-gray-400 focus:outline-none"
-                        :class="
-                          errors[0]
-                            ? 'border border-red-600'
-                            : 'border-2 border-gray-300'
-                        "
-                      />
+                        +62
+                      </p>
                     </div>
-                    <small class="text-red-600">{{ errors[0] }}</small>
-                  </ValidationProvider>
 
-                  <label
-                    for="kategori-instansi"
-                    class="mb-1 font-lato text-[14px] font-[400]"
-                  >
-                    Kategori Instansi
-                  </label>
-                  <ValidationProvider
-                    v-slot="{ errors }"
-                    rules="requiredSelectForm"
-                    name="Kategori instansi"
-                    tag="div"
-                    class="mb-4"
-                  >
-                    <jds-select
-                      id="kategori-instansi"
-                      v-model="instanceCatagory"
-                      name="Kategori instansi"
-                      placeholder="Pilih Kategori Instansi"
-                      class="add-reservation-select mb-4"
-                      :error-message="errors[0]"
-                    />
-                  </ValidationProvider>
-
-                  <label
-                    for="nama-instansi"
-                    class="mb-1 font-lato text-[14px] font-[400]"
-                  >
-                    Nama Instansi
-                  </label>
-                  <ValidationProvider
-                    v-slot="{ errors }"
-                    rules="required"
-                    name="Nama instansi"
-                    tag="div"
-                  >
-                    <jds-input-text
-                      id="nama-instansi"
-                      v-model="instanceName"
-                      name="Nama instansi"
-                      class="mb-4"
-                      :error-message="errors[0]"
-                    />
-                  </ValidationProvider>
-
-                  <p class="mb-4 font-lato text-[16px] font-[700]">
-                    Alamat Pemesan
-                  </p>
-                  <label
-                    for="provinsi"
-                    class="mb-1 font-lato text-[14px] font-[400]"
-                  >
-                    Provinsi
-                  </label>
-                  <ValidationProvider
-                    v-slot="{ errors }"
-                    rules="requiredSelectForm"
-                    name="Provinsi"
-                    tag="div"
-                    class="mb-4"
-                  >
-                    <jds-select
-                      id="provinsi"
-                      v-model="provinsiValue"
-                      name="Provinsi"
-                      placeholder="Pilih Provinsi"
-                      class="add-reservation-select mb-4"
-                      :error-message="errors[0]"
-                    />
-                  </ValidationProvider>
-
-                  <label
-                    for="kabupaten"
-                    class="mb-1 font-lato text-[14px] font-[400]"
-                  >
-                    Kota/Kabupaten
-                  </label>
-                  <ValidationProvider
-                    v-slot="{ errors }"
-                    rules="requiredSelectForm"
-                    name="Kota/kabupaten"
-                    tag="div"
-                    class="mb-4"
-                  >
-                    <jds-select
-                      id="kabupaten"
-                      v-model="cityValue"
-                      name="Kota/kabupaten"
-                      placeholder="Pilih Kota/Kabupaten"
-                      class="add-reservation-select mb-4"
-                      :error-message="errors[0]"
-                    />
-                  </ValidationProvider>
-                  <label
-                    for="alamat-instansi"
-                    class="mb-1 font-lato text-[14px] font-[400]"
-                  >
-                    Detail Alamat Instansi
-                  </label>
-                  <p class="mb-1 text-[13px] font-[400] text-[#757575]">
-                    Masukan informasi jalan, dusun atau gang
-                  </p>
-                  <ValidationProvider
-                    v-slot="{ errors }"
-                    rules="required"
-                    name="Alamat instansi"
-                    tag="div"
-                  >
-                    <textarea
-                      id="alamat-instansi"
-                      v-model="instanceAddress"
-                      name="Alamat instansi"
-                      class="w-full rounded-lg"
+                    <input
+                      id="no-tlp"
+                      v-model="phoneNumber"
+                      name="Telepon"
+                      class="form-input block h-[35px] w-full appearance-none rounded-lg bg-white px-4 pl-12 text-gray-500 placeholder-gray-400 focus:outline-none"
                       :class="
                         errors[0]
                           ? 'border border-red-600'
                           : 'border-2 border-gray-300'
                       "
                     />
-                    <small class="text-red-600">{{ errors[0] }}</small>
-                  </ValidationProvider>
-                </ValidationObserver>
+                  </div>
+                  <small class="text-red-600">{{ errors[0] }}</small>
+                </ValidationProvider>
+
+                <label
+                  for="kategori-instansi"
+                  class="mb-1 font-lato text-[14px] font-[400]"
+                >
+                  Kategori Instansi
+                </label>
+                <ValidationProvider
+                  v-slot="{ errors }"
+                  rules="requiredSelectForm"
+                  name="Kategori instansi"
+                  tag="div"
+                  class="mb-4"
+                >
+                  <jds-select
+                    id="kategori-instansi"
+                    v-model="instanceCatagory"
+                    name="Kategori instansi"
+                    placeholder="Pilih Kategori Instansi"
+                    class="add-reservation-select mb-4"
+                    :error-message="errors[0]"
+                  />
+                </ValidationProvider>
+
+                <label
+                  for="nama-instansi"
+                  class="mb-1 font-lato text-[14px] font-[400]"
+                >
+                  Nama Instansi
+                </label>
+                <ValidationProvider
+                  v-slot="{ errors }"
+                  rules="required"
+                  name="Nama instansi"
+                  tag="div"
+                >
+                  <jds-input-text
+                    id="nama-instansi"
+                    v-model="instanceName"
+                    name="Nama instansi"
+                    class="mb-4"
+                    :error-message="errors[0]"
+                  />
+                </ValidationProvider>
+
+                <p class="mb-4 font-lato text-[16px] font-[700]">
+                  Alamat Pemesan
+                </p>
+                <label
+                  for="provinsi"
+                  class="mb-1 font-lato text-[14px] font-[400]"
+                >
+                  Provinsi
+                </label>
+                <ValidationProvider
+                  v-slot="{ errors }"
+                  rules="requiredSelectForm"
+                  name="Provinsi"
+                  tag="div"
+                  class="mb-4"
+                >
+                  <jds-select
+                    id="provinsi"
+                    v-model="provinsiValue"
+                    name="Provinsi"
+                    placeholder="Pilih Provinsi"
+                    class="add-reservation-select mb-4"
+                    :error-message="errors[0]"
+                  />
+                </ValidationProvider>
+
+                <label
+                  for="kabupaten"
+                  class="mb-1 font-lato text-[14px] font-[400]"
+                >
+                  Kota/Kabupaten
+                </label>
+                <ValidationProvider
+                  v-slot="{ errors }"
+                  rules="requiredSelectForm"
+                  name="Kota/kabupaten"
+                  tag="div"
+                  class="mb-4"
+                >
+                  <jds-select
+                    id="kabupaten"
+                    v-model="cityValue"
+                    name="Kota/kabupaten"
+                    placeholder="Pilih Kota/Kabupaten"
+                    class="add-reservation-select mb-4"
+                    :error-message="errors[0]"
+                  />
+                </ValidationProvider>
+                <label
+                  for="alamat-instansi"
+                  class="mb-1 font-lato text-[14px] font-[400]"
+                >
+                  Detail Alamat Instansi
+                </label>
+                <p class="mb-1 text-[13px] font-[400] text-[#757575]">
+                  Masukan informasi jalan, dusun atau gang
+                </p>
+                <ValidationProvider
+                  v-slot="{ errors }"
+                  rules="required"
+                  name="Alamat instansi"
+                  tag="div"
+                >
+                  <textarea
+                    id="alamat-instansi"
+                    v-model="instanceAddress"
+                    name="Alamat instansi"
+                    class="w-full rounded-lg"
+                    :class="
+                      errors[0]
+                        ? 'border border-red-600'
+                        : 'border-2 border-gray-300'
+                    "
+                  />
+                  <small class="text-red-600">{{ errors[0] }}</small>
+                </ValidationProvider>
+              </ValidationObserver>
+            </div>
+          </div>
+          <BaseDialogFooter class="sticky bottom-0 z-50">
+            <div class="flex justify-end">
+              <div>
+                <jds-button
+                  label="Batal"
+                  variant="secondary"
+                  class="font-lato text-sm font-bold"
+                  @click="handleCloseDialogTambahReservasi()"
+                />
+                <jds-button
+                  label="Simpan"
+                  variant="primary"
+                  class="ml-3 font-lato text-sm font-bold"
+                  @click="handleSave()"
+                />
               </div>
             </div>
-            <BaseDialogFooter class="sticky bottom-0 z-50">
-              <div class="flex justify-end">
-                <div>
-                  <jds-button
-                    label="Batal"
-                    variant="secondary"
-                    class="font-lato text-sm font-bold"
-                    @click="handleCloseDialogTambahReservasi()"
-                  />
-                  <jds-button
-                    label="Simpan"
-                    variant="primary"
-                    class="ml-3 font-lato text-sm font-bold"
-                    @click="handleSave()"
-                  />
-                </div>
-              </div>
-            </BaseDialogFooter>
-          </div>
-        </BaseDialogPanel>
-      </div>
-    </div>
-  </transition>
+          </BaseDialogFooter>
+        </div>
+      </BaseDialogPanel>
+    </template>
+  </BaseDialogSlideRight>
 </template>
 
 <script>
@@ -600,20 +590,6 @@ export default {
   border-radius: 8px;
 }
 
-.fade-enter-active,
-.fade-leave-active {
-  transition: all 0.3s ease;
-}
-
-.fade-enter,
-.fade-leave-to {
-  opacity: 0;
-}
-
-.fade-enter .content,
-.fade-leave-to .content {
-  @apply right-[-700px];
-}
 .date-picker {
   width: 430px !important;
 }
