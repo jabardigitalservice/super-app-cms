@@ -1,5 +1,5 @@
 <template>
-  <div class="h-[78px] rounded-lg border border-blue-800 bg-blue-50 p-4">
+  <div class="h-fit rounded-lg border border-blue-800 bg-blue-50 p-4">
     <div class="flex items-start">
       <BaseIconSvg
         :icon="icon.path"
