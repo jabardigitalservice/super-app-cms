@@ -10,6 +10,11 @@ extend('requiredSelectForm', {
   ...required,
   message: (_, values) => `${values._field_} wajib dipilih`,
 })
+extend('formatName', {
+  validate: (value) => /^[a-zA-Z0-9'\s]+$/.test(value),
+  message: (_, values) =>
+    `Format nama tidak sesuai, hanya menggunakan huruf (a-z), angka (0-9), dan kutip (')`,
+})
 extend('email', {
   validate: (value) => /^[a-zA-Z0-9.]+@[a-zA-Z0-9.]+\.[a-zA-Z]+$/.test(value),
   message: (_, values) =>

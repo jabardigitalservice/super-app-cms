@@ -49,7 +49,7 @@
           <div v-if="typeDialog === 'form' || typeDialog === 'resendEmail'">
             <ValidationProvider
               v-slot="{ errors }"
-              rules="required"
+              rules="required|formatName"
               name="Nama"
               tag="div"
             >
@@ -90,12 +90,12 @@
               v-if="payload.employee_status === 'asn'"
               v-slot="{ errors }"
               rules="required|numeric"
-              name="Nip"
+              name="NIP"
               tag="div"
             >
               <BaseInputText
                 v-model="payload.employee_number"
-                name="Nip"
+                name="NIP"
                 label="NIP"
                 maxlength="18"
                 placeholder="Masukkan NIP"
