@@ -146,9 +146,13 @@
             class="flex justify-end"
           >
             <div v-show="button.typeDialog.includes(typeDialog)" class="ml-3">
-              <jds-button
+              <BaseButton
                 type="button"
-                :variant="button.variant"
+                class="bg-green-700 text-white"
+                :class="{
+                  'border !border-green-600 !bg-white !text-green-700':
+                    button.variant === 'secondary',
+                }"
                 :disabled="button.disabled"
                 @click="handleButtonAction(button.id)"
               >
@@ -160,7 +164,7 @@
                   />
                   <p class="!text-[14px] !font-bold">{{ button.label }}</p>
                 </div>
-              </jds-button>
+              </BaseButton>
             </div>
           </div>
         </BaseDialogFooterNew>
@@ -585,5 +589,9 @@ export default {
 
 .form-add-account .form-input-text input:disabled {
   @apply !cursor-not-allowed !border !border-gray-300 !bg-gray-200;
+}
+
+.jds-button {
+  @apply disabled:!pointer-events-auto disabled:!cursor-not-allowed disabled:!border-red-500;
 }
 </style>
