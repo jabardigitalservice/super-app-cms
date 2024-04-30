@@ -126,10 +126,10 @@ export default {
       const payload = {
         name: this.dataDetail.name,
         email: this.dataDetail.email,
-        roleId: this.dataDetail.role?.id,
-        organizationId: this.dataDetail.organization.id,
-        employeeStatus: this.dataDetail.employee_status.id,
-        employeeNumber: this.dataDetail.employee_number,
+        role_id: this.dataDetail.role?.id,
+        organization_id: this.dataDetail.organization.id,
+        employee_status: this.dataDetail.employee_status.id,
+        employee_number: this.dataDetail.employee_number,
       }
       this.$store.dispatch('management-account/showPopupFormAccount', {
         modalName: 'resendEmail',
