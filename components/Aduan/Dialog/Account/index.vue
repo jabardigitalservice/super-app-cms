@@ -24,10 +24,7 @@
                 placeholder="Masukkan Email"
                 class="form-input-text"
                 :error-message="errors[0]"
-                :disabled="
-                  typeDialog === 'form' ||
-                  typeDialog === 'informationCheckEmailSuccess'
-                "
+                :disabled="setDisabledFieldEmail(typeDialog)"
               />
             </div>
             <SectionMessage
@@ -305,7 +302,12 @@ export default {
           id: 'cancel',
           label: 'Batal',
           variant: 'secondary',
-          typeDialog: ['checkEmail', 'informationCheckEmailError', 'form'],
+          typeDialog: [
+            'checkEmail',
+            'informationCheckEmailError',
+            'form',
+            'resendEmail',
+          ],
         },
         {
           id: 'checkEmail',
@@ -410,6 +412,8 @@ export default {
           )
         case 'cancel':
           return this.handleCancelButton()
+        case 'resendEmail':
+          return this.showPopupConfirmation()
         default:
           return ''
       }
@@ -467,6 +471,14 @@ export default {
         this.setDialogConfirmation()
         this.$store.commit('modals/OPEN', this.dialogConfirmation.nameModal)
       }
+    },
+    setDisabledFieldEmail() {
+      const listTypeDialog = [
+        'form',
+        'informationCheckEmailSuccess',
+        'resendEmail',
+      ]
+      return listTypeDialog.includes(this.typeDialog)
     },
     setDisabledButton(idButton, isDisabled) {
       this.listButton = this.listButton.map((item) =>
@@ -531,7 +543,7 @@ export default {
     handleChangeSelectRole() {
       this.$store.commit('management-account/setPayload', {
         ...this.payload,
-        organizationId: '',
+        organization_id: '',
       })
       this.$fetch()
     },
