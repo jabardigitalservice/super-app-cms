@@ -272,6 +272,7 @@ export default {
       this.sessionDataList = data
     } catch (error) {
       console.error(error)
+      this.loading = true
     } finally {
       this.loading = false
     }

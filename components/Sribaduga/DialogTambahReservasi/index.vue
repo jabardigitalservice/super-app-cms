@@ -65,7 +65,7 @@
                 </div>
                 <div class="flex items-center">
                   <BaseButton
-                    class="flex h-[38px] w-[38px] items-center justify-center overflow-x-auto rounded-lg border border-gray-300"
+                    class="flex h-[38px] w-[38px] items-center justify-center rounded-lg border border-gray-300"
                     @click="handleSubtractChildrenCatagory()"
                   >
                     <jds-icon
@@ -80,7 +80,7 @@
                     <p>{{ childrenCatagory }}</p>
                   </div>
                   <BaseButton
-                    class="flex h-[38px] w-[38px] items-center justify-center overflow-x-auto rounded-lg border border-gray-300"
+                    class="flex h-[38px] w-[38px] items-center justify-center rounded-lg border border-gray-300"
                     @click="handleAddChildrenCatagory()"
                   >
                     <jds-icon
@@ -101,7 +101,7 @@
                 </div>
                 <div class="flex items-center">
                   <BaseButton
-                    class="flex h-[38px] w-[38px] items-center justify-center overflow-x-auto rounded-lg border border-gray-300"
+                    class="flex h-[38px] w-[38px] items-center justify-center rounded-lg border border-gray-300"
                     @click="handleSubtractMatureCatagory()"
                   >
                     <jds-icon
@@ -116,7 +116,7 @@
                     <p>{{ matureCatagory }}</p>
                   </div>
                   <BaseButton
-                    class="flex h-[38px] w-[38px] items-center justify-center overflow-x-auto rounded-lg border border-gray-300"
+                    class="flex h-[38px] w-[38px] items-center justify-center rounded-lg border border-gray-300"
                     @click="handleAddMatureCatagory()"
                   >
                     <jds-icon
@@ -137,7 +137,7 @@
                 </div>
                 <div class="flex items-center">
                   <BaseButton
-                    class="flex h-[38px] w-[38px] items-center justify-center overflow-x-auto rounded-lg border border-gray-300"
+                    class="flex h-[38px] w-[38px] items-center justify-center rounded-lg border border-gray-300"
                     @click="handleSubtractForeignerCatagory()"
                   >
                     <jds-icon
@@ -152,7 +152,7 @@
                     <p>{{ foreignerCatagory }}</p>
                   </div>
                   <BaseButton
-                    class="flex h-[38px] w-[38px] items-center justify-center overflow-x-auto rounded-lg border border-gray-300"
+                    class="flex h-[38px] w-[38px] items-center justify-center rounded-lg border border-gray-300"
                     @click="handleAddForeignerCatagory()"
                   >
                     <jds-icon
