@@ -436,13 +436,13 @@ export default {
         payload = {
           name: dataAccount.name,
           email: dataAccount.email,
-          roleId: dataAccount.role_id,
-          organizationId: dataAccount.organization_id,
-          employeeStatus: dataAccount.employee_status,
-          employeeNumber: dataAccount.employee_number,
+          role_id: dataAccount.role_id,
+          organization_id: dataAccount.organization_id,
+          employee_status: dataAccount.employee_status,
+          employee_number: dataAccount.employee_number,
         }
         this.idAccount = dataAccount.id
-        this.$store.commit('management-account/setTypeDialog', this.modalName)
+        this.$store.commit('management-account/setTypeDialog', modalName)
       } else {
         this.$store.commit('management-account/setTypeDialog', 'checkEmail')
       }
