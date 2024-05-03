@@ -7,7 +7,10 @@
       alt="icon"
     />
     <h1 class="mt-6 mb-2 font-roboto text-2xl font-bold">Halo Admin!</h1>
-    <p class="mb-2 text-[14px] leading-[23px]">
+    <p
+      class="text-[14px] leading-[23px]"
+      :class="{ 'mb-2': verificationType === 'failed' }"
+    >
       {{ emailVerification[verificationType].description }}
     </p>
     <div
