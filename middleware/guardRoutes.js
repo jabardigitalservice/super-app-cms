@@ -15,11 +15,12 @@ export default function ({ $role, route, redirect, $auth, $unleash }) {
       '/',
       '/login',
       '/logout',
-      '/unauthorized'
+      '/verifikasi-email',
+      '/unauthorized',
     ]
 
     const allowedRoutesMenu = menu
-      .flatMap(menuItem => menuItem.menu || [])
+      .flatMap((menuItem) => menuItem.menu || [])
       .filter((menu) => {
         const isUnleashEnabled = (unleashVariable) => {
           if (!unleashVariable) {
@@ -30,15 +31,15 @@ export default function ({ $role, route, redirect, $auth, $unleash }) {
         }
 
         return (
-          menu?.showMenuAndAccessForRoles?.some(value =>
+          menu?.showMenuAndAccessForRoles?.some((value) =>
             $role.includes(value)
           ) && isUnleashEnabled(menu.unleashVariable)
         )
       })
-      .map(detailSubMenu => detailSubMenu.path)
+      .map((detailSubMenu) => detailSubMenu.path)
 
     const allowedRoutesChild = menu
-      .flatMap(menuItem => menuItem.childRoute || [])
+      .flatMap((menuItem) => menuItem.childRoute || [])
       .filter((childRoute) => {
         const isUnleashEnabled = (unleashVariable) => {
           if (!unleashVariable) {
@@ -49,17 +50,19 @@ export default function ({ $role, route, redirect, $auth, $unleash }) {
         }
 
         return (
-          childRoute?.accessChildRouteForRoles?.some(value =>
+          childRoute?.accessChildRouteForRoles?.some((value) =>
             $role.includes(value)
           ) && isUnleashEnabled(menu.unleashVariable)
         )
       })
-      .map(detailSubMenu => detailSubMenu.path)
+      .map((detailSubMenu) => detailSubMenu.path)
 
     const allowedRoutesByRoles = [...allowedRoutesMenu, ...allowedRoutesChild]
 
     const isRouteAllowed = allowedRoutesByRoles.some((routePattern) => {
-      return route.path === routePattern || route.path.startsWith(routePattern + '/')
+      return (
+        route.path === routePattern || route.path.startsWith(routePattern + '/')
+      )
     })
 
     if (!isRouteAllowed && !allowedRoutesForAllRoles.includes(route.path)) {
