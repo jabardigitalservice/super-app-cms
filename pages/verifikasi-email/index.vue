@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import EmailVerification from '~/components/aduan/EmailVerification'
+import EmailVerification from '~/components/Aduan/EmailVerification'
 
 export default {
   name: 'PageEmailVerification',
