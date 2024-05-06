@@ -1,37 +1,15 @@
 <template>
-  <div class="min-h-screen bg-[#E5E5E5] pt-[120px]">
-    <div class="mb-6 flex items-center justify-center">
-      <div
-        class="mr-2 flex h-10 w-10 items-center justify-center rounded-full bg-white"
-      >
-        <img
-          src="~/assets/logo/sapawarga.svg"
-          width="24"
-          height="33.38"
-          alt="logo-sapawarga"
-        />
-      </div>
-
-      <h1 class="font-roboto text-base font-extrabold">Sapawarga</h1>
-    </div>
-    <div class="mx-auto flex justify-center">
-      <div
-        class="h-fit w-[460px] rounded-lg border border-[#EAEAEF] bg-white p-10 drop-shadow-md"
-      >
-        <div>
-          <EmailVerification verification-type="success" />
-        </div>
-      </div>
-    </div>
-  </div>
+  <EmailVerification verification-type="failed" email="test@mail.com" />
 </template>
 
 <script>
 import EmailVerification from '~/components/aduan/EmailVerification'
 
 export default {
+  name: 'PageEmailVerification',
   components: {
     EmailVerification,
   },
+  layout: 'Verification',
 }
 </script>
