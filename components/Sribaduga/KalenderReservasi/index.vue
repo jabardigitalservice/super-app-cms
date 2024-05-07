@@ -205,6 +205,7 @@
               @close="closeDialogDetailReservasi()"
               @dialog-reschedule="openDialogReschedule()"
               @dialog-ubah-detail="handleOpenDialogUbahDetail()"
+              @dialog-batalkan-reservasi="openDialogBatalkanReservasi()"
             />
             <DialogReschedule
               :reschedule-value="rescheduleValue"
@@ -212,6 +213,7 @@
               @close="closeDialogReschedule()"
               @save="onSaveReschedule()"
             />
+            <DialogBatalkanReservasi @close="closeDialogBatalkanReservasi()" />
           </div>
         </BaseTabPanel>
       </template>
@@ -231,6 +233,7 @@ import { formatDate } from '~/utils'
 import DialogDetailReservasi from '~/components/Sribaduga/DialogDetailReservasi'
 import DialogReschedule from '~/components/Sribaduga/DialogReschedule'
 import DialogTambahReservasi from '~/components/Sribaduga/DialogTambahReservasi'
+import DialogBatalkanReservasi from '~/components/Sribaduga/DialogBatalkanReservasi'
 import SkeletonLoadingKalender from '~/components/Sribaduga/SkeletonLoadingKalender'
 
 export default {
@@ -239,6 +242,7 @@ export default {
     DialogDetailReservasi,
     DialogReschedule,
     DialogTambahReservasi,
+    DialogBatalkanReservasi,
     SkeletonLoadingKalender,
   },
   data() {
@@ -570,8 +574,15 @@ export default {
     openDialogReschedule() {
       this.$store.commit('modals/OPEN', 'dialog-reschedule')
     },
+
     closeDialogReschedule() {
       this.$store.commit('modals/CLOSE', 'dialog-reschedule')
+    },
+    openDialogBatalkanReservasi() {
+      this.$store.commit('modals/OPEN', 'dialog-batalkan-reservasi')
+    },
+    closeDialogBatalkanReservasi() {
+      this.$store.commit('modals/CLOSE', 'dialog-batalkan-reservasi')
     },
     onSaveReschedule() {
       this.closeDialogReschedule()
