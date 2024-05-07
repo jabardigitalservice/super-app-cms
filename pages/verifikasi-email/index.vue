@@ -3,13 +3,8 @@
 </template>
 
 <script>
-import EmailVerification from '~/components/Aduan/EmailVerification'
-
 export default {
   name: 'PageEmailVerification',
-  components: {
-    EmailVerification,
-  },
   layout: 'Verification',
 }
 </script>
