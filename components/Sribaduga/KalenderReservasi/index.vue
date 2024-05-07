@@ -228,7 +228,6 @@
 <script>
 import { mapState } from 'vuex'
 import { formatDate } from '~/utils'
-// import { format } from 'date-fns'
 import DialogDetailReservasi from '~/components/Sribaduga/DialogDetailReservasi'
 import DialogReschedule from '~/components/Sribaduga/DialogReschedule'
 import DialogTambahReservasi from '~/components/Sribaduga/DialogTambahReservasi'
