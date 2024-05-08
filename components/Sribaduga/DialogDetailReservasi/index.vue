@@ -120,6 +120,7 @@
         <div
           v-if="isOrderedByAdmin"
           class="relative overflow-x-auto bg-transparent text-red-700"
+          @click="$emit('dialog-batalkan-reservasi')"
         >
           <BaseButton> Batalkan Reservasi </BaseButton>
         </div>
