@@ -131,6 +131,7 @@ export default {
         employee_status: this.dataDetail.employee_status.id,
         employee_number: this.dataDetail.employee_number,
       }
+      this.$store.commit('management-account/setTypeDialog', 'resendEmail')
       this.$store.dispatch('management-account/showPopupFormAccount', {
         modalName: 'resendEmail',
         payload,
