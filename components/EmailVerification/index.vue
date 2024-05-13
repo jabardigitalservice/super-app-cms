@@ -69,10 +69,5 @@ export default {
       },
     }
   },
-  methods: {
-    handleButtonVerification() {
-      this.$emit('button')
-    },
-  },
 }
 </script>
