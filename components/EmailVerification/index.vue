@@ -15,17 +15,15 @@
     </p>
     <div
       v-if="verificationType === 'failed'"
-      class="w-fit rounded-lg border border-[#EFF1F3] bg-[#F9FBFC] px-3 py-[10px]"
+      class="w-fit rounded-lg border border-[#EFF1F3] bg-[#F9FBFC] py-[10px] px-3 text-[14px]"
     >
       {{ email }}
     </div>
-    <div class="mt-10">
-      <jds-button
-        variant="primary"
-        class="!w-[348px] !text-[14px]"
-        :label="emailVerification[verificationType].button"
-      />
-    </div>
+    <a
+      :href="linkPage"
+      class="mt-10 w-full rounded-lg bg-green-700 px-4 py-[14px] font-lato text-[14px] leading-[18px] text-white"
+      >{{ emailVerification[verificationType].button }}</a
+    >
   </div>
 </template>
 
@@ -48,6 +46,10 @@ export default {
     email: {
       type: String,
       default: '',
+    },
+    linkPage: {
+      type: String,
+      default: '#',
     },
   },
   data() {
