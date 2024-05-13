@@ -19,13 +19,11 @@
     >
       {{ email }}
     </div>
-    <div class="mt-10">
-      <jds-button
-        variant="primary"
-        class="!w-[348px] !text-[14px]"
-        :label="emailVerification[verificationType].button"
-      />
-    </div>
+    <a
+      :href="linkPage"
+      class="mt-10 w-full rounded-lg bg-green-700 px-4 py-[14px] font-lato text-[14px] leading-[18px] text-white"
+      >{{ emailVerification[verificationType].button }}</a
+    >
   </div>
 </template>
 
@@ -49,6 +47,10 @@ export default {
       type: String,
       default: '',
     },
+    linkPage: {
+      type: String,
+      default: '#',
+    },
   },
   data() {
     return {
@@ -66,6 +68,11 @@ export default {
         },
       },
     }
+  },
+  methods: {
+    handleButtonVerification() {
+      this.$emit('button')
+    },
   },
 }
 </script>
