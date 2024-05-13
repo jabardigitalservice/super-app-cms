@@ -15,7 +15,7 @@
     </p>
     <div
       v-if="verificationType === 'failed'"
-      class="w-fit rounded-lg border border-[#EFF1F3] bg-[#F9FBFC] px-3 py-[10px]"
+      class="w-fit rounded-lg border border-[#EFF1F3] bg-[#F9FBFC] py-[10px] px-3 text-[14px]"
     >
       {{ email }}
     </div>
