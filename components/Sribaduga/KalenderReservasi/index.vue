@@ -205,6 +205,7 @@
               @close="closeDialogDetailReservasi()"
               @dialog-reschedule="openDialogReschedule()"
               @dialog-ubah-detail="handleOpenDialogUbahDetail()"
+              @dialog-batalkan-reservasi="openDialogBatalkanReservasi()"
             />
             <DialogReschedule
               :reschedule-value="rescheduleValue"
@@ -212,6 +213,7 @@
               @close="closeDialogReschedule()"
               @save="onSaveReschedule()"
             />
+            <DialogBatalkanReservasi @close="closeDialogBatalkanReservasi()" />
           </div>
         </BaseTabPanel>
       </template>
@@ -227,16 +229,20 @@
 
 <script>
 import { mapState } from 'vuex'
+import { formatDate } from '~/utils'
 import DialogDetailReservasi from '~/components/Sribaduga/DialogDetailReservasi'
 import DialogReschedule from '~/components/Sribaduga/DialogReschedule'
 import DialogTambahReservasi from '~/components/Sribaduga/DialogTambahReservasi'
+import DialogBatalkanReservasi from '~/components/Sribaduga/DialogBatalkanReservasi'
 import SkeletonLoadingKalender from '~/components/Sribaduga/SkeletonLoadingKalender'
+
 export default {
   name: 'SribadugaKalenderReservasi',
   components: {
     DialogDetailReservasi,
     DialogReschedule,
     DialogTambahReservasi,
+    DialogBatalkanReservasi,
     SkeletonLoadingKalender,
   },
   data() {
@@ -258,24 +264,13 @@ export default {
       ],
       loading: false,
       isNewReservation: false,
+      query: {
+        startDate: '',
+        endDate: '',
+      },
     }
   },
-  async fetch() {
-    this.loading = true
 
-    try {
-      const calendarResponse = await this.$axios.get(
-        '/ticket/tms/admin/orders/calendar'
-      )
-
-      const { data } = calendarResponse.data
-      this.sessionDataList = data
-    } catch (error) {
-      console.error(error)
-    } finally {
-      this.loading = false
-    }
-  },
   computed: {
     ...mapState({
       refetchCalendar: (state) => state.add_reservation.refetchCalendar,
@@ -307,7 +302,7 @@ export default {
     refetchCalendar: {
       handler(val) {
         if (val) {
-          this.$fetch()
+          this.fetchCalendar()
         }
       },
       deep: true,
@@ -318,6 +313,28 @@ export default {
     this.getDateDataInWeekList()
   },
   methods: {
+    setQuery(params) {
+      this.query = { ...this.query, ...params }
+    },
+    async fetchCalendar() {
+      this.loading = true
+
+      try {
+        const calendarResponse = await this.$axios.get(
+          '/ticket/tms/admin/orders/calendar',
+          {
+            params: this.query,
+          }
+        )
+
+        const { data } = calendarResponse.data
+        this.sessionDataList = data
+      } catch (error) {
+        console.error(error)
+      } finally {
+        this.loading = false
+      }
+    },
     getDateDataInWeekList() {
       // get six date list with format DD - dd
       const dateList = []
@@ -343,6 +360,10 @@ export default {
           month: 'long',
         }
       )} ${dateList[0].rawDateData.getFullYear()}`
+      const startDate = formatDate(dateList[0].rawDateData, 'yyyy-MM-dd')
+      const endDate = formatDate(dateList[5].rawDateData, 'yyyy-MM-dd')
+      this.setQuery({ startDate, endDate })
+      this.fetchCalendar()
     },
     getDataInDayList() {
       const dateList = []
@@ -368,6 +389,10 @@ export default {
           month: 'long',
         }
       )} ${dateList[0].rawDateData.getFullYear()}`
+      const startDate = formatDate(dateList[0].rawDateData, 'yyyy-MM-dd')
+      const endDate = formatDate(dateList[0].rawDateData, 'yyyy-MM-dd')
+      this.setQuery({ startDate, endDate })
+      this.fetchCalendar()
     },
 
     getInstanceName(dateData, eventList) {
@@ -549,8 +574,15 @@ export default {
     openDialogReschedule() {
       this.$store.commit('modals/OPEN', 'dialog-reschedule')
     },
+
     closeDialogReschedule() {
       this.$store.commit('modals/CLOSE', 'dialog-reschedule')
+    },
+    openDialogBatalkanReservasi() {
+      this.$store.commit('modals/OPEN', 'dialog-batalkan-reservasi')
+    },
+    closeDialogBatalkanReservasi() {
+      this.$store.commit('modals/CLOSE', 'dialog-batalkan-reservasi')
     },
     onSaveReschedule() {
       this.closeDialogReschedule()
