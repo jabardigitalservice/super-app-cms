@@ -406,10 +406,10 @@ export default {
             formatDate(event.reservationDate, 'yyyy-MM-dd') ===
             dateData.rawDateData.toISOString().split('T')[0]
         )
-        return event ? event?.name : ''
-      } else {
-        return null
+        return event?.name ?? ''
       }
+
+      return null
     },
     getIsOrderedByAdmin(dateData, eventList) {
       if (eventList) {
@@ -418,10 +418,10 @@ export default {
             formatDate(event.reservationDate, 'yyyy-MM-dd') ===
             dateData.rawDateData.toISOString().split('T')[0]
         )
-        return event ? event.isOrderedByAdmin : null
-      } else {
-        return null
+        return event?.isOrderedByAdmin ?? null
       }
+
+      return null
     },
     getTicketCount(dateData, eventList) {
       if (eventList) {
@@ -431,9 +431,9 @@ export default {
             dateData.rawDateData.toISOString().split('T')[0]
         )
         return event ? `${event.ticketCount} Tiket` : ''
-      } else {
-        return null
       }
+
+      return null
     },
     getIsRescheduled(dateData, eventList) {
       if (eventList) {
@@ -442,10 +442,10 @@ export default {
             event.reservationDate ===
             dateData.rawDateData.toISOString().split('T')[0]
         )
-        return event ? event.isRescheduled : null
-      } else {
-        return null
+        return event?.isRescheduled ?? null
       }
+
+      return null
     },
     handleClickDate(dateData, sessionData) {
       this.dateValue = dateData
