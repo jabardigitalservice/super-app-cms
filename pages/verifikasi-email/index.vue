@@ -9,6 +9,7 @@
 <script>
 export default {
   name: 'PageEmailVerification',
+  auth: false, // the page will be executed without logging in first
   layout: 'Verification',
   async asyncData({ $axios, query }) {
     const queryToken = query.token
