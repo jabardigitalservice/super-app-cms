@@ -39,7 +39,7 @@
                   v-model="sessionValue"
                   placeholder="Pilih sesi"
                   class="add-reservation-select mt-3"
-                  :options="sessionDataListForReschedule"
+                  :options="options"
                 />
               </div>
             </div>
@@ -414,6 +414,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    options: {
+      type: Array,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -425,7 +429,6 @@ export default {
       cityValue: '',
       instanceAddress: '',
       errorTicket: '',
-      sessionDataList: [],
     }
   },
   computed: {
@@ -459,14 +462,6 @@ export default {
         this.childrenCatagory + this.matureCatagory + this.foreignerCatagory
       )
     },
-    sessionDataListForReschedule() {
-      return this.sessionDataList.map((sessionData) => {
-        return {
-          label: `${sessionData.session.name}  (${sessionData.session.startTime} - ${sessionData.session.endTime})`,
-          value: sessionData.session.id,
-        }
-      })
-    },
   },
 
   watch: {
@@ -479,9 +474,6 @@ export default {
         }
       },
     },
-  },
-  mounted() {
-    this.fetchSessionList()
   },
 
   methods: {
@@ -562,22 +554,6 @@ export default {
         this.$store.commit('add_reservation/setRefetchCalendar', true)
         this.errorTicket = ''
         this.clearForm()
-      }
-    },
-    async fetchSessionList() {
-      this.loading = true
-
-      try {
-        const calendarResponse = await this.$axios.get(
-          '/ticket/tms/admin/orders/calendar'
-        )
-
-        const { data } = calendarResponse.data
-        this.sessionDataList = data
-      } catch (error) {
-        console.error(error)
-      } finally {
-        this.loading = false
       }
     },
   },

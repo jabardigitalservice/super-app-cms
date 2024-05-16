@@ -223,6 +223,7 @@
       :date-value="dateValue"
       :order-and-session-value="orderAndSessionValue"
       :is-new-reservation="isNewReservation"
+      :options="sessionDataListForReschedule"
     />
   </div>
 </template>
@@ -267,6 +268,8 @@ export default {
       query: {
         startDate: '',
         endDate: '',
+        nameKey: 'instance-name',
+        attractionId: 'c64143d6-d630-4ccf-8529-483b9b737a52',
       },
     }
   },
@@ -354,6 +357,7 @@ export default {
         )
       }
       this.dateDataList = dateList
+
       this.monthAndYearTitle = `${dateList[0].rawDateData.toLocaleDateString(
         'id-ID',
         {
@@ -399,37 +403,37 @@ export default {
       if (eventList) {
         const event = eventList?.find(
           (event) =>
-            event.reservationDate ===
+            formatDate(event.reservationDate, 'yyyy-MM-dd') ===
             dateData.rawDateData.toISOString().split('T')[0]
         )
-        return event ? event.instanceName : ''
-      } else {
-        return null
+        return event?.name ?? ''
       }
+
+      return null
     },
     getIsOrderedByAdmin(dateData, eventList) {
       if (eventList) {
         const event = eventList?.find(
           (event) =>
-            event.reservationDate ===
+            formatDate(event.reservationDate, 'yyyy-MM-dd') ===
             dateData.rawDateData.toISOString().split('T')[0]
         )
-        return event ? event.isOrderedByAdmin : null
-      } else {
-        return null
+        return event?.isOrderedByAdmin ?? null
       }
+
+      return null
     },
     getTicketCount(dateData, eventList) {
       if (eventList) {
         const event = eventList?.find(
           (event) =>
-            event.reservationDate ===
+            formatDate(event.reservationDate, 'yyyy-MM-dd') ===
             dateData.rawDateData.toISOString().split('T')[0]
         )
         return event ? `${event.ticketCount} Tiket` : ''
-      } else {
-        return null
       }
+
+      return null
     },
     getIsRescheduled(dateData, eventList) {
       if (eventList) {
@@ -438,10 +442,10 @@ export default {
             event.reservationDate ===
             dateData.rawDateData.toISOString().split('T')[0]
         )
-        return event ? event.isRescheduled : null
-      } else {
-        return null
+        return event?.isRescheduled ?? null
       }
+
+      return null
     },
     handleClickDate(dateData, sessionData) {
       this.dateValue = dateData
