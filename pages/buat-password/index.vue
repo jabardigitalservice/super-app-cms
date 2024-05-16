@@ -213,7 +213,7 @@ export default {
       const isValid = await this.$refs.form.validate()
       const isCheckConfirmationPassword = this.checkConfirmationPassword()
       if (isValid && isCheckConfirmationPassword) {
-        console.log('integrasi') // will be delete soon, because error if variable not used
+        console.log('integrasi') // will be deleted immediately, because it will error if the variable is not used
       }
     },
   },
