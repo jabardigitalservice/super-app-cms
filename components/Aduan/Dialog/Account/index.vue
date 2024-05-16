@@ -537,7 +537,7 @@ export default {
     handleChangeRadioButton(value) {
       this.$store.commit('management-account/setPayload', {
         ...this.payload,
-        employeeStatus: value,
+        employee_status: value,
       })
     },
     handleChangeSelectRole() {
