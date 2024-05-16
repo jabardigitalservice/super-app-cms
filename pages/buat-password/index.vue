@@ -204,7 +204,7 @@ export default {
     checkConfirmationPassword() {
       this.errorMessage = ''
       if (this.password !== this.passwordConfirmation) {
-        this.errorMessage = 'Isian Kata Sandi tidak sesuai'
+        this.errorMessage = 'Konfirmasi Kata Sandi Baru tidak cocok'
         return false
       }
       return true
