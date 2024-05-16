@@ -432,6 +432,7 @@ export default {
     },
     showPopupFormAccount(modalName, dataAccount = null) {
       let payload = {}
+      this.idAccount = ''
       if (modalName === this.modalNameResendEmail) {
         payload = {
           name: dataAccount.name,
