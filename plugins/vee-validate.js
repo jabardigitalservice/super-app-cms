@@ -21,6 +21,32 @@ extend('email', {
     `Format email tidak sesuai, hanya menggunakan huruf (a-z), angka (0-9), dan titik (.)`,
 })
 
+extend('uppercase', {
+  validate: (value) => /(?=.*[A-Z])/.test(value),
+  message: (_, values) => `${values._field_} harus terdapat huruf kapital`,
+})
+
+extend('symbol', {
+  validate: (value) => /(?=.*[!@#$%^&*])/.test(value),
+  message: (_, values) => `${values._field_} harus terdapat simbol/karakter`,
+})
+
+extend('digit', {
+  validate: (value) => /(?=.*[0-9])/.test(value),
+  message: (_, values) => `${values._field_} harus terdapat angka`,
+})
+
+extend('lowercase', {
+  validate: (value) => /(?=.*[a-z])/.test(value),
+  message: (_, values) => `${values._field_} harus terdapat huruf kecil`,
+})
+
+extend('email', {
+  validate: (value) => /^[a-zA-Z0-9.]+@[a-zA-Z0-9.]+\.[a-zA-Z]+$/.test(value),
+  message: (_, values) =>
+    `Format email tidak sesuai, hanya menggunakan huruf (a-z), angka (0-9), dan titik (.)`,
+})
+
 extend('min', {
   ...min,
   message: (_, values) => `${values._field_} minimal ${values.length} karakter`,
