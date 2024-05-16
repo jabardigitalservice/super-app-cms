@@ -503,6 +503,11 @@ export default {
         }
       },
     },
+    dateValue: {
+      handler(val) {
+        this.reservationDate = val.rawDateData
+      },
+    },
 
     provinsiValue: {
       handler(val) {
@@ -595,7 +600,7 @@ export default {
           const payload = {
             attractionID: 'c64143d6-d630-4ccf-8529-483b9b737a52',
             reservationDate: formatDate(this.reservationDate, 'yyyy-MM-dd'),
-            visitorType: 'reservation',
+            visitorType: 'reservation', // updated to regular & reservation
             paymentMethod: 'admin',
             session: Number(this.orderAndSessionValue?.session.id),
             updateProfile: false,
@@ -654,6 +659,7 @@ export default {
               },
             ],
           }
+
           await this.$axios.post('/ticket/tms/admin/orders', payload)
           this.$store.commit('add_reservation/setIsOpenForm', false)
           this.$store.commit('add_reservation/setRefetchCalendar', true)
