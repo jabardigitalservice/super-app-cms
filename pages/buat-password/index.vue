@@ -24,7 +24,10 @@
           name="Kata Sandi Baru"
           tag="div"
         >
-          <div class="flex items-center justify-between">
+          <div
+            class="flex items-center justify-between"
+            :class="{ 'label--error': errors.length > 0 }"
+          >
             <label class="text-[15px]">Kata Sandi Baru</label>
             <div class="flex w-1/3 items-center">
               <p
@@ -102,7 +105,10 @@
             placeholder="Konfirmasi Kata Sandi Baru"
             :type="isShowConfirmationPassword ? 'text' : 'password'"
             class="py-5"
-            :class="{ 'input-eye': passwordConfirmation.length > 0 }"
+            :class="{
+              'input-eye': passwordConfirmation.length > 0,
+              'label--error': errors.length > 0,
+            }"
             label="Konfirmasi Kata Sandi Baru"
             :error-message="errors[0] || errorMessage"
           >
@@ -215,11 +221,19 @@ export default {
 </script>
 
 <style scoped>
+.label--error label {
+  @apply !text-red-700;
+}
+
 .form-input-text:deep .form-input-text--error input {
   @apply !bg-[#FFF9FA];
 }
 
-.form-input-text:deep .form-input-text--error label {
+.form-input-text:deep .form-input-text--error input {
+  @apply !bg-[#FFF9FA];
+}
+
+.form-input-text:deep.label--error label {
   @apply !text-red-700;
 }
 
