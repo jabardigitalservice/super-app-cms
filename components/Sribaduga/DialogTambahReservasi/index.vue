@@ -265,6 +265,7 @@
                     placeholder="Pilih Kategori Instansi"
                     class="add-reservation-select mb-4"
                     :error-message="errors[0]"
+                    :options="listKategoriInstansi"
                   />
                 </ValidationProvider>
 
@@ -312,6 +313,7 @@
                     placeholder="Pilih Provinsi"
                     class="add-reservation-select mb-4"
                     :error-message="errors[0]"
+                    :options="getProvinceList"
                   />
                 </ValidationProvider>
 
@@ -335,6 +337,8 @@
                     placeholder="Pilih Kota/Kabupaten"
                     class="add-reservation-select mb-4"
                     :error-message="errors[0]"
+                    :disabled="disablecityList"
+                    :options="getCityList"
                   />
                 </ValidationProvider>
                 <label
@@ -395,6 +399,10 @@
 <script>
 import { mapState } from 'vuex'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
+import axios from 'axios'
+import { formatDate } from '~/utils'
+import { listKategoriInstansi } from '@/constant/sribaduga.js'
+
 export default {
   name: 'DialogTambahReservasi',
   components: {
@@ -429,6 +437,11 @@ export default {
       cityValue: '',
       instanceAddress: '',
       errorTicket: '',
+      provinceList: [],
+      cityList: [],
+      disablecityList: true,
+      reservationDate: null,
+      listKategoriInstansi,
     }
   },
   computed: {
@@ -462,6 +475,22 @@ export default {
         this.childrenCatagory + this.matureCatagory + this.foreignerCatagory
       )
     },
+    getProvinceList() {
+      return this.provinceList.map((provinceData) => {
+        return {
+          label: provinceData.name,
+          value: provinceData.id,
+        }
+      })
+    },
+    getCityList() {
+      return this.cityList.map((cityData) => {
+        return {
+          label: cityData.name,
+          value: cityData.id,
+        }
+      })
+    },
   },
 
   watch: {
@@ -474,6 +503,23 @@ export default {
         }
       },
     },
+    dateValue: {
+      handler(val) {
+        this.reservationDate = val.rawDateData
+      },
+    },
+
+    provinsiValue: {
+      handler(val) {
+        if (val) {
+          this.disablecityList = false
+          this.getDataCityList()
+        }
+      },
+    },
+  },
+  mounted() {
+    this.getDataProvinceList()
   },
 
   methods: {
@@ -550,10 +596,117 @@ export default {
         this.getTotalTicket > 0 &&
         this.errorTicket === ''
       ) {
-        this.$store.commit('add_reservation/setIsOpenForm', false)
-        this.$store.commit('add_reservation/setRefetchCalendar', true)
-        this.errorTicket = ''
-        this.clearForm()
+        try {
+          const payload = {
+            attractionID: 'c64143d6-d630-4ccf-8529-483b9b737a52',
+            reservationDate: formatDate(this.reservationDate, 'yyyy-MM-dd'),
+            visitorType: 'reservation', // updated to regular & reservation
+            paymentMethod: 'admin',
+            session: Number(this.orderAndSessionValue?.session.id),
+            updateProfile: false,
+            categories: [
+              {
+                id: 'children',
+                name: 'Anak-anak',
+                qty: this.childrenCatagory,
+              },
+              {
+                id: 'regular',
+                name: 'Dewasa',
+                qty: this.matureCatagory,
+              },
+              {
+                id: 'foreigner',
+                name: 'Wisatawan Mancanegara',
+                qty: this.foreignerCatagory,
+              },
+            ].filter((category) => category.qty > 0),
+            customerData: [
+              {
+                questionId: 'name',
+                question: 'Nama Lengkap',
+                answer: this.fullName,
+              },
+              {
+                questionId: 'phone',
+                question: 'No. Tlp',
+                answer: this.phoneNumber,
+              },
+              {
+                questionId: 'instance-category',
+                question: 'Kategori Instansi',
+                answer: this.instanceCatagory,
+              },
+              {
+                questionId: 'instance-name',
+                question: 'Nama Instansi',
+                answer: this.instanceName,
+              },
+              {
+                questionId: 'provinceId',
+                question: 'Provinsi',
+                answer: this.provinsiValue,
+              },
+              {
+                questionId: 'cityId',
+                question: 'Kota/Kabupaten',
+                answer: this.cityValue,
+              },
+              {
+                questionId: 'address-detail',
+                question: 'Detail Alamat Instansi',
+                answer: this.instanceAddress,
+              },
+            ],
+          }
+
+          await this.$axios.post('/ticket/tms/admin/orders', payload)
+          this.$store.commit('add_reservation/setIsOpenForm', false)
+          this.$store.commit('add_reservation/setRefetchCalendar', true)
+          this.errorTicket = ''
+          this.clearForm()
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    },
+    async getDataProvinceList() {
+      try {
+        const provinceResponse = await axios.get(
+          `${this.$config.urlMainService}/area/province`,
+          {
+            headers: {
+              'Api-Key': `${this.$config.apiKey}`,
+            },
+          }
+        )
+
+        const { data } = provinceResponse.data
+
+        this.provinceList = data
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    async getDataCityList() {
+      try {
+        const cityResponse = await axios.get(
+          `${this.$config.urlMainService}/area/city`,
+          {
+            headers: {
+              'Api-Key': `${this.$config.apiKey}`,
+            },
+            params: {
+              provinceId: this.provinsiValue,
+            },
+          }
+        )
+
+        const { data } = cityResponse.data
+
+        this.cityList = data
+      } catch (error) {
+        console.error(error)
       }
     },
   },
