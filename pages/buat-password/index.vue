@@ -30,25 +30,11 @@
           >
             <label class="text-[15px]">Kata Sandi Baru</label>
             <div class="flex w-1/3 items-center">
-              <p
-                class="mr-2 text-xs font-bold"
-                :class="{
-                  'text-red-500': levelPassword === 'Lemah',
-                  'text-yellow-500': levelPassword === 'Sedang',
-                  'text-green-500': levelPassword === 'Kuat',
-                }"
-              >
-                {{ levelPassword }}
+              <p class="mr-2 text-xs font-bold" :class="levelPassword?.text">
+                {{ levelPassword?.name }}
               </p>
               <div class="mt-[2px] h-2 w-full rounded-md bg-blue-gray-50">
-                <div
-                  :class="{
-                    'h-2 rounded-md': true,
-                    'w-1/3 bg-red-500': levelPassword === 'Lemah',
-                    'w-2/3 bg-yellow-500': levelPassword === 'Sedang',
-                    'w-full bg-green-500': levelPassword === 'Kuat',
-                  }"
-                ></div>
+                <div :class="['h-2 rounded-md', levelPassword?.metter]"></div>
               </div>
             </div>
           </div>
@@ -175,7 +161,7 @@ export default {
       },
       password: '',
       passwordConfirmation: '',
-      levelPassword: '',
+      levelPassword: {},
       isShowPassword: false,
       isShowConfirmationPassword: false,
       errorMessage: '',
@@ -188,17 +174,40 @@ export default {
   },
   methods: {
     checkPasswordStrength() {
-      const regrexStrong =
-        /(?=.{6,})(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])/
-      const regrexMedium = /(?=.{6,})(?=.*[a-z|A-Z|!@#$%^&*])(?=.*[0-9])/
-      const regrexLow = /(?=.{6,})(?=.*[a-z|A-Z|^A-Za-z0-9])|(?=.{1,})/
-      this.levelPassword = ''
-      if (regrexStrong.test(this.password)) {
-        this.levelPassword = 'Kuat'
-      } else if (regrexMedium.test(this.password)) {
-        this.levelPassword = 'Sedang'
-      } else if (regrexLow.test(this.password)) {
-        this.levelPassword = 'Lemah'
+      this.levelPassword = {}
+      const levelPassword = {
+        low: {
+          name: 'Lemah',
+          metter: 'w-1/3 bg-red-500',
+          text: 'text-red-500',
+        },
+        medium: {
+          name: 'Sedang',
+          metter: 'w-2/3 bg-yellow-500',
+          text: 'text-yellow-500',
+        },
+        strong: {
+          name: 'Kuat',
+          metter: 'w-full bg-green-500',
+          text: 'text-green-500',
+        },
+      }
+
+      // regex check lowercase, uppercase , digit and symbol
+      const isLowercase = /(?=.*[a-z])/.test(this.password)
+      const isUppercase = /(?=.*[A-Z])/.test(this.password)
+      const isDigit = /(?=.*[0-9])/.test(this.password)
+      const isSymbol = /(?=.*[!@#$%^&*])/.test(this.password)
+
+      if (isUppercase || isLowercase || isSymbol || isDigit) {
+        this.levelPassword = levelPassword.low
+      }
+      if (this.password.length > 6) {
+        if (isLowercase && isUppercase && isDigit && isSymbol) {
+          this.levelPassword = levelPassword.strong
+        } else if ((isLowercase || isUppercase || isSymbol) && isDigit) {
+          this.levelPassword = levelPassword.medium
+        }
       }
     },
     checkConfirmationPassword() {
