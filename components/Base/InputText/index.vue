@@ -4,10 +4,7 @@
       <label class="font-lato text-[15px] text-gray-800">{{ label }}</label>
     </div>
 
-    <div
-      class="flex"
-      :class="{ 'form-input-text--error': $slots['icon-left'] && errorMessage }"
-    >
+    <div class="flex" :class="{ 'form-input-text--error': errorMessage }">
       <slot name="icon-left" />
       <input
         :value="value"
