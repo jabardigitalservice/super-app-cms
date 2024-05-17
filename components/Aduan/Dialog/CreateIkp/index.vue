@@ -15,7 +15,9 @@
               <CardIkpNarrative class="mt-3" />
               <div class="grid grid-cols-2 gap-3 pt-3">
                 <div class="w-full">
-                  <label class="pb-1 text-[15px] text-gray-800">Tanggal Instruksi Diberikan</label><br>
+                  <label class="pb-1 text-[15px] text-gray-800"
+                    >Tanggal Instruksi Diberikan</label
+                  ><br />
                   <date-picker
                     v-model="instructionDate"
                     format="DD/MM/YYYY"
@@ -37,7 +39,9 @@
                   rules="required"
                   name="Tanggal Deadline"
                 >
-                  <label class="pb-1 text-[15px] text-gray-800">Tanggal Deadline</label><br>
+                  <label class="pb-1 text-[15px] text-gray-800"
+                    >Tanggal Deadline</label
+                  ><br />
                   <date-picker
                     v-model="payload.deadline_at"
                     format="DD/MM/YYYY"
@@ -52,8 +56,8 @@
                         size="sm"
                         class="mx-icon-date"
                       />
-                    </template>
-                  </date-picker><br>
+                    </template> </date-picker
+                  ><br />
                   <small class="text-red-600">{{ errors[0] }}</small>
                 </ValidationProvider>
               </div>
@@ -82,6 +86,7 @@
                 >
                   <BaseInputText
                     v-model="payload.indicator_value"
+                    type="text"
                     placeholder="Masukkan Indikator Nilai"
                     label="Indikator Nilai"
                     class="!bg-white"
@@ -95,6 +100,7 @@
                 >
                   <BaseInputText
                     v-model="payload.indicator_unit"
+                    type="text"
                     placeholder="Masukkan Indikator Satuan"
                     label="Indikator Satuan"
                     :error-message="errors[0]"
@@ -171,9 +177,9 @@ export default {
     DialogWithAlert,
     DialogInformation,
     ValidationObserver,
-    ValidationProvider
+    ValidationProvider,
   },
-  data () {
+  data() {
     return {
       payload: {
         narrative: '',
@@ -181,7 +187,7 @@ export default {
         description: '',
         indicator_value: '',
         indicator_unit: '',
-        opd_name: ''
+        opd_name: '',
       },
       instructionDate: new Date(),
       listDataDisposition: [],
@@ -193,21 +199,21 @@ export default {
       isErrorInputIkp: false,
       dataIkp: {
         id: '',
-        narrative: ''
+        narrative: '',
       },
       dataDialog: {
         description: '',
         labelButtonSubmit: '',
-        labelButtonCancel: ''
+        labelButtonCancel: '',
       },
       alert: {
         message: '',
-        variant: ''
+        variant: '',
       },
-      icon: {}
+      icon: {},
     }
   },
-  async fetch () {
+  async fetch() {
     try {
       const responseDisposition = await this.$axios.get(
         'warga/complaints/dispositions',
@@ -219,23 +225,23 @@ export default {
     }
   },
   computed: {
-    listDisposition () {
+    listDisposition() {
       return this.listDataDisposition.map((item) => {
         return { label: item.name, value: item.name }
       })
     },
     ...mapGetters('create-ikp', {
       isShowPopupCreateIkp: 'getIsShowPopup',
-      ikpNarrative: 'getIkpNarrative'
-    })
+      ikpNarrative: 'getIkpNarrative',
+    }),
   },
   methods: {
-    backToFormIkp () {
+    backToFormIkp() {
       this.isShowPopupConfirmation = false
       this.isShowPopupInformationError = false
       this.$store.commit('create-ikp/setIsShowPopup', true)
     },
-    closePopupInformation () {
+    closePopupInformation() {
       this.resetFormIkp()
       if (this.isShowPopupInformationSuccess) {
         this.$store.commit('followup-complaint/setDataIkp', this.dataIkp)
@@ -248,7 +254,7 @@ export default {
       this.isShowPopupInformationError = false
       this.$store.commit('followup-complaint/setIsShowPopup', true)
     },
-    closePopupCreateIkp () {
+    closePopupCreateIkp() {
       this.resetFormIkp()
       this.$store.commit('create-ikp/setIsShowPopup', false)
       this.$store.commit('followup-complaint/setIsFollowup', false)
@@ -257,31 +263,31 @@ export default {
     disabledDeadlineDate: function (date) {
       return date <= new Date()
     },
-    truncateIKpnarrative () {
+    truncateIKpnarrative() {
       this.isTruncate = true
     },
-    resetFormIkp () {
+    resetFormIkp() {
       this.payload = {
         narrative: '',
         deadline_at: '',
         description: '',
         indicator_value: '',
         indicator_unit: '',
-        opd_name: ''
+        opd_name: '',
       }
       this.$store.commit('create-ikp/setIsTruncate', false)
       this.$refs.form.reset()
     },
-    async showPopupConfirmation () {
+    async showPopupConfirmation() {
       const isValid = await this.$refs.form.validate()
       this.setAlert({
         variant: 'warning',
-        message: 'Pastikan data yang diisi telah sesuai dan benar'
+        message: 'Pastikan data yang diisi telah sesuai dan benar',
       })
       this.setDataDialog({
         description: 'Apakah Anda yakin ingin membuat IKP baru? ',
         labelButtonSubmit: 'Simpan IKP Baru',
-        labelButtonCancel: 'Kembali'
+        labelButtonCancel: 'Kembali',
       })
       if (isValid) {
         this.payload.narrative = this.ikpNarrative
@@ -289,7 +295,7 @@ export default {
         this.$store.commit('create-ikp/setIsShowPopup', false)
       }
     },
-    async submitIkp () {
+    async submitIkp() {
       this.isShowPopupConfirmation = false
       this.isShowPopupLoading = true
       try {
@@ -299,14 +305,14 @@ export default {
         )
         const response = await this.$axios.post('/warga/ikp', {
           ...this.payload,
-          user_id: this.$auth?.user?.identifier
+          user_id: this.$auth?.user?.identifier,
         })
         this.dataIkp = response.data.data
         this.dataIkp.ikp_code = this.dataIkp.ikp_code.toString()
         this.setDataDialog({
           description: 'Pembuatan IKP Baru telah berhasil dilakukan',
           labelButtonSubmit: 'Saya mengerti',
-          showCancelButton: false
+          showCancelButton: false,
         })
         this.setIconPopup({ name: 'check-mark-circle', fill: '#069550' })
         this.resetFormIkp()
@@ -315,29 +321,29 @@ export default {
         this.payload.deadline_at = new Date(this.payload.deadline_at)
         this.setAlert({
           variant: 'error',
-          message: 'Pembuatan IKP Baru Gagal'
+          message: 'Pembuatan IKP Baru Gagal',
         })
         this.setDataDialog({
           description:
             'Maaf, pembuatan IKP baru tidak dapat disimpan saat ini karena terjadi kesalahan pada sistem. Silakan coba lagi untuk menyimpan IKP baru.',
           labelButtonSubmit: 'Coba Lagi',
-          labelButtonCancel: 'Batalkan'
+          labelButtonCancel: 'Batalkan',
         })
         this.isShowPopupInformationError = true
       } finally {
         this.isShowPopupLoading = false
       }
     },
-    setAlert (newAlert) {
+    setAlert(newAlert) {
       this.alert = { ...this.alert, ...newAlert }
     },
-    setDataDialog (newDataDialog) {
+    setDataDialog(newDataDialog) {
       this.dataDialog = { ...this.dataDialog, ...newDataDialog }
     },
-    setIconPopup (newIconPopup) {
+    setIconPopup(newIconPopup) {
       this.icon = { ...this.iconPopup, ...newIconPopup }
-    }
-  }
+    },
+  },
 }
 </script>
 

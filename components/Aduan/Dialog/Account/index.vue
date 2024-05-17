@@ -19,6 +19,7 @@
             <div class="pb-4" :class="{ '!pb-3': errors.length > 0 }">
               <BaseInputText
                 v-model="payload.email"
+                type="text"
                 name="Email"
                 label="Email"
                 placeholder="Masukkan Email"
@@ -92,6 +93,7 @@
             >
               <BaseInputText
                 v-model="payload.employee_number"
+                type="text"
                 name="NIP"
                 label="NIP"
                 maxlength="18"

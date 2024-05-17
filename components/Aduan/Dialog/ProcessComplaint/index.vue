@@ -6,9 +6,7 @@
         <form
           class="form-process-complaint max-h-[536px] w-full overflow-auto px-6"
         >
-          <h1 class="font-roboto text-base font-bold">
-            Informasi Aduan
-          </h1>
+          <h1 class="font-roboto text-base font-bold">Informasi Aduan</h1>
           <div class="mb-4 grid grid-cols-2 gap-x-2">
             <div>
               <label class="text-sm">{{ dataDialog.description }}</label>
@@ -41,7 +39,7 @@
                       dataComplaintSource?.id ===
                         complaintSource.sapawarga.id && '15'
                     "
-                  >
+                  />
                 </div>
                 <p class="ml-2 text-sm font-bold">
                   {{ dataComplaintSource?.name }}
@@ -101,7 +99,7 @@
           <ValidationProvider
             v-if="
               payload.complaint_status_id !==
-                complaintStatus.diverted_to_span.id
+              complaintStatus.diverted_to_span.id
             "
             v-slot="{ errors }"
             rules="required"
@@ -168,6 +166,7 @@
             >
               <BaseInputText
                 v-model="payload.opd_pic"
+                type="text"
                 :error-message="errors[0]"
                 placeholder="Masukkan nama kepala perangkat daerah"
                 label="Nama Kepala Perangkat Daerah"
@@ -210,13 +209,11 @@
               message="Usulan Narasi akan digunakan untuk Instruksi Khusus Pimpinan."
               class="mb-4 !w-[462px]"
             />
-            <h1 class="mb-2 font-roboto text-base font-bold">
-              Lainnya
-            </h1>
+            <h1 class="mb-2 font-roboto text-base font-bold">Lainnya</h1>
             <ValidationProvider
               v-if="
                 payload.complaint_status_id ==
-                  complaintStatus.diverted_to_span.id
+                complaintStatus.diverted_to_span.id
               "
               v-slot="{ errors }"
               rules="required"
@@ -250,7 +247,9 @@
                 class="mb-4"
                 tag="div"
               >
-                <label class="mb-1 text-[15px] text-gray-800">Tanggal Deadline</label><br>
+                <label class="mb-1 text-[15px] text-gray-800"
+                  >Tanggal Deadline</label
+                ><br />
                 <date-picker
                   v-model="payload.deadline_date"
                   format="DD/MM/YYYY"
@@ -259,13 +258,13 @@
                   name="Tanggal Deadline"
                   :disabled-date="disabledDateHandle"
                   @change="changeUrgencyStatus"
-                /><br>
+                /><br />
                 <small class="text-red-600">{{ errors[0] }}</small>
               </ValidationProvider>
               <div class="self-center">
                 <label class="text-sm">Tingkat Urgensi</label>
                 <p class="text-sm font-bold">
-                  {{ payload?.urgency_level || "-" }}
+                  {{ payload?.urgency_level || '-' }}
                 </p>
               </div>
             </div>
@@ -293,42 +292,42 @@ export default {
   components: {
     ValidationProvider,
     ValidationObserver,
-    AlertMessage
+    AlertMessage,
   },
   props: {
     showPopup: {
       type: Boolean,
-      default: false
+      default: false,
     },
     dataDialog: {
       type: Object,
-      default: () => ({})
-    }
+      default: () => ({}),
+    },
   },
-  data () {
+  data() {
     return {
       listComplaintStatus: [
         {
           value: complaintStatus.coordinated.id,
-          label: complaintStatus.coordinated.name
+          label: complaintStatus.coordinated.name,
         },
         {
           value: complaintStatus.diverted_to_span.id,
-          label: complaintStatus.diverted_to_span.name
+          label: complaintStatus.diverted_to_span.name,
         },
         {
           value: complaintStatus.rejected.id,
-          label: complaintStatus.rejected.name
-        }
+          label: complaintStatus.rejected.name,
+        },
       ],
       listDataAuthority: [],
       listDataDisposition: [],
       complaintStatus,
       complaintSource,
-      complaintStatusValue: ''
+      complaintStatusValue: '',
     }
   },
-  async fetch () {
+  async fetch() {
     try {
       const responseAuthority = await this.$axios.get(
         '/warga/complaints/authorities'
@@ -349,37 +348,37 @@ export default {
     }
   },
   computed: {
-    listAuthority () {
+    listAuthority() {
       return this.filterListAuthority().map((item) => {
         return { value: item.id, label: item.name }
       })
     },
-    listDisposition () {
+    listDisposition() {
       return this.listDataDisposition.map((item) => {
         return { value: item.name, label: item.name }
       })
     },
     payload: {
-      get () {
+      get() {
         return { ...this.$store.state['process-complaint'].payload }
       },
-      set (value) {
+      set(value) {
         this.$store.commit('process-complaint/setPayload', value)
-      }
+      },
     },
     dataComplaintSource: {
-      get () {
+      get() {
         return {
-          ...this.$store.state['process-complaint'].dataComplaintSource
+          ...this.$store.state['process-complaint'].dataComplaintSource,
         }
       },
-      set (value) {
+      set(value) {
         this.$store.commit('process-complaint/setComplaintSource', value)
-      }
-    }
+      },
+    },
   },
   methods: {
-    changeSelectValue (value, keyObject) {
+    changeSelectValue(value, keyObject) {
       switch (keyObject) {
         case 'complaint_status_id':
           this.clearPopupProcessComplaint()
@@ -390,21 +389,26 @@ export default {
         default:
           this.paylod = { ...this.payload, [keyObject]: value }
           this.$store.commit('process-complaint/setPayload', {
-            ...this.payload
+            ...this.payload,
           })
           break
       }
     },
-    filterListAuthority () {
+    filterListAuthority() {
       switch (this.payload.complaint_status_id) {
-        case complaintStatus.coordinated.id :
-          return this.listDataAuthority.filter(item => item.id === 'Pemerintah Provinsi Jawa Barat')
+        case complaintStatus.coordinated.id:
+          return this.listDataAuthority.filter(
+            (item) => item.id === 'Pemerintah Provinsi Jawa Barat'
+          )
         case complaintStatus.diverted_to_span.id:
-          return this.listDataAuthority.filter(item => item.id !== 'Pemerintah Provinsi Jawa Barat')
-        default: return this.listDataAuthority
+          return this.listDataAuthority.filter(
+            (item) => item.id !== 'Pemerintah Provinsi Jawa Barat'
+          )
+        default:
+          return this.listDataAuthority
       }
     },
-    clearPopupProcessComplaint () {
+    clearPopupProcessComplaint() {
       this.payload = {
         ...this.payload,
         coverage_of_affairs: null,
@@ -413,19 +417,19 @@ export default {
         proposed_ikp_narrative: '',
         urgency_level: null,
         opd_pic: null,
-        opd_name: null
+        opd_name: null,
       }
       this.listDataDisposition = [{ label: '', value: '' }]
       this.$store.commit('process-complaint/setPayload', { ...this.payload })
       this.$refs.form.reset()
     },
-    closePopupProcessComplaint () {
+    closePopupProcessComplaint() {
       this.payload = { ...this.payload, complaint_status_id: null }
       this.$store.commit('process-complaint/setPayload', { ...this.payload })
       this.clearPopupProcessComplaint()
       this.$emit('close')
     },
-    changeUrgencyStatus () {
+    changeUrgencyStatus() {
       const millisecondDifferent =
         new Date(this.payload.deadline_date).getTime() -
         new Date(this.dataDialog.createdDate).getTime() // to get diffrent date in millisecond unit
@@ -441,7 +445,7 @@ export default {
       const createdDate = new Date(this.dataDialog.createdDate)
       return date < createdDate
     },
-    async saveDataProcessComplaint () {
+    async saveDataProcessComplaint() {
       const isValid = await this.$refs.form.validate()
       if (isValid) {
         this.payload.deadline_date = this.payload?.deadline_date
@@ -450,8 +454,8 @@ export default {
         this.$emit('submit', { ...this.dataDialog, payload: this.payload })
         this.closePopupProcessComplaint()
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
