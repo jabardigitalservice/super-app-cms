@@ -226,6 +226,21 @@ export default {
       const isCheckConfirmationPassword = this.checkConfirmationPassword()
       if (isValid && isCheckConfirmationPassword) {
         this.isLoading = true
+        try {
+          const queryToken = this.$route.query?.token
+          const dataDecode = Buffer.from(queryToken, 'base64').toString('utf-8')
+          const token = dataDecode.split(':')[0]
+          const userId = dataDecode.split(':')[1]
+          const payload = { token, user_id: userId, password: this.password } // payload request to api
+          await this.$axios.post(
+            '/users/admin/complaint/verify-create-password',
+            { ...payload }
+          )
+        } catch (error) {
+          console.error(error)
+        } finally {
+          this.isLoading = false
+        }
       }
     },
   },
