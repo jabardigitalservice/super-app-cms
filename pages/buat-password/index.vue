@@ -131,10 +131,12 @@
         </ValidationProvider>
         <jds-button
           variant="primary"
-          label="Simpan Perubahan"
           class="!w-full"
           @click.prevent="submitCreatePassword()"
-        />
+        >
+          <p v-if="!isLoading">Simpan Perubahan</p>
+          <jds-spinner v-else :size="20" class="flex items-center" />
+        </jds-button>
       </form>
     </ValidationObserver>
   </div>
@@ -165,6 +167,7 @@ export default {
       isShowPassword: false,
       isShowConfirmationPassword: false,
       errorMessage: '',
+      isLoading: false,
     }
   },
   watch: {
@@ -222,7 +225,7 @@ export default {
       const isValid = await this.$refs.form.validate()
       const isCheckConfirmationPassword = this.checkConfirmationPassword()
       if (isValid && isCheckConfirmationPassword) {
-        console.log('integrasi') // will be deleted immediately, because it will error if the variable is not used
+        this.isLoading = true
       }
     },
   },
