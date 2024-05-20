@@ -212,7 +212,7 @@
             <h1 class="mb-2 font-roboto text-base font-bold">Lainnya</h1>
             <ValidationProvider
               v-if="
-                payload.complaint_status_id ==
+                payload.complaint_status_id ===
                 complaintStatus.diverted_to_span.id
               "
               v-slot="{ errors }"
