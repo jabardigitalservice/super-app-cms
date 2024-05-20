@@ -131,10 +131,12 @@
         </ValidationProvider>
         <jds-button
           variant="primary"
-          label="Simpan Perubahan"
           class="!w-full"
           @click.prevent="submitCreatePassword()"
-        />
+        >
+          <jds-spinner v-if="isLoading" :size="20" class="flex items-center" />
+          <label v-else class="!text-[14px] !font-bold">Simpan Perubahan</label>
+        </jds-button>
       </form>
     </ValidationObserver>
   </div>
@@ -165,6 +167,7 @@ export default {
       isShowPassword: false,
       isShowConfirmationPassword: false,
       errorMessage: '',
+      isLoading: false,
     }
   },
   watch: {
@@ -222,7 +225,22 @@ export default {
       const isValid = await this.$refs.form.validate()
       const isCheckConfirmationPassword = this.checkConfirmationPassword()
       if (isValid && isCheckConfirmationPassword) {
-        console.log('integrasi') // will be deleted immediately, because it will error if the variable is not used
+        this.isLoading = true
+        try {
+          const queryToken = this.$route.query?.token
+          const dataDecode = Buffer.from(queryToken, 'base64').toString('utf-8')
+          const token = dataDecode.split(':')[0]
+          const userId = dataDecode.split(':')[1]
+          const payload = { token, user_id: userId, password: this.password } // payload request to api
+          await this.$axios.post(
+            '/users/admin/complaint/verify-create-password',
+            { ...payload }
+          )
+        } catch (error) {
+          console.error(error)
+        } finally {
+          this.isLoading = false
+        }
       }
     },
   },
