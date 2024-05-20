@@ -26,17 +26,21 @@
           class="mb-4"
           tag="div"
         >
-          <label class="mb-1 text-[15px] text-gray-800"
-            >Tanggal Laporan Masuk</label
-          ><br />
-          <date-picker
-            v-model="payloadInformationComplaint.span_created_at"
-            format="DD/MM/YYYY"
-            :class="{
-              'mx-datepicker--error': errors[0],
-            }"
-            placeholder="Pilih Tanggal Laporan Masuk"
-          /><br />
+          <div>
+            <label class="mb-1 text-[15px] text-gray-800"
+              >Tanggal Laporan Masuk</label
+            >
+          </div>
+          <div>
+            <date-picker
+              v-model="payloadInformationComplaint.span_created_at"
+              format="DD/MM/YYYY"
+              :class="{
+                'mx-datepicker--error': errors[0],
+              }"
+              placeholder="Pilih Tanggal Laporan Masuk"
+            />
+          </div>
           <small class="text-red-600">{{ errors[0] }}</small>
         </ValidationProvider>
         <ValidationProvider
