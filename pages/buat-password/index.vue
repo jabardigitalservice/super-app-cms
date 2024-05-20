@@ -134,8 +134,8 @@
           class="!w-full"
           @click.prevent="submitCreatePassword()"
         >
-          <p v-if="!isLoading">Simpan Perubahan</p>
-          <jds-spinner v-else :size="20" class="flex items-center" />
+          <jds-spinner v-if="isLoading" :size="20" class="flex items-center" />
+          <label v-else class="!text-[14px] !font-bold">Simpan Perubahan</label>
         </jds-button>
       </form>
     </ValidationObserver>
