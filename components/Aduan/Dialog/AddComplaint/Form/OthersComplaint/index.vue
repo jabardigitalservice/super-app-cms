@@ -2,9 +2,7 @@
   <div>
     <ValidationObserver ref="formOtherComplaint">
       <form class="form-add-complaint px-6 pb-6 pt-4">
-        <h1 class="mb-2 font-roboto text-base font-bold">
-          Kategori Aduan
-        </h1>
+        <h1 class="mb-2 font-roboto text-base font-bold">Kategori Aduan</h1>
         <ValidationProvider
           v-slot="{ errors, dirty }"
           name="Kategori"
@@ -73,6 +71,7 @@
         >
           <BaseInputText
             v-model="payloadOtherComplaint.complaint_subcategory_child_id"
+            type="text"
             placeholder="Masukkan Sub Kategori"
             :error-message="dirty || isSubmit ? errors[0] : ''"
             maxlength="50"
@@ -119,10 +118,10 @@ export default {
   props: {
     showPopup: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
-  data () {
+  data() {
     return {
       listDataCategoryComplaint: [],
       listDataSubCategoryComplaint: [],
@@ -132,12 +131,12 @@ export default {
         complaint_subcategory_id: '',
         disposition: '',
         complaint_subcategory_child_id: '',
-        authority: 'Pemerintah Provinsi Jawa Barat'
+        authority: 'Pemerintah Provinsi Jawa Barat',
       },
-      isSubmit: false
+      isSubmit: false,
     }
   },
-  async fetch () {
+  async fetch() {
     try {
       const responseDataCategory = await this.$axios.get(
         '/warga/complaints/categories'
@@ -150,8 +149,8 @@ export default {
           {
             params: {
               complaint_category_id:
-                this.payloadOtherComplaint.complaint_category_id
-            }
+                this.payloadOtherComplaint.complaint_category_id,
+            },
           }
         )
         const dataSubCategoryComplaint = responseDataSubCategory.data.data
@@ -168,58 +167,58 @@ export default {
     }
   },
   computed: {
-    listCategoryComplaint () {
+    listCategoryComplaint() {
       return this.listDataCategoryComplaint.map((category) => {
         return { label: category.name, value: category.id }
       })
     },
-    listSubCategoryComplaint () {
+    listSubCategoryComplaint() {
       return this.listDataSubCategoryComplaint.map((subcategory) => {
         return { label: subcategory.name, value: subcategory.id }
       })
     },
-    listDisposition () {
+    listDisposition() {
       return this.listDataDisposition.map((disposition) => {
         return { label: disposition.name, value: disposition.name }
       })
-    }
+    },
   },
   watch: {
     payloadOtherComplaint: {
       deep: true,
-      handler () {
+      handler() {
         this.$fetch()
-      }
-    }
+      },
+    },
   },
   methods: {
-    async inputDataOtherComplaintHandle () {
+    async inputDataOtherComplaintHandle() {
       this.isSubmit = true
       const isValid = await this.$refs.formOtherComplaint.validate()
       this.$store.commit('add-complaint/setIsValidFormOtherComplaint', isValid)
       if (isValid) {
         this.$store.commit('add-complaint/setDataOtherComplaint', {
-          ...this.payloadOtherComplaint
+          ...this.payloadOtherComplaint,
         })
         this.isSubmit = false
       }
     },
-    clearFormOtherComplaintHandle () {
+    clearFormOtherComplaintHandle() {
       this.payloadOtherComplaint = {
         complaint_category_id: '',
         complaint_subcategory_id: '',
         disposition: '',
         complaint_subcategory_child_id: '',
-        authority: 'Pemerintah Provinsi Jawa Barat'
+        authority: 'Pemerintah Provinsi Jawa Barat',
       }
       this.isSubmit = false
       this.$refs.formOtherComplaint.reset()
     },
-    resectValueChildCategory () {
+    resectValueChildCategory() {
       this.payloadOtherComplaint.complaint_subcategory_id = ''
       this.payloadOtherComplaint.complaint_subcategory_child_id = ''
-    }
-  }
+    },
+  },
 }
 </script>
 

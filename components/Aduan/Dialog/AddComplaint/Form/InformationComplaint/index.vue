@@ -2,11 +2,9 @@
   <div>
     <ValidationObserver ref="informationComplaintValidate">
       <form class="px-6 pt-4 pb-6">
-        <h1 class="mb-2 font-roboto text-base font-bold">
-          Informasi Aduan
-        </h1>
+        <h1 class="mb-2 font-roboto text-base font-bold">Informasi Aduan</h1>
         <ValidationProvider
-          v-slot="{ errors, dirty }"
+          v-slot="{ errors }"
           name="ID SP4N Lapor"
           class="mb-4"
           rules="required|numeric"
@@ -14,34 +12,39 @@
         >
           <BaseInputText
             v-model="payloadInformationComplaint.sp4n_id"
+            type="text"
             placeholder="Masukkan ID SP4N Lapor"
-            :error-message="dirty || isSubmit ? errors[0] : ''"
+            :error-message="errors[0]"
             label="ID SP4N Lapor"
             maxlength="10"
           />
         </ValidationProvider>
         <ValidationProvider
-          v-slot="{ errors, dirty }"
+          v-slot="{ errors }"
           name="Tanggal Laporan Masuk"
           rules="required"
           class="mb-4"
           tag="div"
         >
-          <label class="mb-1 text-[15px] text-gray-800">Tanggal Laporan Masuk</label><br>
-          <date-picker
-            v-model="payloadInformationComplaint.span_created_at"
-            format="DD/MM/YYYY"
-            :class="{
-              'mx-datepicker--error': dirty || isSubmit ? errors[0] : '',
-            }"
-            placeholder="Pilih Tanggal Laporan Masuk"
-          /><br>
-          <small class="text-red-600">{{
-            dirty || isSubmit ? errors[0] : ""
-          }}</small>
+          <div>
+            <label class="mb-1 text-[15px] text-gray-800"
+              >Tanggal Laporan Masuk</label
+            >
+          </div>
+          <div>
+            <date-picker
+              v-model="payloadInformationComplaint.span_created_at"
+              format="DD/MM/YYYY"
+              :class="{
+                'mx-datepicker--error': errors[0],
+              }"
+              placeholder="Pilih Tanggal Laporan Masuk"
+            />
+          </div>
+          <small class="text-red-600">{{ errors[0] }}</small>
         </ValidationProvider>
         <ValidationProvider
-          v-slot="{ errors, dirty }"
+          v-slot="{ errors }"
           name="Nama Pelapor"
           rules="required"
           class="mb-4"
@@ -52,11 +55,11 @@
             name="Nama Pelapor"
             label="Nama Pelapor"
             placeholder="Masukkan Nama Pelapor"
-            :error-message="dirty || isSubmit ? errors[0] : ''"
+            :error-message="errors[0]"
           />
         </ValidationProvider>
         <ValidationProvider
-          v-slot="{ errors, dirty }"
+          v-slot="{ errors }"
           name="Judul Aduan"
           rules="required"
           class="mb-4"
@@ -67,11 +70,11 @@
             name="Judul Aduan"
             label="Judul Aduan"
             placeholder="Masukkan Judul Aduan"
-            :error-message="dirty || isSubmit ? errors[0] : ''"
+            :error-message="errors[0]"
           />
         </ValidationProvider>
         <ValidationProvider
-          v-slot="{ errors, dirty }"
+          v-slot="{ errors }"
           name="Isi Laporan"
           rules="required"
           class="mb-4"
@@ -83,7 +86,7 @@
             label="Isi Laporan"
             name="Isi Laporan"
             maxlength="255"
-            :error-message="dirty || isSubmit ? errors[0] : ''"
+            :error-message="errors[0]"
           />
         </ValidationProvider>
         <p class="text-sm text-gray-600">
@@ -107,25 +110,23 @@ export default {
   props: {
     showPopup: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
-  data () {
+  data() {
     return {
       payloadInformationComplaint: {
         sp4n_id: '',
         span_created_at: '',
         user_name: '',
         title: '',
-        description: ''
+        description: '',
       },
-      isSubmit: false,
-      spanId: ''
+      spanId: '',
     }
   },
   methods: {
-    async inputDataInformationComplaintHandle () {
-      this.isSubmit = true
+    async inputDataInformationComplaintHandle() {
       const isValid = await this.$refs.informationComplaintValidate.validate()
       this.isValidFormInformationComplaint = isValid
       this.$store.commit(
@@ -138,23 +139,23 @@ export default {
           span_created_at: formatDate(
             this.payloadInformationComplaint.span_created_at || '',
             'yyyy-MM-dd'
-          )
+          ),
         })
         this.isSubmit = false
       }
     },
-    clearFormInformationComplaintHandle () {
+    clearFormInformationComplaintHandle() {
       this.payloadInformationComplaint = {
         sp4n_id: '',
         span_created_at: '',
         user_name: '',
         title: '',
-        description: ''
+        description: '',
       }
       this.isSubmit = false
       this.$refs.informationComplaintValidate.reset()
-    }
-  }
+    },
+  },
 }
 </script>
 

@@ -17,6 +17,7 @@
               >
                 <BaseInputText
                   v-model="fieldInputText"
+                  type="text"
                   placeholder="Masukkan ID SP4N Lapor"
                   :error-message="errors[0]"
                   label="ID SP4N Lapor"
@@ -44,34 +45,34 @@ export default {
   props: {
     showPopup: {
       type: Boolean,
-      default: false
+      default: false,
     },
     dataDialog: {
       type: Object,
-      default: () => ({})
-    }
+      default: () => ({}),
+    },
   },
-  data () {
+  data() {
     return {
-      fieldInputText: ''
+      fieldInputText: '',
     }
   },
   methods: {
-    async submitDialogInputTextHandle () {
+    async submitDialogInputTextHandle() {
       const isDataValid = await this.$refs.form.validate()
       if (isDataValid) {
         this.$emit('submit', {
           subDescription: this.dataDialog.subDescription,
-          valueText: this.fieldInputText
+          valueText: this.fieldInputText,
         })
         this.fieldInputText = ''
       }
     },
-    closePopupHandle () {
+    closePopupHandle() {
       this.$refs.form.reset()
       this.fieldInputText = ''
       this.$emit('close')
-    }
-  }
+    },
+  },
 }
 </script>
