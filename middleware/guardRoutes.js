@@ -17,6 +17,7 @@ export default function ({ $role, route, redirect, $auth, $unleash }) {
       '/logout',
       '/verifikasi-email',
       '/buat-password',
+      '/buat-password/informasi',
       '/unauthorized',
     ]
 
