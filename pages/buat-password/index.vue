@@ -226,21 +226,25 @@ export default {
       const isCheckConfirmationPassword = this.checkConfirmationPassword()
       if (isValid && isCheckConfirmationPassword) {
         this.isLoading = true
+        const queryToken = this.$route.query?.token
+        const dataDecode = Buffer.from(queryToken, 'base64').toString('utf-8')
+        const token = dataDecode.split(':')[0]
+        const userId = dataDecode.split(':')[1]
+        const email = dataDecode.split(':')[2]
+        let dataEncode = ''
         try {
-          const queryToken = this.$route.query?.token
-          const dataDecode = Buffer.from(queryToken, 'base64').toString('utf-8')
-          const token = dataDecode.split(':')[0]
-          const userId = dataDecode.split(':')[1]
           const payload = { token, user_id: userId, password: this.password } // payload request to api
           await this.$axios.post(
             '/users/admin/complaint/verify-create-password',
             { ...payload }
           )
+          dataEncode = Buffer.from(`true:${email}`).toString('base64')
         } catch (error) {
-          console.error(error)
+          dataEncode = Buffer.from(`false:${queryToken}`).toString('base64')
         } finally {
           this.isLoading = false
         }
+        this.$router.push(`/buat-password/informasi?token=${dataEncode}`)
       }
     },
   },
