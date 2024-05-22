@@ -9,11 +9,9 @@
 </template>
 
 <script>
-import CreatePasswordInformation from '~/components/CreatePassword/Information'
 export default {
   name: 'PageCreatePasswordInformation',
   auth: false,
-  components: { CreatePasswordInformation },
   layout: 'Verification',
   data() {
     return {
