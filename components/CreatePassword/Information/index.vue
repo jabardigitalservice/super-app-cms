@@ -16,8 +16,9 @@
     <NuxtLink
       :to="link"
       class="mt-10 w-full rounded-lg bg-green-700 px-4 py-[14px] text-center font-lato text-[14px] font-bold leading-[18px] text-white"
-      >{{ information[informationType].button }}</NuxtLink
     >
+      {{ information[informationType].button }}
+    </NuxtLink>
   </div>
 </template>
 
