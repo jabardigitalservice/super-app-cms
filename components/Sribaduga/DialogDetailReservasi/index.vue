@@ -40,29 +40,23 @@
           <div class="mt-4 rounded-[12px] border border-[#EEEEEE] p-4">
             <p class="font-lato text-[16px]">Informasi Pemesan</p>
             <div class="grid-rows-12 mt-3 mb-3 grid grid-flow-col">
-              <div class="col-span-6">
-                <p class="text-[ #616161] font-lato text-[14px] font-[500]">
-                  Nama Pemesan
-                </p>
-                <p class="font-lato text-[14px] font-[700]">
+              <div class="col-span-6 font-lato text-[14px]">
+                <p class="text-[ #616161] font-[500]">Nama Pemesan</p>
+                <p class="font-[700]">
                   {{ reservatorName }}
                 </p>
               </div>
-              <div class="col-span-6">
-                <p class="text-[ #616161] font-lato text-[14px] font-[500]">
-                  Nama Instansi
-                </p>
-                <p class="font-lato text-[14px] font-[700]">
+              <div class="col-span-6 font-lato text-[14px]">
+                <p class="text-[ #616161] font-[500]">Nama Instansi</p>
+                <p class="font-[700]">
                   {{ instanceName }}
                 </p>
               </div>
             </div>
             <div class="grid-rows-12 grid grid-flow-col">
-              <div class="col-span-6">
-                <p class="text-[ #616161] font-lato text-[14px] font-[500]">
-                  No. Tlp
-                </p>
-                <p class="font-lato text-[14px] font-[700]">
+              <div class="col-span-6 font-lato text-[14px]">
+                <p class="text-[ #616161] font-[500]">No. Tlp</p>
+                <p class="font-[700]">
                   {{ phoneNumber }}
                 </p>
               </div>
@@ -72,27 +66,21 @@
           <div class="mt-4 rounded-[12px] border border-[#EEEEEE] p-4">
             <p class="font-lato text-[16px]">Reservasi & Kunjungan</p>
             <div class="grid-rows-12 mt-3 mb-3 grid grid-flow-col">
-              <div class="col-span-6">
-                <p class="text-[ #616161] font-lato text-[14px] font-[500]">
-                  Tanggal Reservasi
-                </p>
-                <p class="font-lato text-[14px] font-[700]">
+              <div class="col-span-6 font-lato text-[14px]">
+                <p class="text-[ #616161] font-[500]">Tanggal Reservasi</p>
+                <p class="font-[700]">
                   {{ reservationDate }}
                 </p>
               </div>
             </div>
             <div class="grid-rows-12 mt-3 grid grid-flow-col">
-              <div class="col-span-6">
-                <p class="text-[ #616161] font-lato text-[14px] font-[500]">
-                  Tanggal Kunjungan
-                </p>
-                <p class="font-lato text-[14px] font-[700]">{{ visitDate }}</p>
+              <div class="col-span-6 font-lato text-[14px]">
+                <p class="text-[ #616161] font-[500]">Tanggal Kunjungan</p>
+                <p class="font-[700]">{{ visitDate }}</p>
               </div>
-              <div class="col-span-6">
-                <p class="text-[ #616161] font-lato text-[14px] font-[500]">
-                  Sesi Kunjungan
-                </p>
-                <p class="font-lato text-[14px] font-[700]">
+              <div class="col-span-6 font-lato text-[14px]">
+                <p class="text-[ #616161] font-[500]">Sesi Kunjungan</p>
+                <p class="font-[700]">
                   {{
                     `${session?.name} (${session?.start_time} - ${session?.end_time})`
                   }}
@@ -100,41 +88,39 @@
               </div>
             </div>
           </div>
-          <div class="mt-3 mb-3 flex justify-between p-4">
-            <p class="font-lato text-[16px] font-[700]">Tiket</p>
-            <p class="font-lato text-[14px] font-[500]">
+          <div class="mt-3 mb-3 flex justify-between p-4 font-lato">
+            <p class="text-[16px] font-[700]">Tiket</p>
+            <p class="text-[14px] font-[500]">
               {{ `Total ${totalTicket} Tiket` }}
             </p>
           </div>
           <div class="grid-rows-12 mb-3 grid grid-flow-col gap-2">
             <div class="col-span-4">
               <div
-                class="h-[91px] w-[139.33px] rounded-[12px] border border-[#EEEEEE] p-5"
+                class="h-[91px] w-[139.33px] rounded-[12px] border border-[#EEEEEE] p-5 font-lato text-[14px]"
               >
-                <p class="mb-3 font-lato text-[14px] font-[400]">Anak-anak</p>
-                <p class="font-lato text-[14px] font-[700]">
+                <p class="mb-3 font-[400]">Anak-anak</p>
+                <p class="font-[700]">
                   {{ childrensTicket ? `${childrensTicket} Tiket` : '-' }}
                 </p>
               </div>
             </div>
             <div class="col-span-4">
               <div
-                class="h-[91px] w-[139.33px] gap-y-4 rounded-[12px] border border-[#EEEEEE] p-4"
+                class="h-[91px] w-[139.33px] gap-y-4 rounded-[12px] border border-[#EEEEEE] p-4 font-lato text-[14px]"
               >
-                <p class="mb-3 font-lato text-[14px] font-[400]">Dewasa</p>
-                <p class="font-lato text-[14px] font-[700]">
+                <p class="mb-3 font-[400]">Dewasa</p>
+                <p class="font-[700]">
                   {{ adultsTicket ? `${adultsTicket} Tiket` : '-' }}
                 </p>
               </div>
             </div>
             <div class="col-span-4">
               <div
-                class="h-[91px] w-[139.33px] gap-y-4 rounded-[12px] border border-[#EEEEEE] p-4"
+                class="h-[91px] w-[139.33px] gap-y-4 rounded-[12px] border border-[#EEEEEE] p-4 font-lato text-[14px]"
               >
-                <p class="mb-3 w-[20px] font-lato text-[14px] font-[400]">
-                  Wisatawan Mancanegara
-                </p>
-                <p class="font-lato text-[14px] font-[400]">
+                <p class="mb-3 w-[20px] font-[400]">Wisatawan Mancanegara</p>
+                <p class="font-[400]">
                   {{
                     foreignTouristTicket ? `${foreignTouristTicket} Tiket` : '-'
                   }}
