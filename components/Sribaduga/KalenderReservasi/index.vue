@@ -160,7 +160,8 @@
                       }"
                       @click="
                         openDialogDetailReservasi(
-                          getIsOrderedByAdmin(dateData, sessionData.orders)
+                          getIsOrderedByAdmin(dateData, sessionData.orders),
+                          getInvoiceId(dateData, sessionData.orders)
                         )
                       "
                     >
@@ -202,6 +203,7 @@
             </table>
             <DialogDetailReservasi
               :is-ordered-by-admin="isOrderedByAdmin"
+              :invoice-id="invoiceId"
               @close="closeDialogDetailReservasi()"
               @dialog-reschedule="openDialogReschedule()"
               @dialog-ubah-detail="handleOpenDialogUbahDetail()"
@@ -256,6 +258,7 @@ export default {
       isOrderedByAdmin: false,
       dateValue: null,
       orderAndSessionValue: null,
+      invoiceId: '',
       rescheduleValue: [
         {
           id: 1,
@@ -407,6 +410,18 @@ export default {
             dateData.rawDateData.toISOString().split('T')[0]
         )
         return event?.name ?? ''
+      }
+
+      return null
+    },
+    getInvoiceId(dateData, eventList) {
+      if (eventList) {
+        const event = eventList?.find(
+          (event) =>
+            formatDate(event.reservationDate, 'yyyy-MM-dd') ===
+            dateData.rawDateData.toISOString().split('T')[0]
+        )
+        return event?.invoice ?? ''
       }
 
       return null
@@ -568,8 +583,9 @@ export default {
     handleClickTabWeek() {
       this.initialTabValue = 'minggu'
     },
-    openDialogDetailReservasi(isOrderedByAdmin) {
+    openDialogDetailReservasi(isOrderedByAdmin, invoiceId) {
       this.isOrderedByAdmin = isOrderedByAdmin
+      this.invoiceId = invoiceId
       this.$store.commit('modals/OPEN', 'detail-reservasi')
     },
     closeDialogDetailReservasi() {
