@@ -21,7 +21,7 @@ export default {
     const userId = dataDecode.split(':')[1]
     const isAuthed = dataDecode.split(':')[2] === 'true'
     const email = dataDecode.split(':')[3]
-    const link = isAuthed
+    const linkPage = isAuthed
       ? '/login'
       : Buffer.from(dataDecode.split(':')[4], 'base64').toString('utf-8')
     const timestamp = dataDecode.split(':').slice(5).join(':')
@@ -32,19 +32,22 @@ export default {
         token,
         user_id: userId,
       })
-      verificationType = {
-        description: 'Email Anda sudah terdaftar sebagai akun Sapawarga.',
-        button: { label: 'Silahkan Login', linkPage: link },
-        icon: 'email-verification-success',
+      if (isAuthed) {
+        verificationType = {
+          description: 'Email Anda sudah terdaftar sebagai akun Sapawarga.',
+          button: { label: 'Silahkan Login', linkPage },
+          icon: 'email-verification-success',
+        }
+      } else {
+        verificationType = {
+          description:
+            'Email Anda belum terdaftar sebagai akun Sapawarga. Silahkan melakukan pembuatan kata sandi terlebih dahulu dengan email dibawah!',
+          button: { label: 'Buat Kata Sandi Sekarang', linkPage },
+          icon: 'email-verification-failed',
+          detailItem: email,
+        }
       }
     } catch (error) {
-      verificationType = {
-        description:
-          'Email Anda belum terdaftar sebagai akun Sapawarga. Silahkan melakukan pembuatan kata sandi terlebih dahulu dengan email dibawah!',
-        button: { label: 'Buat Kata Sandi Sekarang', linkPage: link },
-        icon: 'email-verification-failed',
-        detailItem: email,
-      }
       if (error.response.status === 400) {
         verificationType = {
           title: 'Link Verifikasi Sudah Tidak Valid',
@@ -57,7 +60,7 @@ export default {
     store.commit('axios/setAuthorizationHeader', {
       'X-Timestamp': formatDate(new Date(), "yyyy-MM-dd'T'HH:mm:ssXXX"),
     })
-    return { verificationType, email, link }
+    return { verificationType }
   },
 }
 </script>
