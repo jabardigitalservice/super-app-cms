@@ -108,7 +108,7 @@
                     :key="headerDate.dateNumber"
                     scope="col"
                   >
-                    <div class="ml-2 flex justify-center">
+                    <div class="ml-2 flex w-[146.5px] justify-center">
                       <p>{{ headerDate.dateName }}</p>
                       <p class="ml-3 mr-3">-</p>
                       <p>{{ headerDate.dateNumber }}</p>
@@ -134,7 +134,7 @@
                   <td
                     v-for="dateData in dateDataList"
                     :key="dateData.dateNumber"
-                    class="cursor-pointer"
+                    class="w-[146.5px] cursor-pointer"
                     @click="handleClickDate(dateData, sessionData)"
                   >
                     <div
