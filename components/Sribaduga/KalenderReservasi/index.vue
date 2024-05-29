@@ -107,6 +107,7 @@
                     v-for="headerDate in dateDataList"
                     :key="headerDate.dateNumber"
                     scope="col"
+                    class="w-[146.5px]"
                   >
                     <div class="ml-2 flex justify-center">
                       <p>{{ headerDate.dateName }}</p>
