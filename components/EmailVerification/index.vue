@@ -1,29 +1,36 @@
 <template>
   <div class="flex flex-col items-center text-center">
     <img
-      :src="`/icon/icon-aduan/${emailVerification[verificationType].iconPath}`"
+      :src="`/icon/icon-aduan/${icon}.svg`"
       width="72"
       height="72"
       alt="icon"
+      class="text-center"
     />
-    <h1 class="mt-6 mb-2 font-roboto text-2xl font-bold">Halo Admin!</h1>
-    <p
-      class="text-[14px] leading-[23px]"
-      :class="{ 'mb-2': verificationType === 'failed' }"
-    >
-      {{ emailVerification[verificationType].description }}
+    <h1 class="mt-6 mb-2 font-roboto text-2xl font-bold">
+      {{ title }}
+    </h1>
+    <p class="text-[14px] leading-[23px]" :class="{ 'mb-2': detailItem }">
+      {{ description }}
     </p>
     <div
-      v-if="verificationType === 'failed'"
+      v-if="detailItem"
       class="w-fit rounded-lg border border-[#EFF1F3] bg-[#F9FBFC] py-[10px] px-3 text-[14px]"
     >
-      {{ email }}
+      {{ detailItem }}
     </div>
     <a
-      :href="linkPage"
+      v-if="button.linkPage !== '#'"
+      :href="button.linkPage"
       class="mt-10 w-full rounded-lg bg-green-700 px-4 py-[14px] font-lato text-[14px] leading-[18px] text-white"
-      >{{ emailVerification[verificationType].button }}</a
-    >
+      >{{ button.label }}
+    </a>
+    <jds-button
+      v-else-if="button.label"
+      :label="button.label"
+      variant="primary"
+      class="mt-10 !w-full !text-[14px]"
+    />
   </div>
 </template>
 
@@ -35,39 +42,25 @@ export default {
       type: String,
       default: '',
     },
-    verificationType: {
-      type: String,
-      default: 'success',
-      required: true,
-      validator(value) {
-        return ['success', 'failed'].includes(value)
-      },
-    },
-    email: {
+    title: {
       type: String,
       default: '',
     },
-    linkPage: {
+    icon: {
       type: String,
-      default: '#',
+      default: '',
     },
-  },
-  data() {
-    return {
-      emailVerification: {
-        success: {
-          description: 'Email Anda sudah terdaftar sebagai akun Sapawarga.',
-          button: 'Silahkan Login',
-          iconPath: 'email-verification-success.svg',
-        },
-        failed: {
-          description:
-            'Email Anda belum terdaftar sebagai akun Sapawarga. Silahkan melakukan pembuatan kata sandi terlebih dahulu dengan email dibawah!',
-          button: 'Buat Kata Sandi Sekarang',
-          iconPath: 'email-verification-failed.svg',
-        },
-      },
-    }
+    detailItem: {
+      type: String,
+      default: '',
+    },
+    button: {
+      type: Object,
+      default: () => ({
+        label: '',
+        linkPage: '#',
+      }),
+    },
   },
 }
 </script>
