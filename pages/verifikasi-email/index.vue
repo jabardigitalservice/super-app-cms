@@ -52,7 +52,7 @@ export default {
         verificationType = {
           title: 'Link Verifikasi Sudah Tidak Valid',
           description:
-            'Link verifikasi yang Anda gunakan sudah tidak berlaku atau kadaluarsa. Silakan minta link verifikasi baru melalui tim Sapawarga.',
+            'Link verifikasi yang Anda gunakan sudah tidak berlaku atau kedaluarsa. Mohon untuk meminta tautan baru kepada tim Sapawarga.',
           icon: 'email-verification-invalid',
         }
       }
