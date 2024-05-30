@@ -107,7 +107,9 @@
                     v-for="headerDate in dateDataList"
                     :key="headerDate.dateNumber"
                     scope="col"
-                    class="w-[146.5px]"
+                    :class="{
+                      'w-[146.5px]': initialTabValue === 'minggu',
+                    }"
                   >
                     <div class="ml-2 flex justify-center">
                       <p>{{ headerDate.dateName }}</p>
@@ -190,7 +192,7 @@
                           :height="17"
                           class="mt-[2px]"
                         />
-                        <p class="text-[14px] font-[600]">
+                        <p class="w-[100px] truncate text-[14px] font-[600]">
                           {{ getInstanceName(dateData, sessionData.orders) }}
                         </p>
                         <p class="text-[12px] font-[400] text-[#424242]">
@@ -408,7 +410,7 @@ export default {
         const event = eventList?.find(
           (event) =>
             formatDate(event.reservationDate, 'yyyy-MM-dd') ===
-            dateData.rawDateData.toISOString().split('T')[0]
+            formatDate(dateData.rawDateData, 'yyyy-MM-dd')
         )
         return event?.name ?? ''
       }
@@ -420,7 +422,7 @@ export default {
         const event = eventList?.find(
           (event) =>
             formatDate(event.reservationDate, 'yyyy-MM-dd') ===
-            dateData.rawDateData.toISOString().split('T')[0]
+            formatDate(dateData.rawDateData, 'yyyy-MM-dd')
         )
         return event?.invoice ?? ''
       }
@@ -432,7 +434,7 @@ export default {
         const event = eventList?.find(
           (event) =>
             formatDate(event.reservationDate, 'yyyy-MM-dd') ===
-            dateData.rawDateData.toISOString().split('T')[0]
+            formatDate(dateData.rawDateData, 'yyyy-MM-dd')
         )
         return event?.isOrderedByAdmin ?? null
       }
@@ -444,7 +446,7 @@ export default {
         const event = eventList?.find(
           (event) =>
             formatDate(event.reservationDate, 'yyyy-MM-dd') ===
-            dateData.rawDateData.toISOString().split('T')[0]
+            formatDate(dateData.rawDateData, 'yyyy-MM-dd')
         )
         return event ? `${event.ticketCount} Tiket` : ''
       }
@@ -455,8 +457,8 @@ export default {
       if (eventList) {
         const event = eventList?.find(
           (event) =>
-            event.reservationDate ===
-            dateData.rawDateData.toISOString().split('T')[0]
+            formatDate(event.reservationDate, 'yyyy-MM-dd') ===
+            formatDate(dateData.rawDateData, 'yyyy-MM-dd')
         )
         return event?.isRescheduled ?? null
       }
