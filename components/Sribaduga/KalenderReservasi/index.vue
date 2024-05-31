@@ -476,13 +476,15 @@ export default {
       return null
     },
     getDisabledDate(date, sessionStartTime) {
-      return (
-        formatDate(date, 'yyyy-MM-dd') <
-          formatDate(this.thisDay, 'yyyy-MM-dd') ||
-        (formatDate(date, 'yyyy-MM-dd') ===
-          formatDate(this.thisDay, 'yyyy-MM-dd') &&
-          getCurrentTime() > sessionStartTime)
-      )
+      const dateToCompare = formatDate(date, 'yyyy-MM-dd')
+      const today = formatDate(this.thisDay, 'yyyy-MM-dd')
+      const currentTime = getCurrentTime()
+
+      const isBeforeToday = dateToCompare < today
+      const isAfterSessionStart =
+        dateToCompare === today && currentTime > sessionStartTime
+
+      return isBeforeToday || isAfterSessionStart
     },
     handleClickDate(dateData, sessionData) {
       this.dateValue = dateData
