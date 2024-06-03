@@ -1,5 +1,5 @@
 <template>
-  <BaseDialogFrame name="detail-reservasi">
+  <BaseDialogFrame name="detail-reservasi" :use-opacity="isUseOpacity">
     <BaseDialogPanel>
       <BaseDialogHeader>
         <div class="flex items-center justify-between">
@@ -180,6 +180,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import SkeletonLoadingDetailReservasi from './../SkeletonLoadingDetailReservasi/index.vue'
 import { formatDate } from '~/utils'
 
@@ -212,7 +213,13 @@ export default {
       adultsTicket: '',
       foreignTouristTicket: '',
       loading: false,
+      isUseOpacity: true,
     }
+  },
+  computed: {
+    ...mapState({
+      dialogOpen: (state) => state.modals.open,
+    }),
   },
   watch: {
     invoiceId: {
@@ -222,7 +229,20 @@ export default {
         }
       },
     },
+    dialogOpen: {
+      handler(val) {
+        if (
+          val.includes('dialog-reschedule') ||
+          val.includes('dialog-batalkan-reservasi')
+        ) {
+          this.isUseOpacity = false
+        } else {
+          this.isUseOpacity = true
+        }
+      },
+    },
   },
+
   methods: {
     async fetchDetailReservation() {
       this.loading = true
