@@ -224,6 +224,7 @@
             <DialogReschedule
               :reschedule-value="rescheduleValue"
               :options="sessionDataListForReschedule"
+              :invoice-id="invoiceId"
               @close="closeDialogReschedule()"
               @save="onSaveReschedule()"
             />
@@ -493,7 +494,10 @@ export default {
         {
           id: 1,
           date: dateData.rawDateData,
-          session: sessionData.session.id,
+          session: {
+            label: `${sessionData.session.name}  (${sessionData.session.startTime} - ${sessionData.session.endTime})`,
+            value: sessionData.session.id,
+          },
         },
       ]
       this.$store.commit(
@@ -611,6 +615,7 @@ export default {
       this.isOrderedByAdmin = isOrderedByAdmin
       this.invoiceId = invoiceId
       this.$store.commit('modals/OPEN', 'detail-reservasi')
+      this.$store.commit('add_reservation/setRefetchCalendar', false)
     },
     closeDialogDetailReservasi() {
       this.$store.commit('modals/CLOSE', 'detail-reservasi')

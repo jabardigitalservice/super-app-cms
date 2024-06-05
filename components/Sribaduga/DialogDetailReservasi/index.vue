@@ -242,6 +242,11 @@ export default {
       },
     },
   },
+  mounted() {
+    if (this.invoiceId) {
+      this.fetchDetailReservation()
+    }
+  },
 
   methods: {
     async fetchDetailReservation() {
