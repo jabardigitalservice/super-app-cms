@@ -7,7 +7,7 @@
             Reschedule Reservasi
           </h1>
 
-          <button @click="$emit('close')">
+          <button @click="closeDialogReschedule()">
             <BaseIconSvg
               icon="/icon/default/cross.svg"
               class="!h-6 !w-6"
@@ -26,12 +26,7 @@
             class="date-picker mb-3"
             :disabled-date="disableDate"
           />
-          <!-- <jds-select
-            v-model="data.session"
-            placeholder="Pilih sesi"
-            class="session-select mt-3"
-            :options="sessionDataList"
-          /> -->
+
           <label>Pilih Sesi</label>
           <v-select
             v-model="data.session"
@@ -56,7 +51,7 @@
               label="Batal"
               variant="secondary"
               class="font-lato text-sm font-bold"
-              @click="$emit('close')"
+              @click="closeDialogReschedule()"
             />
             <jds-button
               label="Simpan"
@@ -160,6 +155,9 @@ export default {
     },
     disableDate(date) {
       return date < new Date()
+    },
+    closeDialogReschedule() {
+      this.$store.commit('modals/CLOSE', 'dialog-reschedule')
     },
   },
 }

@@ -225,8 +225,6 @@
               :reschedule-value="rescheduleValue"
               :options="sessionDataListForReschedule"
               :invoice-id="invoiceId"
-              @close="closeDialogReschedule()"
-              @save="onSaveReschedule()"
             />
             <DialogBatalkanReservasi @close="closeDialogBatalkanReservasi()" />
           </div>
@@ -624,19 +622,13 @@ export default {
       this.$store.commit('modals/OPEN', 'dialog-reschedule')
     },
 
-    closeDialogReschedule() {
-      this.$store.commit('modals/CLOSE', 'dialog-reschedule')
-    },
     openDialogBatalkanReservasi() {
       this.$store.commit('modals/OPEN', 'dialog-batalkan-reservasi')
     },
     closeDialogBatalkanReservasi() {
       this.$store.commit('modals/CLOSE', 'dialog-batalkan-reservasi')
     },
-    onSaveReschedule() {
-      this.closeDialogReschedule()
-      this.closeDialogDetailReservasi()
-    },
+
     handleOpenDialogTambahReservasi(dateData, sessionData) {
       if (
         !this.getDisabledDate(
