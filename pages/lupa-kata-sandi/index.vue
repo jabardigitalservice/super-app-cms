@@ -8,20 +8,19 @@
       >
         <ValidationObserver ref="form" tag="div" class="w-full pt-5">
           <form class="w-full">
+            <jds-section-message
+              :show="isShowSectionMessage"
+              variant="error"
+              dismissible
+              :message="errorMessage"
+              class="!mb-5 !h-[43px] !px-2 !py-[11px]"
+            />
             <ValidationProvider
               v-slot="{ errors }"
               rules="required|email"
               name="Email"
               tag="div"
             >
-              <SectionMessage
-                v-if="isShowSectionMessage"
-                :message="errorMessage"
-                :icon="iconInformation"
-                :is-show-button-close="true"
-                class="!mb-5 !h-[43px] border border-red-700 bg-pink-50 !px-2 !py-[10px]"
-                @close="isShowSectionMessage = false"
-              />
               <jds-input-text
                 v-model="email"
                 label="Alamat Email"
@@ -96,11 +95,12 @@ export default {
             email: this.email,
           })
           const emailEncode = Buffer.from(this.email).toString('base64')
-          this.$router.push(`/cek-email?email=${emailEncode}`)
+          this.$router.push(`/check-email?email=${emailEncode}`)
         } catch (error) {
           this.isShowSectionMessage = true
           this.errorMessage =
             'Email gagal dikirim. Terjadi kesalahan pada sistem. Silahkan coba kembali.'
+
           if (error.response.status === 404) {
             this.errorMessage = 'E-mail yang Anda masukkan tidak terdaftar'
           }
@@ -143,9 +143,5 @@ export default {
 
 .jds-input-text::v-deep.jds-input-text--error input {
   @apply !bg-[#FFF9FA];
-}
-
-.section-message::v-deep .description {
-  @apply !ml-2 !text-left;
 }
 </style>
