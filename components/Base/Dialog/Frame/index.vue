@@ -10,7 +10,8 @@
   >
     <div
       v-if="isOpen"
-      class="fixed inset-0 z-10 flex w-full items-center justify-center bg-black bg-opacity-75 transition-opacity"
+      class="fixed inset-0 z-10 flex w-full items-center justify-center bg-opacity-75 transition-opacity"
+      :class="{ 'bg-black': useOpacity }"
       @click.self="close()"
     >
       <slot />
@@ -24,6 +25,7 @@ export default {
   props: {
     name: { type: String, required: true },
     closeModalSelf: { type: Boolean, default: true },
+    useOpacity: { type: Boolean, default: true },
   },
   computed: {
     isOpen() {

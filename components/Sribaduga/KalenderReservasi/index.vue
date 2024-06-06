@@ -107,6 +107,9 @@
                     v-for="headerDate in dateDataList"
                     :key="headerDate.dateNumber"
                     scope="col"
+                    :class="{
+                      'w-[146.5px]': initialTabValue === 'minggu',
+                    }"
                   >
                     <div class="ml-2 flex justify-center">
                       <p>{{ headerDate.dateName }}</p>
@@ -135,6 +138,12 @@
                     v-for="dateData in dateDataList"
                     :key="dateData.dateNumber"
                     class="cursor-pointer"
+                    :class="{
+                      'bg-gray-200': getDisabledDate(
+                        dateData.rawDateData,
+                        sessionData.session.startTime
+                      ),
+                    }"
                     @click="handleClickDate(dateData, sessionData)"
                   >
                     <div
@@ -143,10 +152,13 @@
                         null
                       "
                       class="flex h-[88px] items-center justify-center text-[14px] font-[600] text-gray-500 opacity-0 hover:opacity-100"
-                      @click="handleOpenDialogTambahReservasi()"
+                      @click="
+                        handleOpenDialogTambahReservasi(dateData, sessionData)
+                      "
                     >
                       <p>{{ sessionData.session.name }}</p>
                     </div>
+
                     <div
                       v-else
                       class="flex h-[88px] items-center"
@@ -160,7 +172,8 @@
                       }"
                       @click="
                         openDialogDetailReservasi(
-                          getIsOrderedByAdmin(dateData, sessionData.orders)
+                          getIsOrderedByAdmin(dateData, sessionData.orders),
+                          getInvoiceId(dateData, sessionData.orders)
                         )
                       "
                     >
@@ -188,7 +201,7 @@
                           :height="17"
                           class="mt-[2px]"
                         />
-                        <p class="text-[14px] font-[600]">
+                        <p class="w-[100px] truncate text-[14px] font-[600]">
                           {{ getInstanceName(dateData, sessionData.orders) }}
                         </p>
                         <p class="text-[12px] font-[400] text-[#424242]">
@@ -202,6 +215,7 @@
             </table>
             <DialogDetailReservasi
               :is-ordered-by-admin="isOrderedByAdmin"
+              :invoice-id="invoiceId"
               @close="closeDialogDetailReservasi()"
               @dialog-reschedule="openDialogReschedule()"
               @dialog-ubah-detail="handleOpenDialogUbahDetail()"
@@ -230,7 +244,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import { formatDate } from '~/utils'
+import { formatDate, getCurrentTime } from '~/utils'
 import DialogDetailReservasi from '~/components/Sribaduga/DialogDetailReservasi'
 import DialogReschedule from '~/components/Sribaduga/DialogReschedule'
 import DialogTambahReservasi from '~/components/Sribaduga/DialogTambahReservasi'
@@ -256,6 +270,7 @@ export default {
       isOrderedByAdmin: false,
       dateValue: null,
       orderAndSessionValue: null,
+      invoiceId: '',
       rescheduleValue: [
         {
           id: 1,
@@ -271,6 +286,7 @@ export default {
         nameKey: 'instance-name',
         attractionId: 'c64143d6-d630-4ccf-8529-483b9b737a52',
       },
+      thisDay: new Date(),
     }
   },
 
@@ -404,9 +420,21 @@ export default {
         const event = eventList?.find(
           (event) =>
             formatDate(event.reservationDate, 'yyyy-MM-dd') ===
-            dateData.rawDateData.toISOString().split('T')[0]
+            formatDate(dateData.rawDateData, 'yyyy-MM-dd')
         )
         return event?.name ?? ''
+      }
+
+      return null
+    },
+    getInvoiceId(dateData, eventList) {
+      if (eventList) {
+        const event = eventList?.find(
+          (event) =>
+            formatDate(event.reservationDate, 'yyyy-MM-dd') ===
+            formatDate(dateData.rawDateData, 'yyyy-MM-dd')
+        )
+        return event?.invoice ?? ''
       }
 
       return null
@@ -416,7 +444,7 @@ export default {
         const event = eventList?.find(
           (event) =>
             formatDate(event.reservationDate, 'yyyy-MM-dd') ===
-            dateData.rawDateData.toISOString().split('T')[0]
+            formatDate(dateData.rawDateData, 'yyyy-MM-dd')
         )
         return event?.isOrderedByAdmin ?? null
       }
@@ -428,7 +456,7 @@ export default {
         const event = eventList?.find(
           (event) =>
             formatDate(event.reservationDate, 'yyyy-MM-dd') ===
-            dateData.rawDateData.toISOString().split('T')[0]
+            formatDate(dateData.rawDateData, 'yyyy-MM-dd')
         )
         return event ? `${event.ticketCount} Tiket` : ''
       }
@@ -439,13 +467,24 @@ export default {
       if (eventList) {
         const event = eventList?.find(
           (event) =>
-            event.reservationDate ===
-            dateData.rawDateData.toISOString().split('T')[0]
+            formatDate(event.reservationDate, 'yyyy-MM-dd') ===
+            formatDate(dateData.rawDateData, 'yyyy-MM-dd')
         )
         return event?.isRescheduled ?? null
       }
 
       return null
+    },
+    getDisabledDate(date, sessionStartTime) {
+      const dateToCompare = formatDate(date, 'yyyy-MM-dd')
+      const today = formatDate(this.thisDay, 'yyyy-MM-dd')
+      const currentTime = getCurrentTime()
+
+      const isBeforeToday = dateToCompare < today
+      const isAfterSessionStart =
+        dateToCompare === today && currentTime > sessionStartTime
+
+      return isBeforeToday || isAfterSessionStart
     },
     handleClickDate(dateData, sessionData) {
       this.dateValue = dateData
@@ -568,8 +607,9 @@ export default {
     handleClickTabWeek() {
       this.initialTabValue = 'minggu'
     },
-    openDialogDetailReservasi(isOrderedByAdmin) {
+    openDialogDetailReservasi(isOrderedByAdmin, invoiceId) {
       this.isOrderedByAdmin = isOrderedByAdmin
+      this.invoiceId = invoiceId
       this.$store.commit('modals/OPEN', 'detail-reservasi')
     },
     closeDialogDetailReservasi() {
@@ -592,10 +632,17 @@ export default {
       this.closeDialogReschedule()
       this.closeDialogDetailReservasi()
     },
-    handleOpenDialogTambahReservasi() {
-      this.$store.commit('add_reservation/setIsOpenForm', true)
-      this.$store.commit('add_reservation/setRefetchCalendar', false)
-      this.isNewReservation = true
+    handleOpenDialogTambahReservasi(dateData, sessionData) {
+      if (
+        !this.getDisabledDate(
+          dateData.rawDateData,
+          sessionData.session.startTime
+        )
+      ) {
+        this.$store.commit('add_reservation/setIsOpenForm', true)
+        this.$store.commit('add_reservation/setRefetchCalendar', false)
+        this.isNewReservation = true
+      }
     },
     handleOpenDialogUbahDetail() {
       this.$store.commit('modals/CLOSE', 'detail-reservasi')
