@@ -52,6 +52,7 @@ export default {
     '~/plugins/unleash.client.js',
     '~/plugins/mockup-api.js',
     '~/plugins/vue-select.js',
+    '~/plugins/vue-countdown.js',
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
