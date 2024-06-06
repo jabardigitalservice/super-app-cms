@@ -17,14 +17,6 @@
           <strong v-if="detailItem" class="text-sm">{{ detailItem }}</strong>
         </div>
       </div>
-      <button v-if="isShowButtonClose" @click="$emit('close')">
-        <BaseIconSvg
-          :icon="buttonClose.path"
-          :size="buttonClose.size"
-          class="flex-shrink-0"
-          :fill-color="buttonClose.fill"
-        />
-      </button>
     </div>
   </div>
 </template>
@@ -49,19 +41,6 @@ export default {
         fill: '#1E88E5',
       }),
     },
-    isShowButtonClose: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  data() {
-    return {
-      buttonClose: {
-        path: '/icon/default/cross.svg',
-        size: this.icon.size,
-        fill: this.icon.fill,
-      },
-    }
   },
 }
 </script>
