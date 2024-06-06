@@ -90,12 +90,13 @@ export default {
     async sendEmail() {
       const isValid = await this.$refs.form.validate()
       if (isValid) {
+        this.isLoading = true
         try {
           await this.$axios.post('/users/admin/complaint/forgot-password', {
             email: this.email,
           })
           const emailEncode = Buffer.from(this.email).toString('base64')
-          this.$router.push(`/check-email?email=${emailEncode}`)
+          this.$router.push(`/cek-email?email=${emailEncode}`)
         } catch (error) {
           this.isShowSectionMessage = true
           this.errorMessage =
@@ -104,6 +105,8 @@ export default {
           if (error.response.status === 404) {
             this.errorMessage = 'E-mail yang Anda masukkan tidak terdaftar'
           }
+        } finally {
+          this.isLoading = false
         }
       }
     },
