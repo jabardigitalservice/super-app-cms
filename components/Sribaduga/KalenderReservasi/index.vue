@@ -224,8 +224,7 @@
             <DialogReschedule
               :reschedule-value="rescheduleValue"
               :options="sessionDataListForReschedule"
-              @close="closeDialogReschedule()"
-              @save="onSaveReschedule()"
+              :invoice-id="invoiceId"
             />
             <DialogBatalkanReservasi @close="closeDialogBatalkanReservasi()" />
           </div>
@@ -493,7 +492,10 @@ export default {
         {
           id: 1,
           date: dateData.rawDateData,
-          session: sessionData.session.id,
+          session: {
+            label: `${sessionData.session.name}  (${sessionData.session.startTime} - ${sessionData.session.endTime})`,
+            value: sessionData.session.id,
+          },
         },
       ]
       this.$store.commit(
@@ -611,6 +613,7 @@ export default {
       this.isOrderedByAdmin = isOrderedByAdmin
       this.invoiceId = invoiceId
       this.$store.commit('modals/OPEN', 'detail-reservasi')
+      this.$store.commit('add_reservation/setRefetchCalendar', false)
     },
     closeDialogDetailReservasi() {
       this.$store.commit('modals/CLOSE', 'detail-reservasi')
@@ -619,19 +622,13 @@ export default {
       this.$store.commit('modals/OPEN', 'dialog-reschedule')
     },
 
-    closeDialogReschedule() {
-      this.$store.commit('modals/CLOSE', 'dialog-reschedule')
-    },
     openDialogBatalkanReservasi() {
       this.$store.commit('modals/OPEN', 'dialog-batalkan-reservasi')
     },
     closeDialogBatalkanReservasi() {
       this.$store.commit('modals/CLOSE', 'dialog-batalkan-reservasi')
     },
-    onSaveReschedule() {
-      this.closeDialogReschedule()
-      this.closeDialogDetailReservasi()
-    },
+
     handleOpenDialogTambahReservasi(dateData, sessionData) {
       if (
         !this.getDisabledDate(

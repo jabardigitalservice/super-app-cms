@@ -228,6 +228,7 @@ export default {
           this.fetchDetailReservation()
         }
       },
+      immediate: true,
     },
     dialogOpen: {
       handler(val) {

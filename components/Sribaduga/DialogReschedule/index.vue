@@ -7,7 +7,7 @@
             Reschedule Reservasi
           </h1>
 
-          <button @click="$emit('close')">
+          <button @click="closeDialogReschedule()">
             <BaseIconSvg
               icon="/icon/default/cross.svg"
               class="!h-6 !w-6"
@@ -17,19 +17,30 @@
         </div>
       </BaseDialogHeader>
       <div v-for="data in rescheduleValue" :key="data.id">
-        <div class="px-6 py-2">
+        <div class="px-6 py-2 font-lato text-[15px] font-[400] text-[#424242]">
+          <label>Pilih Tanggal</label>
           <date-picker
             v-model="data.date"
             format="DD/MM/YYYY"
             :clearable="false"
-            class="date-picker"
+            class="date-picker mb-3"
+            :disabled-date="disableDate"
           />
-          <jds-select
+
+          <label>Pilih Sesi</label>
+          <v-select
             v-model="data.session"
-            placeholder="Pilih sesi"
-            class="session-select mt-3"
-            :options="options"
-          />
+            :options="sessionDataList"
+            class="session-select"
+            :selectable="(option) => option.isBookable"
+            :searchable="false"
+            :clearable="false"
+          >
+            <template #option="{ label, isBookable }">
+              <p v-if="isBookable">{{ label }}</p>
+              <p v-else>{{ `${label} | Tidak Tersedia` }}</p>
+            </template>
+          </v-select>
         </div>
       </div>
 
@@ -40,13 +51,13 @@
               label="Batal"
               variant="secondary"
               class="font-lato text-sm font-bold"
-              @click="$emit('close')"
+              @click="closeDialogReschedule()"
             />
             <jds-button
               label="Simpan"
               variant="primary"
               class="ml-3 font-lato text-sm font-bold"
-              @click="$emit('save')"
+              @click="postRescheduleData()"
             />
           </div>
         </div>
@@ -56,6 +67,8 @@
 </template>
 
 <script>
+import { formatDate } from '~/utils'
+
 export default {
   props: {
     rescheduleValue: {
@@ -65,6 +78,86 @@ export default {
     options: {
       type: Array,
       default: () => [],
+    },
+    invoiceId: {
+      type: String,
+      default: '',
+    },
+  },
+  data() {
+    return {
+      sessionList: [],
+      query: {
+        attractionId: 'c64143d6-d630-4ccf-8529-483b9b737a52',
+        reservationDate: null,
+        visitorType: 'reservation',
+      },
+    }
+  },
+  computed: {
+    sessionDataList() {
+      return this.sessionList.map((sessionData) => {
+        return {
+          label: `${sessionData.name}  (${sessionData.startTime} - ${sessionData.endTime})`,
+          value: sessionData.id,
+          isBookable: sessionData.isBookable,
+        }
+      })
+    },
+  },
+  watch: {
+    rescheduleValue: {
+      handler(val) {
+        val.forEach((data) => {
+          if (data.date) {
+            this.query.reservationDate = formatDate(data.date, 'yyyy-MM-dd')
+            this.fetchSessionList()
+          }
+        })
+      },
+      deep: true,
+    },
+  },
+
+  methods: {
+    async fetchSessionList() {
+      try {
+        const sessionResponse = await this.$axios.get(
+          'ticket/tms/admin/session/availability',
+          {
+            params: this.query,
+          }
+        )
+
+        const { data } = sessionResponse.data
+
+        this.sessionList = data
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    async postRescheduleData() {
+      const sessionId = this.rescheduleValue.find((data) => data.date)
+
+      const payload = {
+        invoice: this.invoiceId,
+        reservationDate: this.query.reservationDate,
+        sessionId: Number(sessionId.session.value),
+      }
+      try {
+        await this.$axios.post('/ticket/tms/admin/orders/reschedule', payload)
+        this.$store.commit('add_reservation/setRefetchCalendar', true)
+        this.$store.commit('modals/CLOSE', 'dialog-reschedule')
+        this.$store.commit('modals/CLOSE', 'detail-reservasi')
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    disableDate(date) {
+      return date < new Date()
+    },
+    closeDialogReschedule() {
+      this.$store.commit('modals/CLOSE', 'dialog-reschedule')
     },
   },
 }

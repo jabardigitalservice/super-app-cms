@@ -14,7 +14,13 @@ export default {
       { hid: 'description', name: 'description', content: '' },
       { name: 'format-detection', content: 'telephone=no' },
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.png' }],
+    link: [
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.png' },
+      {
+        rel: 'stylesheet',
+        href: 'https://unpkg.com/vue-select@latest/dist/vue-select.css',
+      },
+    ],
     script: [
       {
         src: '/newrelic-browser-script.js',
@@ -45,6 +51,7 @@ export default {
     '~/plugins/date-picker.js',
     '~/plugins/unleash.client.js',
     '~/plugins/mockup-api.js',
+    '~/plugins/vue-select.js',
     '~/plugins/vue-countdown.js',
   ],
 
