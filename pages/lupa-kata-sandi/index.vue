@@ -80,10 +80,6 @@ export default {
       isShowSectionMessage: false,
       errorMessage: '',
       email: '',
-      iconInformation: {
-        path: '/icon/default/Info-icon.svg',
-        fill: '#D32F2F',
-      },
     }
   },
   methods: {
