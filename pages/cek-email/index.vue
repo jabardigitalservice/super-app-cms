@@ -77,11 +77,12 @@ export default {
       return props
     },
     actionResendEmail() {
+      // minutes will start 3 times. It will start from 2 minutes, 5 minutes and 10 minutes
       this.isShowButton = false
       const minutes =
         this.initialMinutes % 2 === 0
           ? this.initialMinutes++
-          : this.initialMinutes // minutes will start 3 times. It will start from 2 minutes, 5 minutes and 10 minutes
+          : this.initialMinutes
       this.countShowButton++
       if (this.countShowButton <= 3) {
         this.initialMinutes += minutes
