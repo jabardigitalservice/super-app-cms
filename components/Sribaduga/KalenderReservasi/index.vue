@@ -226,6 +226,7 @@
               :options="sessionDataListForReschedule"
               :invoice-id="invoiceId"
             />
+            <DialogSuccess />
             <DialogBatalkanReservasi @close="closeDialogBatalkanReservasi()" />
           </div>
         </BaseTabPanel>
@@ -248,6 +249,7 @@ import DialogDetailReservasi from '~/components/Sribaduga/DialogDetailReservasi'
 import DialogReschedule from '~/components/Sribaduga/DialogReschedule'
 import DialogTambahReservasi from '~/components/Sribaduga/DialogTambahReservasi'
 import DialogBatalkanReservasi from '~/components/Sribaduga/DialogBatalkanReservasi'
+import DialogSuccess from '~/components/Sribaduga/DialogSuccess'
 import SkeletonLoadingKalender from '~/components/Sribaduga/SkeletonLoadingKalender'
 
 export default {
@@ -258,6 +260,7 @@ export default {
     DialogTambahReservasi,
     DialogBatalkanReservasi,
     SkeletonLoadingKalender,
+    DialogSuccess,
   },
   data() {
     return {

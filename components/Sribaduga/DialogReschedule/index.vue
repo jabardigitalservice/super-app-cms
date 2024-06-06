@@ -146,9 +146,13 @@ export default {
       }
       try {
         await this.$axios.post('/ticket/tms/admin/orders/reschedule', payload)
-        this.$store.commit('add_reservation/setRefetchCalendar', true)
         this.$store.commit('modals/CLOSE', 'dialog-reschedule')
         this.$store.commit('modals/CLOSE', 'detail-reservasi')
+        this.$store.commit(
+          'dialog/setTitle',
+          'Jadwal Reservasi Berhasil Diubah'
+        )
+        this.$store.commit('modals/OPEN', 'dialog-success')
       } catch (error) {
         console.error(error)
       }
