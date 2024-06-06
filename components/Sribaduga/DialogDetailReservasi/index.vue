@@ -228,6 +228,7 @@ export default {
           this.fetchDetailReservation()
         }
       },
+      immediate: true,
     },
     dialogOpen: {
       handler(val) {
@@ -241,11 +242,6 @@ export default {
         }
       },
     },
-  },
-  mounted() {
-    if (this.invoiceId) {
-      this.fetchDetailReservation()
-    }
   },
 
   methods: {
