@@ -45,6 +45,7 @@ export default {
     '~/plugins/date-picker.js',
     '~/plugins/unleash.client.js',
     '~/plugins/mockup-api.js',
+    '~/plugins/vue-countdown.js',
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
