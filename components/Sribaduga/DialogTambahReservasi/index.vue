@@ -662,7 +662,8 @@ export default {
 
           await this.$axios.post('/ticket/tms/admin/orders', payload)
           this.$store.commit('add_reservation/setIsOpenForm', false)
-          this.$store.commit('add_reservation/setRefetchCalendar', true)
+          this.$store.commit('dialog/setTitle', 'Reservasi Berhasil Dibuat')
+          this.$store.commit('modals/OPEN', 'dialog-success')
           this.errorTicket = ''
           this.clearForm()
         } catch (error) {

@@ -26,6 +26,7 @@ export default {
     name: { type: String, required: true },
     closeModalSelf: { type: Boolean, default: true },
     useOpacity: { type: Boolean, default: true },
+    isCloseFromOutside: { type: Boolean, default: true },
   },
   computed: {
     isOpen() {
@@ -41,7 +42,7 @@ export default {
     close() {
       if (this.closeModalSelf) {
         this.$emit('close')
-        this.$store.commit('modals/CLOSE', this.name)
+        this.isCloseFromOutside && this.$store.commit('modals/CLOSE', this.name)
       }
     },
   },
