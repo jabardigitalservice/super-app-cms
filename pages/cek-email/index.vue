@@ -90,11 +90,11 @@ export default {
           : this.initialMinutes
       this.countShowButton++
       if (this.countShowButton <= 3) {
+        this.initialMinutes += minutes
         try {
           await this.$axios.post('/users/admin/complaint/forgot-password', {
             email: this.email,
           })
-          this.initialMinutes += minutes
         } catch (error) {
           console.error(error)
         }
