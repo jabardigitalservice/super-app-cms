@@ -14,6 +14,7 @@
               dismissible
               :message="errorMessage"
               class="!mb-5 !h-[43px] !px-2 !py-[11px]"
+              @click:close="isShowSectionMessage = false"
             />
             <ValidationProvider
               v-slot="{ errors }"
