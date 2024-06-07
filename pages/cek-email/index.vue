@@ -5,7 +5,7 @@
         :icon="iconEnvelope"
         title="Cek Email Anda"
         description="Kami telah mengirimkan tautan untuk mengubah kata sandi ke"
-        detail-item="asep@gmail.com"
+        :detail-item="email"
       >
         <countdown
           :time="initialMinutes * 60 * 1000"
@@ -67,6 +67,11 @@ export default {
       isShowButton: false,
     }
   },
+  computed: {
+    email() {
+      return Buffer.from(this.$route.query.email, 'base64').toString('utf-8')
+    },
+  },
   methods: {
     formatingTime(props) {
       Object.entries(props).forEach(([key, value]) => {
@@ -76,7 +81,7 @@ export default {
 
       return props
     },
-    actionResendEmail() {
+    async actionResendEmail() {
       // minutes will start 3 times. It will start from 2 minutes, 5 minutes and 10 minutes
       this.isShowButton = false
       const minutes =
@@ -85,7 +90,14 @@ export default {
           : this.initialMinutes
       this.countShowButton++
       if (this.countShowButton <= 3) {
-        this.initialMinutes += minutes
+        try {
+          await this.$axios.post('/users/admin/complaint/forgot-password', {
+            email: this.email,
+          })
+          this.initialMinutes += minutes
+        } catch (error) {
+          console.error(error)
+        }
       } else {
         this.isShowButton = true
       }
