@@ -2,12 +2,19 @@
   <div class="min-h-screen bg-[#F6F6F9]">
     <div class="flex h-screen items-center justify-center">
       <PopOver
-        :icon="icon"
+        :icon="iconForgotPassword"
         title="Lupa Kata Sandi"
         description="Masukkan email akun Sapawarga Anda untuk dapatkan tautan mengubah password."
       >
         <ValidationObserver ref="form" tag="div" class="w-full pt-5">
           <form class="w-full">
+            <jds-section-message
+              :show="isShowSectionMessage"
+              variant="error"
+              dismissible
+              :message="errorMessage"
+              class="!mb-5 !h-[43px] !px-2 !py-[11px]"
+            />
             <ValidationProvider
               v-slot="{ errors }"
               rules="required|email"
@@ -64,12 +71,14 @@ export default {
   components: { ValidationObserver, ValidationProvider },
   data() {
     return {
-      icon: {
+      iconForgotPassword: {
         fileName: 'icon-lock-forgot-password.svg',
         name: 'icon-lock-forgot-password',
         size: '72',
       },
       isLoading: false,
+      isShowSectionMessage: false,
+      errorMessage: '',
       email: '',
     }
   },
@@ -77,7 +86,24 @@ export default {
     async sendEmail() {
       const isValid = await this.$refs.form.validate()
       if (isValid) {
-        this.roter.push('/check-email')
+        this.isLoading = true
+        try {
+          await this.$axios.post('/users/admin/complaint/forgot-password', {
+            email: this.email,
+          })
+          const emailEncode = Buffer.from(this.email).toString('base64')
+          this.$router.push(`/cek-email?email=${emailEncode}`)
+        } catch (error) {
+          this.isShowSectionMessage = true
+          this.errorMessage =
+            'Email gagal dikirim. Terjadi kesalahan pada sistem. Silahkan coba kembali.'
+
+          if (error.response.status === 404) {
+            this.errorMessage = 'E-mail yang Anda masukkan tidak terdaftar'
+          }
+        } finally {
+          this.isLoading = false
+        }
       }
     },
   },
