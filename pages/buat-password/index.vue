@@ -1,148 +1,164 @@
 <template>
   <div>
-    <div class="flex flex-col items-center">
-      <img
-        src="~/assets/icon/icon-lock.svg"
-        alt="icon-lock"
-        width="72"
-        height="72"
-      />
-    </div>
+    <EmailVerification
+      v-if="isExpiredLink"
+      :title="verificationType.title"
+      :description="verificationType.description"
+      :button="verificationType.button"
+      :icon="verificationType.icon"
+    />
+    <div v-else>
+      <div class="flex flex-col items-center">
+        <img
+          src="~/assets/icon/icon-lock.svg"
+          alt="icon-lock"
+          width="72"
+          height="72"
+        />
+      </div>
 
-    <h1 class="mt-4 text-center font-roboto text-2xl font-bold">
-      Buat Kata Sandi
-    </h1>
-    <ValidationObserver
-      ref="form"
-      tag="div"
-      class="form-add-account w-full px-6"
-    >
-      <form class="py-5">
-        <ValidationProvider
-          v-slot="{ errors }"
-          rules="required|min:6|lowercase|uppercase|digit|symbol"
-          name="Kata Sandi Baru"
-          tag="div"
-        >
-          <div
-            class="flex items-center justify-between"
-            :class="{ 'label--error': errors.length > 0 }"
+      <h1 class="mt-4 text-center font-roboto text-2xl font-bold">
+        Buat Kata Sandi
+      </h1>
+      <ValidationObserver
+        ref="form"
+        tag="div"
+        class="form-add-account w-full px-6"
+      >
+        <form class="py-5">
+          <ValidationProvider
+            v-slot="{ errors }"
+            rules="required|min:6|lowercase|uppercase|digit|symbol"
+            name="Kata Sandi Baru"
+            tag="div"
           >
-            <label class="text-[15px]">Kata Sandi Baru</label>
-            <div class="flex w-1/3 items-center">
-              <p class="mr-2 text-xs font-bold" :class="levelPassword?.text">
-                {{ levelPassword?.name }}
-              </p>
-              <div class="mt-[2px] h-2 w-full rounded-md bg-blue-gray-50">
-                <div :class="['h-2 rounded-md', levelPassword?.metter]"></div>
+            <div
+              class="flex items-center justify-between"
+              :class="{ 'label--error': errors.length > 0 }"
+            >
+              <label class="text-[15px]">Kata Sandi Baru</label>
+              <div class="flex w-1/3 items-center">
+                <p class="mr-2 text-xs font-bold" :class="levelPassword?.text">
+                  {{ levelPassword?.name }}
+                </p>
+                <div class="mt-[2px] h-2 w-full rounded-md bg-blue-gray-50">
+                  <div :class="['h-2 rounded-md', levelPassword?.metter]"></div>
+                </div>
               </div>
             </div>
-          </div>
-          <BaseInputText
-            v-model="password"
-            :type="isShowPassword ? 'text' : 'password'"
-            placeholder="Masukkan Kata Sandi Baru"
-            class="pt-1 pb-3"
-            :class="{ 'input-eye': password.length > 0 }"
-            :error-message="errors[0]"
+            <BaseInputText
+              v-model="password"
+              :type="isShowPassword ? 'text' : 'password'"
+              placeholder="Masukkan Kata Sandi Baru"
+              class="pt-1 pb-3"
+              :class="{ 'input-eye': password.length > 0 }"
+              :error-message="errors[0]"
+            >
+              <template #icon-left>
+                <div
+                  class="flex h-[38px] w-[35px] items-center rounded-l-md border border-gray-300 bg-gray-100 px-2"
+                >
+                  <BaseIconSvg
+                    :icon="icon.key.path"
+                    :size="12.8"
+                    :fill-color="icon.key.fill"
+                  />
+                </div>
+              </template>
+              <template #icon-right>
+                <button
+                  v-if="password.length > 0"
+                  class="button-show-password"
+                  :class="{ 'button-show-password--error': errors[0] }"
+                  @click.prevent="isShowPassword = !isShowPassword"
+                >
+                  <jds-icon
+                    v-if="!isShowPassword"
+                    name="eye"
+                    size="sm"
+                    fill="#16A75C"
+                  />
+                  <jds-icon v-else name="eye-off" size="sm" fill="#16A75C" />
+                </button>
+              </template>
+            </BaseInputText>
+          </ValidationProvider>
+          <SectionMessage
+            message="Password minimal 6 karakter dengan kombinasi huruf kapital, angka dan simbol."
+            class="section-message"
+            :icon="icon.information"
+          />
+          <ValidationProvider
+            v-slot="{ errors }"
+            rules="required"
+            name="Konfirmasi Kata Sandi Baru"
+            tag="div"
           >
-            <template #icon-left>
-              <div
-                class="flex h-[38px] w-[35px] items-center rounded-l-md border border-gray-300 bg-gray-100 px-2"
-              >
-                <BaseIconSvg
-                  :icon="icon.key.path"
-                  :size="12.8"
-                  :fill-color="icon.key.fill"
-                />
-              </div>
-            </template>
-            <template #icon-right>
-              <button
-                v-if="password.length > 0"
-                class="button-show-password"
-                :class="{ 'button-show-password--error': errors[0] }"
-                @click.prevent="isShowPassword = !isShowPassword"
-              >
-                <jds-icon
-                  v-if="!isShowPassword"
-                  name="eye"
-                  size="sm"
-                  fill="#16A75C"
-                />
-                <jds-icon v-else name="eye-off" size="sm" fill="#16A75C" />
-              </button>
-            </template>
-          </BaseInputText>
-        </ValidationProvider>
-        <SectionMessage
-          message="Password minimal 6 karakter dengan kombinasi huruf kapital, angka dan simbol."
-          class="section-message"
-          :icon="icon.information"
-        />
-        <ValidationProvider
-          v-slot="{ errors }"
-          rules="required"
-          name="Konfirmasi Kata Sandi Baru"
-          tag="div"
-        >
-          <BaseInputText
-            v-model="passwordConfirmation"
-            placeholder="Konfirmasi Kata Sandi Baru"
-            :type="isShowConfirmationPassword ? 'text' : 'password'"
-            class="py-5"
-            :class="{
-              'input-eye': passwordConfirmation.length > 0,
-              'label--error': errors.length > 0,
-            }"
-            label="Konfirmasi Kata Sandi Baru"
-            :error-message="errors[0] || errorMessage"
+            <BaseInputText
+              v-model="passwordConfirmation"
+              placeholder="Konfirmasi Kata Sandi Baru"
+              :type="isShowConfirmationPassword ? 'text' : 'password'"
+              class="py-5"
+              :class="{
+                'input-eye': passwordConfirmation.length > 0,
+                'label--error': errors.length > 0,
+              }"
+              label="Konfirmasi Kata Sandi Baru"
+              :error-message="errors[0] || errorMessage"
+            >
+              <template #icon-left>
+                <div
+                  class="flex h-[38px] w-[35px] items-center rounded-l-md border border-gray-300 bg-gray-100 px-2"
+                >
+                  <BaseIconSvg
+                    :icon="icon.key.path"
+                    :size="12.8"
+                    :fill-color="icon.key.fill"
+                  />
+                </div>
+              </template>
+              <template #icon-right>
+                <button
+                  v-if="passwordConfirmation.length > 0"
+                  class="button-show-password"
+                  :class="{ 'button-show-password--error': errors[0] }"
+                  @click.prevent="
+                    isShowConfirmationPassword = !isShowConfirmationPassword
+                  "
+                >
+                  <jds-icon
+                    v-if="!isShowConfirmationPassword"
+                    name="eye"
+                    size="sm"
+                    fill="#16A75C"
+                  />
+                  <jds-icon v-else name="eye-off" size="sm" fill="#16A75C" />
+                </button>
+              </template>
+            </BaseInputText>
+          </ValidationProvider>
+          <jds-button
+            variant="primary"
+            class="!w-full"
+            @click.prevent="submitCreatePassword()"
           >
-            <template #icon-left>
-              <div
-                class="flex h-[38px] w-[35px] items-center rounded-l-md border border-gray-300 bg-gray-100 px-2"
-              >
-                <BaseIconSvg
-                  :icon="icon.key.path"
-                  :size="12.8"
-                  :fill-color="icon.key.fill"
-                />
-              </div>
-            </template>
-            <template #icon-right>
-              <button
-                v-if="passwordConfirmation.length > 0"
-                class="button-show-password"
-                :class="{ 'button-show-password--error': errors[0] }"
-                @click.prevent="
-                  isShowConfirmationPassword = !isShowConfirmationPassword
-                "
-              >
-                <jds-icon
-                  v-if="!isShowConfirmationPassword"
-                  name="eye"
-                  size="sm"
-                  fill="#16A75C"
-                />
-                <jds-icon v-else name="eye-off" size="sm" fill="#16A75C" />
-              </button>
-            </template>
-          </BaseInputText>
-        </ValidationProvider>
-        <jds-button
-          variant="primary"
-          class="!w-full"
-          @click.prevent="submitCreatePassword()"
-        >
-          <jds-spinner v-if="isLoading" :size="20" class="flex items-center" />
-          <label v-else class="!text-[14px] !font-bold">Simpan Perubahan</label>
-        </jds-button>
-      </form>
-    </ValidationObserver>
+            <jds-spinner
+              v-if="isLoading"
+              :size="20"
+              class="flex items-center"
+            />
+            <label v-else class="!text-[14px] !font-bold">
+              Simpan Perubahan
+            </label>
+          </jds-button>
+        </form>
+      </ValidationObserver>
+    </div>
   </div>
 </template>
 
 <script>
+import { differenceInHours } from 'date-fns'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 export default {
   name: 'PageCreatePassword',
@@ -168,6 +184,17 @@ export default {
       isShowConfirmationPassword: false,
       errorMessage: '',
       isLoading: false,
+      isExpiredLink: false,
+      verificationType: {
+        title: 'Link Verifikasi Sudah Tidak Valid',
+        description:
+          'Link verifikasi yang Anda gunakan sudah tidak berlaku atau kedaluarsa. Mohon untuk meminta tautan baru kepada tim Sapawarga.',
+        icon: 'email-verification-invalid',
+        button: {
+          label: 'Kirim Ulang Email',
+          linkPage: '/lupa-kata-sandi',
+        },
+      },
     }
   },
   watch: {
@@ -175,7 +202,20 @@ export default {
       this.checkPasswordStrength()
     },
   },
+  created() {
+    const timestamp = this.getDataDecode().split(':').slice(4).join(':')
+    const linkExpiredDate = new Date(timestamp)
+    const differentHour = differenceInHours(new Date(), linkExpiredDate)
+    if (differentHour > this.$config.linkExpiredDate) {
+      this.isExpiredLink = true
+    }
+  },
   methods: {
+    getDataDecode() {
+      const queryToken = this.$route.query?.token
+      const dataDecode = Buffer.from(queryToken, 'base64').toString('utf-8')
+      return dataDecode
+    },
     checkPasswordStrength() {
       this.levelPassword = {}
       const levelPassword = {
@@ -226,20 +266,23 @@ export default {
       const isCheckConfirmationPassword = this.checkConfirmationPassword()
       if (isValid && isCheckConfirmationPassword) {
         this.isLoading = true
-        const queryToken = this.$route.query?.token
-        const dataDecode = Buffer.from(queryToken, 'base64').toString('utf-8')
-        const token = dataDecode.split(':')[0]
-        const userId = dataDecode.split(':')[1]
-        const email = dataDecode.split(':')[2]
+        const tokenType = this.getDataDecode().split(':')[0] // token from 'forgot-password' or 'invitation'
+        const token = this.getDataDecode().split(':')[1]
+        const userId = this.getDataDecode().split(':')[2]
+        const email = this.getDataDecode().split(':')[3]
+        const apiPath =
+          tokenType === 'forgot-password'
+            ? 'verify-change-password'
+            : 'verify-create-password'
         let dataEncode = ''
         try {
           const payload = { token, user_id: userId, password: this.password } // payload request to api
-          await this.$axios.post(
-            '/users/admin/complaint/verify-create-password',
-            { ...payload }
-          )
+          await this.$axios.post(`/users/admin/complaint/${apiPath}`, {
+            ...payload,
+          })
           dataEncode = Buffer.from(`true:${email}`).toString('base64')
         } catch (error) {
+          const queryToken = this.$route.query?.token
           dataEncode = Buffer.from(`false:${queryToken}`).toString('base64')
         } finally {
           this.isLoading = false
