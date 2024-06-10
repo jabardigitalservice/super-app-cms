@@ -147,9 +147,9 @@
               :size="20"
               class="flex items-center"
             />
-            <label v-else class="!text-[14px] !font-bold"
-              >Simpan Perubahan</label
-            >
+            <label v-else class="!text-[14px] !font-bold">
+              Simpan Perubahan
+            </label>
           </jds-button>
         </form>
       </ValidationObserver>
