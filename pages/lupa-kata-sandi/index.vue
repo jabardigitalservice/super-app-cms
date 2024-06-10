@@ -97,7 +97,7 @@ export default {
         } catch (error) {
           this.isShowSectionMessage = true
           this.errorMessage =
-            'Email gagal dikirim. Terjadi kesalahan pada sistem. Silahkan coba kembali.'
+            'Terjadi kesalahan pada sistem. Silahkan coba beberapa saat lagi.'
 
           if (error.response.status === 404) {
             this.errorMessage = 'E-mail yang Anda masukkan tidak terdaftar'
