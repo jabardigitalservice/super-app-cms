@@ -147,6 +147,7 @@ export default {
         process.env.BROWSER_BASE_URL + '/' + process.env.VERSION_ENDPOINT,
     },
     googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID,
+    linkExpiredTime: process.env.LINK_EXPIRED_TIME,
     tinymceApiKey: process.env.TINYMCE_API_KEY,
     googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
     urlMockApi: process.env.URL_MOCKAPI + '/' + process.env.VERSION_ENDPOINT,
