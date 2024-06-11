@@ -206,7 +206,7 @@ export default {
     const timestamp = this.getDataDecode().split(':').slice(4).join(':')
     const linkExpiredDate = new Date(timestamp)
     const differentHour = differenceInHours(new Date(), linkExpiredDate)
-    if (differentHour > this.$config.linkExpiredDate) {
+    if (differentHour > this.$config.linkExpiredTime) {
       this.isExpiredLink = true
     }
   },
