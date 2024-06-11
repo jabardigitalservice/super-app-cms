@@ -26,25 +26,28 @@ export default {
       : Buffer.from(dataDecode.split(':')[4], 'base64').toString('utf-8')
     const timestamp = dataDecode.split(':').slice(5).join(':')
     store.commit('axios/setAuthorizationHeader', { 'X-Timestamp': timestamp })
-    let verificationType = { title: 'Halo Admin!' }
+
+    let verificationType = {
+      title: 'Halo Admin!',
+      description:
+        'Email Anda belum terdaftar sebagai akun Sapawarga. Silahkan melakukan pembuatan kata sandi terlebih dahulu dengan email dibawah!',
+      button: { label: 'Buat Kata Sandi Sekarang', linkPage },
+      icon: 'email-verification-failed',
+      detailItem: email,
+    }
+
     try {
-      await $axios.post('/users/admin/complaint/verify-invitation', {
-        token,
-        user_id: userId,
-      })
       if (isAuthed) {
+        await $axios.post('/users/admin/complaint/verify-invitation', {
+          token,
+          user_id: userId,
+        })
         verificationType = {
+          ...verificationType,
           description: 'Email Anda sudah terdaftar sebagai akun Sapawarga.',
           button: { label: 'Silahkan Login', linkPage },
           icon: 'email-verification-success',
-        }
-      } else {
-        verificationType = {
-          description:
-            'Email Anda belum terdaftar sebagai akun Sapawarga. Silahkan melakukan pembuatan kata sandi terlebih dahulu dengan email dibawah!',
-          button: { label: 'Buat Kata Sandi Sekarang', linkPage },
-          icon: 'email-verification-failed',
-          detailItem: email,
+          detailItem: '',
         }
       }
     } catch (error) {
