@@ -44,16 +44,18 @@
               </div>
             </div>
             <div class="mt-4 rounded-[12px] border border-[#EEEEEE] p-4">
-              <div class="flex items-center justify-between font-lato">
+              <div class="justify-between font-lato">
                 <p class="text-[16px] font-[700]">Kategori Tiket</p>
-                <div class="flex">
+                <div class="mt-2 flex">
                   <BaseIconSvg
                     icon="/icon/info.svg"
                     mode="image"
                     :width="16"
                     :height="16"
                   />
-                  <p class="ml-2 text-[12px] font-[400]">Maksimal 700 Tiket</p>
+                  <p class="ml-1 text-[12px] font-[400]">
+                    Pemesanan tiket minimal 30 - maksimal 700 Tiket
+                  </p>
                 </div>
               </div>
               <div class="mt-4 flex items-center justify-between font-lato">
@@ -589,13 +591,11 @@ export default {
         await this.$refs.form_informasi_pemesan.validate()
       if (this.getTotalTicket === 0) {
         this.errorTicket = 'Tiket tidak boleh kosong'
+      } else if (this.getTotalTicket < 30) {
+        this.errorTicket = 'Minimal tiket yang dipesan adalah 30'
       }
 
-      if (
-        formInformasiIsValid &&
-        this.getTotalTicket > 0 &&
-        this.errorTicket === ''
-      ) {
+      if (formInformasiIsValid && this.errorTicket === '') {
         try {
           const payload = {
             attractionID: 'c64143d6-d630-4ccf-8529-483b9b737a52',
