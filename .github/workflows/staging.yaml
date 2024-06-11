@@ -54,7 +54,7 @@ jobs:
             UNLEASH_TOKEN=${{secrets.UNLEASH_TOKEN_STAGING}}
             URL_MOCKAPI=${{secrets.URL_MOCKAPI}}
             URL_MAIN_SERVICE=${{secrets.URL_MAIN_SERVICE}}
-            
+            LINK_EXPIRED_TIME=${{secrets.LINK_EXPIRED_TIME}}
       # GitOps
       - name: GitOps ArgoCD Setup
         run: |
