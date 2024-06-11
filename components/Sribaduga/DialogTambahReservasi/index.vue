@@ -24,7 +24,8 @@
               </p>
               <p class="text-[16px] font-[700]">{{ getSessionName }}</p>
             </div>
-            <div v-else class="mt-4 rounded-[12px] border border-[#EEEEEE] p-4">
+            <!-- @TODO: this part is commented coz need to be confirmed  -->
+            <!-- <div v-else class="mt-4 rounded-[12px] border border-[#EEEEEE] p-4">
               <div class="py-2">
                 <p class="mb-4 font-lato text-[16px] font-[700]">
                   Tanggal & Sesi Reservasi
@@ -42,7 +43,7 @@
                   :options="options"
                 />
               </div>
-            </div>
+            </div> -->
             <div class="mt-4 rounded-[12px] border border-[#EEEEEE] p-4">
               <div class="justify-between font-lato">
                 <p class="text-[16px] font-[700]">Kategori Tiket</p>

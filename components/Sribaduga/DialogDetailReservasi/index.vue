@@ -140,7 +140,9 @@
           >
             <BaseButton> Batalkan Reservasi </BaseButton>
           </div>
-          <div
+          <!-- @TODO: this part is commented coz need to be confirmed  -->
+
+          <!-- <div
             v-if="isOrderedByAdmin"
             class="relative overflow-x-auto rounded-lg bg-green-jds text-white"
             @click="$emit('dialog-ubah-detail')"
@@ -155,10 +157,9 @@
               />
               Ubah Detail
             </BaseButton>
-          </div>
+          </div> -->
 
           <div
-            v-else
             class="relative overflow-x-auto rounded-lg bg-green-jds text-white"
             @click="$emit('dialog-reschedule')"
           >
