@@ -158,7 +158,10 @@ export default {
       }
     },
     disableDate(date) {
-      return date < new Date()
+      return (
+        date < new Date() ||
+        date > new Date(new Date().setDate(new Date().getDate() + 8))
+      )
     },
     closeDialogReschedule() {
       this.$store.commit('modals/CLOSE', 'dialog-reschedule')

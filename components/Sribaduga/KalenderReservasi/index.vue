@@ -227,7 +227,7 @@
               :invoice-id="invoiceId"
             />
             <DialogSuccess />
-            <DialogBatalkanReservasi @close="closeDialogBatalkanReservasi()" />
+            <DialogBatalkanReservasi :invoice-id="invoiceId" />
           </div>
         </BaseTabPanel>
       </template>
@@ -627,9 +627,6 @@ export default {
 
     openDialogBatalkanReservasi() {
       this.$store.commit('modals/OPEN', 'dialog-batalkan-reservasi')
-    },
-    closeDialogBatalkanReservasi() {
-      this.$store.commit('modals/CLOSE', 'dialog-batalkan-reservasi')
     },
 
     handleOpenDialogTambahReservasi(dateData, sessionData) {

@@ -1,13 +1,19 @@
 <template>
   <DialogConfirmationBasic
     :dialog-modal="dialogModal"
-    @confirmation-button="$emit('cancel')"
+    @confirmation-button="deleteReservation()"
   />
 </template>
 
 <script>
 export default {
   name: 'DialogBatalkanReservasi',
+  props: {
+    invoiceId: {
+      type: String,
+      required: true,
+    },
+  },
   data() {
     return {
       dialogModal: {
@@ -20,6 +26,26 @@ export default {
         },
       },
     }
+  },
+  methods: {
+    async deleteReservation() {
+      const payload = {
+        invoice: this.invoiceId,
+        attractionId: 'c64143d6-d630-4ccf-8529-483b9b737a52', // this is not credential, only attraction id
+      }
+      try {
+        await this.$axios.post('/ticket/tms/admin/orders/cancel', payload)
+        this.$store.commit('modals/CLOSE', 'detail-reservasi')
+        this.$store.commit('modals/CLOSE', 'dialog-batalkan-reservasi')
+        this.$store.commit(
+          'dialog/setTitle',
+          'Jadwal Reservasi Berhasil Dibatalkan'
+        )
+        this.$store.commit('modals/OPEN', 'dialog-success')
+      } catch (error) {
+        console.error(error)
+      }
+    },
   },
 }
 </script>
