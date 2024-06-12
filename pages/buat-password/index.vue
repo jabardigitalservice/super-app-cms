@@ -205,8 +205,13 @@ export default {
   created() {
     const timestamp = this.getDataDecode().split(':').slice(4).join(':')
     const linkExpiredDate = new Date(timestamp)
+    const tokenType = this.getDataDecode().split(':')[0]
     const differentHour = differenceInHours(new Date(), linkExpiredDate)
-    if (differentHour > this.$config.linkExpiredTime) {
+    const expiredTime =
+      tokenType === 'invitation'
+        ? this.$config.expiredInvitationLink
+        : this.$config.expiredForgotPasswordLink
+    if (differentHour > expiredTime) {
       this.isExpiredLink = true
     }
   },
