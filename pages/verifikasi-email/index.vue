@@ -53,9 +53,9 @@ export default {
     } catch (error) {
       if (error.response.status === 400) {
         verificationType = {
-          title: 'Link Verifikasi Sudah Tidak Valid',
+          title: 'Tautan Verifikasi Sudah Tidak Valid',
           description:
-            'Link verifikasi yang Anda gunakan sudah tidak berlaku atau kedaluarsa. Mohon untuk meminta tautan baru kepada tim Sapawarga.',
+            'Tautan verifikasi yang Anda gunakan sudah tidak berlaku atau kedaluarsa. Mohon untuk meminta tautan baru kepada tim Sapawarga.',
           icon: 'email-verification-invalid',
         }
       }
