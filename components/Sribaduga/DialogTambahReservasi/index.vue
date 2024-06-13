@@ -210,7 +210,7 @@
                 </label>
                 <ValidationProvider
                   v-slot="{ errors }"
-                  rules="required|numeric"
+                  rules="required|numeric|minTenDigitsInt|maxFifteenDigitsInt"
                   name="Telepon"
                   tag="div"
                   class="mb-4"

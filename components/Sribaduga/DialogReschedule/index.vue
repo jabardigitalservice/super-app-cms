@@ -160,7 +160,7 @@ export default {
     disableDate(date) {
       return (
         date < new Date() ||
-        date > new Date(new Date().setDate(new Date().getDate() + 8))
+        date > new Date(new Date().setDate(new Date().getDate() + 6))
       )
     },
     closeDialogReschedule() {

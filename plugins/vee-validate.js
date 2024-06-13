@@ -74,3 +74,17 @@ extend('maxTenDigitsInt', {
   message: (_, values) =>
     `${values._field_} harus diisi angka & maksimal 10 karakter`,
 })
+
+// number validation min 10 digits
+extend('minTenDigitsInt', {
+  validate: (value) => /^\d{10,}$/.test(value),
+  message: (_, values) =>
+    `${values._field_} harus diisi angka & minimal 10 karakter`,
+})
+
+// number validation max 15 digits
+extend('maxFifteenDigitsInt', {
+  validate: (value) => /^\d{1,15}$/.test(value),
+  message: (_, values) =>
+    `${values._field_} harus diisi angka & maksimal 15 karakter`,
+})
