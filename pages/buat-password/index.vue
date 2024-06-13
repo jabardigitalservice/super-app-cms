@@ -186,9 +186,9 @@ export default {
       isLoading: false,
       isExpiredLink: false,
       verificationType: {
-        title: 'Link Verifikasi Sudah Tidak Valid',
+        title: 'Tautan Sudah Tidak Valid',
         description:
-          'Link verifikasi yang Anda gunakan sudah tidak berlaku atau kedaluarsa. Mohon untuk meminta tautan baru kepada tim Sapawarga.',
+          'Tautan yang Anda gunakan sudah tidak berlaku atau kadaluarsa. Silakan lakukan proses kirim ulang email, untuk mendapatkan tautan lupa kata sandi yang baru.',
         icon: 'email-verification-invalid',
         button: {
           label: 'Kirim Ulang Email',
@@ -205,8 +205,13 @@ export default {
   created() {
     const timestamp = this.getDataDecode().split(':').slice(4).join(':')
     const linkExpiredDate = new Date(timestamp)
+    const tokenType = this.getDataDecode().split(':')[0]
     const differentHour = differenceInHours(new Date(), linkExpiredDate)
-    if (differentHour > this.$config.linkExpiredTime) {
+    const expiredTime =
+      tokenType === 'invitation'
+        ? this.$config.expiredInvitationLink
+        : this.$config.expiredForgotPasswordLink
+    if (differentHour > expiredTime) {
       this.isExpiredLink = true
     }
   },
