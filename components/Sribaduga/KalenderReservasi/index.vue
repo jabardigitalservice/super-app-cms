@@ -201,7 +201,13 @@
                           :height="17"
                           class="mt-[2px]"
                         />
-                        <p class="w-[100px] truncate text-[14px] font-[600]">
+                        <p
+                          class="truncate text-[14px] font-[600]"
+                          :class="{
+                            'w-full': initialTabValue === 'hari',
+                            'w-[100px]': initialTabValue === 'minggu',
+                          }"
+                        >
                           {{ getInstanceName(dateData, sessionData.orders) }}
                         </p>
                         <p class="text-[12px] font-[400] text-[#424242]">
