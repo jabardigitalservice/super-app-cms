@@ -55,10 +55,11 @@
                     :height="16"
                   />
                   <p class="ml-1 text-[12px] font-[400]">
-                    Pemesanan tiket minimal 30 - maksimal 700 Tiket
+                    Pemesanan tiket minimal 30 - maksimal 140 Tiket
                   </p>
                 </div>
               </div>
+
               <div class="mt-4 flex items-center justify-between font-lato">
                 <div>
                   <p class="text-[15px] font-[400]">Anak-anak</p>
@@ -77,11 +78,12 @@
                       fill="#BDBDBD"
                     />
                   </BaseButton>
-                  <div
-                    class="ml-2 mr-2 flex h-[38px] w-[60px] items-center justify-center rounded-lg border border-gray-300"
-                  >
-                    <p>{{ childrenCatagory }}</p>
-                  </div>
+
+                  <input
+                    v-model="childrenCatagory"
+                    class="ml-2 mr-2 block h-[38px] w-[60px] rounded-lg border border-gray-300 text-center text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    type="number"
+                  />
                   <BaseButton
                     class="flex h-[38px] w-[38px] items-center justify-center rounded-lg border border-gray-300"
                     @click="handleAddChildrenCatagory()"
@@ -113,11 +115,12 @@
                       fill="#BDBDBD"
                     />
                   </BaseButton>
-                  <div
-                    class="ml-2 mr-2 flex h-[38px] w-[60px] items-center justify-center rounded-lg border border-gray-300"
-                  >
-                    <p>{{ matureCatagory }}</p>
-                  </div>
+
+                  <input
+                    v-model="matureCatagory"
+                    class="ml-2 mr-2 block h-[38px] w-[60px] rounded-lg border border-gray-300 text-center text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    type="number"
+                  />
                   <BaseButton
                     class="flex h-[38px] w-[38px] items-center justify-center rounded-lg border border-gray-300"
                     @click="handleAddMatureCatagory()"
@@ -149,11 +152,12 @@
                       fill="#BDBDBD"
                     />
                   </BaseButton>
-                  <div
-                    class="ml-2 mr-2 flex h-[38px] w-[60px] items-center justify-center rounded-lg border border-gray-300"
-                  >
-                    <p>{{ foreignerCatagory }}</p>
-                  </div>
+
+                  <input
+                    v-model="foreignerCatagory"
+                    class="ml-2 mr-2 block h-[38px] w-[60px] rounded-lg border border-gray-300 text-center text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    type="number"
+                  />
                   <BaseButton
                     class="flex h-[38px] w-[38px] items-center justify-center rounded-lg border border-gray-300"
                     @click="handleAddForeignerCatagory()"
@@ -449,9 +453,6 @@ export default {
   },
   computed: {
     ...mapState({
-      childrenCatagory: (state) => state.add_reservation.childrenCatagory,
-      matureCatagory: (state) => state.add_reservation.matureCatagory,
-      foreignerCatagory: (state) => state.add_reservation.foreignerCatagory,
       isOpenForm: (state) => state.add_reservation.isOpenForm,
     }),
     reservationDateValue: {
@@ -470,12 +471,38 @@ export default {
         return this.$store.state.add_reservation.sessionValue
       },
     },
+    childrenCatagory: {
+      set(value) {
+        this.$store.commit('add_reservation/setChildrenCatagory', value)
+      },
+      get() {
+        return this.$store.state.add_reservation.childrenCatagory
+      },
+    },
+    matureCatagory: {
+      set(value) {
+        this.$store.commit('add_reservation/setMatureCatagory', value)
+      },
+      get() {
+        return this.$store.state.add_reservation.matureCatagory
+      },
+    },
+    foreignerCatagory: {
+      set(value) {
+        this.$store.commit('add_reservation/setForeignerCatagory', value)
+      },
+      get() {
+        return this.$store.state.add_reservation.foreignerCatagory
+      },
+    },
     getSessionName() {
       return `${this.orderAndSessionValue?.session.name} (${this.orderAndSessionValue?.session.startTime} - ${this.orderAndSessionValue?.session.endTime})`
     },
     getTotalTicket() {
       return (
-        this.childrenCatagory + this.matureCatagory + this.foreignerCatagory
+        Number(this.childrenCatagory) +
+        Number(this.matureCatagory) +
+        Number(this.foreignerCatagory)
       )
     },
     getProvinceList() {
@@ -499,8 +526,8 @@ export default {
   watch: {
     getTotalTicket: {
       handler(val) {
-        if (val > 700) {
-          this.errorTicket = 'Maksimal tiket yang dipesan adalah 700'
+        if (val > 140) {
+          this.errorTicket = 'Maksimal tiket yang dipesan adalah 140'
         } else {
           this.errorTicket = ''
         }
@@ -520,6 +547,15 @@ export default {
         }
       },
     },
+    // childrenCatagory: {
+    //   handler(val) {
+    //     // if number val include ., example 1.0, then remove the .0
+    //     console.log(val.toString())
+    //     if (val.toString().includes('.')) {
+    //       this.errorTicket = 'Tiket tidak boleh berupa desimal'
+    //     }
+    //   },
+    // },
   },
   mounted() {
     this.getDataProvinceList()
@@ -530,45 +566,27 @@ export default {
       return date?.toLocaleString('default', { month: 'long' })
     },
     handleAddChildrenCatagory() {
-      this.$store.commit(
-        'add_reservation/setChildrenCatagory',
-        this.childrenCatagory + 1
-      )
+      this.childrenCatagory = Number(this.childrenCatagory) + 1
     },
     handleSubtractChildrenCatagory() {
       if (this.childrenCatagory > 0) {
-        this.$store.commit(
-          'add_reservation/setChildrenCatagory',
-          this.childrenCatagory - 1
-        )
+        this.childrenCatagory = Number(this.childrenCatagory) - 1
       }
     },
     handleAddMatureCatagory() {
-      this.$store.commit(
-        'add_reservation/setMatureCatagory',
-        this.matureCatagory + 1
-      )
+      this.matureCatagory = Number(this.matureCatagory) + 1
     },
     handleSubtractMatureCatagory() {
       if (this.matureCatagory > 0) {
-        this.$store.commit(
-          'add_reservation/setMatureCatagory',
-          this.matureCatagory - 1
-        )
+        this.matureCatagory = Number(this.matureCatagory) - 1
       }
     },
     handleAddForeignerCatagory() {
-      this.$store.commit(
-        'add_reservation/setForeignerCatagory',
-        this.foreignerCatagory + 1
-      )
+      this.foreignerCatagory = Number(this.foreignerCatagory) + 1
     },
     handleSubtractForeignerCatagory() {
       if (this.foreignerCatagory > 0) {
-        this.$store.commit(
-          'add_reservation/setForeignerCatagory',
-          this.foreignerCatagory - 1
-        )
+        this.foreignerCatagory = Number(this.foreignerCatagory) - 1
       }
     },
     clearForm() {
