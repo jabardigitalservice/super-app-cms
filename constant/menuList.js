@@ -107,7 +107,7 @@ const aduanMenu = {
       arrow: false,
       showMenuAndAccessForRoles: ['admin', 'admin:aduan-team-2'],
       icon: 'clipboard-user.svg',
-      unleashVariable: 'SAPAWARGA-CMS__ADUAN--DAFTAR-PENENTU-KEWENANGAN',
+      unleashVariable: 'SAPAWARGA-CMS__ADUAN--PENENTU-KEWENANGAN',
     },
     {
       name: 'Dialihkan ke SP4N',
@@ -131,7 +131,7 @@ const aduanMenu = {
       arrow: false,
       showMenuAndAccessForRoles: ['admin', 'admin:aduan-team-3'],
       icon: 'edit-pencil.svg',
-      unleashVariable: 'SAPAWARGA-CMS__ADUAN--DAFTAR-PENGINPUTAN-IKP',
+      unleashVariable: 'SAPAWARGA-CMS__ADUAN--PENGINPUTAN-IKP',
     },
     {
       name: 'Daftar Instruksi Aduan Warga',
@@ -139,7 +139,7 @@ const aduanMenu = {
       arrow: false,
       showMenuAndAccessForRoles: ['admin', 'admin:aduan-team-opd'],
       icon: 'bag.svg',
-      unleashVariable: 'SAPAWARGA-CMS__ADUAN--DARTAR-INSTRUKSI-ADUAN-WARGA',
+      unleashVariable: 'SAPAWARGA-CMS__ADUAN--INSTRUKSI-ADUAN-WARGA',
     },
     {
       name: 'Management Akun',
