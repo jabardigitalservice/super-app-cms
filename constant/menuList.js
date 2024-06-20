@@ -99,7 +99,7 @@ const aduanMenu = {
       arrow: false,
       showMenuAndAccessForRoles: ['admin', 'admin:aduan-team-1'],
       icon: 'clipboard-list.svg',
-      unleashVariable: 'SAPAWARGA-CMS__ADUAN',
+      unleashVariable: 'SAPAWARGA-CMS__ADUAN--ADUAN-MASUK',
     },
     {
       name: 'Daftar Penentuan Kewenangan',
@@ -107,7 +107,7 @@ const aduanMenu = {
       arrow: false,
       showMenuAndAccessForRoles: ['admin', 'admin:aduan-team-2'],
       icon: 'clipboard-user.svg',
-      unleashVariable: 'SAPAWARGA-CMS__ADUAN',
+      unleashVariable: 'SAPAWARGA-CMS__ADUAN--DAFTAR-PENENTU-KEWENANGAN',
     },
     {
       name: 'Dialihkan ke SP4N',
@@ -115,7 +115,7 @@ const aduanMenu = {
       arrow: false,
       showMenuAndAccessForRoles: ['admin', 'admin:aduan-team-1'],
       icon: 'clipboard-arrow-left.svg',
-      unleashVariable: 'SAPAWARGA-CMS__ADUAN',
+      unleashVariable: 'SAPAWARGA-CMS__ADUAN--ADUAN-DIALIHKAN-KE-SP4N',
     },
     {
       name: 'Daftar Aduan dari SP4N',
@@ -123,7 +123,7 @@ const aduanMenu = {
       arrow: false,
       showMenuAndAccessForRoles: ['admin', 'admin:aduan-team-1'],
       icon: 'clipboard-pencil.svg',
-      unleashVariable: 'SAPAWARGA-CMS__ADUAN',
+      unleashVariable: 'SAPAWARGA-CMS__ADUAN--ADUAN-DARI-SP4N',
     },
     {
       name: 'Daftar Penginputan IKP',
@@ -131,7 +131,7 @@ const aduanMenu = {
       arrow: false,
       showMenuAndAccessForRoles: ['admin', 'admin:aduan-team-3'],
       icon: 'edit-pencil.svg',
-      unleashVariable: 'SAPAWARGA-CMS__ADUAN',
+      unleashVariable: 'SAPAWARGA-CMS__ADUAN--DAFTAR-PENGINPUTAN-IKP',
     },
     {
       name: 'Daftar Instruksi Aduan Warga',
@@ -139,7 +139,7 @@ const aduanMenu = {
       arrow: false,
       showMenuAndAccessForRoles: ['admin', 'admin:aduan-team-opd'],
       icon: 'bag.svg',
-      unleashVariable: 'SAPAWARGA-CMS__ADUAN',
+      unleashVariable: 'SAPAWARGA-CMS__ADUAN--DARTAR-INSTRUKSI-ADUAN-WARGA',
     },
     {
       name: 'Management Akun',
@@ -147,7 +147,7 @@ const aduanMenu = {
       arrow: false,
       showMenuAndAccessForRoles: ['admin', 'admin:aduan-user-management'],
       icon: 'user.svg',
-      unleashVariable: 'SAPAWARGA-CMS__ADUAN',
+      unleashVariable: 'SAPAWARGA-CMS__ADUAN--MANAGEMENT-AKUN',
     },
   ],
 }
