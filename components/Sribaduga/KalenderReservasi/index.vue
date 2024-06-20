@@ -295,6 +295,7 @@ export default {
         attractionId: 'c64143d6-d630-4ccf-8529-483b9b737a52',
       },
       thisDay: new Date(),
+      holidayList: [],
     }
   },
 
@@ -337,11 +338,29 @@ export default {
   },
 
   mounted() {
+    this.fetchHolidayList()
     this.getDateDataInWeekList()
   },
   methods: {
     setQuery(params) {
       this.query = { ...this.query, ...params }
+    },
+    async fetchHolidayList() {
+      this.loading = true
+
+      try {
+        const holidayResponse = await this.$axios.get(
+          '/ticket/tms/admin/attractions/closing'
+        )
+
+        const { data } = holidayResponse.data
+        console.log(data)
+        this.holidayList = data
+      } catch (error) {
+        console.error(error)
+      } finally {
+        this.loading = false
+      }
     },
     async fetchCalendar() {
       this.loading = true
@@ -381,6 +400,7 @@ export default {
         )
       }
       this.dateDataList = dateList
+      console.log(dateList)
 
       this.monthAndYearTitle = `${dateList[0].rawDateData.toLocaleDateString(
         'id-ID',
@@ -491,8 +511,12 @@ export default {
       const isBeforeToday = dateToCompare < today
       const isAfterSessionStart =
         dateToCompare === today && currentTime > sessionStartTime
+      // compare this.dateDataList data included in holidayList, then return true
+      const isHoliday = this.holidayList.some(
+        (holiday) => formatDate(holiday.date, 'yyyy-MM-dd') === dateToCompare
+      )
 
-      return isBeforeToday || isAfterSessionStart
+      return isBeforeToday || isAfterSessionStart || isHoliday
     },
     handleClickDate(dateData, sessionData) {
       this.dateValue = dateData
