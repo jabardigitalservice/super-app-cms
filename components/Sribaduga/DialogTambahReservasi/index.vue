@@ -553,15 +553,6 @@ export default {
         }
       },
     },
-    // childrenCatagory: {
-    //   handler(val) {
-    //     // if number val include ., example 1.0, then remove the .0
-    //     console.log(val.toString())
-    //     if (val.toString().includes('.')) {
-    //       this.errorTicket = 'Tiket tidak boleh berupa desimal'
-    //     }
-    //   },
-    // },
   },
   mounted() {
     this.getDataProvinceList()
