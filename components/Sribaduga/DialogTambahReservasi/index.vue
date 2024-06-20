@@ -738,8 +738,6 @@ export default {
         case 'foreignerCatagory':
           this.foreignerCatagory = Math.round(value)
           break
-        default:
-          break
       }
     },
   },
