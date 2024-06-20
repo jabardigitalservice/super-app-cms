@@ -338,7 +338,6 @@ export default {
   },
 
   mounted() {
-    this.fetchHolidayList()
     this.getDateDataInWeekList()
   },
   methods: {
@@ -409,6 +408,7 @@ export default {
       const startDate = formatDate(dateList[0].rawDateData, 'yyyy-MM-dd')
       const endDate = formatDate(dateList[5].rawDateData, 'yyyy-MM-dd')
       this.setQuery({ startDate, endDate })
+      this.fetchHolidayList()
       this.fetchCalendar()
     },
     getDataInDayList() {
@@ -438,6 +438,7 @@ export default {
       const startDate = formatDate(dateList[0].rawDateData, 'yyyy-MM-dd')
       const endDate = formatDate(dateList[0].rawDateData, 'yyyy-MM-dd')
       this.setQuery({ startDate, endDate })
+      this.fetchHolidayList()
       this.fetchCalendar()
     },
 
