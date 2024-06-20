@@ -107,7 +107,7 @@ const aduanMenu = {
       arrow: false,
       showMenuAndAccessForRoles: ['admin', 'admin:aduan-team-2'],
       icon: 'clipboard-user.svg',
-      unleashVariable: 'SAPAWARGA-CMS__ADUAN--PENENTUAN-KEWENANGAN',
+      unleashVariable: 'SAPAWARGA-CMS__ADUAN--PENENTU-KEWENANGAN',
     },
     {
       name: 'Dialihkan ke SP4N',
