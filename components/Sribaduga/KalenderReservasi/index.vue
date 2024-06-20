@@ -354,7 +354,6 @@ export default {
         )
 
         const { data } = holidayResponse.data
-        console.log(data)
         this.holidayList = data
       } catch (error) {
         console.error(error)
