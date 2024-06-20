@@ -188,7 +188,7 @@ const sriBadugaMenu = {
       name: 'Daftar Pesanan',
       path: '/sribaduga/daftar-pesanan',
       arrow: false,
-      showMenuAndAccessForRoles: ['admin'],
+      showMenuAndAccessForRoles: ['admin', 'admin:tms'],
       icon: 'ticket.svg',
       unleashVariable: 'SAPAWARGA-CMS__TICKETING--SRIBADUGA--DAFTAR-PESANAN',
     },
@@ -196,7 +196,7 @@ const sriBadugaMenu = {
       name: 'Kalender Reservasi',
       path: '/sribaduga/kalender-reservasi',
       arrow: false,
-      showMenuAndAccessForRoles: ['admin'],
+      showMenuAndAccessForRoles: ['admin', 'admin:tms'],
       icon: 'kalender.svg',
       unleashVariable:
         'SAPAWARGA-CMS__TICKETING--SRIBADUGA--KALENDER-RESERVASI',
@@ -205,7 +205,7 @@ const sriBadugaMenu = {
       name: 'Laporan Pendapatan',
       path: '/sribaduga/laporan-pendapatan',
       arrow: false,
-      showMenuAndAccessForRoles: ['admin'],
+      showMenuAndAccessForRoles: ['admin', 'admin:tms'],
       icon: 'news-paper.svg',
       unleashVariable:
         'SAPAWARGA-CMS__TICKETING--SRIBADUGA--LAPORAN-PENDAPATAN',
