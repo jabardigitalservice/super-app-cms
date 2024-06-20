@@ -83,6 +83,8 @@
                     v-model="childrenCatagory"
                     class="ml-2 mr-2 block h-[38px] w-[60px] rounded-lg border border-gray-300 text-center text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     type="number"
+                    name="childrenCatagory"
+                    @input="handleInputTicket($event)"
                   />
                   <BaseButton
                     class="flex h-[38px] w-[38px] items-center justify-center rounded-lg border border-gray-300"
@@ -120,6 +122,8 @@
                     v-model="matureCatagory"
                     class="ml-2 mr-2 block h-[38px] w-[60px] rounded-lg border border-gray-300 text-center text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     type="number"
+                    name="matureCatagory"
+                    @input="handleInputTicket($event)"
                   />
                   <BaseButton
                     class="flex h-[38px] w-[38px] items-center justify-center rounded-lg border border-gray-300"
@@ -157,6 +161,8 @@
                     v-model="foreignerCatagory"
                     class="ml-2 mr-2 block h-[38px] w-[60px] rounded-lg border border-gray-300 text-center text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     type="number"
+                    name="foreignerCatagory"
+                    @input="handleInputTicket($event)"
                   />
                   <BaseButton
                     class="flex h-[38px] w-[38px] items-center justify-center rounded-lg border border-gray-300"
@@ -727,6 +733,22 @@ export default {
         this.cityList = data
       } catch (error) {
         console.error(error)
+      }
+    },
+    handleInputTicket(e) {
+      const { name, value } = e.target
+      switch (name) {
+        case 'childrenCatagory':
+          this.childrenCatagory = Math.round(value)
+          break
+        case 'matureCatagory':
+          this.matureCatagory = Math.round(value)
+          break
+        case 'foreignerCatagory':
+          this.foreignerCatagory = Math.round(value)
+          break
+        default:
+          break
       }
     },
   },
