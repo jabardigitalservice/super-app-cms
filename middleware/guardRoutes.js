@@ -4,11 +4,24 @@ export default function ({ $role, route, redirect, $auth, $unleash }) {
   if (route.path !== '/login' && $auth.strategy.token.get()) {
     // redirect first login by role
     if (route.path === '/') {
-      if ($role.includes('admin:mraj_officer') && !$role.includes('admin')) {
-        return redirect('/ticket-museum')
-      } else if ($role.includes('tahura_officer') && !$role.includes('admin')) {
-        return redirect('/tahura/dashboard')
-      }
+      const role = [
+        { role: 'admin:mraj_officer', link: '/ticket-museum' }, // link path for redirect first login
+        { role: 'tahura_officer', link: '/tahura/dashboard' },
+        { role: 'admin:aduan-team-1', link: '/aduan/dashboard' },
+        { role: 'admin:aduan-team-2', link: '/aduan/dashboard' },
+        { role: 'admin:aduan-team-3', link: '/aduan/penginputan-ikp' },
+        { role: 'admin:aduan-team-opd', link: '/aduan/instruksi-aduan-warga' },
+        {
+          role: 'admin:aduan-user-management',
+          link: '/aduan/instruksi-aduan-warga',
+        },
+      ]
+
+      role.forEach((item) => {
+        if ($role.includes(item.role) && !$role.includes('admin')) {
+          return redirect(item.link)
+        }
+      })
     }
 
     const allowedRoutesForAllRoles = [
