@@ -399,7 +399,6 @@ export default {
         )
       }
       this.dateDataList = dateList
-      console.log(dateList)
 
       this.monthAndYearTitle = `${dateList[0].rawDateData.toLocaleDateString(
         'id-ID',
