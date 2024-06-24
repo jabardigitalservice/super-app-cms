@@ -295,6 +295,7 @@ export default {
         attractionId: 'c64143d6-d630-4ccf-8529-483b9b737a52',
       },
       thisDay: new Date(),
+      holidayList: [],
     }
   },
 
@@ -342,6 +343,22 @@ export default {
   methods: {
     setQuery(params) {
       this.query = { ...this.query, ...params }
+    },
+    async fetchHolidayList() {
+      this.loading = true
+
+      try {
+        const holidayResponse = await this.$axios.get(
+          '/ticket/tms/admin/attractions/closing'
+        )
+
+        const { data } = holidayResponse.data
+        this.holidayList = data
+      } catch (error) {
+        console.error(error)
+      } finally {
+        this.loading = false
+      }
     },
     async fetchCalendar() {
       this.loading = true
@@ -391,6 +408,7 @@ export default {
       const startDate = formatDate(dateList[0].rawDateData, 'yyyy-MM-dd')
       const endDate = formatDate(dateList[5].rawDateData, 'yyyy-MM-dd')
       this.setQuery({ startDate, endDate })
+      this.fetchHolidayList()
       this.fetchCalendar()
     },
     getDataInDayList() {
@@ -420,6 +438,7 @@ export default {
       const startDate = formatDate(dateList[0].rawDateData, 'yyyy-MM-dd')
       const endDate = formatDate(dateList[0].rawDateData, 'yyyy-MM-dd')
       this.setQuery({ startDate, endDate })
+      this.fetchHolidayList()
       this.fetchCalendar()
     },
 
@@ -491,8 +510,12 @@ export default {
       const isBeforeToday = dateToCompare < today
       const isAfterSessionStart =
         dateToCompare === today && currentTime > sessionStartTime
+      // compare this.dateDataList data included in holidayList, then return true
+      const isHoliday = this.holidayList.some(
+        (holiday) => formatDate(holiday.date, 'yyyy-MM-dd') === dateToCompare
+      )
 
-      return isBeforeToday || isAfterSessionStart
+      return isBeforeToday || isAfterSessionStart || isHoliday
     },
     handleClickDate(dateData, sessionData) {
       this.dateValue = dateData
