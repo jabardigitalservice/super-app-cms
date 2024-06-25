@@ -6,6 +6,8 @@ export const state = () => ({
   refetchCalendar: false,
   reservationDateValue: new Date(),
   sessionValue: null,
+  dialogError: null,
+  detailItemError: null,
 })
 
 export const getters = {
@@ -30,6 +32,12 @@ export const getters = {
   getSessionValue: (state) => {
     return state.sessionValue
   },
+  getDialogError: (state) => {
+    return state.dialogError
+  },
+  getDetailItemError: (state) => {
+    return state.detailItemError
+  },
 }
 export const actions = {
   setChildrenCatagory({ commit }, childrenCatagory) {
@@ -53,6 +61,12 @@ export const actions = {
   setSessionValue({ commit }, sessionValue) {
     commit('setSessionValue', sessionValue)
   },
+  setDialogError({ commit }, dialogError) {
+    commit('setDialogError', dialogError)
+  },
+  setDetailItemError({ commit }, detailItemError) {
+    commit('setDetailItemError', detailItemError)
+  },
 }
 export const mutations = {
   setChildrenCatagory(state, childrenCatagory) {
@@ -75,5 +89,11 @@ export const mutations = {
   },
   setSessionValue(state, sessionValue) {
     state.sessionValue = sessionValue
+  },
+  setDialogError(state, dialogError) {
+    state.dialogError = dialogError
+  },
+  setDetailItemError(state, detailItemError) {
+    state.detailItemError = detailItemError
   },
 }

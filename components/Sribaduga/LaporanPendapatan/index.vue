@@ -421,7 +421,7 @@ export default {
     resetFilter() {
       this.query = {
         category: '',
-        status: '',
+        statusCode: '',
       }
       this.dateRange = [
         new Date(new Date().setMonth(new Date().getMonth() - 1)),
