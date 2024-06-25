@@ -231,6 +231,7 @@
               :reschedule-value="rescheduleValue"
               :options="sessionDataListForReschedule"
               :invoice-id="invoiceId"
+              :holiday-list="holidayList"
             />
             <DialogSuccess />
             <DialogBatalkanReservasi :invoice-id="invoiceId" />

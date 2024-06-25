@@ -83,6 +83,10 @@ export default {
       type: String,
       default: '',
     },
+    holidayList: {
+      type: Array,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -158,10 +162,12 @@ export default {
       }
     },
     disableDate(date) {
-      return (
-        date < new Date() ||
-        date > new Date(new Date().setDate(new Date().getDate() + 6))
+      const dateToCompare = formatDate(date, 'yyyy-MM-dd')
+      const isHoliday = this.holidayList.some(
+        (holiday) => formatDate(holiday.date, 'yyyy-MM-dd') === dateToCompare
       )
+
+      return date < new Date() || isHoliday
     },
     closeDialogReschedule() {
       this.$store.commit('modals/CLOSE', 'dialog-reschedule')
