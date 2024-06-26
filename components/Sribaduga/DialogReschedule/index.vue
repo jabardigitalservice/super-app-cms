@@ -68,7 +68,7 @@
 
 <script>
 import { formatDate } from '~/utils'
-
+import { iconPopup } from '~/constant/icon-popup-new'
 export default {
   props: {
     rescheduleValue: {
@@ -149,7 +149,11 @@ export default {
         sessionId: Number(sessionId.session.value),
       }
       try {
-        await this.$axios.post('/ticket/tms/admin/orders/reschedule', payload)
+        await this.$axios.post('/ticket/tms/admin/orders/reschedule', payload, {
+          headers: {
+            'X-localization': 'id',
+          },
+        })
         this.$store.commit('modals/CLOSE', 'dialog-reschedule')
         this.$store.commit('modals/CLOSE', 'detail-reservasi')
         this.$store.commit(
@@ -158,7 +162,17 @@ export default {
         )
         this.$store.commit('modals/OPEN', 'dialog-success')
       } catch (error) {
-        console.error(error)
+        const errorResponse = error?.response?.data?.message
+        this.$store.commit('modals/CLOSE', 'dialog-reschedule')
+        this.$store.commit('modals/CLOSE', 'detail-reservasi')
+        this.$store.commit('add_reservation/setDialogError', {
+          title: 'Gagal Reservasi',
+          icon: iconPopup.failed,
+        })
+        this.$store.commit('add_reservation/setDetailItemError', {
+          title: errorResponse,
+        })
+        this.$store.commit('modals/OPEN', 'error-calendar')
       }
     },
     disableDate(date) {

@@ -415,6 +415,7 @@ import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import axios from 'axios'
 import { formatDate } from '~/utils'
 import { listKategoriInstansi } from '@/constant/sribaduga.js'
+import { iconPopup } from '~/constant/icon-popup-new'
 
 export default {
   name: 'DialogTambahReservasi',
@@ -676,14 +677,28 @@ export default {
             ],
           }
 
-          await this.$axios.post('/ticket/tms/admin/orders', payload)
+          await this.$axios.post('/ticket/tms/admin/orders', payload, {
+            headers: {
+              'X-localization': 'id',
+            },
+          })
           this.$store.commit('add_reservation/setIsOpenForm', false)
           this.$store.commit('dialog/setTitle', 'Reservasi Berhasil Dibuat')
           this.$store.commit('modals/OPEN', 'dialog-success')
           this.errorTicket = ''
           this.clearForm()
         } catch (error) {
-          console.log(error)
+          const errorResponse = error?.response?.data?.message
+          this.$store.commit('add_reservation/setDialogError', {
+            title: 'Gagal Reservasi',
+            icon: iconPopup.failed,
+          })
+          this.$store.commit('add_reservation/setDetailItemError', {
+            title: errorResponse,
+          })
+          this.$store.commit('add_reservation/setIsOpenForm', false)
+          this.clearForm()
+          this.$store.commit('modals/OPEN', 'error-calendar')
         }
       }
     },

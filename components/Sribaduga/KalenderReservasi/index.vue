@@ -234,6 +234,12 @@
               :holiday-list="holidayList"
             />
             <DialogSuccess />
+            <DialogInformationNew
+              name-modal="error-calendar"
+              :dialog-modal="dialogError"
+              :detail-item-modal="detailItemError"
+              :is-warning="true"
+            />
             <DialogBatalkanReservasi :invoice-id="invoiceId" />
           </div>
         </BaseTabPanel>
@@ -303,6 +309,8 @@ export default {
   computed: {
     ...mapState({
       refetchCalendar: (state) => state.add_reservation.refetchCalendar,
+      dialogError: (state) => state.add_reservation.dialogError,
+      detailItemError: (state) => state.add_reservation.detailItemError,
     }),
     sessionDataListForReschedule() {
       return this.sessionDataList.map((sessionData) => {
