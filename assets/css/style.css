@@ -168,3 +168,7 @@
 .jds-input-text input {
   @apply placeholder:!text-sm;
 }
+
+.jds-popover__content {
+  z-index: 10 !important;
+}
