@@ -21,10 +21,10 @@
     <div class="onverflow-x-auto rounded-lg font-roboto">
       <JdsDataTable
         :headers="headerTable"
-        :items="getListData"
+        :items="listManagementRelease"
         :pagination="pagination"
-        @next-page="nextPage"
-        @previous-page="previousPage"
+        @next-page="pageChange"
+        @previous-page="pageChange"
         @page-change="pageChange"
         @per-page-change="perPageChange"
         @change:sort="sortChange"
@@ -75,14 +75,14 @@ import {
   verificationConfirmationPopup,
   verificationInformationPopup
 } from '~/constant/manajemen-release'
-import { generateItemsPerPageOptions, formatDate } from '~/utils'
+import { generateItemsPerPageOptions, formatDate, resetQueryParamsUrl } from '~/utils'
 import popup from '~/mixins/manajemen-release'
 export default {
   name: 'ListManajemenRelease',
   mixins: [popup],
   data () {
     return {
-      listData: [],
+      listDataManagementRelease: [],
       dummmyData,
       statusTable,
       headerTable,
@@ -93,8 +93,6 @@ export default {
         itemsPerPageOptions: [],
         disabled: true
       },
-      sortBy: '',
-      sortOrder: '',
       search: '',
       query: {
         pageSize: 5,
@@ -122,25 +120,25 @@ export default {
         params: this.query
       })
 
-      const data = response.data.data
-      this.listData = data?.data || []
+      const dataManagementRelease = response.data.data
+      this.listDataManagementRelease = dataManagementRelease?.data || []
 
-      if (this.listData.length) {
+      if (this.listDataManagementRelease.length) {
         this.pagination.disabled = false
       } else {
         this.pagination.disabled = true
       }
-      this.pagination.currentPage = data?.page || 1
-      this.pagination.totalRows = data?.totalData || 0
-      this.pagination.itemsPerPage = data?.pageSize || this.query.pageSize
+      this.pagination.currentPage = dataManagementRelease?.page || 1
+      this.pagination.totalRows = dataManagementRelease?.totalData || 0
+      this.pagination.itemsPerPage = dataManagementRelease?.pageSize || this.query.pageSize
     } catch {
       this.listData = this.dummmyData
       this.pagination.disabled = true
     }
   },
   computed: {
-    getListData () {
-      return this.listData.map((item) => {
+    listManagementRelease () {
+      return this.listDataManagementRelease.map((item) => {
         return {
           ...item,
           date: formatDate(item.date || '', 'dd/MM/yyyy HH:mm'),
@@ -155,8 +153,20 @@ export default {
     query: {
       deep: true,
       handler () {
+        resetQueryParamsUrl(this)
         this.$fetch()
       }
+    },
+    '$route.query': {
+      deep: true,
+      immediate: true,
+      handler (newQuery) {
+        if (Object.keys(newQuery).length > 0) {
+          this.query = { ...newQuery }
+          this.search = this.query.search || ''
+        }
+      }
+
     }
   },
   mounted () {
@@ -194,12 +204,6 @@ export default {
     onSearch (value) {
       this.searchInvoice(value)
     },
-    nextPage (value) {
-      this.query.page = value
-    },
-    previousPage (value) {
-      this.query.page = value
-    },
     pageChange (value) {
       this.query.page = value
     },
@@ -220,13 +224,22 @@ export default {
       }
     },
     goToForm () {
-      this.$router.push('/management-release/create')
+      this.$router.push({
+        path: '/management-release/create',
+        query: this.query
+      })
     },
     goToPageDetail (item) {
-      this.$router.push(`/management-release/detail/${item.versiRilis}`)
+      this.$router.push({
+        path: `/management-release/detail/${item.versiRilis}`,
+        query: this.query
+      })
     },
     goToPageEdit (item) {
-      this.$router.push(`/management-release/edit/${item.versiRilis}`)
+      this.$router.push({
+        path: `/management-release/edit/${item.versiRilis}`,
+        query: this.query
+      })
     }
   }
 }

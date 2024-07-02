@@ -6,21 +6,21 @@
 export default {
   name: 'PageDaftarPesanan',
   layout: 'Dashboard',
-  data () {
+  data() {
     return {
       navigations: [
         {
           label: 'Daftar Pesanan',
-          link: '/tahura/daftar-pesanan'
-        }
-      ]
+          link: '/tahura/daftar-pesanan',
+        },
+      ],
     }
   },
-  mounted () {
+  mounted() {
     this.$store.commit('setActivePage', 'Daftar Pesanan')
     this.$store.commit('setHeader', {
-      navigations: this.navigations
+      navigations: this.navigations,
     })
-  }
+  },
 }
 </script>

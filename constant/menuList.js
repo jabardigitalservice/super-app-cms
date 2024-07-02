@@ -7,22 +7,22 @@ const rwMenu = {
       path: '/',
       arrow: false,
       showMenuAndAccessForRoles: ['admin'],
-      icon: 'item.svg'
+      icon: 'item.svg',
     },
     {
       name: 'Kegiatan RW',
       path: '/activities',
       arrow: false,
       showMenuAndAccessForRoles: ['admin'],
-      icon: 'item.svg'
-    }
+      icon: 'item.svg',
+    },
   ],
   childRoute: [
     {
       path: '/detail',
-      accessChildRouteForRoles: ['admin']
-    }
-  ]
+      accessChildRouteForRoles: ['admin'],
+    },
+  ],
 }
 
 const messageNotifMenu = {
@@ -34,9 +34,9 @@ const messageNotifMenu = {
       path: '/message-notif',
       arrow: false,
       showMenuAndAccessForRoles: ['admin'],
-      icon: 'item.svg'
-    }
-  ]
+      icon: 'item.svg',
+    },
+  ],
 }
 
 const tiketMuseumMenu = {
@@ -48,9 +48,9 @@ const tiketMuseumMenu = {
       path: '/ticket-museum',
       arrow: false,
       showMenuAndAccessForRoles: ['admin', 'admin:mraj_officer'],
-      icon: 'item.svg'
-    }
-  ]
+      icon: 'item.svg',
+    },
+  ],
 }
 
 const masterDataMenu = {
@@ -69,8 +69,8 @@ const masterDataMenu = {
       path: '/configuration',
       arrow: true,
       showMenuAndAccessForRoles: ['admin'],
-      icon: 'item.svg'
-    }
+      icon: 'item.svg',
+    },
     // TODO: api is currently not ready, so I hide the menu, until the configuration with the API is complete
     // {
     //   name: 'Manajemen Rilis',
@@ -78,44 +78,79 @@ const masterDataMenu = {
     //   arrow: false,
     // showMenuAndAccessForRoles: ['admin']
     // }
-  ]
+  ],
 }
 
-// TODO: comment code for production
-// const aduanMenu = {
-//   titleMenu: 'aduan',
-//   showTitleMenuForRoles: ['admin'],
-//   menu: [
-//     {
-//       name: 'Daftar Aduan Masuk',
-//       path: '/aduan/aduan-masuk',
-//       arrow: false,
-//       showMenuAndAccessForRoles: ['admin'],
-//       icon: 'clipboard-list.svg'
-//     },
-//     {
-//       name: 'Daftar Penentuan Kewenangan',
-//       path: '/aduan/penentuan-kewenangan',
-//       arrow: false,
-//       showMenuAndAccessForRoles: ['admin'],
-//       icon: 'clipboard-user.svg'
-//     },
-//     {
-//       name: 'Dialihkan ke SP4N',
-//       path: '/aduan/dialihkan-ke-span-lapor',
-//       arrow: false,
-//       showMenuAndAccessForRoles: ['admin'],
-//       icon: 'clipboard-arrow-left.svg'
-//     },
-//     {
-//       name: 'Daftar Aduan dari SP4N',
-//       path: '/aduan/aduan-dari-span-lapor',
-//       arrow: false,
-//       showMenuAndAccessForRoles: ['admin'],
-//       icon: 'clipboard-pencil.svg'
-//     }
-//   ]
-// }
+const aduanMenu = {
+  titleMenu: 'aduan',
+  showTitleMenuForRoles: [
+    'admin',
+    'admin:aduan-team-1',
+    'admin:aduan-team-2',
+    'admin:aduan-team-3',
+    'admin:aduan-team-opd',
+    'admin:aduan-user-management',
+  ],
+  unleashVariable: 'SAPAWARGA-CMS__ADUAN',
+  menu: [
+    {
+      name: 'Daftar Aduan Masuk',
+      path: '/aduan/aduan-masuk',
+      arrow: false,
+      showMenuAndAccessForRoles: ['admin', 'admin:aduan-team-1'],
+      icon: 'clipboard-list.svg',
+      unleashVariable: 'SAPAWARGA-CMS__ADUAN--ADUAN-MASUK',
+    },
+    {
+      name: 'Daftar Penentuan Kewenangan',
+      path: '/aduan/penentuan-kewenangan',
+      arrow: false,
+      showMenuAndAccessForRoles: ['admin', 'admin:aduan-team-2'],
+      icon: 'clipboard-user.svg',
+      unleashVariable: 'SAPAWARGA-CMS__ADUAN--PENENTU-KEWENANGAN',
+    },
+    {
+      name: 'Dialihkan ke SP4N',
+      path: '/aduan/dialihkan-ke-span-lapor',
+      arrow: false,
+      showMenuAndAccessForRoles: ['admin', 'admin:aduan-team-1'],
+      icon: 'clipboard-arrow-left.svg',
+      unleashVariable: 'SAPAWARGA-CMS__ADUAN--ADUAN-DIALIHKAN-KE-SP4N',
+    },
+    {
+      name: 'Daftar Aduan dari SP4N',
+      path: '/aduan/aduan-dari-span-lapor',
+      arrow: false,
+      showMenuAndAccessForRoles: ['admin', 'admin:aduan-team-1'],
+      icon: 'clipboard-pencil.svg',
+      unleashVariable: 'SAPAWARGA-CMS__ADUAN--ADUAN-DARI-SP4N',
+    },
+    {
+      name: 'Daftar Penginputan IKP',
+      path: '/aduan/penginputan-ikp',
+      arrow: false,
+      showMenuAndAccessForRoles: ['admin', 'admin:aduan-team-3'],
+      icon: 'edit-pencil.svg',
+      unleashVariable: 'SAPAWARGA-CMS__ADUAN--PENGINPUTAN-IKP',
+    },
+    {
+      name: 'Daftar Instruksi Aduan Warga',
+      path: '/aduan/instruksi-aduan-warga',
+      arrow: false,
+      showMenuAndAccessForRoles: ['admin', 'admin:aduan-team-opd'],
+      icon: 'bag.svg',
+      unleashVariable: 'SAPAWARGA-CMS__ADUAN--INSTRUKSI-ADUAN-WARGA',
+    },
+    {
+      name: 'Management Akun',
+      path: '/aduan/management-akun',
+      arrow: false,
+      showMenuAndAccessForRoles: ['admin', 'admin:aduan-user-management'],
+      icon: 'user.svg',
+      unleashVariable: 'SAPAWARGA-CMS__ADUAN--MANAGEMENT-AKUN',
+    },
+  ],
+}
 
 const tahuraMenu = {
   titleMenu: 'Ticketing Tahura',
@@ -126,29 +161,63 @@ const tahuraMenu = {
       path: '/tahura/dashboard',
       arrow: false,
       showMenuAndAccessForRoles: ['admin', 'tahura_officer'],
-      icon: 'speedo-meter.svg'
+      icon: 'speedo-meter.svg',
     },
     {
       name: 'Daftar Pesanan',
       path: '/tahura/daftar-pesanan',
       arrow: false,
       showMenuAndAccessForRoles: ['admin', 'tahura_officer'],
-      icon: 'ticket.svg'
+      icon: 'ticket.svg',
     },
     {
       name: 'Laporan Pendapatan',
       path: '/tahura/laporan-pendapatan',
       arrow: false,
       showMenuAndAccessForRoles: ['admin', 'tahura_officer'],
-      icon: 'news-paper.svg'
-    }
+      icon: 'news-paper.svg',
+    },
   ],
   childRoute: [
     {
       path: '/tahura/preview-pdf',
-      accessChildRouteForRoles: ['admin', 'tahura_officer']
-    }
-  ]
+      accessChildRouteForRoles: ['admin', 'tahura_officer'],
+    },
+  ],
+}
+
+const sriBadugaMenu = {
+  titleMenu: 'TICKETING SRIBADUGA',
+  showTitleMenuForRoles: ['admin'],
+  unleashVariable: 'SAPAWARGA-CMS__TICKETING--SRIBADUGA',
+  menu: [
+    {
+      name: 'Daftar Pesanan',
+      path: '/sribaduga/daftar-pesanan',
+      arrow: false,
+      showMenuAndAccessForRoles: ['admin', 'admin:tms'],
+      icon: 'ticket.svg',
+      unleashVariable: 'SAPAWARGA-CMS__TICKETING--SRIBADUGA--DAFTAR-PESANAN',
+    },
+    {
+      name: 'Kalender Reservasi',
+      path: '/sribaduga/kalender-reservasi',
+      arrow: false,
+      showMenuAndAccessForRoles: ['admin', 'admin:tms'],
+      icon: 'kalender.svg',
+      unleashVariable:
+        'SAPAWARGA-CMS__TICKETING--SRIBADUGA--KALENDER-RESERVASI',
+    },
+    {
+      name: 'Laporan Pendapatan',
+      path: '/sribaduga/laporan-pendapatan',
+      arrow: false,
+      showMenuAndAccessForRoles: ['admin', 'admin:tms'],
+      icon: 'news-paper.svg',
+      unleashVariable:
+        'SAPAWARGA-CMS__TICKETING--SRIBADUGA--LAPORAN-PENDAPATAN',
+    },
+  ],
 }
 
 export const menu = [
@@ -156,7 +225,7 @@ export const menu = [
   messageNotifMenu,
   tiketMuseumMenu,
   masterDataMenu,
-  // TODO: comment code for production
-  // aduanMenu,
-  tahuraMenu
+  aduanMenu,
+  tahuraMenu,
+  sriBadugaMenu,
 ]

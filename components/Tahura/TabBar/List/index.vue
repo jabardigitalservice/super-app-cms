@@ -11,36 +11,36 @@
       >
         <BaseTab
           class="flex items-start text-sm text-green-100"
-          :selected="indexTab === selectedTabIndex"
+          :selected="indexTab === tabIndex"
           :title="statusTahura[dataTab.statusCode]?.label"
         >
           <div
             class="h-[28px] w-[28px] rounded-full p-1"
             :class="
-              indexTab === selectedTabIndex ? 'bg-gray-100' : 'bg-green-800'
+              indexTab === tabIndex ? 'bg-gray-100' : 'bg-green-800'
             "
           >
             <BaseIconSvg
               :icon="statusTahura[dataTab.statusCode]?.icon"
               class="icon-tab-content !h-[14px] !w-[14px] !shadow-lg"
               :fill-color="
-                indexTab === selectedTabIndex ? '#16A75C' : '#FFFFFF'
+                indexTab === tabIndex ? '#16A75C' : '#FFFFFF'
               "
               :class="{
-                'icon-tab-selected': indexTab === selectedTabIndex,
+                'icon-tab-selected': indexTab === tabIndex,
               }"
             />
           </div>
 
           <div
             class="ml-2 !font-roboto text-green-100"
-            :class="{ '!text-gray-700': indexTab === selectedTabIndex }"
+            :class="{ '!text-gray-700': indexTab === tabIndex }"
           >
             {{ statusTahura[dataTab.statusCode]?.label }}
             <p
               class="text-left !font-roboto text-xl font-medium text-white"
               :class="{
-                '!text-blue-gray-800': indexTab === selectedTabIndex,
+                '!text-blue-gray-800': indexTab === tabIndex,
               }"
             >
               {{ dataTab.quantity }}
@@ -59,7 +59,11 @@ export default {
   props: {
     listTab: {
       type: Array,
-      default: () => []
+      default: () => ([])
+    },
+    tabIndex: {
+      type: Number,
+      default: 0
     }
   },
   data () {
@@ -71,6 +75,7 @@ export default {
   methods: {
     selectedTabHandle (index) {
       this.selectedTabIndex = index
+      this.$emit('selected', index)
     }
   }
 }

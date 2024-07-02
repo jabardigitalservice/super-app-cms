@@ -35,7 +35,7 @@ export default {
 
     detailDragAndDrop: {
       type: Object,
-      default: () => {}
+      default: () => ({})
     },
     apiUpdateFile: {
       type: String,

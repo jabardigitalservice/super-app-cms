@@ -48,15 +48,15 @@ import { directive as onClickaway } from 'vue-clickaway'
 export default {
   name: 'ButtonDropdown',
   directives: {
-    onClickaway
+    onClickaway,
   },
   props: {
     listMenuPopOver: {
       type: Array,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
-  data () {
+  data() {
     return {
       isShowPopOver: false,
       popoverOptions: {
@@ -64,17 +64,17 @@ export default {
           {
             name: 'offset',
             options: {
-              offset: [0, 6]
-            }
-          }
-        ]
-      }
+              offset: [0, 6],
+            },
+          },
+        ],
+      },
     }
   },
   methods: {
-    closePopupOverHandle () {
+    closePopupOverHandle() {
       this.isShowPopOver = false
-    }
-  }
+    },
+  },
 }
 </script>

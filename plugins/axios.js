@@ -1,12 +1,17 @@
 import { formatInTimeZone } from 'date-fns-tz'
 
-export default function ({ $axios, $config }) {
+export default function ({ $axios, $config, store }) {
   $axios.onRequest((config) => {
     const url = config.url
     if (!url.includes($config.keyclockBaseUrl)) {
       const customHeaders = {
         'Api-Key': $config.apiKey,
-        'X-Timestamp': formatInTimeZone(new Date(), 'Asia/Jakarta', "yyyy-MM-dd'T'HH:mm:ssXXX")
+        'X-Timestamp': formatInTimeZone(
+          new Date(),
+          'Asia/Jakarta',
+          "yyyy-MM-dd'T'HH:mm:ssXXX"
+        ),
+        ...store.state.axios.authorizationHeaders,
       }
       const headers = config.headers
       config.headers = { ...headers, ...customHeaders }

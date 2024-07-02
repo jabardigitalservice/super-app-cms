@@ -1,24 +1,27 @@
 <template>
   <div>
     <div class="mt-2">
-      <div class="flex justify-between mb-4">
+      <div class="mb-4 flex justify-between">
         <jds-search
+          v-model="search"
           placeholder="Masukkan judul pesan"
           icon
           :button="false"
           small
-          value=""
-          class="w-[275px] h-[38px] text-gray-500"
+          class="h-[38px] w-[275px] text-gray-500"
           @input="searchHandle"
         />
-        <jds-button class="!bg-green-600 !w-[102px] !text-sm" @click.prevent="goToFormAddMessageNotifHandle">
+        <jds-button
+          class="!w-[102px] !bg-green-600 !text-sm"
+          @click.prevent="goToFormAddMessageNotifHandle"
+        >
           Buat Pesan
         </jds-button>
       </div>
-      <div class=" overflow-x-auto overflow-y-hidden">
+      <div class="overflow-x-auto overflow-y-hidden">
         <JdsDataTable
           :headers="messageNotifHeader"
-          :items="getListMessageNotif"
+          :items="listMessageNotif"
           :loading="$fetchState.pending"
           :pagination="pagination"
           @next-page="pageChangeHandle"
@@ -28,12 +31,12 @@
           @change:sort="sortHandle"
         >
           <!-- eslint-disable-next-line vue/valid-v-slot -->
-          <template #item.status="{item}">
+          <template #item.status="{ item }">
             <div class="flex items-center">
               <div
                 v-show="item?.status"
                 :class="{
-                  'mr-2 h-2 w-2 rounded-full':true,
+                  'mr-2 h-2 w-2 rounded-full': true,
                   'bg-green-600': item.status == messageStatus.published.id,
                   'bg-yellow-600': item.status == messageStatus.waiting.id,
                 }"
@@ -43,25 +46,69 @@
           </template>
           <!-- eslint-disable-next-line vue/valid-v-slot -->
           <template #item.action="{ item }">
-            <BaseTableAction :list-menu-pop-over="filterTableAction(item.status)" @detail="goToDetailPageHandle(item)" @delete="showDeletePopupHandle(item)" @publish="showPublishedPopupHandle(item)" />
+            <BaseTableAction
+              :list-menu-pop-over="filterTableAction(item.status)"
+              @detail="goToDetailPageHandle(item)"
+              @publish="
+                openModalConfirmation(
+                  publishedConfirmationPopup.nameModal,
+                  item
+                )
+              "
+              @delete="
+                openModalConfirmation(deleteConfirmationPopup.nameModal, item)
+              "
+            />
           </template>
         </JdsDataTable>
       </div>
     </div>
-    <BasePopup :show-popup="showPopupConfirmationInformation" @submit="submitHandle" @close="closeHandle" />
+
+    <DialogConfirmationNew
+      :dialog-modal="publishedConfirmationPopup"
+      :detail-item-modal="detailItem"
+      :path="`/messages/${detailItem.id}/send`"
+      http-method="post"
+      @error="emitOpenModalInformation"
+      @success="emitOpenModalInformation"
+    />
+    <DialogConfirmationNew
+      :dialog-modal="deleteConfirmationPopup"
+      :detail-item-modal="detailItem"
+      :path="`/messages/${detailItem.id}`"
+      http-method="delete"
+      @error="emitOpenModalInformation"
+      @success="emitOpenModalInformation"
+    />
+
+    <DialogInformationNew
+      :name-modal="modalNameInformation"
+      :dialog-modal="dialogInformationPopup"
+      :detail-item-modal="detailItem"
+      :is-success="isSuccessConfirmation"
+      @close-all-modal="$fetch()"
+    />
   </div>
 </template>
 
 <script>
 import debounce from 'lodash.debounce'
-import { messageNotifHeader, messageStatus, deleteConfirmationPopup, deleteInformationPopup, publishedConfirmationPopup, publishedInformationPopup } from '~/constant/message-notif'
-import { iconPopup } from '~/constant/icon-popup'
-import { formatDate, generateItemsPerPageOptions } from '~/utils'
-import popup from '~/mixins/message-notif'
+import {
+  messageNotifHeader,
+  messageStatus,
+  deleteConfirmationPopup,
+  deleteInformationPopup,
+  publishedConfirmationPopup,
+  publishedInformationPopup
+} from '~/constant/message-notif'
+import {
+  formatDate,
+  generateItemsPerPageOptions,
+  resetQueryParamsUrl
+} from '~/utils'
 
 export default {
   name: 'ListMessageNotif',
-  mixins: [popup],
   data () {
     return {
       messageNotifList: [],
@@ -72,32 +119,38 @@ export default {
         { menu: 'Publikasikan', value: 'publish' },
         { menu: 'Hapus', value: 'delete' }
       ],
+      query: {
+        q: '',
+        page: 1,
+        limit: 5,
+        sortBy: '',
+        sortOrder: ''
+      },
       pagination: {
         currentPage: 1,
         totalRows: 5,
         itemsPerPage: 5,
         itemsPerPageOptions: []
       },
-      sortBy: '',
-      sortOrder: '',
       deleteConfirmationPopup,
       deleteInformationPopup,
-      iconPopup,
       publishedInformationPopup,
       publishedConfirmationPopup,
-      search: ''
+      search: '',
+      detailItem: {
+        id: '',
+        title: ''
+      },
+      dialogInformationPopup: {},
+      modalNameInformation: '',
+      isSuccessConfirmation: false
     }
   },
   async fetch () {
     try {
-      const queryParams = {
-        q: this.search, // query params search from backend
-        page: this.pagination.currentPage,
-        limit: this.pagination.itemsPerPage,
-        sortBy: this.sortBy,
-        sortOrder: this.sortOrder
-      }
-      const response = await this.$axios.get('/messages', { params: queryParams })
+      const response = await this.$axios.get('/messages', {
+        params: this.query
+      })
       const dataMessageNotif = response.data
       this.messageNotifList = dataMessageNotif.data
       this.pagination.currentPage = dataMessageNotif.meta.page
@@ -108,7 +161,7 @@ export default {
     }
   },
   computed: {
-    getListMessageNotif () {
+    listMessageNotif () {
       return this.messageNotifList.map((item) => {
         return {
           ...item,
@@ -120,83 +173,140 @@ export default {
         }
       })
     },
-    getIsError () {
+    isError () {
       return this.$store.state.isError
     }
   },
+  watch: {
+    query: {
+      deep: true,
+      handler () {
+        resetQueryParamsUrl(this)
+        this.$fetch()
+      }
+    },
+    '$route.query': {
+      deep: true,
+      immediate: true,
+      handler (newQuery) {
+        if (Object.keys(newQuery).length > 0) {
+          this.query = { ...newQuery }
+          this.search = this.query.q || ''
+        }
+      }
+    }
+  },
   mounted () {
-    this.pagination.itemsPerPageOptions = generateItemsPerPageOptions(this.pagination.itemsPerPage)
+    this.pagination.itemsPerPageOptions = generateItemsPerPageOptions(
+      this.pagination.itemsPerPage
+    )
   },
   methods: {
     filterTableAction (currentMessageStatus) {
       if (currentMessageStatus === messageStatus.published.id) {
-        return this.menuTableAction.filter(item => item.menu !== 'Publikasikan')
+        return this.menuTableAction.filter(
+          item => item.menu !== 'Publikasikan'
+        )
       } else {
         return this.menuTableAction
       }
     },
     getStatusName (currentStatus) {
-      return Object.values(this.messageStatus).find(item => item.id === currentStatus).status
+      return Object.values(this.messageStatus).find(
+        item => item.id === currentStatus
+      ).status
     },
     pageChangeHandle (value) {
-      this.pagination.currentPage = value
+      this.query.page = value
       this.$fetch()
     },
     perPageChangeHandle (value) {
-      this.pagination.itemsPerPage = value
-      this.pagination.currentPage = 1
+      if (value) {
+        this.query.limit = value
+      }
+      this.pagination.page = 1
       this.$fetch()
     },
     sortHandle (value) {
       // replace createdAt & publishedAt to created_at & published_at, because in firebase is using snake case & json using camel case
-      this.sortBy = Object.keys(value)[0].replace('At', '_at')
-      this.sortOrder = Object.values(value)[0]
-      if (this.sortOrder === 'no-sort') {
-        this.sortBy = ''
-        this.sortOrder = ''
+      this.query.sortBy = Object.keys(value)[0].replace('At', '_at')
+      this.query.sortOrder = Object.values(value)[0]
+      if (this.query.sortOrder === 'no-sort') {
+        this.query.sortBy = ''
+        this.query.sortOrder = ''
       }
       this.$fetch()
     },
     searchDebounce: debounce(function (value) {
       if (value.length > 2) {
-        this.search = value
+        this.query.page = 1
+        this.query.q = value
+        this.$fetch()
       } else if (value.length === 0) {
-        this.search = ''
+        this.query.q = ''
+        this.$fetch()
       }
-      this.pagination.currentPage = 1
-      this.$fetch()
     }, 500),
     searchHandle (value) {
       this.searchDebounce(value)
     },
     goToDetailPageHandle (item) {
-      this.$router.push(`/message-notif/detail/${item.id}`)
+      this.$router.push({
+        path: `/message-notif/detail/${item.id}`,
+        query: this.query
+      })
     },
     goToFormAddMessageNotifHandle () {
       this.$router.push('/message-notif/create')
+    },
+    openModalConfirmation (modalName, itemDetail) {
+      this.detailItem.id = itemDetail.id
+      this.detailItem.title = itemDetail.title
+      this.$store.commit('modals/OPEN', modalName)
+    },
+    emitOpenModalInformation (modalNameEmitted, isSuccessEmitted) {
+      this.modalNameInformation = modalNameEmitted
+      // check type modal
+      const popupConfig =
+        modalNameEmitted === this.publishedConfirmationPopup.nameModal
+          ? this.publishedInformationPopup
+          : this.deleteInformationPopup
+
+      const informationPopup = isSuccessEmitted
+        ? popupConfig.successInformation
+        : popupConfig.failedInformation
+
+      this.dialogInformationPopup = informationPopup
+
+      // check staus for open modal information
+      this.isSuccessConfirmation = isSuccessEmitted
+
+      // open modal information
+      const modalFullName = `${modalNameEmitted}-information`
+      this.$store.commit('modals/OPEN', modalFullName)
     }
   }
 }
 </script>
 
 <style scoped>
-  .jds-data-table:deep{
-    border-spacing: 1px !important;
-    @apply rounded-lg;
-  }
+.jds-data-table:deep {
+  border-spacing: 1px !important;
+  @apply rounded-lg;
+}
 
-  .jds-data-table:deep tr th:first-child{
-    @apply rounded-tl-lg;
-  }
+.jds-data-table:deep tr th:first-child {
+  @apply rounded-tl-lg;
+}
 
-  .jds-data-table:deep tr th:last-child{
-    @apply rounded-tr-lg;
-  }
-  .jds-data-table:deep tr th {
-    @apply h-[42px] border-r border-white bg-green-600;
-  }
+.jds-data-table:deep tr th:last-child {
+  @apply rounded-tr-lg;
+}
+.jds-data-table:deep tr th {
+  @apply h-[42px] border-r border-white bg-green-600;
+}
 
-  .jds-data-table:deep tr td {
-    @apply border-r border-gray-200 max-w-[435px];
-  }
+.jds-data-table:deep tr td {
+  @apply max-w-[435px] border-r border-gray-200;
+}
 </style>

@@ -1,5 +1,8 @@
 <template>
-  <AduanDetail :type-aduan-page="typeAduan.aduanMasuk.props" :list-button="listButtonDetail" />
+  <AduanDetail
+    :type-aduan-page="typeAduan.aduanMasuk.props"
+    :list-button="listButtonDetail"
+  />
 </template>
 
 <script>

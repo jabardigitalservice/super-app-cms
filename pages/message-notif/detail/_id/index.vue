@@ -1,5 +1,8 @@
 <template>
-  <MessageNotifDetail :detail-message-notif="detailMessageNotif" @close="closeHandle" />
+  <MessageNotifDetail
+    :detail-message-notif="detailMessageNotif"
+    @fetchData="$fetch()"
+  />
 </template>
 
 <script>
@@ -25,10 +28,20 @@ export default {
   },
   async fetch () {
     try {
-      const response = await this.$axios.get(`/messages/${this.$route.params.id}`)
+      const response = await this.$axios.get(
+        `/messages/${this.$route.params.id}`
+      )
       this.detailMessageNotif = response.data.data
-      this.detailMessageNotif.createdAt = formatDate(this.detailMessageNotif.createdAt || '', 'dd/MM/yyyy HH:mm') || '-'
-      this.detailMessageNotif.publishedAt = formatDate(this.detailMessageNotif.publishedAt || '', 'dd/MM/yyyy HH:mm') || '-'
+      this.detailMessageNotif.createdAt =
+        formatDate(
+          this.detailMessageNotif.createdAt || '',
+          'dd/MM/yyyy HH:mm'
+        ) || '-'
+      this.detailMessageNotif.publishedAt =
+        formatDate(
+          this.detailMessageNotif.publishedAt || '',
+          'dd/MM/yyyy HH:mm'
+        ) || '-'
       this.descriptionPage = `Detail dari pesan “${this.detailMessageNotif.title}”`
     } catch (error) {
       this.detailMessageNotif = {}
@@ -40,16 +53,6 @@ export default {
       navigations: this.navigations,
       descriptionPage: this.descriptionPage
     })
-  },
-  methods: {
-    closeHandle (value) {
-      this.$store.commit('dialog/clearState')
-      if (value.popupName === 'delete' && value.dialogType === 'information') {
-        this.$router.push('/message-notif')
-      } else {
-        this.$fetch()
-      }
-    }
   }
 }
 </script>

@@ -82,14 +82,14 @@
                 <td class="w-[180px]">
                   <strong>{{ item.name }}</strong>
                 </td>
-                <td>{{ item.quantity ? item.quantity : "-" }}</td>
+                <td>{{ item.quantity ? item.quantity : '-' }}</td>
               </tr>
             </BaseTableDetail>
 
             <BaseTableDetail
               v-if="
                 detailPesanan?.statusCode === 'scanned' &&
-                  detailScanned?.scannedStatus === 'success'
+                detailScanned?.scannedStatus === 'success'
               "
               header="Informasi Scan"
               class="text-lato mb-4"
@@ -112,7 +112,7 @@
                 </td>
                 <td>
                   {{
-                    formatDate(detailScanned?.scannedAt, "eeee, dd MMMM yyyy")
+                    formatDate(detailScanned?.scannedAt, 'eeee, dd MMMM yyyy')
                   }}
                 </td>
               </tr>
@@ -120,7 +120,7 @@
                 <td>
                   <strong>Waktu Scan</strong>
                 </td>
-                <td>{{ formatDate(detailScanned?.scannedAt, "HH:mm") }}</td>
+                <td>{{ formatDate(detailScanned?.scannedAt, 'HH:mm') }}</td>
               </tr>
             </BaseTableDetail>
           </template>
@@ -145,49 +145,52 @@ export default {
   props: {
     detailPesanan: {
       type: Object,
-      default: () => ({})
+      default: () => ({}),
     },
     detailScanned: {
       type: Object,
-      default: () => ({})
-    }
+      default: () => ({}),
+    },
   },
-  data () {
+  data() {
     return {
       listTab: [
         {
           detailPage: 'detail-page',
           name: 'Detail Order',
-          icon: '/icon/ticket.svg'
+          icon: '/icon/ticket.svg',
         },
         {
           detailPage: 'qr-page',
           name: 'QR Code',
-          icon: '/icon/qr-code.svg'
-        }
+          icon: '/icon/qr-code.svg',
+        },
       ],
       selectedTabIndex: 0,
       statusTahura,
       dataScanned: {},
       viewDetail: 'detail-page',
-      base64String: ''
+      base64String: '',
     }
   },
   watch: {
     detailPesanan: {
       handler: 'generateQRCode',
-      immediate: true
-    }
+      immediate: true,
+    },
   },
   methods: {
-    goToBackHandle () {
-      this.$router.back()
+    goToBackHandle() {
+      this.$router.push({
+        path: '/tahura/daftar-pesanan',
+        query: this.$route.query,
+      })
     },
     formatDate,
-    showViewDetailPage (namePage) {
+    showViewDetailPage(namePage) {
       this.viewDetail = namePage
     },
-    generateQRCode () {
+    generateQRCode() {
       if (
         this.detailPesanan?.tickets &&
         this.detailPesanan.tickets.length > 0
@@ -196,7 +199,7 @@ export default {
 
         this.base64String = btoa(jsonString)
       }
-    }
-  }
+    },
+  },
 }
 </script>

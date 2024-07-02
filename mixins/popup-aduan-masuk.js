@@ -1,3 +1,4 @@
+import { complaintStatus } from '~/constant/aduan-masuk'
 export default {
   data () {
     return {
@@ -24,7 +25,15 @@ export default {
       complaintNote: '',
       isLoading: false,
       typeDialog: '',
-      idApi: ''
+      idApi: '',
+      complaintStatus
+    }
+  },
+  computed: {
+    listComplaintStatus () {
+      return Object.values(complaintStatus).filter(item =>
+        item.typeAduan.includes(this.typeAduanPage)
+      )
     }
   },
   methods: {
@@ -36,7 +45,14 @@ export default {
       this.isShowPopupInputIdSpan = false
       this.isShowPopupProcessComplaint = false
     },
-
+    filterComplaintStatus (listFilter) {
+      return this.listComplaintStatus.filter(
+        itemComplaintStatus =>
+          !listFilter.find(
+            itemFilter => itemComplaintStatus.id === itemFilter.id
+          )
+      )
+    },
     showPopupConfirmationVerificationComplaintHandle (dataComplaint) {
       this.idApi = dataComplaint.id
       this.typeDialog = 'verificationComplaint'
@@ -93,11 +109,30 @@ export default {
           dataComplaint.complaint_id,
           'Proses Aduan'
         ),
-        complaintSource: dataComplaint.complaint_source,
         createdDate: dataComplaint.created_at_api
       })
+      this.$store.commit('process-complaint/setComplaintSource', {
+        id: dataComplaint.complaint_source_id,
+        name: dataComplaint.complaint_source_name
+      })
+      this.$store.dispatch('process-complaint/changeComplaintStatusId')
       this.isShowPopupProcessComplaint = true
     },
+    showPopupFollowupComplaint (dataComplaint) {
+      this.idApi = dataComplaint.id
+      this.typeDialog = 'followupComplaint'
+      this.setDataDialog({
+        ...this.setDataDialogConfirmation(
+          'Tindaklanjuti Aduan',
+          'No.Aduan',
+          dataComplaint.complaint_id,
+          'Tindaklanjuti Aduan'
+        ),
+        proposed_ikp_narrative: dataComplaint.proposed_ikp_narrative
+      })
+      this.$store.commit('followup-complaint/setIsShowPopup', true)
+    },
+
     submitPopupComplaintHandle (item) {
       let dataDialogInformation = {}
       const paramRequest = {}
@@ -164,6 +199,55 @@ export default {
         'add-sp4n'
       )
     },
+
+    submitProcessComplaint (dataComplaint) {
+      this.isShowPopupProcessComplaint = false
+      let dataDialogInformation = {}
+      dataDialogInformation = {
+        ...this.setDataDialogInformation(
+          'Proses Aduan',
+          dataComplaint.subDescription
+        ),
+        success: this.setSucessFailedInformationHandle(
+          'Proses Aduan berhasil dilakukan',
+          true
+        ),
+        failed: this.setSucessFailedInformationHandle(
+          'Proses Aduan gagal dilakukan',
+          false
+        )
+      }
+      this.integrationPopupHandle(
+        dataDialogInformation,
+        dataComplaint.payload,
+        'determine-authority'
+      )
+    },
+
+    submitFollowupComplaint (dataIkp) {
+      this.isShowPopupConfirmationFollowup = false
+      let dataDialogInformation = {}
+      dataDialogInformation = {
+        ...this.setDataDialogInformation(
+          'Tindaklanjuti Aduan',
+          dataIkp.ikp_code
+        ),
+        success: this.setSucessFailedInformationHandle(
+          'Tindaklanjuti Aduan berhasil dilakukan',
+          true
+        ),
+        failed: this.setSucessFailedInformationHandle(
+          'Tindaklanjuti Aduan gagal dilakukan',
+          false
+        )
+      }
+      this.integrationPopupHandle(
+        dataDialogInformation,
+        { ikp_code: dataIkp.ikp_code },
+        'follow-up'
+      )
+    },
+
     setDataDialogConfirmation (title, description, subDescription, labelButton) {
       return {
         title,

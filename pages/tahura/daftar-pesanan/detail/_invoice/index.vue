@@ -1,22 +1,25 @@
 <template>
-  <TahuraDaftarPesananDetail :detail-pesanan="detailDaftarPesanan" :detail-scanned="detailScanned" />
+  <TahuraDaftarPesananDetail
+    :detail-pesanan="detailDaftarPesanan"
+    :detail-scanned="detailScanned"
+  />
 </template>
 
 <script>
 import { formatDate } from '~/utils'
 export default {
   layout: 'Dashboard',
-  data () {
+  data() {
     return {
       navigations: [
         {
           label: 'Daftar Pesanan',
-          link: '/tahura/daftar-pesanan'
+          link: '/tahura/daftar-pesanan',
         },
         {
           label: 'Detail Pesanan ',
-          link: `/tahura/daftar-pesanan/detail/${this.$route.params.invoice}`
-        }
+          link: `/tahura/daftar-pesanan/detail/${this.$route.params.invoice}`,
+        },
       ],
       descriptionPage: `Detail pesanan untuk order “${this.$route.params.invoice}”`,
       detailDaftarPesanan: {},
@@ -24,18 +27,18 @@ export default {
         {
           code: 'wni',
           name: 'Total Wisatawan Lokal',
-          quantity: 0
+          quantity: 0,
         },
         {
           code: 'wna',
           name: 'Total Wisatawan Asing',
-          quantity: 0
-        }
+          quantity: 0,
+        },
       ],
-      detailScanned: {}
+      detailScanned: {},
     }
   },
-  async fetch () {
+  async fetch() {
     try {
       const response = await this.$axios.get(
         `/ticket/tahura/orders/${this.$route.params.invoice}`
@@ -62,7 +65,7 @@ export default {
         const responseScanned = await this.$axios.get(
           `/ticket/tahura/scan/ticket/${this.$route.params.invoice}`,
           {
-            params: { status: 'success' }
+            params: { status: 'success' },
           }
         )
 
@@ -75,19 +78,19 @@ export default {
       this.detailScanned = {}
     }
   },
-  mounted () {
+  mounted() {
     this.$store.commit('setActivePage', 'Daftar Pesanan')
     this.$store.commit('setHeader', {
       navigations: this.navigations,
-      descriptionPage: this.descriptionPage
+      descriptionPage: this.descriptionPage,
     })
   },
   methods: {
-    combinedCountTicket (dataCategory) {
+    combinedCountTicket(dataCategory) {
       this.categoriesTicket.forEach((status) => {
         const { code } = status
         const matchingStatus = dataCategory.find(
-          apiStatus => apiStatus.code === code
+          (apiStatus) => apiStatus.code === code
         )
         if (matchingStatus) {
           status.quantity = matchingStatus.quantity
@@ -95,7 +98,7 @@ export default {
       })
 
       return this.categoriesTicket
-    }
-  }
+    },
+  },
 }
 </script>

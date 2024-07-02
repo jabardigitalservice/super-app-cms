@@ -135,7 +135,7 @@ export default {
   props: {
     dataDetailManagement: {
       type: Object,
-      default: () => {}
+      default: () => ({})
     }
   },
   data () {
@@ -145,10 +145,16 @@ export default {
   },
   methods: {
     goToBackHandle () {
-      this.$router.push('/management-release')
+      this.$router.push({
+        path: '/management-release',
+        query: this.$route.query
+      })
     },
     goToEditHandle () {
-      this.$router.push(`/management-release/edit/${this.$route.params.id}`)
+      this.$router.push({
+        path: `/management-release/edit/${this.$route.params.id}`,
+        query: this.$route.query
+      })
     },
     closePopupDetailHandle () {
       const dataPopup = {

@@ -16,7 +16,7 @@
         <BaseButton
           v-show="detail.rwStatus == userStatus.waiting"
           class="mr-[12px] w-fit border border-red-400 text-red-400 hover:bg-red-50"
-          @click="confirmationDialog.showReject=true"
+          @click="confirmationDialog.showReject = true"
         >
           Tolak Akun RW Ini
         </BaseButton>
@@ -209,7 +209,11 @@
       @submit="actionRejectUser"
       @close="confirmationDialog.showReject = false"
     />
-    <BasePopup :show-popup="showPopupConfirmationInformation" @submit="actionVerifyUser" @close="onClosePopupInfo" />
+    <BasePopup
+      :show-popup="showPopupConfirmationInformation"
+      @submit="actionVerifyUser"
+      @close="onClosePopupInfo"
+    />
     <InformationPopup
       :show-popup="informationDialog.show"
       :account-name="detail?.name || '-'"
@@ -325,7 +329,10 @@ export default {
   },
   methods: {
     goBackHandle () {
-      this.$router.push('/')
+      this.$router.push({
+        path: '/',
+        query: this.$route.query
+      })
     },
     rejectConfirmationHandle () {
       this.confirmationDialog.showReject = true

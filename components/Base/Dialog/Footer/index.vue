@@ -9,17 +9,20 @@
           <jds-button
             v-show="showCancelButton"
             :label="labelButtonCancel"
+            type="button"
             variant="secondary"
             class="!text-[14px] !font-bold"
-            @click="$emit('close')"
+            :disabled="isDisabledButtonCancel"
+            @click.prevent="$emit('close')"
           />
         </div>
         <div>
           <jds-button
             :label="labelButtonSubmit"
+            type="button"
             :variant="variant"
-            class="!text-[14px] !font-bold"
-            @click="submitButtonHandle()"
+            :disabled="isDisabledButtonSubmit"
+            @click.prevent="submitButtonHandle"
           />
         </div>
       </div>
@@ -46,6 +49,14 @@ export default {
     variant: {
       type: String,
       default: 'primary'
+    },
+    isDisabledButtonSubmit: {
+      type: Boolean,
+      default: false
+    },
+    isDisabledButtonCancel: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {
@@ -59,3 +70,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  .jds-button::v-deep {
+    @apply disabled:!bg-neutral-300 disabled:!text-neutral-500 disabled:pointer-events-none !text-[14px] !font-bold
+  }
+</style>

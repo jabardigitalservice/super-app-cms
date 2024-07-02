@@ -113,7 +113,7 @@ export default {
   props: {
     detailDragAndDrop: {
       type: Object,
-      default: () => {}
+      default: () => ({})
     },
     heightDragAndDrop: {
       type: String,
