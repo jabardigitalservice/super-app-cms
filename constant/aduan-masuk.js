@@ -64,11 +64,11 @@ export const typeAduan = {
     link: '/aduan/aduan-dari-span-lapor',
     id: 'aduanDariSpanLapor',
   },
-  penginputanIkp: {
-    props: 'penginputan-ikp',
-    label: 'Daftar Penginputan IKP',
-    link: '/aduan/penginputan-ikp',
-    id: 'penginputanIkp',
+  instruksiKewenanganPemprov: {
+    props: 'instruksi-kewenangan-pemprov',
+    label: 'Instruksi Kewenangan Pemprov',
+    link: '/aduan/instruksi-kewenangan-pemprov',
+    id: 'instruksiKewenanganPemprov',
   },
   instruksiAduanWarga: {
     props: 'instruksi-aduan-warga',
@@ -132,12 +132,15 @@ export const complaintStatus = Object.freeze({
     value: 0,
     statusColor: [
       { color: 'green', typeAduan: typeAduan.penentuanKewenangan.props },
-      { color: 'yellow', typeAduan: typeAduan.penginputanIkp.props },
+      {
+        color: 'yellow',
+        typeAduan: typeAduan.instruksiKewenanganPemprov.props,
+      },
     ],
     icon: '/icon/icon-aduan/complaint-status/complaint-coordinated-icon.svg',
     typeAduan: [
       typeAduan.penentuanKewenangan.props,
-      typeAduan.penginputanIkp.props,
+      typeAduan.instruksiKewenanganPemprov.props,
     ],
   },
   diverted_to_span: {
@@ -168,12 +171,15 @@ export const complaintStatus = Object.freeze({
     name: 'Ditindaklanjuti',
     value: 0,
     statusColor: [
-      { color: 'light-blue', typeAduan: typeAduan.penginputanIkp.props },
+      {
+        color: 'light-blue',
+        typeAduan: typeAduan.instruksiKewenanganPemprov.props,
+      },
       { color: 'yellow', typeAduan: typeAduan.instruksiAduanWarga.props },
     ],
     icon: '/icon/icon-aduan/complaint-status/complaint-followup-icon.svg',
     typeAduan: [
-      typeAduan.penginputanIkp.props,
+      typeAduan.instruksiKewenanganPemprov.props,
       typeAduan.instruksiAduanWarga.props,
     ],
   },
@@ -182,11 +188,14 @@ export const complaintStatus = Object.freeze({
     name: 'Pengerjaan Ditunda',
     value: 0,
     statusColor: [
-      { color: 'purple', typeAduan: typeAduan.penginputanIkp.props },
+      {
+        color: 'purple',
+        typeAduan: typeAduan.instruksiKewenanganPemprov.props,
+      },
     ],
     icon: '/icon/icon-aduan/complaint-status/complaint-postponed-icon.svg',
     typeAduan: [
-      typeAduan.penginputanIkp.props,
+      typeAduan.instruksiKewenanganPemprov.props,
       typeAduan.instruksiAduanWarga.props,
     ],
   },
@@ -195,11 +204,14 @@ export const complaintStatus = Object.freeze({
     name: 'Ditinjau Ulang',
     value: 0,
     statusColor: [
-      { color: 'dark-blue', typeAduan: typeAduan.penginputanIkp.props },
+      {
+        color: 'dark-blue',
+        typeAduan: typeAduan.instruksiKewenanganPemprov.props,
+      },
     ],
     icon: '/icon/icon-aduan/complaint-status/complaint-review-icon.svg',
     typeAduan: [
-      typeAduan.penginputanIkp.props,
+      typeAduan.instruksiKewenanganPemprov.props,
       typeAduan.instruksiAduanWarga.props,
     ],
   },
@@ -208,11 +220,11 @@ export const complaintStatus = Object.freeze({
     name: 'Selesai',
     value: 0,
     statusColor: [
-      { color: 'green', typeAduan: typeAduan.penginputanIkp.props },
+      { color: 'green', typeAduan: typeAduan.instruksiKewenanganPemprov.props },
     ],
     icon: '/icon/icon-aduan/complaint-status/complaint-finished-icon.svg',
     typeAduan: [
-      typeAduan.penginputanIkp.props,
+      typeAduan.instruksiKewenanganPemprov.props,
       typeAduan.instruksiAduanWarga.props,
     ],
   },
