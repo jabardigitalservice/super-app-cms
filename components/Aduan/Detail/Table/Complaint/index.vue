@@ -12,7 +12,7 @@
           <td class="text-lato w-[164px]">
             <strong class="text-[10px]">ID Aduan </strong>
           </td>
-          <td>{{ detailComplaint?.complaint_id || "-" }}</td>
+          <td>{{ detailComplaint?.complaint_id || '-' }}</td>
         </tr>
         <tr v-if="showIdSpanLaporHandle(detailComplaint?.complaint_status_id)">
           <td class="text-lato">
@@ -26,13 +26,13 @@
                     !detailComplaint?.sp4n_id,
                 }"
               />
-              {{ detailComplaint?.sp4n_id || "Belum ada" }}
+              {{ detailComplaint?.sp4n_id || 'Belum ada' }}
             </div>
           </td>
         </tr>
         <tr v-if="typeAduan.penentuanKewenangan.props === typeAduanPage">
           <td><strong>Sumber Aduan</strong></td>
-          <td>{{ detailComplaint?.complaint_source || "-" }}</td>
+          <td>{{ detailComplaint?.complaint_source || '-' }}</td>
         </tr>
         <tr>
           <td><strong>Tanggal Aduan Masuk</strong></td>
@@ -50,7 +50,7 @@
                     !detailComplaint?.sp4n_created_at,
                 }"
               />
-              {{ detailComplaint?.sp4n_created_at || "Belum ada" }}
+              {{ detailComplaint?.sp4n_created_at || 'Belum ada' }}
             </div>
           </td>
         </tr>
@@ -65,14 +65,14 @@
                   getStatusColorHandle(detailComplaint?.complaint_status_id),
                 ]"
               />
-              {{ detailComplaint?.complaint_status?.name || "-" }}
+              {{ detailComplaint?.complaint_status?.name || '-' }}
             </div>
           </td>
         </tr>
         <tr
           v-if="
             typeAduanPage === typeAduan.aduanMasuk.props &&
-              detailComplaint?.complaint_status_note
+            detailComplaint?.complaint_status_note
           "
         >
           <td><strong>Alasan</strong></td>
@@ -87,13 +87,13 @@
           "
         >
           <td><strong>Cakupan Urusan</strong></td>
-          <td>{{ detailComplaint?.coverage_of_affairs || "-" }}</td>
+          <td>{{ detailComplaint?.coverage_of_affairs || '-' }}</td>
         </tr>
         <tr
           v-if="
             detailComplaint?.complaint_status_id ===
               complaintStatus.postponed.id ||
-              detailComplaint?.complaint_status_id === complaintStatus.review.id
+            detailComplaint?.complaint_status_id === complaintStatus.review.id
           "
         >
           <td><strong>Perubahan Deadline</strong></td>
@@ -103,7 +103,7 @@
           v-if="
             detailComplaint?.complaint_status_id ===
               complaintStatus.postponed.id ||
-              detailComplaint?.complaint_status_id === complaintStatus.review.id
+            detailComplaint?.complaint_status_id === complaintStatus.review.id
           "
         >
           <td><strong>Dokumen Bukti</strong></td>
@@ -121,16 +121,14 @@
       <BaseTableDetail
         v-if="
           typeAduan.aduanDialihkanSpanLapor.props === typeAduanPage &&
-            detailComplaint?.diverted_to_span_at &&
-            detailComplaint?.sp4n_created_at
+          detailComplaint?.diverted_to_span_at &&
+          detailComplaint?.sp4n_created_at
         "
         header="Status SPAN Lapor"
         class="mb-4"
       >
         <tr>
-          <td class="w-[180px] px-2">
-            Data Table
-          </td>
+          <td class="w-[180px] px-2">Data Table</td>
           <td class="px-2 py-[6px]">
             <jds-button
               variant="secondary"
@@ -156,7 +154,7 @@
           <td class="w-[180px]">
             <strong>Nama Instansi</strong>
           </td>
-          <td>{{ detailComplaint?.opd_name || "-" }}</td>
+          <td>{{ detailComplaint?.opd_name || '-' }}</td>
         </tr>
         <tr
           v-if="
@@ -167,15 +165,11 @@
           "
         >
           <td><strong>Nama Kepala Perangkat Daerah</strong></td>
-          <td>{{ detailComplaint?.opd_pic || "-" }}</td>
+          <td>{{ detailComplaint?.opd_pic || '-' }}</td>
         </tr>
       </BaseTableDetail>
       <BaseTableDetail
-        v-if="
-          showDataByComplaintTypeStatus([
-            complaintStatus.verified
-          ])
-        "
+        v-if="showDataByComplaintTypeStatus([complaintStatus.verified])"
         header="Informasi Lainnya"
         class="mb-4"
       >
@@ -190,7 +184,7 @@
           <td class="w-[180px]">
             <strong>Tanggal Deadline</strong>
           </td>
-          <td>{{ detailComplaint?.deadline_date || "-" }}</td>
+          <td>{{ detailComplaint?.deadline_date || '-' }}</td>
         </tr>
         <tr
           v-if="
@@ -201,13 +195,13 @@
           "
         >
           <td><strong>Tingkat Urgensi</strong></td>
-          <td>{{ detailComplaint?.urgency_level || "-" }}</td>
+          <td>{{ detailComplaint?.urgency_level || '-' }}</td>
         </tr>
         <tr v-if="showDataByComplaintTypeStatus([complaintStatus.verified])">
           <td class="w-[180px]">
             <strong>Keterangan Status</strong>
           </td>
-          <td>{{ detailComplaint?.status_description || "-" }}</td>
+          <td>{{ detailComplaint?.status_description || '-' }}</td>
         </tr>
       </BaseTableDetail>
       <BaseTableDetail header="Informasi Pelapor" class="mb-4">
@@ -215,23 +209,23 @@
           <td class="w-[180px]">
             <strong class="text-[10px]">Nama Lengkap </strong>
           </td>
-          <td>{{ detailComplaint?.user_name || "-" }}</td>
+          <td>{{ detailComplaint?.user_name || '-' }}</td>
         </tr>
         <tr>
           <td><strong>No. Kontak</strong></td>
-          <td>{{ detailComplaint?.user_phone || "-" }}</td>
+          <td>{{ detailComplaint?.user_phone || '-' }}</td>
         </tr>
         <tr>
           <td><strong>Email</strong></td>
-          <td>{{ detailComplaint?.user_email || "-" }}</td>
+          <td>{{ detailComplaint?.user_email || '-' }}</td>
         </tr>
         <tr>
           <td><strong>Jenis Media Sosial</strong></td>
-          <td>{{ detailComplaint?.social_media?.name || "-" }}</td>
+          <td>{{ detailComplaint?.social_media?.name || '-' }}</td>
         </tr>
         <tr>
           <td><strong>Link Akun Media Sosial</strong></td>
-          <td>{{ detailComplaint?.social_media_link || "-" }}</td>
+          <td>{{ detailComplaint?.social_media_link || '-' }}</td>
         </tr>
         <tr>
           <td colspan="2">
@@ -260,30 +254,30 @@
         </tr>
         <tr>
           <td><strong>Judul Aduan</strong></td>
-          <td>{{ detailComplaint?.title || "-" }}</td>
+          <td>{{ detailComplaint?.title || '-' }}</td>
         </tr>
         <tr>
           <td><strong>Detail Aduan</strong></td>
-          <td>{{ detailComplaint?.description || "-" }}</td>
+          <td>{{ detailComplaint?.description || '-' }}</td>
         </tr>
         <tr>
           <td><strong>Lokasi Kejadian</strong></td>
         </tr>
         <tr>
           <td>Kabupaten / Kota</td>
-          <td>{{ detailComplaint?.city_name || "-" }}</td>
+          <td>{{ detailComplaint?.city_name || '-' }}</td>
         </tr>
         <tr>
           <td>Kecamatan</td>
-          <td>{{ detailComplaint?.district_name || "-" }}</td>
+          <td>{{ detailComplaint?.district_name || '-' }}</td>
         </tr>
         <tr>
           <td>Kelurahan</td>
-          <td>{{ detailComplaint?.subdistrict_name || "-" }}</td>
+          <td>{{ detailComplaint?.subdistrict_name || '-' }}</td>
         </tr>
         <tr colspan="2">
           <td>Detail Lokasi Kejadian</td>
-          <td>{{ detailComplaint?.address_detail || "-" }}</td>
+          <td>{{ detailComplaint?.address_detail || '-' }}</td>
         </tr>
         <tr>
           <td colspan="2">
@@ -292,16 +286,14 @@
         </tr>
         <tr>
           <td>Latitude</td>
-          <td>{{ detailComplaint?.latitude || "-" }}</td>
+          <td>{{ detailComplaint?.latitude || '-' }}</td>
         </tr>
         <tr>
           <td>Longitude</td>
-          <td>{{ detailComplaint?.longitude || "-" }}</td>
+          <td>{{ detailComplaint?.longitude || '-' }}</td>
         </tr>
         <tr>
-          <td class="align-top">
-            Map
-          </td>
+          <td class="align-top">Map</td>
           <td>
             <iframe
               v-if="detailComplaint?.latitude && detailComplaint?.longitude"
@@ -313,9 +305,7 @@
               referrerpolicy="no-referrer-when-downgrade"
               :src="`https://www.google.com/maps/embed/v1/place?key=${$config.googleMapsApiKey}&q=${detailComplaint?.latitude},${detailComplaint?.longitude}`"
             />
-            <div v-else>
-              -
-            </div>
+            <div v-else>-</div>
           </td>
         </tr>
       </BaseTableDetail>
@@ -344,15 +334,15 @@
           <td class="w-[205px]">
             <strong>ID Aduan Sapawarga</strong>
           </td>
-          <td>{{ detailComplaint?.complaint_id || "-" }}</td>
+          <td>{{ detailComplaint?.complaint_id || '-' }}</td>
         </tr>
         <tr>
           <td><strong>ID SP4N Lapor</strong></td>
-          <td>{{ detailComplaint?.sp4n_id || "-" }}</td>
+          <td>{{ detailComplaint?.sp4n_id || '-' }}</td>
         </tr>
         <tr>
           <td><strong>Tanggal Laporan Masuk</strong></td>
-          <td>{{ detailComplaint?.sp4n_added_at || "-" }}</td>
+          <td>{{ detailComplaint?.sp4n_added_at || '-' }}</td>
         </tr>
         <tr>
           <td><strong>Tanggal Diinput ke Sapawarga</strong></td>
@@ -360,35 +350,33 @@
         </tr>
         <tr>
           <td><strong>Nama Lengkap</strong></td>
-          <td>{{ detailComplaint?.user_name || "-" }}</td>
+          <td>{{ detailComplaint?.user_name || '-' }}</td>
         </tr>
         <tr>
           <td><strong>Judul Aduan</strong></td>
-          <td>{{ detailComplaint?.title || "-" }}</td>
+          <td>{{ detailComplaint?.title || '-' }}</td>
         </tr>
         <tr>
           <td><strong>Detail Aduan</strong></td>
-          <td>{{ detailComplaint?.description || "-" }}</td>
+          <td>{{ detailComplaint?.description || '-' }}</td>
         </tr>
       </BaseTableDetail>
       <BaseTableDetail header="Lokasi Aduan" class="mb-4">
         <tr>
-          <td class="w-[205px]">
-            Kabupaten / Kota
-          </td>
-          <td>{{ detailComplaint?.city_name || "-" }}</td>
+          <td class="w-[205px]">Kabupaten / Kota</td>
+          <td>{{ detailComplaint?.city_name || '-' }}</td>
         </tr>
         <tr>
           <td>Kecamatan</td>
-          <td>{{ detailComplaint?.district_name || "-" }}</td>
+          <td>{{ detailComplaint?.district_name || '-' }}</td>
         </tr>
         <tr>
           <td>Kelurahan</td>
-          <td>{{ detailComplaint?.subdistrict_name || "-" }}</td>
+          <td>{{ detailComplaint?.subdistrict_name || '-' }}</td>
         </tr>
         <tr colspan="2">
           <td>Detail Lokasi Kejadian</td>
-          <td>{{ detailComplaint?.address_detail || "-" }}</td>
+          <td>{{ detailComplaint?.address_detail || '-' }}</td>
         </tr>
       </BaseTableDetail>
       <BaseTableDetail header="Lainnya">
@@ -440,35 +428,35 @@ export default {
   props: {
     typeAduanPage: {
       type: String,
-      default: ''
+      default: '',
     },
     detailComplaint: {
       type: Object,
-      default: () => ({})
+      default: () => ({}),
     },
     listPhoto: {
       type: Array,
-      default: () => ([])
-    }
+      default: () => [],
+    },
   },
-  data () {
+  data() {
     return {
       listTab: [
         {
           name: 'Detail Aduan',
-          icon: '/icon/icon-aduan/complaint-detail.svg'
-        }
+          icon: '/icon/icon-aduan/complaint-detail.svg',
+        },
       ],
       selectedTabIndex: 0,
       dataCategory: {
         key: 'complaint_category',
         subKey: 'complaint_subcategory',
-        valueSearch: 'lainnya'
+        valueSearch: 'lainnya',
       },
       dataSubCategory: {
         key: 'complaint_subcategory',
         subKey: 'complaint_subcategory_child',
-        valueSearch: 'lainnya-terkait'
+        valueSearch: 'lainnya-terkait',
       },
       typeAduan,
       listUrlFile: [
@@ -477,17 +465,17 @@ export default {
         'http://101.50.0.202:12002/trk/img/lim/photo1696837706 2.jpeg',
         'http://101.50.0.202:12002/trk/img/lim/Kanomodeltemplate.pdf',
         'https://sample-videos.com/doc/Sample-doc-file-100kb.doc',
-        'http://101.50.0.202:12002/trk/img/lim/Detail Sebaran IRBB 1-C1kBe.xlsx'
+        'http://101.50.0.202:12002/trk/img/lim/Detail Sebaran IRBB 1-C1kBe.xlsx',
       ],
       listAllFile: [],
       listFileDocument: [],
       listFileImage: [],
-      isShowPopupViewDocument: false
+      isShowPopupViewDocument: false,
     }
   },
   computed: {
     // to get type aduan which will show status aduan
-    listTypeAduanByStatusAduan () {
+    listTypeAduanByStatusAduan() {
       const listTypeAduanStatusAduan = []
       Object.values(this.typeAduan).forEach((item) => {
         if (
@@ -498,15 +486,15 @@ export default {
         }
       })
       return listTypeAduanStatusAduan
-    }
+    },
   },
   methods: {
-    findComplaintStatus (listComplaintStatus) {
+    findComplaintStatus(listComplaintStatus) {
       return listComplaintStatus.find(
-        item => item.id === this.detailComplaint?.complaint_status_id
+        (item) => item.id === this.detailComplaint?.complaint_status_id
       )
     },
-    getCoordinatHandle () {
+    getCoordinatHandle() {
       if (this.detailComplaint?.longitude && this.detailComplaint?.latitude) {
         return `${this.detailComplaint.latitude}, ${this.detailComplaint.longitude}`
       } else {
@@ -514,7 +502,7 @@ export default {
       }
     },
 
-    getSubCategoryName (dataSubcategory) {
+    getSubCategoryName(dataSubcategory) {
       // check if detail complaint by key has property object
       const hasSubcategory =
         Object.keys(this.detailComplaint) ||
@@ -538,13 +526,13 @@ export default {
 
       return this.detailComplaint[dataSubcategory.key]?.name
     },
-    getStatusColorHandle (statusId) {
+    getStatusColorHandle(statusId) {
       if (
         statusId &&
         this.listTypeAduanByStatusAduan.includes(this.typeAduanPage)
       ) {
         const statusColor = this.complaintStatus[statusId].statusColor.find(
-          statusColor => statusColor.typeAduan === this.typeAduanPage
+          (statusColor) => statusColor.typeAduan === this.typeAduanPage
         )
         switch (statusColor.color) {
           case 'yellow':
@@ -564,7 +552,7 @@ export default {
         }
       }
     },
-    showIdSpanLaporHandle (statusId) {
+    showIdSpanLaporHandle(statusId) {
       switch (this.typeAduanPage) {
         case this.typeAduan.aduanDialihkanSpanLapor.props:
           return true
@@ -577,34 +565,34 @@ export default {
           return false
       }
     },
-    getDataFile (dataUrl) {
+    getDataFile(dataUrl) {
       const file = dataUrl.split('/').pop()
       const fileType = file.split('.')[1]
       return { name: file, type: fileType, url: dataUrl }
     },
-    showPopupViewDocument () {
-      this.listAllFile = this.listUrlFile.map(item => this.getDataFile(item))
+    showPopupViewDocument() {
+      this.listAllFile = this.listUrlFile.map((item) => this.getDataFile(item))
       const listTypeDocument = ['doc', 'docx', 'xls', 'xlsx', 'pdf']
       const listTypeImage = ['png', 'jpg', 'jpeg']
-      this.listFileDocument = this.listAllFile.filter(dataDocument =>
+      this.listFileDocument = this.listAllFile.filter((dataDocument) =>
         listTypeDocument.includes(dataDocument.type)
       )
-      this.listFileImage = this.listAllFile.filter(dataImage =>
+      this.listFileImage = this.listAllFile.filter((dataImage) =>
         listTypeImage.includes(dataImage.type)
       )
       this.isShowPopupViewDocument = true
     },
-    showDataByComplaintTypeStatus (listFilter) {
+    showDataByComplaintTypeStatus(listFilter) {
       const listComplaintType = [
         typeAduan.penentuanKewenangan.props,
-        typeAduan.penginputanIkp.props
+        typeAduan.instruksiKewenanganPemprov.props,
       ]
       return (
         listComplaintType.includes(this.typeAduanPage) &&
         this.findComplaintStatus(this.filterComplaintStatus(listFilter))
       )
-    }
-  }
+    },
+  },
 }
 </script>
 

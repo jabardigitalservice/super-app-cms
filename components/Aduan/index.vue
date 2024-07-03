@@ -276,7 +276,7 @@ export default {
         {
           menu: 'Tindaklanjuti Aduan',
           value: 'followup-complaint',
-          typeAduan: [typeAduan.penginputanIkp.props],
+          typeAduan: [typeAduan.instruksiKewenanganPemprov.props],
           complaintStatus: complaintStatus.coordinated.id,
         },
       ],
@@ -468,7 +468,7 @@ export default {
           return this.complaintFromSpanHeader
         case typeAduan.penentuanKewenangan.props:
           return this.determiningAuthorityHeader
-        case typeAduan.penginputanIkp.props:
+        case typeAduan.instruksiKewenanganPemprov.props:
           return this.complaintHeader
         default:
           return {}
@@ -619,7 +619,7 @@ export default {
     checkPropsSortByUpdatedDate() {
       const listPropsSortByUpdatedDate = [
         this.typeAduan.penentuanKewenangan.props,
-        this.typeAduan.penginputanIkp.props,
+        this.typeAduan.instruksiKewenanganPemprov.props,
       ]
       return listPropsSortByUpdatedDate.includes(this.typeAduanPage)
     },
