@@ -1,6 +1,6 @@
 <template>
   <AduanDetail
-    :type-aduan-page="typeAduan.penginputanIkp.props"
+    :type-aduan-page="typeAduan.instruksiKewenanganPemprov.props"
     :list-button="listButtonDetail"
   />
 </template>
@@ -19,8 +19,8 @@ export default {
         {
           label: this.$route.query.fromInstructionPage
             ? '...'
-            : typeAduan.penginputanIkp.label,
-          link: typeAduan.penginputanIkp.link,
+            : typeAduan.instruksiKewenanganPemprov.label,
+          link: typeAduan.instruksiKewenanganPemprov.link,
           disabled: true,
         },
         {
@@ -49,7 +49,10 @@ export default {
     },
   },
   mounted() {
-    this.$store.commit('setActivePage', typeAduan.penginputanIkp.label)
+    this.$store.commit(
+      'setActivePage',
+      typeAduan.instruksiKewenanganPemprov.label
+    )
     this.$store.commit('setHeader', {
       navigations: this.listNavigation,
       descriptionPage: this.descriptionPage,

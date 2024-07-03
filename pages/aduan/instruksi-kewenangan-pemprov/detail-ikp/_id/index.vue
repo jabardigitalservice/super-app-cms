@@ -23,7 +23,7 @@
           <AduanDaftarIKPTableDetail
             :show-daftar-aduan="true"
             detail-complaint-link="/aduan/penginputan-ikp/detail"
-            :ikp-type-page="ikpType.penginputanInstruksi.props"
+            :ikp-type-page="ikpType.instruksiKewenanganPemprov.props"
             :ikp-code="$route.params.id"
           />
         </BaseTabPanel>
@@ -79,7 +79,7 @@ export default {
   methods: {
     goToBackHandle() {
       this.$router.push({
-        path: '/aduan/penginputan-ikp',
+        path: '/aduan/instruksi-kewenangan-pemprov',
         query: this.$route.query,
       })
     },
