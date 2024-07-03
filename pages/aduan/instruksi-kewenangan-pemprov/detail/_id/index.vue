@@ -25,12 +25,12 @@ export default {
         },
         {
           label: 'Detail Instruksi',
-          link: `/aduan/penginputan-ikp/detail-ikp/${this.$route.query?.ikpCode}`,
+          link: `/aduan/instruksi-kewenangan-pemprov/detail-ikp/${this.$route.query?.ikpCode}`,
           disabled: true,
         },
         {
           label: 'Detail Aduan',
-          link: `/aduan/penginputan-ikp/detail/${this.$route.params.id}`,
+          link: `/aduan/instruksi-kewenangan-pemprov/detail/${this.$route.params.id}`,
         },
       ],
       descriptionPage:

@@ -22,7 +22,7 @@
         >
           <AduanDaftarIKPTableDetail
             :show-daftar-aduan="true"
-            detail-complaint-link="/aduan/penginputan-ikp/detail"
+            detail-complaint-link="/aduan/instruksi-kewenangan-pemprov/detail"
             :ikp-type-page="ikpType.instruksiKewenanganPemprov.props"
             :ikp-code="$route.params.id"
           />
@@ -48,12 +48,12 @@ export default {
     return {
       navigations: [
         {
-          label: 'Daftar Penginputan IKP',
-          link: '/aduan/penginputan-ikp',
+          label: 'Instruksi Kewenangan Pemprov',
+          link: '/aduan/instruksi-kewenangan-pemprov',
         },
         {
-          label: 'Detail IKP',
-          link: `/aduan/penginputan-ikp/detail-ikp/${this.$route.params.id}`,
+          label: 'Detail Instruksi',
+          link: `/aduan/instruksi-kewenangan-pemprov/detail-ikp/${this.$route.params.id}`,
           disabled: true,
         },
       ],
