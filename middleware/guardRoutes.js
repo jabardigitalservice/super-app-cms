@@ -11,6 +11,7 @@ export default function ({ $role, route, redirect, $auth, $unleash }) {
         { role: 'admin:aduan-team-2', link: '/aduan/dashboard' },
         { role: 'admin:aduan-team-3', link: '/aduan/penginputan-ikp' },
         { role: 'admin:aduan-team-opd', link: '/aduan/instruksi-aduan-warga' },
+        { role: 'admin:tms', link: '/sribaduga/daftar-pesanan' },
         {
           role: 'admin:aduan-user-management',
           link: '/aduan/instruksi-aduan-warga',
