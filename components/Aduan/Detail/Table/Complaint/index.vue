@@ -1,5 +1,8 @@
 <template>
   <div>
+    <h1 class="mb-4 font-roboto text-[16px] font-bold text-blue-gray-800">
+      Detail Aduan Warga
+    </h1>
     <div
       v-if="typeAduan.aduanDariSpanLapor.props !== typeAduanPage"
       class="table-content"
