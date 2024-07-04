@@ -49,6 +49,7 @@
           <AduanDaftarIKPTableDetail
             v-else-if="idTab === 'input-ikp'"
             :show-daftar-aduan="false"
+            :ikp-type-page="typeAduanPage"
             :ikp-code="ikpCode"
           />
         </BaseTabPanel>
@@ -236,7 +237,7 @@ export default {
     },
     checkShowTabIkp() {
       return (
-        typeAduan.penginputanIkp.props === this.typeAduanPage &&
+        typeAduan.instruksiKewenanganPemprov.props === this.typeAduanPage &&
         this.detailComplaint.ikp_code &&
         !Object.keys(this.$route.query).find(
           (item) => item === 'fromInstructionPage'

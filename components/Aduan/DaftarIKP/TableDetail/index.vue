@@ -1,5 +1,8 @@
 <template>
   <div>
+    <h1 class="mb-4 font-roboto text-[16px] font-bold text-blue-gray-800">
+      Detail Instruksi Khusus Pimpinan
+    </h1>
     <div class="table-content">
       <BaseTableDetail header="Informasi Umum" class="mb-4">
         <tr>

@@ -126,8 +126,8 @@ const aduanMenu = {
       unleashVariable: 'SAPAWARGA-CMS__ADUAN--ADUAN-DARI-SP4N',
     },
     {
-      name: 'Daftar Penginputan IKP',
-      path: '/aduan/penginputan-ikp',
+      name: 'Instruksi Kewenangan Pemprov',
+      path: '/aduan/instruksi-kewenangan-pemprov',
       arrow: false,
       showMenuAndAccessForRoles: ['admin', 'admin:aduan-team-3'],
       icon: 'edit-pencil.svg',
