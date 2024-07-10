@@ -40,10 +40,15 @@ determiningAuthorityHeader.splice(1, 0, {
 })
 
 export const nonGovernmentAuthorityHeader = [...complaintHeader]
-nonGovernmentAuthorityHeader.splice(1, 0, { key: 'sp4n_id', text: 'ID SP4N' })
+nonGovernmentAuthorityHeader.splice(1, 0, {
+  key: 'sp4n_id',
+  text: 'ID SP4N',
+  sortable: true,
+})
 nonGovernmentAuthorityHeader.splice(4, 0, {
   key: 'sp4n_added_at',
   text: 'Tanggal Diinput SP4N',
+  sortable: true,
 })
 
 export const typeAduan = {
