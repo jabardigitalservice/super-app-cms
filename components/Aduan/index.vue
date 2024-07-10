@@ -395,6 +395,10 @@ export default {
           diverted_to_span_at: item.diverted_to_span_at
             ? formatDate(item.diverted_to_span_at || '', 'dd/MM/yyyy HH:mm')
             : 'Belum ada',
+          sp4n_added_at: formatDate(
+            item.sp4n_added_at || '',
+            'dd/MM/yyyy HH:mm'
+          ),
           sp4n_created_at: item.sp4n_created_at
             ? formatDate(item.sp4n_created_at || '', 'dd/MM/yyyy HH:mm')
             : 'Belum ada',
