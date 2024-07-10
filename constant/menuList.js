@@ -134,6 +134,14 @@ const aduanMenu = {
       unleashVariable: 'SAPAWARGA-CMS__ADUAN--PENGINPUTAN-IKP',
     },
     {
+      name: 'Instruksi Kewenangan Non-Pemprov',
+      path: '/aduan/instruksi-kewenangan-non-pemprov',
+      arrow: false,
+      showMenuAndAccessForRoles: ['admin', 'admin:aduan-team-3'],
+      icon: 'edit-pencil.svg',
+      unleashVariable: 'SAPAWARGA-CMS__ADUAN--INSTRUKSI-KEWENANGAN-NON-PEMPROV',
+    },
+    {
       name: 'Daftar Instruksi Aduan Warga',
       path: '/aduan/instruksi-aduan-warga',
       arrow: false,
