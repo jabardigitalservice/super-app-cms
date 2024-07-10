@@ -532,9 +532,9 @@ export default {
         this.listTypeAduanByStatusAduan.includes(this.typeAduanPage)
       ) {
         const statusColor = this.complaintStatus[statusId].statusColor.find(
-          (statusColor) => statusColor.typeAduan === this.typeAduanPage
+          (statusColor) => statusColor.typeAduan.includes(this.typeAduanPage)
         )
-        switch (statusColor.color) {
+        switch (statusColor?.color) {
           case 'yellow':
             return 'bg-[#FF7500]'
           case 'green':
