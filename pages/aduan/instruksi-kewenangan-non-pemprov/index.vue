@@ -2,7 +2,7 @@
   <div>
     <Aduan
       :type-aduan-page="typeAduan.instruksiKewenanganNonPemprov.props"
-      link-page-detail="/aduan/instruksi-kewenangan-anon-pemprov/detail"
+      link-page-detail="/aduan/instruksi-kewenangan-non-pemprov/detail"
     />
   </div>
 </template>
