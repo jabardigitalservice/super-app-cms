@@ -291,6 +291,12 @@ export default {
           typeAduan: [typeAduan.instruksiKewenanganPemprov.props],
           complaintStatus: complaintStatus.coordinated.id,
         },
+        {
+          menu: 'Buat Instruksi',
+          value: 'create-instruction',
+          typeAduan: [typeAduan.instruksiKewenanganNonPemprov.props],
+          complaintStatus: complaintStatus.not_yet_instructed.id,
+        },
       ],
       listDataComplaint: [],
       listDataCategory: [],
