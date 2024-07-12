@@ -47,7 +47,7 @@
             @button-image="isShowPopupViewImage = true"
           />
           <AduanDaftarIKPTableDetail
-            v-else-if="idTab === 'input-ikp'"
+            v-else-if="idTab === 'instruksi-aduan'"
             :show-daftar-aduan="false"
             :ikp-type-page="typeAduanPage"
             :ikp-code="ikpCode"
@@ -150,9 +150,9 @@ export default {
           icon: '/icon/icon-aduan/complaint-detail.svg',
         },
         {
-          id: 'input-ikp',
-          name: 'Instruksi Khusus Pimpinan',
-          icon: '/icon/icon-aduan/complaint-detail.svg',
+          id: 'instruksi-aduan',
+          name: 'Detaiil Instruksi Aduan',
+          icon: '/icon/icon-aduan/complaint-detail-instruction.svg',
         },
       ],
       detailComplaint: {},
@@ -161,12 +161,18 @@ export default {
       isShowPopupViewImage: false,
       isShowPopupDetailStatusComplaint: false,
       ikpCode: '',
+      typeAduan,
     }
   },
   async fetch() {
     try {
+      const apiPath =
+        this.typeAduan.instruksiKewenanganNonPemprov.props ===
+        this.typeAduanPage
+          ? 'non-pemprov-complaints'
+          : 'complaints'
       const response = await this.$axios.get(
-        `/warga/complaints/${this.$route.params.id}`
+        `/warga/${apiPath}/${this.$route.params.id}`
       )
       const dataDetailComplaint = response.data.data
       dataDetailComplaint.complaint_status =
@@ -224,7 +230,7 @@ export default {
     },
     listTab() {
       return this.listDataTab.filter((item) =>
-        this.checkShowTabIkp() ? item : item.id !== 'input-ikp'
+        this.checkShowTabIkp() ? item : item.id !== 'instruksi-aduan'
       )
     },
   },

@@ -38,7 +38,12 @@
           <td><strong>Tanggal Aduan Masuk</strong></td>
           <td>{{ detailComplaint?.created_at_format }}</td>
         </tr>
-        <tr v-if="typeAduanPage === typeAduan.aduanDialihkanSpanLapor.props">
+        <tr
+          v-if="
+            typeAduanPage === typeAduan.aduanDialihkanSpanLapor.props ||
+            typeAduanPage === typeAduan.instruksiKewenanganNonPemprov.props
+          "
+        >
           <td class="w-[175px]">
             <strong>Tanggal Diinput ke SP4N</strong>
           </td>
@@ -47,10 +52,15 @@
               <div
                 :class="{
                   ' mr-2 h-2 w-2 rounded-full bg-[#FFB900]':
-                    !detailComplaint?.sp4n_created_at,
+                    !detailComplaint?.sp4n_created_at &&
+                    !detailComplaint?.sp4n_added_at,
                 }"
               />
-              {{ detailComplaint?.sp4n_created_at || 'Belum ada' }}
+              {{
+                detailComplaint?.sp4n_created_at ||
+                detailComplaint?.sp4n_added_at ||
+                'Belum ada'
+              }}
             </div>
           </td>
         </tr>
@@ -555,6 +565,7 @@ export default {
     showIdSpanLaporHandle(statusId) {
       switch (this.typeAduanPage) {
         case this.typeAduan.aduanDialihkanSpanLapor.props:
+        case this.typeAduan.instruksiKewenanganNonPemprov.props:
           return true
         case this.typeAduan.penentuanKewenangan.props:
           if (statusId === this.complaintStatus.verified.id) {

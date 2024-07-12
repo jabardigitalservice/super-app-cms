@@ -7,6 +7,22 @@ export const state = () => ({
   dataImage: {},
 })
 
+export const actions = {
+  updateNavInstruction({ state, commit }, dataHeader) {
+    const navigations = dataHeader.navigations.filter((item) => {
+      return !dataHeader.fromInstructionPage
+        ? item.label !== 'Detail Instruksi'
+        : item
+    })
+    commit('setHeader', {
+      ...state.header,
+      navigations,
+      descriptionPage: dataHeader.descriptionPage,
+    })
+    commit('setActivePage', dataHeader.label)
+  },
+}
+
 export const mutations = {
   setActivePage(state, page) {
     state.page = page
