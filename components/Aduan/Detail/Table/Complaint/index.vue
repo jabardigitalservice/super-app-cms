@@ -565,7 +565,6 @@ export default {
     showIdSpanLaporHandle(statusId) {
       switch (this.typeAduanPage) {
         case this.typeAduan.aduanDialihkanSpanLapor.props:
-          return true
         case this.typeAduan.instruksiKewenanganNonPemprov.props:
           return true
         case this.typeAduan.penentuanKewenangan.props:
