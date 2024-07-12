@@ -19,6 +19,7 @@
                   range
                   range-separator=" - "
                   class="!ml-2 mr-2"
+                  :clearable="false"
                   :disabled-date="disabledRange"
                   @close="isShowPopupDate = false"
                   @clear="clearDateRangeHandle"
@@ -51,7 +52,7 @@
                 <jds-select
                   v-model="query.visitType"
                   placeholder="Semua Jenis Kunjungan"
-                  :options="listKunjunganSribaduga"
+                  :options="listKunjunganSribadugaFiletered"
                   class="mr-2"
                 />
               </div>
@@ -86,9 +87,19 @@
 
               <div class="mt-5 mr-3 flex flex-col">
                 <div
-                  class="relative overflow-x-auto rounded-lg border border-green-jds"
+                  class="relative overflow-x-auto rounded-lg border"
+                  :class="{
+                    'bg-green-jds': filterActive,
+                    'border-green-jds': !filterActive,
+                  }"
                 >
-                  <BaseButton class="text-green-jds" @click="handleFilter">
+                  <BaseButton
+                    :class="{
+                      ' text-white': filterActive,
+                      'text-green-jds': !filterActive,
+                    }"
+                    @click="handleFilter"
+                  >
                     Filter
                   </BaseButton>
                 </div>
@@ -320,7 +331,7 @@ export default {
         sortBy: 'orderedAt',
         statusCode: '',
         tabIndex: 0,
-        visitType: 'all',
+        visitType: '',
         attraction: 'c64143d6-d630-4ccf-8529-483b9b737a52',
         category: '',
       },
@@ -334,6 +345,7 @@ export default {
       actionDownloadLaporan: [{ menu: 'Microsoft Excel (.xls)', value: 'xls' }],
       listDataCategoryWisatawan: [],
       loading: true,
+      filterActive: false,
     }
   },
   async fetch() {
@@ -370,12 +382,17 @@ export default {
       })
     },
     listCategoryStatus() {
-      return this.listStatusSribaduga.map((item) => {
-        return {
-          value: item.statusCode,
-          label: item.label,
-        }
-      })
+      return this.listStatusSribaduga
+        .filter((item) => item.statusCode !== 'all')
+        .map((item) => {
+          return {
+            value: item.statusCode,
+            label: item.label,
+          }
+        })
+    },
+    listKunjunganSribadugaFiletered() {
+      return this.listKunjunganSribaduga.filter((item) => item.value !== 'all')
     },
   },
   watch: {
@@ -386,6 +403,16 @@ export default {
         this.$refs.datepicker.openPopup()
       }
     },
+    query: {
+      handler(val) {
+        if (val.visitType || val.statusCode) {
+          this.filterActive = true
+        } else {
+          this.filterActive = false
+        }
+      },
+      deep: true,
+    },
   },
   methods: {
     handleFilter() {
@@ -394,7 +421,7 @@ export default {
     resetFilter() {
       this.query = {
         category: '',
-        status: '',
+        statusCode: '',
       }
       this.dateRange = [
         new Date(new Date().setMonth(new Date().getMonth() - 1)),

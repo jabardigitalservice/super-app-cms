@@ -24,7 +24,8 @@
               </p>
               <p class="text-[16px] font-[700]">{{ getSessionName }}</p>
             </div>
-            <div v-else class="mt-4 rounded-[12px] border border-[#EEEEEE] p-4">
+            <!-- @TODO: this part is commented coz need to be confirmed  -->
+            <!-- <div v-else class="mt-4 rounded-[12px] border border-[#EEEEEE] p-4">
               <div class="py-2">
                 <p class="mb-4 font-lato text-[16px] font-[700]">
                   Tanggal & Sesi Reservasi
@@ -42,20 +43,23 @@
                   :options="options"
                 />
               </div>
-            </div>
+            </div> -->
             <div class="mt-4 rounded-[12px] border border-[#EEEEEE] p-4">
-              <div class="flex items-center justify-between font-lato">
+              <div class="justify-between font-lato">
                 <p class="text-[16px] font-[700]">Kategori Tiket</p>
-                <div class="flex">
+                <div class="mt-2 flex">
                   <BaseIconSvg
                     icon="/icon/info.svg"
                     mode="image"
                     :width="16"
                     :height="16"
                   />
-                  <p class="ml-2 text-[12px] font-[400]">Maksimal 700 Tiket</p>
+                  <p class="ml-1 text-[12px] font-[400]">
+                    Pemesanan tiket minimal 30 - maksimal 140 Tiket
+                  </p>
                 </div>
               </div>
+
               <div class="mt-4 flex items-center justify-between font-lato">
                 <div>
                   <p class="text-[15px] font-[400]">Anak-anak</p>
@@ -74,11 +78,14 @@
                       fill="#BDBDBD"
                     />
                   </BaseButton>
-                  <div
-                    class="ml-2 mr-2 flex h-[38px] w-[60px] items-center justify-center rounded-lg border border-gray-300"
-                  >
-                    <p>{{ childrenCatagory }}</p>
-                  </div>
+
+                  <input
+                    v-model="childrenCatagory"
+                    class="ml-2 mr-2 block h-[38px] w-[60px] rounded-lg border border-gray-300 text-center text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    type="number"
+                    name="childrenCatagory"
+                    @input="handleInputTicket($event)"
+                  />
                   <BaseButton
                     class="flex h-[38px] w-[38px] items-center justify-center rounded-lg border border-gray-300"
                     @click="handleAddChildrenCatagory()"
@@ -110,11 +117,14 @@
                       fill="#BDBDBD"
                     />
                   </BaseButton>
-                  <div
-                    class="ml-2 mr-2 flex h-[38px] w-[60px] items-center justify-center rounded-lg border border-gray-300"
-                  >
-                    <p>{{ matureCatagory }}</p>
-                  </div>
+
+                  <input
+                    v-model="matureCatagory"
+                    class="ml-2 mr-2 block h-[38px] w-[60px] rounded-lg border border-gray-300 text-center text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    type="number"
+                    name="matureCatagory"
+                    @input="handleInputTicket($event)"
+                  />
                   <BaseButton
                     class="flex h-[38px] w-[38px] items-center justify-center rounded-lg border border-gray-300"
                     @click="handleAddMatureCatagory()"
@@ -146,11 +156,14 @@
                       fill="#BDBDBD"
                     />
                   </BaseButton>
-                  <div
-                    class="ml-2 mr-2 flex h-[38px] w-[60px] items-center justify-center rounded-lg border border-gray-300"
-                  >
-                    <p>{{ foreignerCatagory }}</p>
-                  </div>
+
+                  <input
+                    v-model="foreignerCatagory"
+                    class="ml-2 mr-2 block h-[38px] w-[60px] rounded-lg border border-gray-300 text-center text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    type="number"
+                    name="foreignerCatagory"
+                    @input="handleInputTicket($event)"
+                  />
                   <BaseButton
                     class="flex h-[38px] w-[38px] items-center justify-center rounded-lg border border-gray-300"
                     @click="handleAddForeignerCatagory()"
@@ -207,7 +220,7 @@
                 </label>
                 <ValidationProvider
                   v-slot="{ errors }"
-                  rules="required|numeric"
+                  rules="required|numeric|min:10|max:15"
                   name="Telepon"
                   tag="div"
                   class="mb-4"
@@ -402,6 +415,7 @@ import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import axios from 'axios'
 import { formatDate } from '~/utils'
 import { listKategoriInstansi } from '@/constant/sribaduga.js'
+import { iconPopup } from '~/constant/icon-popup-new'
 
 export default {
   name: 'DialogTambahReservasi',
@@ -446,9 +460,6 @@ export default {
   },
   computed: {
     ...mapState({
-      childrenCatagory: (state) => state.add_reservation.childrenCatagory,
-      matureCatagory: (state) => state.add_reservation.matureCatagory,
-      foreignerCatagory: (state) => state.add_reservation.foreignerCatagory,
       isOpenForm: (state) => state.add_reservation.isOpenForm,
     }),
     reservationDateValue: {
@@ -467,12 +478,38 @@ export default {
         return this.$store.state.add_reservation.sessionValue
       },
     },
+    childrenCatagory: {
+      set(value) {
+        this.$store.commit('add_reservation/setChildrenCatagory', value)
+      },
+      get() {
+        return this.$store.state.add_reservation.childrenCatagory
+      },
+    },
+    matureCatagory: {
+      set(value) {
+        this.$store.commit('add_reservation/setMatureCatagory', value)
+      },
+      get() {
+        return this.$store.state.add_reservation.matureCatagory
+      },
+    },
+    foreignerCatagory: {
+      set(value) {
+        this.$store.commit('add_reservation/setForeignerCatagory', value)
+      },
+      get() {
+        return this.$store.state.add_reservation.foreignerCatagory
+      },
+    },
     getSessionName() {
       return `${this.orderAndSessionValue?.session.name} (${this.orderAndSessionValue?.session.startTime} - ${this.orderAndSessionValue?.session.endTime})`
     },
     getTotalTicket() {
       return (
-        this.childrenCatagory + this.matureCatagory + this.foreignerCatagory
+        Number(this.childrenCatagory) +
+        Number(this.matureCatagory) +
+        Number(this.foreignerCatagory)
       )
     },
     getProvinceList() {
@@ -496,8 +533,8 @@ export default {
   watch: {
     getTotalTicket: {
       handler(val) {
-        if (val > 700) {
-          this.errorTicket = 'Maksimal tiket yang dipesan adalah 700'
+        if (val > 140) {
+          this.errorTicket = 'Maksimal tiket yang dipesan adalah 140'
         } else {
           this.errorTicket = ''
         }
@@ -527,45 +564,27 @@ export default {
       return date?.toLocaleString('default', { month: 'long' })
     },
     handleAddChildrenCatagory() {
-      this.$store.commit(
-        'add_reservation/setChildrenCatagory',
-        this.childrenCatagory + 1
-      )
+      this.childrenCatagory = Number(this.childrenCatagory) + 1
     },
     handleSubtractChildrenCatagory() {
       if (this.childrenCatagory > 0) {
-        this.$store.commit(
-          'add_reservation/setChildrenCatagory',
-          this.childrenCatagory - 1
-        )
+        this.childrenCatagory = Number(this.childrenCatagory) - 1
       }
     },
     handleAddMatureCatagory() {
-      this.$store.commit(
-        'add_reservation/setMatureCatagory',
-        this.matureCatagory + 1
-      )
+      this.matureCatagory = Number(this.matureCatagory) + 1
     },
     handleSubtractMatureCatagory() {
       if (this.matureCatagory > 0) {
-        this.$store.commit(
-          'add_reservation/setMatureCatagory',
-          this.matureCatagory - 1
-        )
+        this.matureCatagory = Number(this.matureCatagory) - 1
       }
     },
     handleAddForeignerCatagory() {
-      this.$store.commit(
-        'add_reservation/setForeignerCatagory',
-        this.foreignerCatagory + 1
-      )
+      this.foreignerCatagory = Number(this.foreignerCatagory) + 1
     },
     handleSubtractForeignerCatagory() {
       if (this.foreignerCatagory > 0) {
-        this.$store.commit(
-          'add_reservation/setForeignerCatagory',
-          this.foreignerCatagory - 1
-        )
+        this.foreignerCatagory = Number(this.foreignerCatagory) - 1
       }
     },
     clearForm() {
@@ -589,13 +608,11 @@ export default {
         await this.$refs.form_informasi_pemesan.validate()
       if (this.getTotalTicket === 0) {
         this.errorTicket = 'Tiket tidak boleh kosong'
+      } else if (this.getTotalTicket < 30) {
+        this.errorTicket = 'Minimal tiket yang dipesan adalah 30'
       }
 
-      if (
-        formInformasiIsValid &&
-        this.getTotalTicket > 0 &&
-        this.errorTicket === ''
-      ) {
+      if (formInformasiIsValid && this.errorTicket === '') {
         try {
           const payload = {
             attractionID: 'c64143d6-d630-4ccf-8529-483b9b737a52',
@@ -660,13 +677,28 @@ export default {
             ],
           }
 
-          await this.$axios.post('/ticket/tms/admin/orders', payload)
+          await this.$axios.post('/ticket/tms/admin/orders', payload, {
+            headers: {
+              'X-localization': 'id',
+            },
+          })
           this.$store.commit('add_reservation/setIsOpenForm', false)
-          this.$store.commit('add_reservation/setRefetchCalendar', true)
+          this.$store.commit('dialog/setTitle', 'Reservasi Berhasil Dibuat')
+          this.$store.commit('modals/OPEN', 'dialog-success')
           this.errorTicket = ''
           this.clearForm()
         } catch (error) {
-          console.log(error)
+          const errorResponse = error?.response?.data?.message
+          this.$store.commit('add_reservation/setDialogError', {
+            title: 'Gagal Reservasi',
+            icon: iconPopup.failed,
+          })
+          this.$store.commit('add_reservation/setDetailItemError', {
+            title: errorResponse,
+          })
+          this.$store.commit('add_reservation/setIsOpenForm', false)
+          this.clearForm()
+          this.$store.commit('modals/OPEN', 'error-calendar')
         }
       }
     },
@@ -707,6 +739,20 @@ export default {
         this.cityList = data
       } catch (error) {
         console.error(error)
+      }
+    },
+    handleInputTicket(e) {
+      const { name, value } = e.target
+      switch (name) {
+        case 'childrenCatagory':
+          this.childrenCatagory = Math.round(value)
+          break
+        case 'matureCatagory':
+          this.matureCatagory = Math.round(value)
+          break
+        case 'foreignerCatagory':
+          this.foreignerCatagory = Math.round(value)
+          break
       }
     },
   },

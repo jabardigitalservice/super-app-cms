@@ -201,7 +201,13 @@
                           :height="17"
                           class="mt-[2px]"
                         />
-                        <p class="w-[100px] truncate text-[14px] font-[600]">
+                        <p
+                          class="truncate text-[14px] font-[600]"
+                          :class="{
+                            'w-full': initialTabValue === 'hari',
+                            'w-[100px]': initialTabValue === 'minggu',
+                          }"
+                        >
                           {{ getInstanceName(dateData, sessionData.orders) }}
                         </p>
                         <p class="text-[12px] font-[400] text-[#424242]">
@@ -224,10 +230,17 @@
             <DialogReschedule
               :reschedule-value="rescheduleValue"
               :options="sessionDataListForReschedule"
-              @close="closeDialogReschedule()"
-              @save="onSaveReschedule()"
+              :invoice-id="invoiceId"
+              :holiday-list="holidayList"
             />
-            <DialogBatalkanReservasi @close="closeDialogBatalkanReservasi()" />
+            <DialogSuccess />
+            <DialogInformationNew
+              name-modal="error-calendar"
+              :dialog-modal="dialogError"
+              :detail-item-modal="detailItemError"
+              :is-warning="true"
+            />
+            <DialogBatalkanReservasi :invoice-id="invoiceId" />
           </div>
         </BaseTabPanel>
       </template>
@@ -249,6 +262,7 @@ import DialogDetailReservasi from '~/components/Sribaduga/DialogDetailReservasi'
 import DialogReschedule from '~/components/Sribaduga/DialogReschedule'
 import DialogTambahReservasi from '~/components/Sribaduga/DialogTambahReservasi'
 import DialogBatalkanReservasi from '~/components/Sribaduga/DialogBatalkanReservasi'
+import DialogSuccess from '~/components/Sribaduga/DialogSuccess'
 import SkeletonLoadingKalender from '~/components/Sribaduga/SkeletonLoadingKalender'
 
 export default {
@@ -259,6 +273,7 @@ export default {
     DialogTambahReservasi,
     DialogBatalkanReservasi,
     SkeletonLoadingKalender,
+    DialogSuccess,
   },
   data() {
     return {
@@ -287,12 +302,15 @@ export default {
         attractionId: 'c64143d6-d630-4ccf-8529-483b9b737a52',
       },
       thisDay: new Date(),
+      holidayList: [],
     }
   },
 
   computed: {
     ...mapState({
       refetchCalendar: (state) => state.add_reservation.refetchCalendar,
+      dialogError: (state) => state.add_reservation.dialogError,
+      detailItemError: (state) => state.add_reservation.detailItemError,
     }),
     sessionDataListForReschedule() {
       return this.sessionDataList.map((sessionData) => {
@@ -334,6 +352,22 @@ export default {
   methods: {
     setQuery(params) {
       this.query = { ...this.query, ...params }
+    },
+    async fetchHolidayList() {
+      this.loading = true
+
+      try {
+        const holidayResponse = await this.$axios.get(
+          '/ticket/tms/admin/attractions/closing'
+        )
+
+        const { data } = holidayResponse.data
+        this.holidayList = data
+      } catch (error) {
+        console.error(error)
+      } finally {
+        this.loading = false
+      }
     },
     async fetchCalendar() {
       this.loading = true
@@ -383,6 +417,7 @@ export default {
       const startDate = formatDate(dateList[0].rawDateData, 'yyyy-MM-dd')
       const endDate = formatDate(dateList[5].rawDateData, 'yyyy-MM-dd')
       this.setQuery({ startDate, endDate })
+      this.fetchHolidayList()
       this.fetchCalendar()
     },
     getDataInDayList() {
@@ -412,6 +447,7 @@ export default {
       const startDate = formatDate(dateList[0].rawDateData, 'yyyy-MM-dd')
       const endDate = formatDate(dateList[0].rawDateData, 'yyyy-MM-dd')
       this.setQuery({ startDate, endDate })
+      this.fetchHolidayList()
       this.fetchCalendar()
     },
 
@@ -483,8 +519,12 @@ export default {
       const isBeforeToday = dateToCompare < today
       const isAfterSessionStart =
         dateToCompare === today && currentTime > sessionStartTime
+      // compare this.dateDataList data included in holidayList, then return true
+      const isHoliday = this.holidayList.some(
+        (holiday) => formatDate(holiday.date, 'yyyy-MM-dd') === dateToCompare
+      )
 
-      return isBeforeToday || isAfterSessionStart
+      return isBeforeToday || isAfterSessionStart || isHoliday
     },
     handleClickDate(dateData, sessionData) {
       this.dateValue = dateData
@@ -493,7 +533,10 @@ export default {
         {
           id: 1,
           date: dateData.rawDateData,
-          session: sessionData.session.id,
+          session: {
+            label: `${sessionData.session.name}  (${sessionData.session.startTime} - ${sessionData.session.endTime})`,
+            value: sessionData.session.id,
+          },
         },
       ]
       this.$store.commit(
@@ -611,6 +654,7 @@ export default {
       this.isOrderedByAdmin = isOrderedByAdmin
       this.invoiceId = invoiceId
       this.$store.commit('modals/OPEN', 'detail-reservasi')
+      this.$store.commit('add_reservation/setRefetchCalendar', false)
     },
     closeDialogDetailReservasi() {
       this.$store.commit('modals/CLOSE', 'detail-reservasi')
@@ -619,19 +663,10 @@ export default {
       this.$store.commit('modals/OPEN', 'dialog-reschedule')
     },
 
-    closeDialogReschedule() {
-      this.$store.commit('modals/CLOSE', 'dialog-reschedule')
-    },
     openDialogBatalkanReservasi() {
       this.$store.commit('modals/OPEN', 'dialog-batalkan-reservasi')
     },
-    closeDialogBatalkanReservasi() {
-      this.$store.commit('modals/CLOSE', 'dialog-batalkan-reservasi')
-    },
-    onSaveReschedule() {
-      this.closeDialogReschedule()
-      this.closeDialogDetailReservasi()
-    },
+
     handleOpenDialogTambahReservasi(dateData, sessionData) {
       if (
         !this.getDisabledDate(

@@ -33,7 +33,7 @@ export const listKunjunganSribaduga = [
   },
   {
     value: 'reservation',
-    label: 'Reservasi',
+    label: 'Rombongan',
   },
 ]
 export const listKategoriTiketSribaduga = [
