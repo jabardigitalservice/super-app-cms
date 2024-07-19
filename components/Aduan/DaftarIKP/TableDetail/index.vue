@@ -1,25 +1,22 @@
 <template>
   <div>
     <h1 class="mb-4 font-roboto text-[16px] font-bold text-blue-gray-800">
-      Detail Instruksi Khusus Pimpinan
+      Detail Instruksi Aduan
     </h1>
     <div class="table-content">
       <BaseTableDetail header="Informasi Umum" class="mb-4">
         <tr>
-          <td class="text-lato w-[164px] text-[14px]">
-            <strong>ID Instruksi</strong>
-          </td>
-          <td>
-            {{ dataDetail?.ikp_code || '-' }}
-          </td>
-        </tr>
-        <tr>
-          <td class="text-lato w-[164px] text-[14px]">
+          <td
+            class="text-lato text-[14px]"
+            :width="
+              typeAduan.instruksiKewenanganNonPemprov.props === ikpTypePage
+                ? '244px'
+                : '164px'
+            "
+          >
             <strong>Narasi Instruksi </strong>
           </td>
-          <td>
-            {{ dataDetail?.narrative }}
-          </td>
+          <td v-html="formatingInstructionalNarrative()" />
         </tr>
         <tr>
           <td class="text-lato w-[164px] text-[14px]">
@@ -56,7 +53,14 @@
 
     <BaseTableDetail header="Tanggal" class="mb-4">
       <tr>
-        <td class="text-lato w-[164px] text-[14px]">
+        <td
+          class="text-lato text-[14px]"
+          :width="
+            typeAduan.instruksiKewenanganNonPemprov.props === ikpTypePage
+              ? '244px'
+              : '164px'
+          "
+        >
           <strong>Tanggal Dibuat </strong>
         </td>
         <td>{{ dataDetail?.created_at || '-' }}</td>
@@ -69,7 +73,11 @@
       </tr>
     </BaseTableDetail>
 
-    <BaseTableDetail header="Indikator" class="mb-4">
+    <BaseTableDetail
+      v-if="ikpTypePage !== typeAduan.instruksiKewenanganNonPemprov.props"
+      header="Indikator"
+      class="mb-4"
+    >
       <tr>
         <td class="text-lato w-[164px] text-[14px]">
           <strong>Indikator Nilai </strong>
@@ -85,8 +93,35 @@
     </BaseTableDetail>
 
     <BaseTableDetail header="Lainnya" class="mb-4">
-      <tr>
-        <td class="text-lato w-[164px] text-[14px]">
+      <div v-if="typeAduan.instruksiKewenanganNonPemprov.props === ikpTypePage">
+        <tr>
+          <td
+            class="text-lato text-[14px]"
+            :width="
+              typeAduan.instruksiKewenanganNonPemprov.props === ikpTypePage
+                ? '244px'
+                : '164px'
+            "
+          >
+            <strong>Cakupan Urusan </strong>
+          </td>
+          <td>-</td>
+        </tr>
+        <tr>
+          <td class="text-lato w-[164px] text-[14px]">
+            <strong>Instansi Penanggung Jawab </strong>
+          </td>
+          <td>-</td>
+        </tr>
+        <tr>
+          <td class="text-lato w-[164px] text-[14px]">
+            <strong>OPD Pemprov Penanggung Jawab</strong>
+          </td>
+          <td>{{ dataDetail?.opd_name || '-' }}</td>
+        </tr>
+      </div>
+      <tr v-else>
+        <td class="text-lato text-[14px]" width="164px">
           <strong>Perangkat Daerah </strong>
         </td>
         <td>{{ dataDetail?.opd_name || '-' }}</td>
@@ -98,8 +133,13 @@
       class="rounded-lg border border-gray-200"
     >
       <jds-data-table
-        :headers="headerTableComplaint"
+        :headers="filterHeaderTableComplaint()"
         :items="dataDetail?.complaints"
+        class="default-table"
+        :class="{
+          'non-government-table':
+            ikpTypePage === typeAduan.instruksiKewenanganNonPemprov.props,
+        }"
       >
         <!-- eslint-disable-next-line vue/valid-v-slot -->
         <template #item.action="{ item }">
@@ -117,6 +157,7 @@
 
 <script>
 import { ikpStatus } from '~/constant/daftar-ikp'
+import { typeAduan } from '~/constant/aduan-masuk'
 import { formatDate } from '~/utils'
 export default {
   name: 'DaftarIKPTableDetail',
@@ -143,8 +184,10 @@ export default {
       dataDetail: {},
       headerTableComplaint: [
         { key: 'complaint_id', text: 'Daftar Aduan' },
+        { key: 'sp4n_id', text: 'ID SP4N Lapor' },
         { key: 'action', text: 'Aksi' },
       ],
+      typeAduan,
     }
   },
   async fetch() {
@@ -161,6 +204,20 @@ export default {
     }
   },
   methods: {
+    filterHeaderTableComplaint() {
+      return this.headerTableComplaint.filter((item) =>
+        this.typeAduan.instruksiKewenanganNonPemprov.props !== this.ikpTypePage
+          ? item.key !== 'sp4n_id'
+          : item
+      )
+    },
+    formatingInstructionalNarrative() {
+      let result = '-'
+      if (this.dataDetail?.ikp_code) {
+        result = `<strong>(${this.dataDetail?.ikp_code})</strong> ${this.dataDetail?.narrative}`
+      }
+      return result
+    },
     getStatusText(status) {
       switch (status) {
         case ikpStatus.coordinated.id:
@@ -237,7 +294,12 @@ export default {
   @apply px-[8px] pt-[10px] pb-[9px] !important;
 }
 
-.jds-data-table::v-deep td:nth-child(2) {
+.non-government-table::v-deep td:nth-child(1) {
+  @apply !w-[280px];
+}
+
+.default-table::v-deep td:nth-last-child(1),
+.non-government-table::v-deep td:nth-last-child(1) {
   @apply !w-[162px];
 }
 </style>
