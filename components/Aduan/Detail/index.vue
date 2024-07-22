@@ -152,7 +152,7 @@ export default {
         {
           id: 'instruksi-aduan',
           name: 'Detaiil Instruksi Aduan',
-          icon: '/icon/icon-aduan/complaint-detail-instruction.svg',
+          icon: '/icon/icon-aduan/instruction-detail.svg',
         },
       ],
       detailComplaint: {},
@@ -243,11 +243,18 @@ export default {
     },
     checkShowTabIkp() {
       return (
-        typeAduan.instruksiKewenanganPemprov.props === this.typeAduanPage &&
-        this.detailComplaint.ikp_code &&
+        this.checkTypePageForTab() &&
+        // TODO : if the API is ready
+        // this.detailComplaint.ikp_code &&
         !Object.keys(this.$route.query).find(
           (item) => item === 'fromInstructionPage'
         )
+      )
+    },
+    checkTypePageForTab() {
+      return (
+        typeAduan.instruksiKewenanganPemprov.props === this.typeAduanPage ||
+        typeAduan.instruksiKewenanganNonPemprov.props === this.typeAduanPage
       )
     },
     clickButtonConfirmationHandle(idButton) {
