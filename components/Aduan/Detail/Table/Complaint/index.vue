@@ -568,7 +568,7 @@ export default {
         case this.typeAduan.instruksiKewenanganNonPemprov.props:
           return true
         case this.typeAduan.penentuanKewenangan.props:
-          if (statusId === this.complaintStatus.verified.id) {
+          if (statusId === this.complaintStatus.coordinated.id) {
             return true
           }
           break
