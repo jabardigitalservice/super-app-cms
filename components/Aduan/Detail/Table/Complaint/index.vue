@@ -75,7 +75,7 @@
                   getStatusColorHandle(detailComplaint?.complaint_status_id),
                 ]"
               />
-              {{ detailComplaint?.complaint_status?.name || '-' }}
+              {{ getStatusText(detailComplaint?.complaint_status_id) || '-' }}
             </div>
           </td>
         </tr>
@@ -427,7 +427,7 @@
 </template>
 
 <script>
-import { typeAduan } from '~/constant/aduan-masuk'
+import { typeAduan, complaintStatus } from '~/constant/aduan-masuk'
 import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
 import DialogViewDocument from '~/components/Aduan/Dialog/ViewDocument'
 
@@ -535,6 +535,15 @@ export default {
       }
 
       return this.detailComplaint[dataSubcategory.key]?.name
+    },
+    getStatusText(statusId) {
+      if (
+        this.typeAduanPage === typeAduan.instruksiKewenanganNonPemprov.props &&
+        statusId === 'coordinated'
+      ) {
+        return 'Sudah Dikoordinasikan'
+      }
+      return complaintStatus[statusId]?.name
     },
     getStatusColorHandle(statusId) {
       if (
