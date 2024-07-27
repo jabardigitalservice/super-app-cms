@@ -244,8 +244,7 @@ export default {
     checkShowTabIkp() {
       return (
         this.checkTypePageForTab() &&
-        // TODO : if the API is ready
-        // this.detailComplaint.ikp_code &&
+        this.detailComplaint.ikp_code &&
         !Object.keys(this.$route.query).find(
           (item) => item === 'fromInstructionPage'
         )
