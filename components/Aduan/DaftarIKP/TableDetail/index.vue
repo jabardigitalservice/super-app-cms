@@ -209,7 +209,12 @@ export default {
     getStatusText(status) {
       switch (status) {
         case ikpStatus.coordinated.id:
-          return ikpStatus.coordinated.name
+          return this.ikpTypePage ===
+            typeAduan.instruksiKewenanganNonPemprov.props
+            ? 'Sudah Dikoordinasikan'
+            : ikpStatus.coordinated.name
+        case ikpStatus.not_yet_coordinated.id:
+          return ikpStatus.not_yet_coordinated.name
         case ikpStatus.followup.id:
           return ikpStatus.followup.name
         case ikpStatus.postponed.id:

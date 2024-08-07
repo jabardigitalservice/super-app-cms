@@ -38,6 +38,12 @@ export const ikpType = {
     link: '/aduan/instruksi-kewenangan-pemprov',
     id: 'instruksiKewenanganPemprov',
   },
+  instruksiKewenanganNonPemprov: {
+    props: 'instruksi-kewenangan-non-pemprov',
+    label: 'Instruksi Kewenangan Non Pemprov',
+    link: '/aduan/instruksi-kewenangan-non-pemprov',
+    id: 'instruksiKewenanganNonPemprov',
+  },
   instruksiAduanWarga: {
     props: 'instruksi-aduan-warga',
     label: 'Daftar Instruksi Aduan Warga',
@@ -61,6 +67,10 @@ export const ikpStatus = Object.freeze({
     icon: '/icon/icon-aduan/complaint-status/complaint-coordinated-icon.svg',
     statusColor: [
       { color: 'yellow', ikpType: [ikpType.instruksiKewenanganPemprov.props] },
+      {
+        color: 'green',
+        ikpType: [ikpType.instruksiKewenanganNonPemprov.props],
+      },
     ],
   },
   followup: {
@@ -74,6 +84,17 @@ export const ikpStatus = Object.freeze({
         ikpType: [ikpType.instruksiKewenanganPemprov.props],
       },
       { color: 'yellow', ikpType: [ikpType.instruksiAduanWarga.props] },
+    ],
+  },
+  not_yet_coordinated: {
+    id: 'not_yet_coordinated',
+    name: 'Belum Dikoordinasikan',
+    value: 0,
+    statusColor: [
+      {
+        color: 'light-blue',
+        ikpType: [ikpType.instruksiKewenanganNonPemprov.props],
+      },
     ],
   },
   postponed: {
