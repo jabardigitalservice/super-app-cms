@@ -140,7 +140,7 @@
           >
             <BaseButton> Batalkan Reservasi </BaseButton>
           </div>
-          <!-- @TODO: this part is commented coz need to be confirmed  -->
+          <!-- @TODO: this part is commented coz need to be confirmed in the future  -->
 
           <!-- <div
             v-if="isOrderedByAdmin"
