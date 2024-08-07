@@ -14,15 +14,8 @@ export default {
       typeAduan,
       navigations: [
         {
-          label: this.$route.query.fromInstructionPage
-            ? '...'
-            : typeAduan.instruksiKewenanganNonPemprov.label,
+          label: typeAduan.instruksiKewenanganNonPemprov.label,
           link: typeAduan.instruksiKewenanganNonPemprov.link,
-          disabled: true,
-        },
-        {
-          label: 'Detail Instruksi',
-          link: `/aduan/instruksi-kewenangan-non-pemprov/detail-ikp/${this.$route.query?.ikpCode}`,
           disabled: true,
         },
         {

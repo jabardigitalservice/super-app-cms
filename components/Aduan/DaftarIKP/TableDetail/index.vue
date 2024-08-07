@@ -92,42 +92,30 @@
       </tr>
     </BaseTableDetail>
 
-    <BaseTableDetail header="Lainnya" class="mb-4">
-      <div v-if="typeAduan.instruksiKewenanganNonPemprov.props === ikpTypePage">
-        <tr>
-          <td
-            class="text-lato text-[14px]"
-            :width="
-              typeAduan.instruksiKewenanganNonPemprov.props === ikpTypePage
-                ? '244px'
-                : '164px'
-            "
-          >
-            <strong>Cakupan Urusan </strong>
-          </td>
-          <td>-</td>
-        </tr>
-        <tr>
-          <td class="text-lato w-[164px] text-[14px]">
-            <strong>Instansi Penanggung Jawab </strong>
-          </td>
-          <td>-</td>
-        </tr>
-        <tr>
-          <td class="text-lato w-[164px] text-[14px]">
-            <strong>OPD Pemprov Penanggung Jawab</strong>
-          </td>
-          <td>{{ dataDetail?.opd_name || '-' }}</td>
-        </tr>
-      </div>
-      <tr v-else>
-        <td class="text-lato text-[14px]" width="164px">
-          <strong>Perangkat Daerah </strong>
+    <BaseTableDetail
+      v-if="ikpTypePage === typeAduan.instruksiKewenanganNonPemprov.props"
+      header="Lainnya"
+      class="mb-4"
+    >
+      <tr>
+        <td class="text-lato text-[14px]" width="244px">
+          <strong>Cakupan urusan </strong>
         </td>
-        <td>{{ dataDetail?.opd_name || '-' }}</td>
+        <td>{{ dataDetail?.scope_of_affairs || '-' }}</td>
+      </tr>
+      <tr>
+        <td class="text-lato text-[14px]" width="244px">
+          <strong>Instansi Penanggung Jawab </strong>
+        </td>
+        <td>{{ dataDetail?.responsible_agency || '-' }}</td>
+      </tr>
+      <tr>
+        <td class="text-lato text-[14px]" width="244px">
+          <strong>OPD Pemprov Penanggung Jawab </strong>
+        </td>
+        <td>{{ dataDetail?.responsible_provincial_government_opd || '-' }}</td>
       </tr>
     </BaseTableDetail>
-
     <div
       v-if="dataDetail?.complaints?.length > 0 && showDaftarAduan"
       class="rounded-lg border border-gray-200"
@@ -221,7 +209,12 @@ export default {
     getStatusText(status) {
       switch (status) {
         case ikpStatus.coordinated.id:
-          return ikpStatus.coordinated.name
+          return this.ikpTypePage ===
+            typeAduan.instruksiKewenanganNonPemprov.props
+            ? 'Sudah Dikoordinasikan'
+            : ikpStatus.coordinated.name
+        case ikpStatus.not_yet_coordinated.id:
+          return ikpStatus.not_yet_coordinated.name
         case ikpStatus.followup.id:
           return ikpStatus.followup.name
         case ikpStatus.postponed.id:
@@ -266,6 +259,9 @@ export default {
         path: `${this.detailComplaintLink}/${idComplaint}`,
         query: { ...this.$route.query, fromInstructionPage: true, ikpCode },
       })
+      if (this.$route.params.id === idComplaint) {
+        this.$emit('select-tab', 'all')
+      }
     },
   },
 }
