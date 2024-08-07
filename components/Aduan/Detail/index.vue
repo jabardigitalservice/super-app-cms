@@ -159,7 +159,7 @@ export default {
         },
         {
           id: 'instruksi-aduan',
-          name: 'Detaiil Instruksi Aduan',
+          name: 'Detail Instruksi Aduan',
           icon: '/icon/icon-aduan/instruction-detail.svg',
         },
       ],
