@@ -17,12 +17,6 @@ export const state = () => ({
   },
 })
 
-export const getters = {
-  getPayload: (state) => {
-    return state.payload
-  },
-}
-
 export const actions = {
   changeComplaintStatusId({ state, commit }) {
     if (state.dataComplaintSource?.id === complaintSource.span.id) {
