@@ -1,12 +1,13 @@
 import { complaintStatus } from '~/constant/aduan-masuk'
 export default {
-  data () {
+  data() {
     return {
       isShowPopupConfirmationVerification: false,
       isShowPopupConfirmationFailedVerification: false,
       isShowPopupInformation: false,
       isShowPopupInputIdSpan: false,
       isShowPopupProcessComplaint: false,
+      isShowPopupChangeAuthority: false,
       dataDialog: {
         title: '',
         description: '',
@@ -16,44 +17,45 @@ export default {
         placeholder: '',
         showCancelButton: true,
         dataRules: '',
-        maxLength: 0
+        maxLength: 0,
       },
       iconPopup: {
         fill: '',
-        name: ''
+        name: '',
       },
       complaintNote: '',
       isLoading: false,
       typeDialog: '',
       idApi: '',
-      complaintStatus
+      complaintStatus,
     }
   },
   computed: {
-    listComplaintStatus () {
-      return Object.values(complaintStatus).filter(item =>
+    listComplaintStatus() {
+      return Object.values(complaintStatus).filter((item) =>
         item.typeAduan.includes(this.typeAduanPage)
       )
-    }
+    },
   },
   methods: {
-    closePopupHandle () {
+    closePopupHandle() {
       this.isShowPopupConfirmationFailedVerification = false
       this.isShowPopupConfirmationVerification = false
       this.isShowPopupInformation = false
       this.isShowPopupViewImage = false
       this.isShowPopupInputIdSpan = false
       this.isShowPopupProcessComplaint = false
+      this.isShowPopupChangeAuthority = false
     },
-    filterComplaintStatus (listFilter) {
+    filterComplaintStatus(listFilter) {
       return this.listComplaintStatus.filter(
-        itemComplaintStatus =>
+        (itemComplaintStatus) =>
           !listFilter.find(
-            itemFilter => itemComplaintStatus.id === itemFilter.id
+            (itemFilter) => itemComplaintStatus.id === itemFilter.id
           )
       )
     },
-    showPopupConfirmationVerificationComplaintHandle (dataComplaint) {
+    showPopupConfirmationVerificationComplaintHandle(dataComplaint) {
       this.idApi = dataComplaint.id
       this.typeDialog = 'verificationComplaint'
       this.setDataDialog({
@@ -62,11 +64,11 @@ export default {
           'Apakah Anda yakin ingin mengkonfirmasi aduan ini?',
           dataComplaint.complaint_id,
           'Verifikasi Aduan Ini'
-        )
+        ),
       })
       this.isShowPopupConfirmationVerification = true
     },
-    showPopupConfirmationFailedComplaintHandle (dataComplaint) {
+    showPopupConfirmationFailedComplaintHandle(dataComplaint) {
       this.idApi = dataComplaint.id
       this.typeDialog = 'failedComplaint'
       this.setDataDialog({
@@ -77,11 +79,11 @@ export default {
           'Konfirmasi'
         ),
         labelTextArea: 'Catatan Aduan Gagal Diverifikasi',
-        placeholder: 'Detail Aduan tidak lengkap : contoh (foto tidak jelas)'
+        placeholder: 'Detail Aduan tidak lengkap : contoh (foto tidak jelas)',
       })
       this.isShowPopupConfirmationFailedVerification = true
     },
-    showPopupInputIdSpanHandle (dataComplaint) {
+    showPopupInputIdSpanHandle(dataComplaint) {
       this.idApi = dataComplaint.id
       this.typeDialog = 'addIdSpan'
       this.setDataDialog({
@@ -94,11 +96,11 @@ export default {
         labelInput: 'ID SP4N Lapor',
         placeholder: 'Masukkan ID SP4N Lapor',
         dataRules: 'numeric',
-        maxLength: 10
+        maxLength: 10,
       })
       this.isShowPopupInputIdSpan = true
     },
-    showPopupProcessComplaintHandle (dataComplaint) {
+    showPopupProcessComplaintHandle(dataComplaint) {
       this.idApi = dataComplaint.id
       this.typeDialog = 'processComplaint'
       this.isFormatDate = false
@@ -109,16 +111,49 @@ export default {
           dataComplaint.complaint_id,
           'Proses Aduan'
         ),
-        createdDate: dataComplaint.created_at_api
+        createdDate: dataComplaint.created_at_api,
       })
       this.$store.commit('process-complaint/setComplaintSource', {
         id: dataComplaint.complaint_source_id,
-        name: dataComplaint.complaint_source_name
+        name: dataComplaint.complaint_source_name,
       })
       this.$store.dispatch('process-complaint/changeComplaintStatusId')
       this.isShowPopupProcessComplaint = true
     },
-    showPopupFollowupComplaint (dataComplaint) {
+    showPopupChangeAuthority(dataComplaint) {
+      this.idApi = dataComplaint.id
+      this.typeDialog = 'changeAuthority'
+      this.isFormatDate = false
+      this.setDataDialog({
+        ...this.dataDialog,
+        title: 'Ubah Kewenangan',
+        labelButtonSubmit: 'Ubah Kewenangan',
+        ...this.setDataDialogConfirmation(
+          'Ubah Kewenangan',
+          'No Aduan',
+          dataComplaint.complaint_id,
+          'Ubah Kewenangan'
+        ),
+        createDate: dataComplaint.created_at_api,
+      })
+      this.$store.commit('process-complaint/setPayload', {
+        coverage_of_affairs: dataComplaint?.coverage_of_affairs,
+        deadline_date: dataComplaint?.deadline_date
+          ? new Date(dataComplaint?.deadline_date)
+          : '-',
+        status_description: dataComplaint?.status_description || '-',
+        proposed_ikp_narrative: dataComplaint?.proposed_ikp_narrative || '-',
+        opd_name: dataComplaint?.opd_name,
+        complaint_status_id: dataComplaint?.complaint_status_id,
+        urgency_level: dataComplaint?.urgency_level,
+      })
+      this.$store.commit('process-complaint/setComplaintSource', {
+        id: dataComplaint.complaint_source_id,
+        name: dataComplaint.complaint_source_name,
+      })
+      this.isShowPopupChangeAuthority = true
+    },
+    showPopupFollowupComplaint(dataComplaint) {
       this.idApi = dataComplaint.id
       this.typeDialog = 'followupComplaint'
       this.setDataDialog({
@@ -128,12 +163,12 @@ export default {
           dataComplaint.complaint_id,
           'Tindaklanjuti Aduan'
         ),
-        proposed_ikp_narrative: dataComplaint.proposed_ikp_narrative
+        proposed_ikp_narrative: dataComplaint.proposed_ikp_narrative,
       })
       this.$store.commit('followup-complaint/setIsShowPopup', true)
     },
 
-    submitPopupComplaintHandle (item) {
+    submitPopupComplaintHandle(item) {
       let dataDialogInformation = {}
       const paramRequest = {}
       if (this.typeDialog === 'verificationComplaint') {
@@ -150,7 +185,7 @@ export default {
           failed: this.setSucessFailedInformationHandle(
             'Aduan gagal diverifikasi',
             false
-          )
+          ),
         }
         paramRequest.complaint_status_id = 'verified'
       } else {
@@ -167,7 +202,7 @@ export default {
           failed: this.setSucessFailedInformationHandle(
             'Konfirmasi Aduan Gagal Diverifikasi gagal dilakukan',
             false
-          )
+          ),
         }
         paramRequest.complaint_status_id = 'failed'
       }
@@ -179,7 +214,7 @@ export default {
       )
     },
 
-    submitInputIdSpanHandle (item) {
+    submitInputIdSpanHandle(item) {
       this.isShowPopupInputIdSpan = false
       let dataDialogInformation = {}
       dataDialogInformation = {
@@ -191,7 +226,7 @@ export default {
         failed: this.setSucessFailedInformationHandle(
           'ID SP4N Lapor gagal ditambah',
           false
-        )
+        ),
       }
       this.integrationPopupHandle(
         dataDialogInformation,
@@ -200,7 +235,7 @@ export default {
       )
     },
 
-    submitProcessComplaint (dataComplaint) {
+    submitProcessComplaint(dataComplaint) {
       this.isShowPopupProcessComplaint = false
       let dataDialogInformation = {}
       dataDialogInformation = {
@@ -215,7 +250,7 @@ export default {
         failed: this.setSucessFailedInformationHandle(
           'Proses Aduan gagal dilakukan',
           false
-        )
+        ),
       }
       this.integrationPopupHandle(
         dataDialogInformation,
@@ -224,7 +259,7 @@ export default {
       )
     },
 
-    submitFollowupComplaint (dataIkp) {
+    submitFollowupComplaint(dataIkp) {
       this.isShowPopupConfirmationFollowup = false
       let dataDialogInformation = {}
       dataDialogInformation = {
@@ -239,7 +274,7 @@ export default {
         failed: this.setSucessFailedInformationHandle(
           'Tindaklanjuti Aduan gagal dilakukan',
           false
-        )
+        ),
       }
       this.integrationPopupHandle(
         dataDialogInformation,
@@ -248,41 +283,41 @@ export default {
       )
     },
 
-    setDataDialogConfirmation (title, description, subDescription, labelButton) {
+    setDataDialogConfirmation(title, description, subDescription, labelButton) {
       return {
         title,
         description,
         subDescription,
-        labelButtonSubmit: labelButton
+        labelButtonSubmit: labelButton,
       }
     },
-    setDataDialogInformation (title, subDescription) {
+    setDataDialogInformation(title, subDescription) {
       return { title, subDescription }
     },
-    setSucessFailedInformationHandle (description, success = true) {
+    setSucessFailedInformationHandle(description, success = true) {
       if (success) {
         return {
           description,
           labelButtonSubmit: 'Saya Mengerti',
           showCancelButton: false,
-          icon: { name: 'check-mark-circle', fill: '#069550' }
+          icon: { name: 'check-mark-circle', fill: '#069550' },
         }
       } else {
         return {
           description,
           labelButtonSubmit: 'Coba Lagi',
-          icon: { name: 'times-circle', fill: '#EF5350' }
+          icon: { name: 'times-circle', fill: '#EF5350' },
         }
       }
     },
-    async integrationPopupHandle (paramDialog, paramsInputRequest, pathApi) {
+    async integrationPopupHandle(paramDialog, paramsInputRequest, pathApi) {
       this.dataDialog.title = paramDialog.title
       this.dataDialog.subDescription = paramDialog.subDescription
       this.isLoading = true
       try {
         await this.$axios.patch(`/warga/complaints/${this.idApi}/${pathApi}`, {
           ...paramsInputRequest,
-          user_id: this.$auth?.user?.identifier
+          user_id: this.$auth?.user?.identifier,
         })
         this.setDataDialog({ ...paramDialog.success })
         this.setIconPopup({ name: 'check-mark-circle', fill: '#069550' })
@@ -294,7 +329,7 @@ export default {
       }
       this.isShowPopupInformation = true
     },
-    submitRetryHandle () {
+    submitRetryHandle() {
       switch (this.typeDialog) {
         case 'verificationComplaint':
           return this.submitPopupComplaintHandle(this.dataDialog)
@@ -305,15 +340,15 @@ export default {
         }
       }
     },
-    setDataDialog (newDataDialog) {
+    setDataDialog(newDataDialog) {
       this.dataDialog = { ...this.dataDialog, ...newDataDialog }
     },
-    setIconPopup (newIconPopup) {
+    setIconPopup(newIconPopup) {
       this.iconPopup = { ...this.iconPopup, ...newIconPopup }
     },
-    closePopupInformationHandle () {
+    closePopupInformationHandle() {
       this.closePopupHandle()
       this.$fetch()
-    }
-  }
+    },
+  },
 }

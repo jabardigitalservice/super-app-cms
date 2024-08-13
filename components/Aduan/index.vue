@@ -155,6 +155,7 @@
                 @failed="showPopupConfirmationFailedComplaintHandle(item)"
                 @add-span="showPopupInputIdSpanHandle(item)"
                 @process-complaint="showPopupProcessComplaintHandle(item)"
+                @change-authority="showPopupChangeAuthority(item)"
                 @followup-complaint="showPopupFollowupComplaint(item)"
               />
             </template>
@@ -194,6 +195,12 @@
     <DialogProcessComplaint
       :data-dialog="dataDialog"
       :show-popup="isShowPopupProcessComplaint"
+      @close="closePopupHandle()"
+      @submit="submitProcessComplaint"
+    />
+    <DialogProcessComplaint
+      :data-dialog="dataDialog"
+      :show-popup="isShowPopupChangeAuthority"
       @close="closePopupHandle()"
       @submit="submitProcessComplaint"
     />
@@ -260,42 +267,55 @@ export default {
   data() {
     return {
       menuTableAction: [
-        { menu: 'Lihat Detail Aduan', value: 'detail', typeAduan: ['all'] },
+        {
+          menu: 'Lihat Detail Aduan',
+          value: 'detail',
+          complaintType: ['all'],
+        },
         {
           menu: 'Terverifikasi',
           value: 'verify',
-          typeAduan: [typeAduan.aduanMasuk.props],
-          complaintStatus: complaintStatus.unverified.id,
+          complaintType: [typeAduan.aduanMasuk.props],
+          complaintStatus: [complaintStatus.unverified.id],
         },
         {
           menu: 'Gagal Diverifikasi',
           value: 'failed',
-          typeAduan: [typeAduan.aduanMasuk.props],
-          complaintStatus: complaintStatus.unverified.id,
+          complaintType: [typeAduan.aduanMasuk.props],
+          complaintStatus: [complaintStatus.unverified.id],
         },
         {
           menu: 'Tambahkan ID SP4N Lapor',
           value: 'add-span',
-          typeAduan: [typeAduan.aduanDialihkanSpanLapor.props],
-          complaintStatus: 'no-id-span',
+          complaintType: [typeAduan.aduanDialihkanSpanLapor.props],
+          complaintStatus: ['no-id-span'],
         },
         {
           menu: 'Proses Aduan',
           value: 'process-complaint',
-          typeAduan: [typeAduan.penentuanKewenangan.props],
-          complaintStatus: complaintStatus.verified.id,
+          complaintType: [typeAduan.penentuanKewenangan.props],
+          complaintStatus: [complaintStatus.verified.id],
+        },
+        {
+          menu: 'Ubah Kewenangan',
+          value: 'change-authority',
+          complaintType: [typeAduan.penentuanKewenangan.props],
+          complaintStatus: [
+            complaintStatus.diverted_to_span.id,
+            complaintStatus.coordinated.id,
+          ],
         },
         {
           menu: 'Tindaklanjuti Aduan',
           value: 'followup-complaint',
-          typeAduan: [typeAduan.instruksiKewenanganPemprov.props],
-          complaintStatus: complaintStatus.coordinated.id,
+          complaintType: [typeAduan.instruksiKewenanganPemprov.props],
+          complaintStatus: [complaintStatus.coordinated.id],
         },
         {
           menu: 'Buat Instruksi',
           value: 'create-instruction',
-          typeAduan: [typeAduan.instruksiKewenanganNonPemprov.props],
-          complaintStatus: complaintStatus.not_yet_instructed.id,
+          complaintType: [typeAduan.instruksiKewenanganNonPemprov.props],
+          complaintStatus: [complaintStatus.not_yet_instructed.id],
         },
       ],
       listDataComplaint: [],
@@ -606,9 +626,9 @@ export default {
     menuTableActionHandle(complaintStatus) {
       return this.menuTableAction.filter(
         (item) =>
-          item.typeAduan.includes('all') ||
-          (item.typeAduan.includes(this.typeAduanPage) &&
-            complaintStatus === item.complaintStatus)
+          item.complaintType.includes('all') ||
+          (item.complaintType.includes(this.typeAduanPage) &&
+            item.complaintStatus.includes(complaintStatus))
       )
     },
     getTotalStatistic() {

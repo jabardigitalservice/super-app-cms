@@ -9,28 +9,28 @@ export const state = () => ({
     urgency_level: null,
     opd_pic: null,
     opd_name: null,
-    complaint_status_id: null
+    complaint_status_id: null,
   },
   dataComplaintSource: {
     id: '',
-    name: ''
-  }
+    name: '',
+  },
 })
 
 export const actions = {
-  changeComplaintStatusId ({ state, commit }) {
+  changeComplaintStatusId({ state, commit }) {
     if (state.dataComplaintSource?.id === complaintSource.span.id) {
       const payload = { ...state.payload, complaint_status_id: 'coordinated' }
       commit('setPayload', payload)
     }
-  }
+  },
 }
 
 export const mutations = {
-  setPayload (state, payload) {
+  setPayload(state, payload) {
     state.payload = payload
   },
-  setComplaintSource (state, complaintSource) {
+  setComplaintSource(state, complaintSource) {
     state.dataComplaintSource = complaintSource
-  }
+  },
 }
