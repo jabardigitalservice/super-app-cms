@@ -310,25 +310,24 @@ export default {
         }
       }
     },
-    integrationPopupHandle(paramDialog, paramsInputRequest, pathApi) {
+    async integrationPopupHandle(paramDialog, paramsInputRequest, pathApi) {
       this.dataDialog.title = paramDialog.title
       this.dataDialog.subDescription = paramDialog.subDescription
       this.isLoading = true
-      console.log(this.$auth)
-      // try {
-      //   await this.$axios.patch(`/warga/complaints/${this.idApi}/${pathApi}`, {
-      //     ...paramsInputRequest,
-      //     user_id: this.$auth?.user?.identifier
-      //   })
-      //   this.setDataDialog({ ...paramDialog.success })
-      //   this.setIconPopup({ name: 'check-mark-circle', fill: '#069550' })
-      // } catch {
-      //   this.setDataDialog({ ...paramDialog.failed })
-      //   this.setIconPopup({ name: 'times-circle', fill: '#EF5350' })
-      // } finally {
-      //   this.isLoading = false
-      // }
-      // this.isShowPopupInformation = true
+      try {
+        await this.$axios.patch(`/warga/complaints/${this.idApi}/${pathApi}`, {
+          ...paramsInputRequest,
+          user_id: this.$auth?.user?.identifier,
+        })
+        this.setDataDialog({ ...paramDialog.success })
+        this.setIconPopup({ name: 'check-mark-circle', fill: '#069550' })
+      } catch {
+        this.setDataDialog({ ...paramDialog.failed })
+        this.setIconPopup({ name: 'times-circle', fill: '#EF5350' })
+      } finally {
+        this.isLoading = false
+      }
+      this.isShowPopupInformation = true
     },
     submitRetryHandle() {
       switch (this.typeDialog) {
