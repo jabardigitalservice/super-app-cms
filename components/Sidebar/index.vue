@@ -45,6 +45,7 @@ export default {
   },
   mounted() {
     this.profileName = this.$auth?.user?.name
+    console.log('auth', this.$auth?.user)
   },
   methods: {
     isUnleashEnabled(unleashVariable) {

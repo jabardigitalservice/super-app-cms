@@ -1,7 +1,7 @@
 <template>
   <BaseDialog :show-popup="showPopup">
     <BaseDialogPanel class="w-[510px]">
-      <BaseDialogHeader title="Proses Aduan" />
+      <BaseDialogHeader :title="dataDialog.title" />
       <ValidationObserver ref="form">
         <form
           class="form-process-complaint h-[576px] w-full overflow-auto px-6"
@@ -129,13 +129,11 @@
               tag="div"
             >
               <jds-select
-                v-model="payload.coverage_of_affairs"
                 name="OPD Pemprov Penanggungjawab"
                 label="OPD Pemprov Penanggungjawab"
                 placeholder="Pilih OPD Pemprov"
                 helper-text="OPD Pemprov penanggungjawab bertugas untuk memeriksa tindaklanjut aduan di kota/kabupaten atau kementerian/lembaga."
                 :error-message="errors[0]"
-                :options="listAuthority"
                 :class="{ 'mb-2': errors.length > 0 }"
                 class="!w-full"
                 @change="
@@ -255,7 +253,7 @@
       </ValidationObserver>
       <BaseDialogFooter
         :show-cancel-button="true"
-        label-button-submit="Proses Aduan"
+        :label-button-submit="dataDialog.labelButtonSubmit"
         @close="closePopupProcessComplaint()"
         @submit="saveDataProcessComplaint()"
       />
@@ -357,6 +355,13 @@ export default {
       set(value) {
         this.$store.commit('process-complaint/setComplaintSource', value)
       },
+    },
+  },
+  watch: {
+    payload() {
+      if (this.payload.coverage_of_affairs) {
+        this.$fetch()
+      }
     },
   },
   methods: {
