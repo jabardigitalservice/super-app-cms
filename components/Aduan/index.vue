@@ -157,6 +157,7 @@
                 @process-complaint="showPopupProcessComplaintHandle(item)"
                 @change-authority="showPopupChangeAuthority(item)"
                 @followup-complaint="showPopupFollowupComplaint(item)"
+                @create-instruction="showPopupCreateInstruction(item)"
               />
             </template>
           </JdsDataTable>
@@ -206,6 +207,7 @@
     />
     <DialogFollowupComplaint
       :data-dialog="dataDialog"
+      :complaint-type="typeAduanPage"
       @submit="submitFollowupComplaint"
     />
     <DialogLoading :show-popup="isLoading" />
@@ -434,6 +436,10 @@ export default {
           complaint_source_id: item?.complaint_source
             ? this.getComplaintSource(item).id
             : '',
+          coverage_of_affairs: item?.coverage_of_affairs || '',
+          authority: item?.authority || '',
+          opd_name: item?.opd_name || '',
+          deadline_date: item?.deadline_date || '',
         }
       })
     },
