@@ -163,11 +163,25 @@ export default {
           dataComplaint.complaint_id,
           'Tindaklanjuti Aduan'
         ),
-        proposed_ikp_narrative: dataComplaint.proposed_ikp_narrative,
+        proposed_ikp_narrative: dataComplaint.proposed_ikp_narrative || '-',
       })
       this.$store.commit('followup-complaint/setIsShowPopup', true)
     },
-
+    showPopupCreateInstruction(dataComplaint) {
+      this.idApi = dataComplaint.id
+      this.typeDialog = 'createInstruction'
+      this.setDataDialog({
+        dataComplaint,
+        ...this.setDataDialogConfirmation(
+          'Buat Instruksi',
+          'No.Aduan',
+          dataComplaint.complaint_id,
+          'Buat Instruksi'
+        ),
+        proposed_ikp_narrative: dataComplaint.proposed_ikp_narrative || '-',
+      })
+      this.$store.commit('followup-complaint/setIsShowPopup', true)
+    },
     submitPopupComplaintHandle(item) {
       let dataDialogInformation = {}
       const paramRequest = {}

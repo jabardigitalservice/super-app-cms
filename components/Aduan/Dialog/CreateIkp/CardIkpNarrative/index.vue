@@ -18,9 +18,7 @@
     <!-- BODY -->
     <div class="px-3 pt-1 pb-[10px]">
       <div class="flex items-center justify-between">
-        <h1 class="text-[15px] font-bold">
-          Narasi IKP
-        </h1>
+        <h1 class="text-[15px] font-bold">Narasi Instruksi</h1>
         <button
           type="button"
           class="px-2 py-[9px]"
@@ -31,13 +29,13 @@
         </button>
       </div>
       <div class="text-sm">
-        <p class="leading-[18px] line-clamp-2 break-words">
+        <p class="break-words leading-[18px] line-clamp-2">
           {{ dataIkpNarrative }}
         </p>
         <button
           type="button"
-          class="text-sm font-bold text-green-600"
-          @click="isShowIkpNarrative=true"
+          class="mt-[6px] text-sm font-bold text-green-600"
+          @click="isShowIkpNarrative = true"
         >
           Selengkapnya
         </button>
@@ -49,7 +47,11 @@
       @close="closePopupEditIkpNarrative"
       @submit="submitEditIkpNarrative()"
     />
-    <DialogIkpNarrative :show-popup="isShowIkpNarrative" :data-ikp="dataIkp" @close="isShowIkpNarrative=false" />
+    <DialogIkpNarrative
+      :show-popup="isShowIkpNarrative"
+      :data-ikp="dataIkp"
+      @close="isShowIkpNarrative = false"
+    />
   </div>
 </template>
 
@@ -61,23 +63,23 @@ import DialogIkpNarrative from '~/components/Aduan/Dialog/IkpNarrative'
 export default {
   name: 'CardIkpNarrative',
   components: { DialogEditNarrative, DialogIkpNarrative },
-  data () {
+  data() {
     return {
       dataDialog: {
         title: '',
         labelButtonSubmit: '',
         labelTextArea: '',
-        placeholder: ''
+        placeholder: '',
       },
       isShowPopupEditIkpNarrative: false,
-      isShowIkpNarrative: false
+      isShowIkpNarrative: false,
     }
   },
   computed: {
-    ikpNarrativeTruncate () {
+    ikpNarrativeTruncate() {
       return this.dataIkpNarrative.substring(0, 125)
     },
-    ikpNarrativeNonTruncate () {
+    ikpNarrativeNonTruncate() {
       return `${this.dataIkpNarrative.substring(
         125,
         this.dataIkpNarrative.length
@@ -85,32 +87,35 @@ export default {
     },
     ...mapGetters('create-ikp', {
       dataIkpNarrative: 'getIkpNarrative',
-      isTruncate: 'getIsTruncate'
+      isTruncate: 'getIsTruncate',
     }),
-    dataIkp () {
+    dataIkp() {
       return { narrative: this.dataIkpNarrative }
-    }
+    },
   },
   methods: {
-    closePopupEditIkpNarrative () {
+    closePopupEditIkpNarrative() {
       this.$store.dispatch('create-ikp/checkTruncate')
       this.isShowPopupEditIkpNarrative = false
     },
-    showPopupEditIkpNarrative () {
+    showPopupEditIkpNarrative() {
       this.dataDialog = {
         ...this.dataDialog,
-        title: 'Edit Narasi IKP',
+        title: 'Narasi Instruksi',
         labelButtonSubmit: 'Simpan Perubahan',
-        labelTextArea: 'Usulan Narasi IKP',
-        placeholder: 'Masukkan Usulan Narasi IKP'
+        labelTextArea: 'Usulan Narasi Instruksi',
+        placeholder: 'Masukkan Usulan Narasi Instruksi',
       }
-      this.$store.commit('edit-ikp-narrative/setFieldEditIkpNarrative', this.dataIkpNarrative)
+      this.$store.commit(
+        'edit-ikp-narrative/setFieldEditIkpNarrative',
+        this.dataIkpNarrative
+      )
       this.isShowPopupEditIkpNarrative = true
     },
-    submitEditIkpNarrative () {
+    submitEditIkpNarrative() {
       this.closePopupEditIkpNarrative()
       this.$store.commit('create-ikp/setIsTruncate', true)
-    }
-  }
+    },
+  },
 }
 </script>

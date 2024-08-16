@@ -2,7 +2,15 @@ export const state = () => ({
   isShowPopup: false,
   isTruncate: false,
   ikpNarrative: '',
-  dataIkp: {}
+  payload: {
+    narrative: '',
+    deadline_at: '',
+    description: '',
+    indicator_value: '',
+    indicator_unit: '',
+    opd_name: '',
+    coverage_of_affairs: '',
+  },
 })
 
 export const getters = {
@@ -14,27 +22,33 @@ export const getters = {
   },
   getIsTruncate: (state) => {
     return state.isTruncate
-  }
+  },
+  getPayload: (state) => {
+    return state.payload
+  },
 }
 
 export const actions = {
-  checkTruncate ({ state, commit }) {
+  checkTruncate({ state, commit }) {
     if (state.ikpNarrative.length >= 125) {
       commit('setIsTruncate', true)
     } else {
       commit('setIsTruncate', false)
     }
-  }
+  },
 }
 
 export const mutations = {
-  setIsShowPopup (state, isShowPopup) {
+  setIsShowPopup(state, isShowPopup) {
     state.isShowPopup = isShowPopup
   },
-  setIkpNarrative (state, ikpNarrative) {
+  setIkpNarrative(state, ikpNarrative) {
     state.ikpNarrative = ikpNarrative
   },
-  setIsTruncate (state, isTruncate) {
+  setIsTruncate(state, isTruncate) {
     state.isTruncate = isTruncate
-  }
+  },
+  setPayload(state, payload) {
+    state.payload = payload
+  },
 }

@@ -2,7 +2,7 @@
   <div>
     <BaseDialog :show-popup="isShowPopupCreateIkp">
       <BaseDialogPanel class="w-[600px]">
-        <BaseDialogHeader title="Buat IKP Baru" />
+        <BaseDialogHeader title="Buat Instruksi Aduan Baru" />
         <div
           class="form-input-ikp py-3 px-6 pb-6"
           :class="{ '!pr-0': !isTruncate }"
@@ -13,6 +13,88 @@
                 message="Pembuatan Instruksi Khusus Pimpinan baru."
               />
               <CardIkpNarrative class="mt-3" />
+              <div
+                v-if="
+                  complaintType ===
+                  typeAduan.instruksiKewenanganNonPemprov.props
+                "
+              >
+                <ValidationProvider
+                  v-slot="{ errors }"
+                  rules="requiredSelectForm"
+                  name="Cakupan Urusan"
+                  class="py-3"
+                  tag="div"
+                >
+                  <jds-select
+                    name="Cakupan Urusan"
+                    label="Cakupan Urusan"
+                    placeholder="Pilih Cakupan Urusan"
+                    :options="listAuthority"
+                    :error-message="errors[0]"
+                    :disabled="
+                      complaintType ===
+                      typeAduan.instruksiKewenanganNonPemprov.props
+                    "
+                  />
+                </ValidationProvider>
+                <ValidationProvider
+                  v-slot="{ errors }"
+                  rules="requiredSelectForm"
+                  name="Nama Instansi"
+                  class="pb-3"
+                  tag="div"
+                >
+                  <jds-select
+                    name="Nama Instansi"
+                    label="Nama Instansi"
+                    placeholder="Pilih Nama Instansi"
+                    :error-message="errors[0]"
+                    :disabled="
+                      complaintType ===
+                      typeAduan.instruksiKewenanganNonPemprov.props
+                    "
+                  />
+                </ValidationProvider>
+                <ValidationProvider
+                  v-slot="{ errors }"
+                  rules="requiredSelectForm"
+                  name="OPD Pemprov Penanggungjawab"
+                  class="pb-3"
+                  tag="div"
+                >
+                  <jds-select
+                    name="OPD Pemprov Penanggungjawab"
+                    label="OPD Pemprov Penanggungjawab"
+                    placeholder="Pilih OPD Pemprov Penanggungjawab"
+                    helper-text="OPD Pemprov penanggungjawab bertugas untuk memeriksa tindaklanjut aduan di kota/kabupaten atau kementerian/lembaga."
+                    :error-message="errors[0]"
+                    :disabled="
+                      complaintType ===
+                      typeAduan.instruksiKewenanganNonPemprov.props
+                    "
+                  />
+                </ValidationProvider>
+              </div>
+              <ValidationProvider
+                v-if="
+                  complaintType === typeAduan.instruksiKewenanganPemprov.props
+                "
+                v-slot="{ errors }"
+                rules="requiredSelectForm"
+                name="Perangkat Daerah"
+                class="py-3"
+                tag="div"
+              >
+                <jds-select
+                  v-model="payload.opd_name"
+                  name="Perangkat Daerah"
+                  label="Perangkat Daerah"
+                  placeholder="Pilih Perangkat Daerah"
+                  :options="listDisposition"
+                  :error-message="errors[0]"
+                />
+              </ValidationProvider>
               <div class="grid grid-cols-2 gap-3 pt-3">
                 <div class="w-full">
                   <label class="pb-1 text-[15px] text-gray-800"
@@ -45,10 +127,19 @@
                   <date-picker
                     v-model="payload.deadline_at"
                     format="DD/MM/YYYY"
-                    :class="{ 'mx-datepicker--error': errors[0] }"
                     :disabled-date="disabledDeadlineDate"
                     placeholder="Pilih Tanggal Deadline"
-                    class="!w-full"
+                    :class="{
+                      'mx-datepicker--error': errors[0],
+                      'mx-datepicker--disabled':
+                        complaintType ===
+                        typeAduan.instruksiKewenanganNonPemprov.props,
+                    }"
+                    class="!w-full disabled:!bg-green-500"
+                    :disabled="
+                      complaintType ===
+                      typeAduan.instruksiKewenanganNonPemprov.props
+                    "
                   >
                     <template #icon-calendar>
                       <jds-icon
@@ -61,23 +152,6 @@
                   <small class="text-red-600">{{ errors[0] }}</small>
                 </ValidationProvider>
               </div>
-              <ValidationProvider
-                v-slot="{ errors }"
-                rules="required"
-                name="Keterangan Instruksi Khusus Pimpinan"
-              >
-                <BaseTextArea
-                  v-model="payload.description"
-                  label="Keterangan Instruksi Khusus Pimpinan"
-                  placeholder="Masukkan deskripsi"
-                  maxlength="255"
-                  class="pt-3"
-                  :error-message="errors[0]"
-                />
-              </ValidationProvider>
-              <p class="pt-1 text-xs text-gray-600">
-                Tersisa {{ 255 - payload.description.length }} karakter
-              </p>
               <div class="grid grid-cols-2 gap-x-2 py-3">
                 <ValidationProvider
                   v-slot="{ errors }"
@@ -109,20 +183,21 @@
               </div>
               <ValidationProvider
                 v-slot="{ errors }"
-                rules="requiredSelectForm"
-                name="Perangkat Daerah"
-                class="pb-3"
-                tag="div"
+                rules="required"
+                name="Keterangan Instruksi Aduan"
               >
-                <jds-select
-                  v-model="payload.opd_name"
-                  name="Perangkat Daerah"
-                  label="Perangkat Daerah"
-                  placeholder="Pilih Perangkat Daerah"
-                  :options="listDisposition"
+                <BaseTextArea
+                  v-model="payload.description"
+                  label="Keterangan Instruksi Aduan"
+                  placeholder="Masukkan deskripsi"
+                  maxlength="255"
+                  class="pt-3"
                   :error-message="errors[0]"
                 />
               </ValidationProvider>
+              <p class="pt-1 text-xs text-gray-600">
+                Tersisa {{ 255 - payload.description.length }} karakter
+              </p>
             </form>
           </ValidationObserver>
         </div>
@@ -168,6 +243,7 @@ import CardIkpNarrative from '~/components/Aduan/Dialog/CreateIkp/CardIkpNarrati
 import DialogWithAlert from '~/components/Aduan/Dialog/CreateIkp/Dialog/WithAlert'
 import DialogInformation from '~/components/Aduan/Dialog/CreateIkp/Dialog/Information'
 import { formatDate } from '~/utils'
+import { typeAduan } from '~/constant/aduan-masuk'
 
 export default {
   name: 'DialogCreateIkp',
@@ -179,18 +255,17 @@ export default {
     ValidationObserver,
     ValidationProvider,
   },
+  props: {
+    complaintType: {
+      type: String,
+      default: '',
+    },
+  },
   data() {
     return {
-      payload: {
-        narrative: '',
-        deadline_at: '',
-        description: '',
-        indicator_value: '',
-        indicator_unit: '',
-        opd_name: '',
-      },
       instructionDate: new Date(),
       listDataDisposition: [],
+      listDataAuthority: [],
       isTruncate: true,
       isShowPopupConfirmation: false,
       isShowPopupInformationSuccess: false,
@@ -211,10 +286,15 @@ export default {
         variant: '',
       },
       icon: {},
+      typeAduan,
     }
   },
   async fetch() {
     try {
+      const responseAuthority = await this.$axios.get(
+        '/warga/complaints/authorities'
+      )
+      this.listDataAuthority = responseAuthority.data.data
       const responseDisposition = await this.$axios.get(
         'warga/complaints/dispositions',
         { params: { authority: 'Pemerintah Provinsi Jawa Barat' } }
@@ -222,9 +302,15 @@ export default {
       this.listDataDisposition = responseDisposition.data.data
     } catch {
       this.listDataDisposition = []
+      this.listDataAuthority = []
     }
   },
   computed: {
+    listAuthority() {
+      return this.listDataAuthority.map((item) => {
+        return { value: item.id, label: item.name }
+      })
+    },
     listDisposition() {
       return this.listDataDisposition.map((item) => {
         return { label: item.name, value: item.name }
@@ -234,6 +320,14 @@ export default {
       isShowPopupCreateIkp: 'getIsShowPopup',
       ikpNarrative: 'getIkpNarrative',
     }),
+    payload: {
+      get() {
+        return { ...this.$store.state['create-ikp'].payload }
+      },
+      set(value) {
+        this.$store.commit('create-ikp/setPayload', value)
+      },
+    },
   },
   methods: {
     backToFormIkp() {
@@ -367,11 +461,17 @@ export default {
 }
 
 .form-input-ikp .form-text-area .input-wrapper {
-  @apply !h-[92.5px];
+  @apply !h-[92.5px] !bg-white;
 }
 
 .form-input-ikp .form-input-text input {
   @apply !bg-white;
+}
+
+.form-input-ikp
+  .jds-select.jds-select--disabled
+  .jds-input-text__input-wrapper {
+  @apply !w-[528px] !bg-gray-200;
 }
 
 .form-input-ikp .jds-select .jds-input-text__input-wrapper {
@@ -382,5 +482,12 @@ export default {
   @apply !max-h-[500px] !max-w-[528px] !overflow-y-auto;
   scrollbar-color: #e0e0e0 transparent;
   scrollbar-width: thin;
+}
+
+.form-input-ikp
+  .mx-datepicker.mx-datepicker--disabled
+  .mx-input-wrapper
+  .mx-input {
+  @apply !bg-gray-200;
 }
 </style>
