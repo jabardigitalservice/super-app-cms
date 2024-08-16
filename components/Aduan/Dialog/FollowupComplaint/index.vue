@@ -66,7 +66,9 @@
                 height="80"
               />
             </div>
-            <h1 class="text-sm font-bold">Tidak dapat menemukan IKP</h1>
+            <h1 class="text-sm font-bold">
+              Tidak dapat menemukan Instruksi Aduan
+            </h1>
             <p class="text-sm">
               Cobalah menggunakan id atau narasi yang berbeda.
             </p>
@@ -81,7 +83,7 @@
                 <tr>
                   <th class="rounded-tl-lg !bg-green-600">ID IKP</th>
                   <th colspan="3" class="rounded-tr-lg !bg-green-600">
-                    Narasi IKP
+                    Narasi Instruksi
                   </th>
                 </tr>
               </thead>
