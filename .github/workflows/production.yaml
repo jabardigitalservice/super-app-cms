@@ -53,7 +53,7 @@ jobs:
             UNLEASH_URL=${{secrets.UNLEASH_URL}}
             UNLEASH_TOKEN=${{secrets.UNLEASH_TOKEN_PRODUCTION}}
             URL_MAIN_SERVICE=${{secrets.URL_MAIN_SERVICE_PROD}}
-      # GitOps
+      ## GitOps
       - name: GitOps ArgoCD Setup
         run: |
           echo "${{ secrets.GITLAB_ARGOCD_KEY }}" > /tmp/gitlab-deploy-ssh-key
