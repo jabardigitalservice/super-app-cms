@@ -120,7 +120,7 @@
             <ValidationProvider
               v-if="
                 payload.complaint_status_id ===
-                complaintStatus.diverted_to_span.id
+                  complaintStatus.diverted_to_span.id && isShowFieldOPDPemprov
               "
               v-slot="{ errors }"
               rules="requiredSelectForm"
@@ -129,6 +129,7 @@
               tag="div"
             >
               <jds-select
+                v-model="payload.opd_pemprov_id"
                 name="OPD Pemprov Penanggungjawab"
                 label="OPD Pemprov Penanggungjawab"
                 placeholder="Pilih OPD Pemprov"
@@ -136,12 +137,14 @@
                 :error-message="errors[0]"
                 :class="{ 'mb-2': errors.length > 0 }"
                 class="!w-full"
+                :options="listGovResponsible"
                 @change="
                   changeSelectValue(payload.opd_name, 'coverage_of_affairs')
                 "
               />
             </ValidationProvider>
             <ValidationProvider
+              v-if="isShowFieldProposeIkpNarrative"
               v-slot="{ errors }"
               rules="required"
               name="Usulan Narasi Instruksi"
@@ -162,6 +165,7 @@
               </p>
             </ValidationProvider>
             <AlertMessage
+              v-if="isShowFieldProposeIkpNarrative"
               message="Usulan Narasi akan digunakan untuk Instruksi Khusus Pimpinan."
               class="mb-5 !w-[462px]"
             />
@@ -302,25 +306,50 @@ export default {
       ],
       listDataAuthority: [],
       listDataDisposition: [],
+      listDataGovResponsible: [],
       complaintStatus,
       complaintSource,
       complaintStatusValue: '',
+      coverageOfAffairs: {
+        district: {
+          id: 'Pemerintah Kabupaten/Kota',
+          name: 'Pemerintah Kabupaten/Kota',
+        },
+        institutions: {
+          id: 'Kementerian/Lembaga',
+          name: 'Kementerian/Lembaga',
+        },
+        government: {
+          id: 'Pemerintah Provinsi Jawa Barat',
+          name: 'Pemerintah Provinsi Jawa Barat',
+        },
+      },
+      isShowFieldOPDPemprov: false,
+      isShowFieldProposeIkpNarrative: true,
     }
   },
   async fetch() {
     try {
+      // get data Cakupan urusan
       const responseAuthority = await this.$axios.get(
         '/warga/complaints/authorities'
       )
       this.listDataAuthority = responseAuthority.data.data
 
       if (this.payload.coverage_of_affairs) {
+        // get data nama instansi
         const responseDisposition = await this.$axios.get(
           '/warga/complaints/dispositions',
           { params: { authority: this.payload.coverage_of_affairs } }
         )
         this.listDataDisposition = responseDisposition.data.data
       }
+
+      // get data OPD Pemprov Penanggungjawab
+      const responseGovResponsible = await this.$axios.get(
+        '/warga/complaints/opds'
+      )
+      this.listDataGovResponsible = responseGovResponsible.data.data
     } catch {
       this.listDataComplaintStatus = []
       this.listDataAuthority = []
@@ -336,6 +365,11 @@ export default {
     listDisposition() {
       return this.listDataDisposition.map((item) => {
         return { value: item.name, label: item.name }
+      })
+    },
+    listGovResponsible() {
+      return this.listDataGovResponsible.map((item) => {
+        return { value: item.id, label: item.name }
       })
     },
     payload: {
@@ -369,9 +403,17 @@ export default {
       switch (keyObject) {
         case 'complaint_status_id':
           this.clearPopupProcessComplaint()
+          this.isShowFieldProposeIkpNarrative = true
           break
         case 'coverage_of_affairs':
           this.$fetch()
+          this.isShowFieldOPDPemprov =
+            this.payload.coverage_of_affairs ===
+            this.coverageOfAffairs.district.id
+          this.isShowFieldProposeIkpNarrative =
+            this.payload.coverage_of_affairs !==
+            this.coverageOfAffairs.institutions.id
+
           break
         default:
           this.paylod = { ...this.payload, [keyObject]: value }
@@ -405,6 +447,7 @@ export default {
         urgency_level: null,
         opd_pic: null,
         opd_name: null,
+        opd_pemprov_id: null,
       }
       this.listDataDisposition = [{ label: '', value: '' }]
       this.$store.commit('process-complaint/setPayload', { ...this.payload })
@@ -439,6 +482,15 @@ export default {
         return 'Contoh: Instruksi Pimpinan : PJ Gubernur Bey Triadi Machmudin  S.E., M.T - melakukan koordinasi dan konfirmasi tindaklanjut aduan di SP4N Lapor'
       }
       return 'Contoh: Melakukan survey dan perbaikan jalan berlubang di jl. Laswi'
+    },
+    showProposeIkpNarrativeField() {
+      if (
+        this.payload.coverage_of_affairs ===
+        this.coverageOfAffairs.institutions.id
+      ) {
+        return false
+      }
+      return true
     },
     async saveDataProcessComplaint() {
       const isValid = await this.$refs.form.validate()
