@@ -10,6 +10,7 @@ export const state = () => ({
     opd_pic: null,
     opd_name: null,
     complaint_status_id: null,
+    opd_pemprov_id: null,
   },
   dataComplaintSource: {
     id: '',
