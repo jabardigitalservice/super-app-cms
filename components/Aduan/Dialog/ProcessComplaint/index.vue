@@ -489,6 +489,7 @@ export default {
         this.payload.deadline_date = this.payload?.deadline_date
           ? formatDate(this.payload?.deadline_date || '', 'yyyy-MM-dd')
           : null
+        this.payload.opd_pemprov_id = this.opd_pemprov_id || '-'
         this.$emit('submit', { ...this.dataDialog, payload: this.payload })
         this.closePopupProcessComplaint()
       }
