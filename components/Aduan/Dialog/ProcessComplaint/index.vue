@@ -483,15 +483,6 @@ export default {
       }
       return 'Contoh: Melakukan survey dan perbaikan jalan berlubang di jl. Laswi'
     },
-    showProposeIkpNarrativeField() {
-      if (
-        this.payload.coverage_of_affairs ===
-        this.coverageOfAffairs.institutions.id
-      ) {
-        return false
-      }
-      return true
-    },
     async saveDataProcessComplaint() {
       const isValid = await this.$refs.form.validate()
       if (isValid) {
