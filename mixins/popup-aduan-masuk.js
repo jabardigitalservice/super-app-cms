@@ -252,17 +252,21 @@ export default {
     submitProcessComplaint(dataComplaint) {
       this.isShowPopupProcessComplaint = false
       let dataDialogInformation = {}
+      const dialogTitle =
+        this.typeDialog === 'changeAuthority'
+          ? 'Ubah Kewenangan'
+          : 'Proses Aduan'
       dataDialogInformation = {
         ...this.setDataDialogInformation(
-          'Proses Aduan',
+          dialogTitle,
           dataComplaint.subDescription
         ),
         success: this.setSucessFailedInformationHandle(
-          'Proses Aduan berhasil dilakukan',
+          `${dialogTitle} berhasil dilakukan`,
           true
         ),
         failed: this.setSucessFailedInformationHandle(
-          'Proses Aduan gagal dilakukan',
+          `${dialogTitle} gagal dilakukan`,
           false
         ),
       }
