@@ -313,16 +313,16 @@ export default {
         const {
           coverage_of_affairs: coverageOfAffairs,
           opd_name: opdName,
-          deadline_at: deadlineAt,
-          authority,
+          deadline_date: deadlineDate,
+          opd_pemprov_id: opdPemprovId,
         } = this.dataDialog.dataComplaint
 
         this.$store.commit('create-ikp/setPayload', {
           ...this.payload,
           coverage_of_affairs: coverageOfAffairs,
           opd_name: opdName,
-          deadline_at: deadlineAt,
-          authority,
+          deadline_at: deadlineDate,
+          opd_pemprov_id: opdPemprovId,
         })
       }
 

@@ -170,6 +170,10 @@ export default {
     showPopupCreateInstruction(dataComplaint) {
       this.idApi = dataComplaint.id
       this.typeDialog = 'createInstruction'
+      dataComplaint = {
+        ...dataComplaint,
+        deadline_date: new Date(dataComplaint.deadline_date) || '',
+      }
       this.setDataDialog({
         dataComplaint,
         ...this.setDataDialogConfirmation(

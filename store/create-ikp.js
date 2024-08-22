@@ -10,6 +10,7 @@ export const state = () => ({
     indicator_unit: '',
     opd_name: '',
     coverage_of_affairs: '',
+    opd_pemprov_id: '',
   },
 })
 
