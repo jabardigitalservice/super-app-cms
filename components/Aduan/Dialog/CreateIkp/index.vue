@@ -27,6 +27,7 @@
                   tag="div"
                 >
                   <jds-select
+                    v-model="payload.coverage_of_affairs"
                     name="Cakupan Urusan"
                     label="Cakupan Urusan"
                     placeholder="Pilih Cakupan Urusan"
@@ -46,6 +47,7 @@
                   tag="div"
                 >
                   <jds-select
+                    v-model="payload.opd_name"
                     name="Nama Instansi"
                     label="Nama Instansi"
                     placeholder="Pilih Nama Instansi"
@@ -54,6 +56,7 @@
                       complaintType ===
                       typeAduan.instruksiKewenanganNonPemprov.props
                     "
+                    :options="listDisposition"
                   />
                 </ValidationProvider>
                 <ValidationProvider
@@ -64,6 +67,7 @@
                   tag="div"
                 >
                   <jds-select
+                    v-model="payload.opd_pemprov_id"
                     name="OPD Pemprov Penanggungjawab"
                     label="OPD Pemprov Penanggungjawab"
                     placeholder="Pilih OPD Pemprov Penanggungjawab"
@@ -73,6 +77,7 @@
                       complaintType ===
                       typeAduan.instruksiKewenanganNonPemprov.props
                     "
+                    :options="listGovResponsible"
                   />
                 </ValidationProvider>
               </div>
@@ -266,6 +271,7 @@ export default {
       instructionDate: new Date(),
       listDataDisposition: [],
       listDataAuthority: [],
+      listDataGovResponsible: [],
       isTruncate: true,
       isShowPopupConfirmation: false,
       isShowPopupInformationSuccess: false,
@@ -291,20 +297,29 @@ export default {
   },
   async fetch() {
     try {
+      // response cakupan urusan
       const responseAuthority = await this.$axios.get(
         '/warga/complaints/authorities'
       )
       this.listDataAuthority = responseAuthority.data.data
+      // response nama instansi
       const responseDisposition = await this.$axios.get(
         'warga/complaints/dispositions',
-        { params: { authority: 'Pemerintah Provinsi Jawa Barat' } }
+        { params: { authority: this.payload.coverage_of_affairs } }
       )
       this.listDataDisposition = responseDisposition.data.data
+      // response OPD Pemprov Penanggungjawab
+      const responseGovResponsible = await this.$axios.get(
+        '/warga/complaints/opds'
+      )
+      this.listDataGovResponsible = responseGovResponsible.data.data
     } catch {
       this.listDataDisposition = []
       this.listDataAuthority = []
+      this.listDataGovResponsible = []
     }
   },
+
   computed: {
     listAuthority() {
       return this.listDataAuthority.map((item) => {
@@ -314,6 +329,11 @@ export default {
     listDisposition() {
       return this.listDataDisposition.map((item) => {
         return { label: item.name, value: item.name }
+      })
+    },
+    listGovResponsible() {
+      return this.listDataGovResponsible.map((item) => {
+        return { label: item.name, value: item.id }
       })
     },
     ...mapGetters('create-ikp', {
@@ -327,6 +347,13 @@ export default {
       set(value) {
         this.$store.commit('create-ikp/setPayload', value)
       },
+    },
+  },
+  watch: {
+    payload() {
+      if (this.payload.coverage_of_affairs) {
+        this.$fetch()
+      }
     },
   },
   methods: {
@@ -368,6 +395,8 @@ export default {
         indicator_value: '',
         indicator_unit: '',
         opd_name: '',
+        coverage_of_affairs: '',
+        opd_pemprov_id: '',
       }
       this.$store.commit('create-ikp/setIsTruncate', false)
       this.$refs.form.reset()
@@ -472,6 +501,19 @@ export default {
   .jds-select.jds-select--disabled
   .jds-input-text__input-wrapper {
   @apply !w-[528px] !bg-gray-200;
+}
+
+.form-input-ikp
+  .jds-select.jds-select--disabled
+  .jds-input-text__input-wrapper {
+  @apply !w-[528px] !bg-gray-200;
+}
+
+.form-input-ikp
+  .jds-select.jds-select--disabled
+  .jds-input-text__input-wrapper
+  input {
+  @apply !w-[528px] !bg-gray-200 !text-gray-600;
 }
 
 .form-input-ikp .jds-select .jds-input-text__input-wrapper {
