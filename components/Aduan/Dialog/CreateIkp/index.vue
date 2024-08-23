@@ -408,8 +408,8 @@ export default {
         message: 'Pastikan data yang diisi telah sesuai dan benar',
       })
       this.setDataDialog({
-        description: 'Apakah Anda yakin ingin membuat IKP baru? ',
-        labelButtonSubmit: 'Simpan IKP Baru',
+        description: 'Apakah Anda yakin ingin membuat instruksi aduan baru? ',
+        labelButtonSubmit: 'Simpan Instruksi Baru',
         labelButtonCancel: 'Kembali',
       })
       if (isValid) {
@@ -433,7 +433,8 @@ export default {
         this.dataIkp = response.data.data
         this.dataIkp.ikp_code = this.dataIkp.ikp_code.toString()
         this.setDataDialog({
-          description: 'Pembuatan IKP Baru telah berhasil dilakukan',
+          description:
+            'Pembuatan Instruksi Aduan Baru telah berhasil dilakukan',
           labelButtonSubmit: 'Saya mengerti',
           showCancelButton: false,
         })
@@ -444,11 +445,11 @@ export default {
         this.payload.deadline_at = new Date(this.payload.deadline_at)
         this.setAlert({
           variant: 'error',
-          message: 'Pembuatan IKP Baru Gagal',
+          message: 'Pembuatan Instruksi Aduan Baru Gagal',
         })
         this.setDataDialog({
           description:
-            'Maaf, pembuatan IKP baru tidak dapat disimpan saat ini karena terjadi kesalahan pada sistem. Silakan coba lagi untuk menyimpan IKP baru.',
+            'Maaf, pembuatan instruksi aduan baru tidak dapat disimpan saat ini karena terjadi kesalahan pada sistem. Silakan coba lagi untuk menyimpan instruksi aduan baru.',
           labelButtonSubmit: 'Coba Lagi',
           labelButtonCancel: 'Batalkan',
         })

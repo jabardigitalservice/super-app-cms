@@ -1,8 +1,8 @@
 <template>
   <BaseDialog :show-popup="showPopup">
     <BaseDialogPanel class="w-[510px]">
-      <BaseDialogHeader title="Buat IKP Baru" />
-      <div class="pb-4 pt-4 px-6">
+      <BaseDialogHeader title="Buat Instruksi Aduan Baru" />
+      <div class="px-6 pb-4 pt-4">
         <jds-section-message
           show
           :variant="alert.variant"
@@ -10,7 +10,10 @@
           :message="alert.message"
           class="!h-[55px] !p-4"
         />
-        <BaseDialogDescription :description="dataDialog.description " class="mt-4" />
+        <BaseDialogDescription
+          :description="dataDialog.description"
+          class="mt-4"
+        />
       </div>
 
       <BaseDialogFooter
@@ -30,16 +33,16 @@ export default {
   props: {
     showPopup: {
       type: Boolean,
-      default: false
+      default: false,
     },
     alert: {
       type: Object,
-      default: () => ({})
+      default: () => ({}),
     },
     dataDialog: {
       type: Object,
-      default: () => ({})
-    }
-  }
+      default: () => ({}),
+    },
+  },
 }
 </script>
