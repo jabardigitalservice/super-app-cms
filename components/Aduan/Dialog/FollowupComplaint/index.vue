@@ -154,7 +154,7 @@
     <DialogConfirmation
       :data-dialog="dataDialogConfirmation"
       :show-popup="isShowPopupConfirmationFollowup"
-      @close="isShowPopupConfirmationFollowup = false"
+      @close="closePopupConfirmationComplaint()"
       @submit="submitDataFollowupComplaint()"
     />
     <DialogIkpNarrative
@@ -207,7 +207,7 @@ export default {
       dataDialogConfirmation: {},
       isShowPopupConfirmationFollowup: false,
       listMenuTableAction: [
-        { menu: 'Lihat Narasi IKP', value: 'detail-narrative' },
+        { menu: 'Lihat Narasi Instruksi', value: 'detail-narrative' },
       ],
       isShowPopupIkpNarrative: false,
       pagination: {
@@ -296,11 +296,15 @@ export default {
     showPopupConfirmationFollowupComplaint() {
       this.$store.commit('followup-complaint/setIsShowPopup', false)
       this.dataDialogConfirmation = {
-        title: 'Tindaklanjuti Aduan',
+        title: this.dataDialog.title,
         description: 'Apakah Anda yakin ingin menindaklanjuti aduan tersebut?',
-        labelButtonSubmit: 'Tindaklanjuti Aduan',
+        labelButtonSubmit: 'Ya, lanjutkan',
       }
       this.isShowPopupConfirmationFollowup = true
+    },
+    closePopupConfirmationComplaint() {
+      this.isShowPopupConfirmationFollowup = false
+      this.$store.commit('followup-complaint/setIsFollowup', false)
     },
     showPopupIkpNarrative(dataIkp) {
       this.$store.commit('followup-complaint/setDataIkp', dataIkp)
