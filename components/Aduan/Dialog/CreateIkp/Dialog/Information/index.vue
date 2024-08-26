@@ -1,14 +1,14 @@
 <template>
   <BaseDialog :show-popup="showPopup">
     <BaseDialogPanel class="w-[600px]">
-      <BaseDialogHeader title="Buat IKP Baru" />
+      <BaseDialogHeader title="Buat Instruksi Aduan Baru" />
       <div
         class="py-4 px-6"
         :class="{ '!pb-10': Object.keys(dataIkp).length === 0 }"
       >
         <BaseInformation :icon-popup="icon" :data-dialog="dataDialog" />
         <div v-if="Object.keys(dataIkp).length > 0" class="pl-[30px] pt-4">
-          <label class="mb-1 text-sm"> ID IKP </label>
+          <label class="mb-1 text-sm"> ID Instruksi </label>
           <div class="mb-[13.5px] flex items-center">
             <p class="text-sm font-bold text-gray-900">
               {{ dataIkp.ikp_code }}
@@ -26,9 +26,11 @@
               />
               Salin
             </button>
-            <small class="text-blue-gray-500 text-xs font-semibold">{{ copiedInfoMessage }}</small>
+            <small class="text-xs font-semibold text-blue-gray-500">{{
+              copiedInfoMessage
+            }}</small>
           </div>
-          <label class="mb-1 text-sm">Narasi IKP</label>
+          <label class="mb-1 text-sm">Narasi Instruksi</label>
           <p class="text-sm">
             {{ dataIkp.narrative }}
           </p>
@@ -37,7 +39,7 @@
       <BaseDialogFooter
         :show-cancel-button="dataDialog.showCancelButton"
         :label-button-submit="dataDialog.labelButtonSubmit"
-        @close="$emit('close')"
+        @close="closePopup()"
         @submit="$emit('submit')"
       />
     </BaseDialogPanel>
@@ -50,35 +52,40 @@ export default {
   props: {
     showPopup: {
       type: Boolean,
-      default: false
+      default: false,
     },
     dataIkp: {
       type: Object,
-      default: () => ({})
+      default: () => ({}),
     },
     dataDialog: {
       type: Object,
-      default: () => ({})
+      default: () => ({}),
     },
     icon: {
       type: Object,
-      default: () => ({})
-    }
+      default: () => ({}),
+    },
   },
-  data () {
+  data() {
     return {
-      copiedInfoMessage: ''
+      copiedInfoMessage: '',
     }
   },
   methods: {
-    async copyIkpCode () {
+    async copyIkpCode() {
+      this.copiedInfoMessage = ''
       try {
         await navigator.clipboard.writeText(this.dataIkp.ikp_code)
-        this.copiedInfoMessage = 'Kode IKP berhasil disalin!'
+        this.copiedInfoMessage = 'ID Instruksi berhasil disalin!'
       } catch {
-        this.copiedInfoMessage = 'Kode IKP gagal disalin!'
+        this.copiedInfoMessage = 'ID Instruksi gagal disalin!'
       }
-    }
-  }
+    },
+    closePopup() {
+      this.$emit('close')
+      this.copiedInfoMessage = ''
+    },
+  },
 }
 </script>

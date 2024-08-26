@@ -284,17 +284,27 @@ export default {
     submitFollowupComplaint(dataIkp) {
       this.isShowPopupConfirmationFollowup = false
       let dataDialogInformation = {}
+      const dialogDescriptionSucceess =
+        this.typeDialog === 'createInstruction'
+          ? 'Instruksi Anda berhasil dibuat'
+          : 'Tindaklanjuti aduan Anda berhasil diproses'
+
+      const dialogDescriptionFailed =
+        this.typeDialog === 'createInstruction'
+          ? 'Instruksi Anda gagal dibuat'
+          : 'Tindaklanjuti aduan Anda gagal diproses'
+
       dataDialogInformation = {
         ...this.setDataDialogInformation(
-          'Tindaklanjuti Aduan',
+          this.dataDialog.title,
           dataIkp.ikp_code
         ),
         success: this.setSucessFailedInformationHandle(
-          'Tindaklanjuti Aduan berhasil dilakukan',
+          dialogDescriptionSucceess,
           true
         ),
         failed: this.setSucessFailedInformationHandle(
-          'Tindaklanjuti Aduan gagal dilakukan',
+          dialogDescriptionFailed,
           false
         ),
       }
