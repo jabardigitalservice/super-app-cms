@@ -72,7 +72,6 @@ export default {
       copiedInfoMessage: '',
     }
   },
-  mounted() {},
   methods: {
     async copyIkpCode() {
       this.copiedInfoMessage = ''
