@@ -577,9 +577,17 @@ export default {
         case this.typeAduan.instruksiKewenanganNonPemprov.props:
           return true
         case this.typeAduan.penentuanKewenangan.props:
-          if (statusId === this.complaintStatus.coordinated.id) {
-            return true
+          {
+            const complaintSource =
+              this.detailComplaint?.complaint_source === 'SP4N Lapor'
+            const complaintStatus =
+              statusId === this.complaintStatus.coordinated.id ||
+              statusId === this.complaintStatus.verified.id
+            if (complaintSource && complaintStatus) {
+              return true
+            }
           }
+
           break
         default:
           return false
