@@ -131,7 +131,7 @@ const aduanMenu = {
       arrow: false,
       showMenuAndAccessForRoles: ['admin', 'admin:aduan-team-3'],
       icon: 'edit-pencil.svg',
-      unleashVariable: 'SAPAWARGA-CMS__ADUAN--PENGINPUTAN-IKP',
+      unleashVariable: 'SAPAWARGA-CMS__ADUAN--INSTRUKSI-KEWENANGAN-PEMPROV',
     },
     {
       name: 'Instruksi Kewenangan Non-Pemprov',
