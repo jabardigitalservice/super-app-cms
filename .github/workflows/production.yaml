@@ -55,7 +55,7 @@ jobs:
             URL_MAIN_SERVICE=${{secrets.URL_MAIN_SERVICE_PROD}}
             EXPIRY_FORGOT_PASSWORD_LINK=${{secrets.EXPIRY_FORGOT_PASSWORD_LINK}}
             EXPIRY_INVITATION_LINK=${{secrets.EXPIRY_INVITATION_LINK}}
-      # GitOps
+      ## GitOps
       - name: GitOps ArgoCD Setup
         run: |
           echo "${{ secrets.GITLAB_ARGOCD_KEY }}" > /tmp/gitlab-deploy-ssh-key
