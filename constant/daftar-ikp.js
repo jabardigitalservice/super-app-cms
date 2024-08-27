@@ -32,11 +32,17 @@ export const headerDaftarIkp = [
 ]
 
 export const ikpType = {
-  penginputanInstruksi: {
-    props: 'penginputan-instruksi',
-    label: 'Daftar Penginputan Instruksi',
-    link: '/aduan/penginputan-ikp',
-    id: 'penginputanIkp',
+  instruksiKewenanganPemprov: {
+    props: 'instruksi-kewenangan-pemprov',
+    label: 'Instruksi Kewenangan Pemprov',
+    link: '/aduan/instruksi-kewenangan-pemprov',
+    id: 'instruksiKewenanganPemprov',
+  },
+  instruksiKewenanganNonPemprov: {
+    props: 'instruksi-kewenangan-non-pemprov',
+    label: 'Instruksi Kewenangan Non Pemprov',
+    link: '/aduan/instruksi-kewenangan-non-pemprov',
+    id: 'instruksiKewenanganNonPemprov',
   },
   instruksiAduanWarga: {
     props: 'instruksi-aduan-warga',
@@ -60,7 +66,11 @@ export const ikpStatus = Object.freeze({
     value: 0,
     icon: '/icon/icon-aduan/complaint-status/complaint-coordinated-icon.svg',
     statusColor: [
-      { color: 'yellow', ikpType: [ikpType.penginputanInstruksi.props] },
+      { color: 'yellow', ikpType: [ikpType.instruksiKewenanganPemprov.props] },
+      {
+        color: 'green',
+        ikpType: [ikpType.instruksiKewenanganNonPemprov.props],
+      },
     ],
   },
   followup: {
@@ -71,9 +81,20 @@ export const ikpStatus = Object.freeze({
     statusColor: [
       {
         color: 'light-blue',
-        ikpType: [ikpType.penginputanInstruksi.props],
+        ikpType: [ikpType.instruksiKewenanganPemprov.props],
       },
       { color: 'yellow', ikpType: [ikpType.instruksiAduanWarga.props] },
+    ],
+  },
+  not_yet_coordinated: {
+    id: 'not_yet_coordinated',
+    name: 'Belum Dikoordinasikan',
+    value: 0,
+    statusColor: [
+      {
+        color: 'light-blue',
+        ikpType: [ikpType.instruksiKewenanganNonPemprov.props],
+      },
     ],
   },
   postponed: {

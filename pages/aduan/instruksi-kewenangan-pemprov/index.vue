@@ -8,13 +8,13 @@
     />
     <Aduan
       v-if="nameTabId === listTab.complaintTab.id"
-      :type-aduan-page="typeAduan.penginputanIkp.props"
-      link-page-detail="/aduan/penginputan-ikp/detail"
+      :type-aduan-page="typeAduan.instruksiKewenanganPemprov.props"
+      link-page-detail="/aduan/instruksi-kewenangan-pemprov/detail"
     />
     <AduanDaftarIKP
       v-if="nameTabId === listTab.ikpTab.id"
-      :ikp-type-page="ikpType.penginputanInstruksi.props"
-      detail-page="/aduan/penginputan-ikp/detail-ikp"
+      :ikp-type-page="ikpType.instruksiKewenanganPemprov.props"
+      detail-page="/aduan/instruksi-kewenangan-pemprov/detail-ikp"
     />
   </div>
 </template>
@@ -24,7 +24,7 @@ import { typeAduan } from '~/constant/aduan-masuk'
 import { ikpType } from '~/constant/daftar-ikp'
 
 export default {
-  name: 'PagePenginputanIkp',
+  name: 'PageInstruksiKewenanganPemprov',
   layout: 'Dashboard',
   data() {
     const listTab = {
@@ -34,8 +34,8 @@ export default {
     return {
       navigations: [
         {
-          label: typeAduan.penginputanIkp.label,
-          link: typeAduan.penginputanIkp.link,
+          label: typeAduan.instruksiKewenanganPemprov.label,
+          link: typeAduan.instruksiKewenanganPemprov.link,
         },
       ],
       descriptionPage:
@@ -63,7 +63,7 @@ export default {
     },
   },
   mounted() {
-    this.$store.commit('setActivePage', 'Daftar Penginputan IKP')
+    this.$store.commit('setActivePage', 'Instruksi Kewenangan Pemprov')
     this.$store.commit('setHeader', {
       navigations: this.navigations,
       descriptionPage: this.descriptionPage,

@@ -33,7 +33,11 @@
     </div>
     <BaseTabGroup>
       <template #tab-list>
-        <TabBarDetail :list-tab="listTab" @button-tab="selectedTab" />
+        <TabBarDetail
+          ref="tabBarDetail"
+          :list-tab="listTab"
+          @button-tab="selectedTab"
+        />
       </template>
       <template #tab-panel>
         <BaseTabPanel
@@ -47,9 +51,14 @@
             @button-image="isShowPopupViewImage = true"
           />
           <AduanDaftarIKPTableDetail
-            v-else-if="idTab === 'input-ikp'"
-            :show-daftar-aduan="false"
+            v-else-if="idTab === 'instruksi-aduan'"
+            :show-daftar-aduan="
+              typeAduanPage === typeAduan.instruksiKewenanganNonPemprov.props
+            "
+            :ikp-type-page="typeAduanPage"
+            detail-complaint-link="/aduan/instruksi-kewenangan-non-pemprov/detail"
             :ikp-code="ikpCode"
+            @select-tab="selectedTab"
           />
         </BaseTabPanel>
       </template>
@@ -149,9 +158,9 @@ export default {
           icon: '/icon/icon-aduan/complaint-detail.svg',
         },
         {
-          id: 'input-ikp',
-          name: 'Instruksi Khusus Pimpinan',
-          icon: '/icon/icon-aduan/complaint-detail.svg',
+          id: 'instruksi-aduan',
+          name: 'Detail Instruksi Aduan',
+          icon: '/icon/icon-aduan/instruction-detail.svg',
         },
       ],
       detailComplaint: {},
@@ -160,12 +169,18 @@ export default {
       isShowPopupViewImage: false,
       isShowPopupDetailStatusComplaint: false,
       ikpCode: '',
+      typeAduan,
     }
   },
   async fetch() {
     try {
+      const apiPath =
+        this.typeAduan.instruksiKewenanganNonPemprov.props ===
+        this.typeAduanPage
+          ? 'non-pemprov-complaints'
+          : 'complaints'
       const response = await this.$axios.get(
-        `/warga/complaints/${this.$route.params.id}`
+        `/warga/${apiPath}/${this.$route.params.id}`
       )
       const dataDetailComplaint = response.data.data
       dataDetailComplaint.complaint_status =
@@ -223,7 +238,7 @@ export default {
     },
     listTab() {
       return this.listDataTab.filter((item) =>
-        this.checkShowTabIkp() ? item : item.id !== 'input-ikp'
+        this.checkShowTabIkp() ? item : item.id !== 'instruksi-aduan'
       )
     },
   },
@@ -233,14 +248,24 @@ export default {
   methods: {
     selectedTab(idTab) {
       this.idTab = idTab
+      const indexTab = this.listDataTab.findIndex(
+        (dataTab) => dataTab.id === idTab
+      )
+      this.$refs.tabBarDetail.selectedTabIndexHandle(indexTab)
     },
     checkShowTabIkp() {
       return (
-        typeAduan.penginputanIkp.props === this.typeAduanPage &&
+        this.checkTypePageForTab() &&
         this.detailComplaint.ikp_code &&
         !Object.keys(this.$route.query).find(
           (item) => item === 'fromInstructionPage'
         )
+      )
+    },
+    checkTypePageForTab() {
+      return (
+        typeAduan.instruksiKewenanganPemprov.props === this.typeAduanPage ||
+        typeAduan.instruksiKewenanganNonPemprov.props === this.typeAduanPage
       )
     },
     clickButtonConfirmationHandle(idButton) {
@@ -273,9 +298,14 @@ export default {
       }
     },
     goToBackHandle() {
+      const { fromInstructionPage, ...newQuery } = this.$route.query
       this.$router.push({
-        path: this.$nuxt.context.from.path,
-        query: this.$route.query,
+        path:
+          this.typeAduanPage ===
+          this.typeAduan.instruksiKewenanganNonPemprov.props
+            ? '/aduan/instruksi-kewenangan-non-pemprov'
+            : this.$nuxt.context.from.path,
+        query: newQuery,
       })
     },
   },

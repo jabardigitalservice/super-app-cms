@@ -2,35 +2,38 @@
   <BaseDialog :show-popup="showPopup">
     <BaseDialogPanel class="w-[510px]">
       <BaseDialogHeader :title="showTitleIkpNarrative()" />
-      <p class="p-6 break-words">
+      <p class="break-words p-6">
         {{ dataIkp.narrative }}
       </p>
-      <BaseDialogFooter :show-cancel-button="false" label-button-submit="Tutup" @close="$emit('close')" />
+      <BaseDialogFooter
+        :show-cancel-button="false"
+        label-button-submit="Tutup"
+        @close="$emit('close')"
+      />
     </BaseDialogPanel>
   </BaseDialog>
 </template>
 
 <script>
-
 export default {
   name: 'DialogIkpNarrative',
   props: {
     showPopup: {
       type: Boolean,
-      default: false
+      default: false,
     },
     dataIkp: {
       type: Object,
-      default: () => ({})
-    }
+      default: () => ({}),
+    },
   },
   methods: {
-    showTitleIkpNarrative () {
+    showTitleIkpNarrative() {
       if (this.dataIkp?.code) {
-        return `Narasi IKP (${this.dataIkp.code})`
+        return `Narasi Instruksi (${this.dataIkp.code})`
       }
-      return 'Narasi IKP'
-    }
-  }
+      return 'Narasi Instruksi'
+    },
+  },
 }
 </script>

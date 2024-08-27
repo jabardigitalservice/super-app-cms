@@ -1,10 +1,10 @@
 <template>
   <BaseDialog :show-popup="showPopup">
     <BaseDialogPanel class="w-[510px]">
-      <BaseDialogHeader title="Proses Aduan" />
+      <BaseDialogHeader :title="dataDialog.title" />
       <ValidationObserver ref="form">
         <form
-          class="form-process-complaint max-h-[536px] w-full overflow-auto px-6"
+          class="form-process-complaint h-[576px] w-full overflow-auto px-6"
         >
           <h1 class="font-roboto text-base font-bold">Informasi Aduan</h1>
           <div class="mb-4 grid grid-cols-2 gap-x-2">
@@ -52,7 +52,7 @@
             v-slot="{ errors }"
             rules="requiredSelectForm"
             name="Status Aduan"
-            class="mb-4"
+            class="mb-5"
             tag="div"
           >
             <jds-select
@@ -72,6 +72,7 @@
               "
             />
           </ValidationProvider>
+          <!-- SHOW FIELD STATUS COORDINATED & DIVERTED TO SPAN -->
           <div
             v-if="payload.complaint_status_id !== complaintStatus.rejected.id"
             class="mb-4"
@@ -80,6 +81,8 @@
               v-slot="{ errors }"
               rules="requiredSelectForm"
               name="Cakupan urusan"
+              class="mb-5"
+              tag="div"
             >
               <jds-select
                 v-model="payload.coverage_of_affairs"
@@ -95,50 +98,11 @@
                 "
               />
             </ValidationProvider>
-          </div>
-          <ValidationProvider
-            v-if="
-              payload.complaint_status_id !==
-              complaintStatus.diverted_to_span.id
-            "
-            v-slot="{ errors }"
-            rules="required"
-            name="Keterangan Status Aduan"
-            class="mb-4"
-            tag="div"
-          >
-            <BaseTextArea
-              v-model="payload.status_description"
-              placeholder="Masukkan keterangan disini"
-              label="Keterangan Status Aduan"
-              maxlength="255"
-              class="text-area"
-              :error-message="errors[0]"
-            />
-            <p class="mt-1 text-xs text-gray-600">
-              Tersisa {{ 255 - payload.status_description.length }} karakter
-            </p>
-          </ValidationProvider>
-
-          <div
-            v-if="payload.complaint_status_id !== complaintStatus.rejected.id"
-          >
-            <AlertMessage
-              v-if="
-                payload.complaint_status_id ===
-                  complaintStatus.coordinated.id || !payload.complaint_status_id
-              "
-              message="Keterangan status aduan ini akan disampaikan ke pelapor."
-              class="!w-[462px]"
-            />
-            <h1 class="mb-2 font-roboto text-base font-bold">
-              Informasi Instansi
-            </h1>
             <ValidationProvider
               v-slot="{ errors }"
               rules="requiredSelectForm"
               name="Nama Instansi"
-              class="mb-4"
+              class="mb-5"
               tag="div"
             >
               <jds-select
@@ -156,38 +120,41 @@
             <ValidationProvider
               v-if="
                 payload.complaint_status_id ===
-                  complaintStatus.coordinated.id || !payload.complaint_status_id
+                  complaintStatus.diverted_to_span.id && isShowFieldOPDPemprov
               "
               v-slot="{ errors }"
-              rules="required"
-              name="Nama Kepala Perangkat Daerah"
-              class="mb-4"
+              rules="requiredSelectForm"
+              name="OPD Pemprov Penanggungjawab"
+              class="mb-5"
               tag="div"
             >
-              <BaseInputText
-                v-model="payload.opd_pic"
-                type="text"
+              <jds-select
+                v-model="payload.opd_pemprov_id"
+                name="OPD Pemprov Penanggungjawab"
+                label="OPD Pemprov Penanggungjawab"
+                placeholder="Pilih OPD Pemprov"
+                helper-text="OPD Pemprov penanggungjawab bertugas untuk memeriksa tindaklanjut aduan di kota/kabupaten atau kementerian/lembaga."
                 :error-message="errors[0]"
-                placeholder="Masukkan nama kepala perangkat daerah"
-                label="Nama Kepala Perangkat Daerah"
-                class="!w-[462px]"
+                :class="{ 'mb-2': errors.length > 0 }"
+                class="!w-full"
+                :options="listGovResponsible"
+                @change="
+                  changeSelectValue(payload.opd_name, 'coverage_of_affairs')
+                "
               />
             </ValidationProvider>
             <ValidationProvider
-              v-if="
-                payload.complaint_status_id ===
-                  complaintStatus.coordinated.id || !payload.complaint_status_id
-              "
+              v-if="isShowFieldProposeIkpNarrative"
               v-slot="{ errors }"
               rules="required"
-              name="Usulan Narasi IKP"
-              class="mb-4"
+              name="Usulan Narasi Instruksi"
+              class="mb-2"
               tag="div"
             >
               <BaseTextArea
                 v-model="payload.proposed_ikp_narrative"
-                placeholder="Masukkan keterangan disini"
-                label="Usulan Narasi IKP"
+                :placeholder="showPlaceholderProposedInstruction()"
+                label="Usulan Narasi Instruksi"
                 class="text-area"
                 :error-message="errors[0]"
                 maxlength="500"
@@ -197,33 +164,21 @@
                 {{ 500 - payload.proposed_ikp_narrative.length }} karakter
               </p>
             </ValidationProvider>
-          </div>
-          <div
-            v-if="payload.complaint_status_id !== complaintStatus.rejected.id"
-          >
             <AlertMessage
-              v-if="
-                payload.complaint_status_id ===
-                  complaintStatus.coordinated.id || !payload.complaint_status_id
-              "
+              v-if="isShowFieldProposeIkpNarrative"
               message="Usulan Narasi akan digunakan untuk Instruksi Khusus Pimpinan."
-              class="mb-4 !w-[462px]"
+              class="mb-5 !w-[462px]"
             />
-            <h1 class="mb-2 font-roboto text-base font-bold">Lainnya</h1>
             <ValidationProvider
-              v-if="
-                payload.complaint_status_id ===
-                complaintStatus.diverted_to_span.id
-              "
               v-slot="{ errors }"
               rules="required"
               name="Keterangan Status Aduan"
-              class="mb-4"
+              class="mb-2"
               tag="div"
             >
               <BaseTextArea
                 v-model="payload.status_description"
-                placeholder="Masukkan keterangan status aduan"
+                placeholder="Masukkan keterangan disini"
                 label="Keterangan Status Aduan"
                 class="text-area"
                 :error-message="errors[0]"
@@ -233,13 +188,12 @@
                 Tersisa {{ 255 - payload.status_description.length }} karakter
               </p>
             </ValidationProvider>
-            <div
-              v-if="
-                payload.complaint_status_id ===
-                  complaintStatus.coordinated.id || !payload.complaint_status_id
-              "
-              class="mb-4 grid grid-cols-2 gap-x-2"
-            >
+            <AlertMessage
+              message="Keterangan status aduan ini akan disampaikan ke pelapor."
+              class="mb-5 !w-[462px]"
+            />
+            <h1 class="mb-2 font-roboto text-base font-bold">Lainnya</h1>
+            <div class="mb-4 grid grid-cols-2 gap-x-2">
               <ValidationProvider
                 v-slot="{ errors }"
                 rules="required"
@@ -258,7 +212,15 @@
                   name="Tanggal Deadline"
                   :disabled-date="disabledDateHandle"
                   @change="changeUrgencyStatus"
-                /><br />
+                >
+                  <template #icon-calendar>
+                    <jds-icon
+                      name="calendar-date-outline"
+                      size="sm"
+                      fill="#069550"
+                    />
+                  </template> </date-picker
+                ><br />
                 <small class="text-red-600">{{ errors[0] }}</small>
               </ValidationProvider>
               <div class="self-center">
@@ -269,11 +231,33 @@
               </div>
             </div>
           </div>
+          <!-- SHOW FIELD STATUS REJECTED -->
+          <ValidationProvider
+            v-else
+            v-slot="{ errors }"
+            rules="required"
+            name="Keterangan Status Aduan"
+            class="mb-2"
+            tag="div"
+          >
+            <BaseTextArea
+              v-model="payload.status_description"
+              placeholder="Masukkan keterangan disini"
+              label="Keterangan Status Aduan"
+              class="text-area"
+              helper-text="Perhatikan kembali alasan penolakan, silahkan lengkapi alasan jika dibutuhkan."
+              :error-message="errors[0]"
+              maxlength="255"
+            />
+            <p class="mt-1 text-xs text-gray-600">
+              Tersisa {{ 255 - payload.status_description.length }} karakter
+            </p>
+          </ValidationProvider>
         </form>
       </ValidationObserver>
       <BaseDialogFooter
         :show-cancel-button="true"
-        label-button-submit="Proses Aduan"
+        :label-button-submit="dataDialog.labelButtonSubmit"
         @close="closePopupProcessComplaint()"
         @submit="saveDataProcessComplaint()"
       />
@@ -322,25 +306,50 @@ export default {
       ],
       listDataAuthority: [],
       listDataDisposition: [],
+      listDataGovResponsible: [],
       complaintStatus,
       complaintSource,
       complaintStatusValue: '',
+      coverageOfAffairs: {
+        district: {
+          id: 'Pemerintah Kabupaten/Kota',
+          name: 'Pemerintah Kabupaten/Kota',
+        },
+        institutions: {
+          id: 'Kementerian/Lembaga',
+          name: 'Kementerian/Lembaga',
+        },
+        government: {
+          id: 'Pemerintah Provinsi Jawa Barat',
+          name: 'Pemerintah Provinsi Jawa Barat',
+        },
+      },
+      isShowFieldOPDPemprov: false,
+      isShowFieldProposeIkpNarrative: true,
     }
   },
   async fetch() {
     try {
+      // get data Cakupan urusan
       const responseAuthority = await this.$axios.get(
         '/warga/complaints/authorities'
       )
       this.listDataAuthority = responseAuthority.data.data
 
       if (this.payload.coverage_of_affairs) {
+        // get data nama instansi
         const responseDisposition = await this.$axios.get(
           '/warga/complaints/dispositions',
           { params: { authority: this.payload.coverage_of_affairs } }
         )
         this.listDataDisposition = responseDisposition.data.data
       }
+
+      // get data OPD Pemprov Penanggungjawab
+      const responseGovResponsible = await this.$axios.get(
+        '/warga/complaints/opds'
+      )
+      this.listDataGovResponsible = responseGovResponsible.data.data
     } catch {
       this.listDataComplaintStatus = []
       this.listDataAuthority = []
@@ -356,6 +365,11 @@ export default {
     listDisposition() {
       return this.listDataDisposition.map((item) => {
         return { value: item.name, label: item.name }
+      })
+    },
+    listGovResponsible() {
+      return this.listDataGovResponsible.map((item) => {
+        return { value: item.id, label: item.name }
       })
     },
     payload: {
@@ -377,14 +391,29 @@ export default {
       },
     },
   },
+  watch: {
+    payload() {
+      if (this.payload.coverage_of_affairs) {
+        this.$fetch()
+      }
+    },
+  },
   methods: {
     changeSelectValue(value, keyObject) {
       switch (keyObject) {
         case 'complaint_status_id':
           this.clearPopupProcessComplaint()
+          this.isShowFieldProposeIkpNarrative = true
           break
         case 'coverage_of_affairs':
           this.$fetch()
+          this.isShowFieldOPDPemprov =
+            this.payload.coverage_of_affairs ===
+            this.coverageOfAffairs.district.id
+          this.isShowFieldProposeIkpNarrative =
+            this.payload.coverage_of_affairs !==
+            this.coverageOfAffairs.institutions.id
+
           break
         default:
           this.paylod = { ...this.payload, [keyObject]: value }
@@ -418,6 +447,7 @@ export default {
         urgency_level: null,
         opd_pic: null,
         opd_name: null,
+        opd_pemprov_id: null,
       }
       this.listDataDisposition = [{ label: '', value: '' }]
       this.$store.commit('process-complaint/setPayload', { ...this.payload })
@@ -444,6 +474,14 @@ export default {
     disabledDateHandle: function (date) {
       const createdDate = new Date(this.dataDialog.createdDate)
       return date < createdDate
+    },
+    showPlaceholderProposedInstruction() {
+      if (
+        this.payload.complaint_status_id === complaintStatus.diverted_to_span.id
+      ) {
+        return 'Contoh: Instruksi Pimpinan : PJ Gubernur Bey Triadi Machmudin  S.E., M.T - melakukan koordinasi dan konfirmasi tindaklanjut aduan di SP4N Lapor'
+      }
+      return 'Contoh: Melakukan survey dan perbaikan jalan berlubang di jl. Laswi'
     },
     async saveDataProcessComplaint() {
       const isValid = await this.$refs.form.validate()
@@ -492,7 +530,7 @@ export default {
 }
 
 .form-process-complaint .text-area .input-wrapper {
-  @apply !h-[83px] !w-[462px];
+  @apply !h-[83px] !w-[462px] !bg-white;
 }
 
 .form-process-complaint .mx-datepicker.mx-datepicker--error .mx-input-wrapper {
@@ -527,5 +565,9 @@ export default {
 
 .form-process-complaint .jds-options__option-list li {
   @apply !h-fit;
+}
+
+.form-process-complaint .mx-datepicker .mx-input {
+  @apply !bg-white;
 }
 </style>

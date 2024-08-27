@@ -4,13 +4,26 @@
       <BaseDialogPanel class="max-h-[750px] w-[600px]">
         <BaseDialogHeader :title="dataDialog.title" />
         <div class="form-followup-ikp max-h-[630px] overflow-y-auto px-6 pt-2">
-          <BaseDialogDescription
-            description="No.Aduan"
-            :sub-description="dataDialog.subDescription"
-            class="mb-3"
-          />
+          <div class="grid grid-cols-2">
+            <BaseDialogDescription
+              description="No.Aduan"
+              :sub-description="dataDialog.subDescription"
+              class="mb-3"
+            />
+            <div
+              v-if="
+                complaintType === typeAduan.instruksiKewenanganNonPemprov.props
+              "
+            >
+              <h1>ID SP4N Lapor</h1>
+              <p class="text-sm font-bold">
+                {{ dataDialog.dataComplaint?.sp4n_id || '-' }}
+              </p>
+            </div>
+          </div>
+
           <div class="mb-6">
-            <label class="mb-1 text-sm">Narasi IKP</label>
+            <label class="mb-1 text-sm">Narasi Instruksi Aduan</label>
             <p class="text-sm">
               {{ dataDialog.proposed_ikp_narrative }}
             </p>
@@ -19,7 +32,7 @@
             <label class="mb-1 text-[15px]">Pencarian</label>
             <jds-search
               v-model="search"
-              placeholder="Masukkan ID atau narasi IKP"
+              placeholder="Masukkan ID atau narasi instruksi"
               :icon="false"
               button
               small
@@ -29,12 +42,12 @@
             class="mb-3 flex items-center justify-between rounded-lg border border-gray-300 py-2 px-3"
           >
             <AlertInformation
-              message="Jika tidak menemukan IKP, Anda dapat menambahkan IKP baru."
+              message="Jika tidak menemukan instruksi aduan, Anda dapat menambahkan instruksi aduan baru."
             />
             <jds-button
-              label="Buat IKP Baru"
+              label="Buat Instruksi Baru"
               variant="secondary"
-              class="!h-[38px] !w-[120px] !px-0 !py-0 !text-[14px] font-bold"
+              class="!h-[38px] !w-fit flex-shrink-0 !py-0 !text-[14px] font-bold"
               @click="showPopupCreateIkp()"
             />
           </div>
@@ -51,10 +64,10 @@
                 alt="data-not-found"
                 width="80"
                 height="80"
-              >
+              />
             </div>
             <h1 class="text-sm font-bold">
-              Tidak dapat menemukan IKP
+              Tidak dapat menemukan Instruksi Aduan
             </h1>
             <p class="text-sm">
               Cobalah menggunakan id atau narasi yang berbeda.
@@ -68,11 +81,9 @@
             <jds-simple-table>
               <thead>
                 <tr>
-                  <th class="rounded-tl-lg !bg-green-600">
-                    ID IKP
-                  </th>
+                  <th class="rounded-tl-lg !bg-green-600">ID IKP</th>
                   <th colspan="3" class="rounded-tr-lg !bg-green-600">
-                    Narasi IKP
+                    Narasi Instruksi
                   </th>
                 </tr>
               </thead>
@@ -133,7 +144,7 @@
         </div>
         <BaseDialogFooter
           :show-cancel-button="true"
-          label-button-submit="Tindaklanjuti Aduan"
+          :label-button-submit="dataDialog.labelButtonSubmit"
           :is-disabled-button-submit="!isFollowup"
           @close="closePopupFollowupComplaint()"
           @submit="showPopupConfirmationFollowupComplaint()"
@@ -143,7 +154,7 @@
     <DialogConfirmation
       :data-dialog="dataDialogConfirmation"
       :show-popup="isShowPopupConfirmationFollowup"
-      @close="isShowPopupConfirmationFollowup = false"
+      @close="closePopupConfirmationComplaint()"
       @submit="submitDataFollowupComplaint()"
     />
     <DialogIkpNarrative
@@ -151,7 +162,7 @@
       :data-ikp="dataIkp"
       @close="isShowPopupIkpNarrative = false"
     />
-    <DialogCreateIkp />
+    <DialogCreateIkp :complaint-type="complaintType" />
   </div>
 </template>
 
@@ -163,6 +174,7 @@ import ListFollowupProcess from '~/components/Aduan/Dialog/FollowupComplaint/Lis
 import DialogIkpNarrative from '~/components/Aduan/Dialog/IkpNarrative'
 import DialogCreateIkp from '~/components/Aduan/Dialog/CreateIkp'
 import Pagination from '~/components/Aduan/Dialog/FollowupComplaint/Pagination'
+import { typeAduan } from '~/constant/aduan-masuk'
 
 export default {
   name: 'DialogFollowupComplaint',
@@ -171,42 +183,47 @@ export default {
     ListFollowupProcess,
     DialogIkpNarrative,
     DialogCreateIkp,
-    Pagination
+    Pagination,
   },
   props: {
     dataDialog: {
       type: Object,
-      default: () => ({})
-    }
+      default: () => ({}),
+    },
+    complaintType: {
+      type: String,
+      default: '',
+    },
   },
-  data () {
+  data() {
     return {
       query: {
         search: null,
         limit: 5,
-        page: 1
+        page: 1,
       },
       listDataIkp: [],
       search: '',
       dataDialogConfirmation: {},
       isShowPopupConfirmationFollowup: false,
       listMenuTableAction: [
-        { menu: 'Lihat Narasi IKP', value: 'detail-narrative' }
+        { menu: 'Lihat Narasi Instruksi', value: 'detail-narrative' },
       ],
       isShowPopupIkpNarrative: false,
       pagination: {
         currentPage: '',
         totalRows: '',
         itemsPerPage: '',
-        totalPages: ''
-      }
+        totalPages: '',
+      },
+      typeAduan,
     }
   },
-  async fetch () {
+  async fetch() {
     try {
       this.setQuery({ sort_by: 'ikp_code', sort_type: 'ASC' })
       const responseIkp = await this.$axios.get('/warga/ikp', {
-        params: { ...this.query, is_admin: 1 }
+        params: { ...this.query, is_admin: 1 },
       })
       this.listDataIkp = responseIkp.data.data.data
       const pagination = responseIkp.data.data
@@ -214,7 +231,7 @@ export default {
         currentPage: pagination?.page || 1,
         totalRows: pagination?.total_data || 0,
         itemsPerPage: pagination?.page_size || this.query.limit,
-        totalPages: pagination?.total_pages || 0
+        totalPages: pagination?.total_pages || 0,
       })
     } catch {
       this.listIkp = []
@@ -224,13 +241,16 @@ export default {
     ...mapGetters('followup-complaint', {
       isShowPopupFollowup: 'getIsShowPopup',
       isFollowup: 'getIsFollowup',
-      dataIkp: 'getDataIkp'
+      dataIkp: 'getDataIkp',
     }),
-    listIkp () {
+    ...mapGetters('create-ikp', {
+      payload: 'getPayload',
+    }),
+    listIkp() {
       return this.listDataIkp.map((dataIkp) => {
         return { ...dataIkp, code: dataIkp.ikp_code }
       })
-    }
+    },
   },
   watch: {
     search: debounce(function (value) {
@@ -239,54 +259,77 @@ export default {
         this.query.search = value.length > 2 ? value : null
         this.$fetch()
       }
-    }, 500)
+    }, 500),
   },
   methods: {
-    backToFormIkp () {
+    backToFormIkp() {
       this.isShowPopupCreateIkp = true
     },
-    chooseDataFollowupProcess (dataIkp) {
+    chooseDataFollowupProcess(dataIkp) {
       this.$store.commit('followup-complaint/setDataIkp', dataIkp)
       this.$store.commit('followup-complaint/setIsFollowup', true)
     },
-    cancelFollowupProcess () {
+    cancelFollowupProcess() {
       this.$store.commit('followup-complaint/setIsFollowup', false)
     },
-    closePopupFollowupComplaint () {
+    closePopupFollowupComplaint() {
       this.$store.commit('followup-complaint/setIsFollowup', false)
       this.$store.commit('followup-complaint/setIsShowPopup', false)
     },
-    nextPage () {
+    nextPage() {
       if (this.pagination.currentPage < this.pagination.totalPages) {
         this.setQuery({ page: this.pagination.currentPage + 1 })
         this.$fetch()
       }
     },
-    previousPage () {
+    previousPage() {
       if (this.pagination.currentPage > 1) {
         this.setQuery({ page: this.pagination.currentPage - 1 })
         this.$fetch()
       }
     },
-    pageChanges (value) {
+    pageChanges(value) {
       this.pagination.currentPage = value
       this.setQuery({ page: value })
       this.$fetch()
     },
-    showPopupConfirmationFollowupComplaint () {
+    showPopupConfirmationFollowupComplaint() {
       this.$store.commit('followup-complaint/setIsShowPopup', false)
       this.dataDialogConfirmation = {
-        title: 'Tindaklanjuti Aduan',
+        title: this.dataDialog.title,
         description: 'Apakah Anda yakin ingin menindaklanjuti aduan tersebut?',
-        labelButtonSubmit: 'Tindaklanjuti Aduan'
+        labelButtonSubmit: 'Ya, lanjutkan',
       }
       this.isShowPopupConfirmationFollowup = true
     },
-    showPopupIkpNarrative (dataIkp) {
+    closePopupConfirmationComplaint() {
+      this.isShowPopupConfirmationFollowup = false
+      this.$store.commit('followup-complaint/setIsFollowup', false)
+    },
+    showPopupIkpNarrative(dataIkp) {
       this.$store.commit('followup-complaint/setDataIkp', dataIkp)
       this.isShowPopupIkpNarrative = true
     },
-    showPopupCreateIkp () {
+    showPopupCreateIkp() {
+      if (
+        this.complaintType === typeAduan.instruksiKewenanganNonPemprov.props
+      ) {
+        const {
+          coverage_of_affairs: coverageOfAffairs,
+          opd_name: opdName,
+          deadline_date: deadlineDate,
+          opd_pemprov_id: opdPemprovId,
+        } = this.dataDialog.dataComplaint
+
+        this.$store.commit('create-ikp/setPayload', {
+          ...this.payload,
+          coverage_of_affairs: coverageOfAffairs,
+          opd_name: opdName,
+          deadline_at: deadlineDate,
+          opd_pemprov_id: opdPemprovId,
+        })
+      }
+
       this.$store.commit('followup-complaint/setIsShowPopup', false)
       this.$store.commit(
         'create-ikp/setIkpNarrative',
@@ -295,18 +338,18 @@ export default {
       this.$store.dispatch('create-ikp/checkTruncate')
       this.$store.commit('create-ikp/setIsShowPopup', true)
     },
-    submitDataFollowupComplaint () {
+    submitDataFollowupComplaint() {
       this.isShowPopupConfirmationFollowup = false
       this.$emit('submit', this.dataIkp)
       this.$store.commit('followup-complaint/setIsFollowup', false)
     },
-    setPagination (newPagination) {
+    setPagination(newPagination) {
       this.pagination = { ...this.pagination, ...newPagination }
     },
-    setQuery (newQuery) {
+    setQuery(newQuery) {
       this.query = { ...this.query, ...newQuery }
-    }
-  }
+    },
+  },
 }
 </script>
 
