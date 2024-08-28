@@ -578,6 +578,7 @@ export default {
         complaint_category_id: null,
         'complaint_category_id[0]': null,
       })
+      this.query.page = 1
       if (value) {
         this.query['complaint_category_id[0]'] = value
       }
@@ -585,13 +586,11 @@ export default {
     },
     filterNonGovComplaintStatusHandle(value) {
       this.query.complaint_status_id = null
+      this.query.page = 1
       if (value) {
         this.query.complaint_status_id = value
       }
       this.$fetch()
-      if (value === '') {
-        this.query.complaint_status_id = ''
-      }
     },
     goToPageDetailHandle(item) {
       this.$router.push({
