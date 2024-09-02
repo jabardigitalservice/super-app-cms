@@ -1,7 +1,7 @@
 <template>
   <div class="sticky top-0 flex h-screen flex-col">
     <SidebarHeader class="px-6 py-7" />
-    <div class="sidebar-content overflow-y-auto px-6">
+    <div class="sidebar-content overflow-y-auto px-4">
       <div v-for="(menuList, index) in menu" :key="index" class="mb-3">
         <SidebarTitleMenu
           v-show="
