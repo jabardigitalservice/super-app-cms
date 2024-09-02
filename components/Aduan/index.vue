@@ -11,59 +11,60 @@
         />
       </template>
       <template #tab-panel>
-        <BaseTabPanel class="px-3 pt-6 pb-4">
-          <div class="mb-4 flex justify-between">
-            <div class="flex">
+        <BaseTabPanel class="overflow-auto px-3 pt-6 pb-4">
+          <div class="mb-4 flex w-full justify-between">
+            <div class="flex w-full items-center justify-start">
               <jds-search
                 v-model="search"
                 placeholder="Cari ID atau nama lengkap"
                 small
                 icon
                 :button="false"
-                class="w-[280px]"
+                class="!w-[220px] 2xl:!w-[260px]"
               />
-              <div class="ml-4 flex items-center">
-                <jds-icon
-                  name="filter-outline"
-                  size="sm"
-                  fill="#022B55"
-                  class="flex-shrink-0"
-                />
-                <p class="ml-2 text-sm text-blue-gray-700">Filter :</p>
-                <jds-select
-                  v-model="query.complaint_category_id"
-                  placeholder="Kategori Aduan"
-                  :options="listCategory"
-                  class="select-form-complaint !ml-2 mr-2 !w-[260px]"
-                  @change="filterCategoryHandle"
-                />
-                <date-picker
-                  ref="datepicker"
-                  v-model="dateRange"
-                  format="DD/MM/YYYY"
-                  range
-                  range-separator=" - "
-                  @close="isShowPopupDate = false"
-                  @clear="clearDateRangeHandle"
-                  @change="changeDateRangeHandle"
-                >
-                  <template #icon-calendar>
-                    <jds-icon
-                      name="calendar-date-outline"
-                      size="sm"
-                      fill="#069550"
-                    />
-                  </template>
-                  <template #footer="{ emit }">
-                    <BaseDialogFooter
-                      label-button-submit="Pilih"
-                      :show-cancel-button="true"
-                      @close="closePopupDateHandle()"
-                      @submit="filterDateHandle(emit)"
-                    />
-                  </template>
-                </date-picker>
-              </div>
+              <jds-icon
+                name="filter-outline"
+                size="sm"
+                fill="#022B55"
+                class="ml-4 flex-shrink-0"
+              />
+              <p class="ml-2 flex-shrink-0 text-[14px] text-blue-gray-700">
+                Filter :
+              </p>
+              <jds-select
+                v-model="query.complaint_category_id"
+                placeholder="Kategori Aduan"
+                :options="listCategory"
+                class="select-form-complaint !mx-2 flex-shrink-0"
+                @change="filterCategoryHandle"
+              />
+              <date-picker
+                ref="datepicker"
+                v-model="dateRange"
+                format="DD/MM/YYYY"
+                range
+                range-separator=" - "
+                class="!w-[210px] flex-shrink-0"
+                @close="isShowPopupDate = false"
+                @clear="clearDateRangeHandle"
+                @change="changeDateRangeHandle"
+              >
+                <template #icon-calendar>
+                  <jds-icon
+                    name="calendar-date-outline"
+                    size="sm"
+                    fill="#069550"
+                  />
+                </template>
+                <template #footer="{ emit }">
+                  <BaseDialogFooter
+                    label-button-submit="Pilih"
+                    :show-cancel-button="true"
+                    @close="closePopupDateHandle()"
+                    @submit="filterDateHandle(emit)"
+                  />
+                </template>
+              </date-picker>
               <jds-select
                 v-if="
                   typeAduanPage ===
@@ -72,7 +73,7 @@
                 v-model="query.complaint_status_id"
                 placeholder="Status"
                 :options="listNonGovComplaintStatus"
-                class="select-form-complaint !ml-2 mr-2 !w-[260px]"
+                class="select-form-complaint ml-2 flex-shrink-0"
                 @change="filterNonGovComplaintStatusHandle"
               />
             </div>
@@ -81,86 +82,91 @@
               v-show="typeAduan.aduanDariSpanLapor.props === typeAduanPage"
               label="Tambah Aduan"
               variant="primary"
+              class="flex-shrink-0"
               @click="isShowPopupAddComplaint = true"
             />
           </div>
-          <JdsDataTable
-            :headers="checkTypeHeaderAduan(typeAduanPage)"
-            :items="listData"
-            :loading="$fetchState.pending"
-            :pagination="pagination"
-            @next-page="pageChange"
-            @previous-page="pageChange"
-            @page-change="pageChange"
-            @per-page-change="perPageChange"
-            @change:sort="sortChange"
-          >
-            <!-- eslint-disable-next-line vue/valid-v-slot -->
-            <template #item.status="{ item }">
-              <div class="flex items-center">
-                <p
-                  v-show="item?.status"
-                  class="h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 text-xs font-semibold"
-                  :class="getColorText(item?.status_id)"
-                >
-                  {{ item.status }}
-                </p>
-              </div>
-            </template>
-            <!-- eslint-disable-next-line vue/valid-v-slot -->
-            <template #item.sp4n_created_at="{ item }">
-              <div class="flex items-center">
-                <p
-                  :class="{
-                    'h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 text-xs font-semibold text-[#FF7500]':
-                      item.sp4n_created_at === 'Belum ada',
-                  }"
-                >
-                  {{ item.sp4n_created_at }}
-                </p>
-              </div>
-            </template>
-            <!-- eslint-disable-next-line vue/valid-v-slot -->
-            <template #item.diverted_to_span_at="{ item }">
-              <div class="flex items-center">
-                <p
-                  :class="{
-                    'h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 text-xs font-semibold text-[#FF7500]':
-                      item.diverted_to_span_at === 'Belum ada',
-                  }"
-                >
-                  {{ item.diverted_to_span_at }}
-                </p>
-              </div>
-            </template>
-            <!-- eslint-disable-next-line vue/valid-v-slot -->
-            <template #item.sp4n_id="{ item }">
-              <div class="flex items-center">
-                <p
-                  :class="{
-                    'h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 text-xs font-semibold text-[#FF7500]':
-                      item.sp4n_id === 'Belum ada',
-                  }"
-                >
-                  {{ item.sp4n_id }}
-                </p>
-              </div>
-            </template>
-            <!-- eslint-disable-next-line vue/valid-v-slot -->
-            <template #item.action="{ item }">
-              <BaseTableAction
-                :list-menu-pop-over="menuTableActionHandle(item?.status_id)"
-                @detail="goToPageDetailHandle(item)"
-                @verify="showPopupConfirmationVerificationComplaintHandle(item)"
-                @failed="showPopupConfirmationFailedComplaintHandle(item)"
-                @add-span="showPopupInputIdSpanHandle(item)"
-                @process-complaint="showPopupProcessComplaintHandle(item)"
-                @change-authority="showPopupChangeAuthority(item)"
-                @followup-complaint="showPopupFollowupComplaint(item)"
-                @create-instruction="showPopupCreateInstruction(item)"
-              />
-            </template>
-          </JdsDataTable>
+          <div>
+            <JdsDataTable
+              :headers="checkTypeHeaderAduan(typeAduanPage)"
+              :items="listData"
+              :loading="$fetchState.pending"
+              :pagination="pagination"
+              @next-page="pageChange"
+              @previous-page="pageChange"
+              @page-change="pageChange"
+              @per-page-change="perPageChange"
+              @change:sort="sortChange"
+            >
+              <!-- eslint-disable-next-line vue/valid-v-slot -->
+              <template #item.status="{ item }">
+                <div class="flex items-center">
+                  <p
+                    v-show="item?.status"
+                    class="h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 text-xs font-semibold"
+                    :class="getColorText(item?.status_id)"
+                  >
+                    {{ item.status }}
+                  </p>
+                </div>
+              </template>
+              <!-- eslint-disable-next-line vue/valid-v-slot -->
+              <template #item.sp4n_created_at="{ item }">
+                <div class="flex items-center">
+                  <p
+                    :class="{
+                      'h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 text-xs font-semibold text-[#FF7500]':
+                        item.sp4n_created_at === 'Belum ada',
+                    }"
+                  >
+                    {{ item.sp4n_created_at }}
+                  </p>
+                </div>
+              </template>
+              <!-- eslint-disable-next-line vue/valid-v-slot -->
+              <template #item.diverted_to_span_at="{ item }">
+                <div class="flex items-center">
+                  <p
+                    :class="{
+                      'h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 text-xs font-semibold text-[#FF7500]':
+                        item.diverted_to_span_at === 'Belum ada',
+                    }"
+                  >
+                    {{ item.diverted_to_span_at }}
+                  </p>
+                </div>
+              </template>
+              <!-- eslint-disable-next-line vue/valid-v-slot -->
+              <template #item.sp4n_id="{ item }">
+                <div class="flex items-center">
+                  <p
+                    :class="{
+                      'h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 text-xs font-semibold text-[#FF7500]':
+                        item.sp4n_id === 'Belum ada',
+                    }"
+                  >
+                    {{ item.sp4n_id }}
+                  </p>
+                </div>
+              </template>
+              <!-- eslint-disable-next-line vue/valid-v-slot -->
+              <template #item.action="{ item }">
+                <BaseTableAction
+                  :list-menu-pop-over="menuTableActionHandle(item?.status_id)"
+                  @detail="goToPageDetailHandle(item)"
+                  @verify="
+                    showPopupConfirmationVerificationComplaintHandle(item)
+                  "
+                  @failed="showPopupConfirmationFailedComplaintHandle(item)"
+                  @add-span="showPopupInputIdSpanHandle(item)"
+                  @process-complaint="showPopupProcessComplaintHandle(item)"
+                  @change-authority="showPopupChangeAuthority(item)"
+                  @followup-complaint="showPopupFollowupComplaint(item)"
+                  @create-instruction="showPopupCreateInstruction(item)"
+                />
+              </template>
+            </JdsDataTable>
+          </div>
         </BaseTabPanel>
       </template>
     </BaseTabGroup>
@@ -815,32 +821,28 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .icon-tab rect {
-  fill: #008444 !important;
+  @apply !fill-[#008444];
 }
 
 .icon-tab path {
-  stroke: white;
-}
-
-.icon-tab path {
-  stroke: white;
+  @apply stroke-white;
 }
 
 .icon-tab-selected rect {
-  fill: #f5f5f5;
+  @apply fill-[#f5f5f5];
 }
 
 .icon-tab-selected path {
-  stroke: #16a75c;
+  @apply stroke-[#16a75c];
 }
 
-.select-form-complaint .jds-input-text {
-  width: 260px !important;
+.select-form-complaint::v-deep .jds-input-text__input-wrapper {
+  @apply !w-fit 2xl:!w-[260px];
 }
 
 .select-form-complaint .jds-popover__content {
-  width: 260px !important;
+  @apply !w-fit 2xl:!w-[260px];
 }
 </style>
