@@ -50,6 +50,12 @@ export const ikpType = {
     link: '/aduan/instruksi-aduan-warga',
     id: 'instruksiAduan',
   },
+  instruksiNonPemprov: {
+    props: 'instruksi-non-pemprov',
+    label: 'Daftar Instruksi Aduan Non Pemprov',
+    link: '/aduan/instruksi-non-pemprov',
+    id: 'instruksiNonPemprov',
+  },
 }
 
 export const ikpStatus = Object.freeze({
@@ -59,6 +65,7 @@ export const ikpStatus = Object.freeze({
     value: 0,
     icon: '/icon/icon-aduan/complaint-status/complaint-all-icon.svg',
     statusColor: '-',
+    ikpType: ['all'],
   },
   coordinated: {
     id: 'coordinated',
@@ -69,8 +76,15 @@ export const ikpStatus = Object.freeze({
       { color: 'yellow', ikpType: [ikpType.instruksiKewenanganPemprov.props] },
       {
         color: 'green',
-        ikpType: [ikpType.instruksiKewenanganNonPemprov.props],
+        ikpType: [
+          ikpType.instruksiKewenanganNonPemprov.props,
+          ikpType.instruksiNonPemprov.props,
+        ],
       },
+    ],
+    ikpType: [
+      ikpType.instruksiKewenanganNonPemprov.props,
+      ikpType.instruksiNonPemprov.props,
     ],
   },
   followup: {
@@ -85,16 +99,29 @@ export const ikpStatus = Object.freeze({
       },
       { color: 'yellow', ikpType: [ikpType.instruksiAduanWarga.props] },
     ],
+    ikpType: [
+      ikpType.instruksiKewenanganPemprov.props,
+      ikpType.instruksiAduanWarga.props,
+    ],
   },
   not_yet_coordinated: {
     id: 'not_yet_coordinated',
     name: 'Belum Dikoordinasikan',
+    icon: '/icon/icon-aduan/complaint-status/complaint-not-yet-coordinated.svg',
     value: 0,
     statusColor: [
       {
         color: 'light-blue',
         ikpType: [ikpType.instruksiKewenanganNonPemprov.props],
       },
+      {
+        color: 'yellow',
+        ikpType: [ikpType.instruksiNonPemprov.props],
+      },
+    ],
+    ikpType: [
+      ikpType.instruksiKewenanganNonPemprov.props,
+      ikpType.instruksiNonPemprov.props,
     ],
   },
   postponed: {
@@ -102,20 +129,56 @@ export const ikpStatus = Object.freeze({
     name: 'Pengerjaan Ditunda',
     value: 0,
     icon: '/icon/icon-aduan/complaint-status/complaint-postponed-icon.svg',
-    statusColor: 'purple',
+    statusColor: [
+      {
+        color: 'purple',
+        ikpType: [
+          ikpType.instruksiKewenanganPemprov.props,
+          ikpType.instruksiAduanWarga.props,
+        ],
+      },
+    ],
+    ikpType: [
+      ikpType.instruksiKewenanganPemprov.props,
+      ikpType.instruksiAduanWarga.props,
+    ],
   },
   review: {
     id: 'review',
     name: 'Ditinjau Ulang',
     value: 0,
     icon: '/icon/icon-aduan/complaint-status/complaint-review-icon.svg',
-    statusColor: 'dark-blue',
+    statusColor: [
+      {
+        color: 'dark-blue',
+        ikpType: [
+          ikpType.instruksiKewenanganPemprov.props,
+          ikpType.instruksiAduanWarga.props,
+        ],
+      },
+    ],
+    ikpType: [
+      ikpType.instruksiKewenanganPemprov.props,
+      ikpType.instruksiAduanWarga.props,
+    ],
   },
   finished: {
     id: 'finished',
     name: 'Selesai',
     value: 0,
     icon: '/icon/icon-aduan/complaint-status/complaint-finished-icon.svg',
-    statusColor: 'green',
+    statusColor: [
+      {
+        color: 'green',
+        ikpType: [
+          ikpType.instruksiKewenanganPemprov.props,
+          ikpType.instruksiAduanWarga.props,
+        ],
+      },
+    ],
+    ikpType: [
+      ikpType.instruksiKewenanganPemprov.props,
+      ikpType.instruksiAduanWarga.props,
+    ],
   },
 })
