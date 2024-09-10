@@ -150,6 +150,14 @@ const aduanMenu = {
       unleashVariable: 'SAPAWARGA-CMS__ADUAN--INSTRUKSI-ADUAN-WARGA',
     },
     {
+      name: 'Daftar Instruksi Non-Pemprov',
+      path: '/aduan/instruksi-non-pemprov',
+      arrow: false,
+      showMenuAndAccessForRoles: ['admin', 'admin:aduan-team-opd'],
+      icon: 'bag.svg',
+      unleashVariable: 'SAPAWARGA-CMS__ADUAN--INSTRUKSI-NON-PEMPROV',
+    },
+    {
       name: 'Management Akun',
       path: '/aduan/management-akun',
       arrow: false,
