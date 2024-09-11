@@ -21,17 +21,14 @@
                 :button="false"
                 class="w-[280px]"
               />
-              <!-- TO DO : to be discuss about filter by date -->
-              <!-- <div class="ml-4 flex items-center">
+              <div class="ml-4 flex items-center">
                 <jds-icon
                   name="filter-outline"
                   size="sm"
                   fill="#022B55"
                   class="flex-shrink-0"
                 />
-                <p class="ml-2 text-sm text-blue-gray-700">
-                  Filter :
-                </p>
+                <p class="ml-2 text-sm text-blue-gray-700">Filter :</p>
                 <date-picker
                   ref="datepicker"
                   v-model="dateRange"
@@ -59,7 +56,7 @@
                     />
                   </template>
                 </date-picker>
-              </div> -->
+              </div>
             </div>
           </div>
 
@@ -99,6 +96,7 @@
                   filterTableAction(item?.complaint_status_id)
                 "
                 @detail="goToPageDetail(item.ikp_code)"
+                @app-trk="goToAppTrk()"
               />
             </template>
           </JdsDataTable>
@@ -110,36 +108,46 @@
 
 <script>
 import debounce from 'lodash.debounce'
+import { isWithinInterval, parseISO } from 'date-fns'
 import {
   formatDate,
   generateItemsPerPageOptions,
   formatNumberToUnit,
   convertToUnit,
   formatedStringDate,
-  resetQueryParamsUrl
+  resetQueryParamsUrl,
 } from '~/utils'
 import TabBarList from '~/components/Aduan/TabBar/List'
-import { headerDaftarIkp, ikpStatus } from '~/constant/daftar-ikp'
+import { headerDaftarIkp, ikpStatus, ikpType } from '~/constant/daftar-ikp'
+import dataInstruksiNonPemprov from '~/data/instruksi-non-pemprov.json'
+
 export default {
   name: 'DaftarIkpTable',
   components: { TabBarList },
   props: {
     tabName: {
       type: String,
-      default: 'ikp'
+      default: 'ikp',
     },
     ikpTypePage: {
       type: String,
-      default: ''
+      default: '',
     },
     detailPage: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
-  data () {
+  data() {
     return {
-      menuTableAction: [{ menu: 'Lihat Detail Instruksi', value: 'detail' }],
+      menuTableAction: [
+        { menu: 'Lihat Detail Instruksi', value: 'detail', ikpType: ['all'] },
+        {
+          menu: 'Lihat Instruksi di Aplikasi TRK',
+          value: 'app-trk',
+          ikpType: [ikpType.instruksiNonPemprov.props],
+        },
+      ],
       listDataIkp: [],
       listStatisticIkp: [],
       pagination: {
@@ -147,31 +155,35 @@ export default {
         totalRows: 5,
         itemsPerPage: 5,
         itemsPerPageOptions: [],
-        disabled: true
+        disabled: true,
       },
       query: {
-        limit: 5,
+        limit: 10,
         page: 1,
         search: null,
         tabIndex: 0,
-        idTab: this.tabName
+        idTab: this.tabName,
       },
       search: '',
       isShowPopupDate: false,
       isShowPopupDateRange: false,
       dateRange: [
         new Date(new Date().setFullYear(new Date().getFullYear() - 1)),
-        new Date()
+        new Date(),
       ],
       headerDaftarIkp,
-      ikpStatus
+      ikpStatus,
+      dataInstruksiNonPemprov,
     }
   },
-  async fetch () {
+  async fetch() {
     try {
-      const responseList = await this.$axios.get('/warga/ikp', {
-        params: { ...this.query }
-      })
+      const responseList =
+        this.ikpTypePage === ikpType.instruksiNonPemprov.props
+          ? dataInstruksiNonPemprov
+          : await this.$axios.get('/warga/ikp', {
+              params: { ...this.query },
+            })
       const { data } = responseList.data
       this.listDataIkp = data?.data || []
       if (this.listDataIkp.length) {
@@ -179,18 +191,54 @@ export default {
       } else {
         this.pagination.disabled = true
       }
+      // data instruksi non pemprov
+      if (this.ikpTypePage === ikpType.instruksiNonPemprov.props) {
+        if (this.query.search) {
+          this.listDataIkp = this.listDataIkp.filter(
+            (item) =>
+              item.ikp_code.includes(this.query.search) ||
+              item.narrative.includes(this.query.search)
+          )
+        }
+        if (this.query.start_date && this.query.end_date) {
+          const startDate = parseISO(this.query.start_date)
+          const endDate = parseISO(this.query.end_date)
+          this.listDataIkp = this.listDataIkp.filter((item) => {
+            const createdDate = parseISO(
+              formatDate(item.created_at, 'yyyy-MM-dd')
+            )
+            return isWithinInterval(createdDate, {
+              start: startDate,
+              end: endDate,
+            })
+          })
+        }
+        this.getCountNonPemProv()
+        if (this.query.status) {
+          this.listDataIkp = this.listDataIkp.filter(
+            (item) => item.complaint_status_id === this.query.status
+          )
+        }
 
-      this.pagination.currentPage = data?.page || 1
-      this.pagination.totalRows = data?.total_data || 0
-      this.pagination.itemsPerPage = data?.page_size || this.query.limit
+        this.pagination.totalRows = this.listDataIkp.length
 
-      this.getCount()
+        const start = (this.query.page - 1) * this.query.limit // index awal
+        const end = start + this.query.limit // index akhir
+        this.listDataIkp = this.listDataIkp.slice(start, end)
+        this.pagination.currentPage = this.query.page
+        this.pagination.itemsPerPage = this.query.limit
+      } else {
+        this.pagination.currentPage = data?.page || 1
+        this.pagination.totalRows = data?.total_data || 0
+        this.pagination.itemsPerPage = data?.page_size || this.query.limit
+        this.getCount()
+      }
     } catch {
       this.pagination.disabled = true
     }
   },
   computed: {
-    listData () {
+    listData() {
       return this.listDataIkp.map((item) => {
         return {
           ...item,
@@ -199,34 +247,42 @@ export default {
             : '-',
           deadline_at: item?.created_at
             ? formatDate(item?.created_at, 'dd/MM/yyyy HH:mm')
-            : '-'
+            : '-',
         }
       })
     },
-    listStatistic () {
+    listStatistic() {
       return this.listStatisticIkp.map((item) => {
         return {
           ...ikpStatus[item.id],
           value: formatNumberToUnit(item.value),
           unit: convertToUnit(item.value),
-          icon: ikpStatus[item.id].icon,
-          name: ikpStatus[item.id].name
+          icon:
+            this.ikpTypePage === ikpType.instruksiNonPemprov.props &&
+            item.id === 'coordinated'
+              ? ikpStatus.followup.icon
+              : this.ikpStatus[item.id].icon,
+          name:
+            this.ikpTypePage === ikpType.instruksiNonPemprov.props &&
+            item.id === 'coordinated'
+              ? 'Sudah Dikoordinasikan'
+              : ikpStatus[item.id].name,
         }
       })
-    }
+    },
   },
   watch: {
     query: {
       deep: true,
-      handler () {
+      handler() {
         resetQueryParamsUrl(this)
         this.$fetch()
-      }
+      },
     },
     '$route.query': {
       deep: true,
       immediate: true,
-      handler (newQuery) {
+      handler(newQuery) {
         if (Object.keys(newQuery).length > 0) {
           this.query = { ...newQuery }
           this.query.tabIndex = parseInt(this.query.tabIndex)
@@ -235,14 +291,13 @@ export default {
           if (newQuery.start_date && newQuery.end_date) {
             this.dateRange = [
               formatedStringDate(newQuery.start_date),
-              formatedStringDate(newQuery.end_date)
+              formatedStringDate(newQuery.end_date),
             ]
           }
         }
-      }
-
+      },
     },
-    dateRange () {
+    dateRange() {
       if (!this.isShowPopupDateRange) {
         this.$refs.datepicker.closePopup()
       } else {
@@ -255,34 +310,41 @@ export default {
         this.query.search = value.length > 2 ? value : null
         this.$fetch()
       }
-    }, 500)
+    }, 500),
   },
-  mounted () {
+  mounted() {
     this.pagination.itemsPerPageOptions = generateItemsPerPageOptions(
       this.pagination.itemsPerPage
     )
   },
   methods: {
-    selectedTabHandle (index) {
+    selectedTabHandle(index) {
       this.query.tabIndex = index
     },
-    filterTableAction (status) {
-      if (status === 'finished') {
-        return this.menuTableAction.filter(item => item.value === 'detail')
-      } else {
-        return this.menuTableAction
-      }
+    filterTableAction(status) {
+      return this.menuTableAction.filter(
+        (item) =>
+          item.ikpType.includes('all') ||
+          item.ikpType.includes(this.ikpTypePage)
+      )
+      // if (status === 'finished') {
+      //   return this.menuTableAction.filter((item) => item.value === 'detail')
+      // } else {
+      //   return this.menuTableAction
+      // }
     },
-    pageChange (value) {
+    pageChange(value) {
       this.query.page = value
+      this.$fetch()
     },
-    perPageChange (value) {
+    perPageChange(value) {
       if (value) {
         this.query.limit = value
       }
       this.query.page = 1
+      this.$fetch()
     },
-    sortChange (value) {
+    sortChange(value) {
       const key = Object.keys(value)[0]
       if (key && value[key] !== 'no-sort') {
         if (key === 'created_at_format') {
@@ -299,47 +361,50 @@ export default {
 
       this.$fetch()
     },
-    filterDateHandle () {
+    filterDateHandle() {
       this.setQuery({
         start_date: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
-        end_date: formatDate(this.dateRange[1], 'yyyy-MM-dd')
+        end_date: formatDate(this.dateRange[1], 'yyyy-MM-dd'),
       })
       this.$fetch()
       this.$refs.datepicker.closePopup()
+      this.query.page = 1
     },
-    closePopupDateHandle () {
+    closePopupDateHandle() {
       this.isShowPopupDateRange = false
       this.$refs.datepicker.closePopup()
     },
-    setQuery (params) {
+    setQuery(params) {
       this.query = { ...this.query, ...params }
     },
-    clearDateRangeHandle () {
+    clearDateRangeHandle() {
       this.dateRange = [
         new Date(new Date().setFullYear(new Date().getFullYear() - 1)),
-        new Date()
+        new Date(),
       ]
       this.setQuery({
         start_date: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
-        end_date: formatDate(this.dateRange[1], 'yyyy-MM-dd')
+        end_date: formatDate(this.dateRange[1], 'yyyy-MM-dd'),
       })
 
       this.isShowPopupDateRange = false
       this.$fetch()
     },
-    changeDateRangeHandle () {
+    changeDateRangeHandle() {
       this.isShowPopupDateRange = true
     },
-    getTotalStatistic () {
+    getTotalStatistic() {
       const total = this.listStatisticIkp.reduce((accumulator, object) => {
         return accumulator + object.value
       }, 0)
       return total
     },
-    getStatusText (status) {
+    getStatusText(status) {
       switch (status) {
         case ikpStatus.coordinated.id:
-          return ikpStatus.coordinated.name
+          return this.ikpTypePage === ikpType.instruksiNonPemprov.props
+            ? 'Sudah Dikoordinasikan'
+            : ikpStatus.coordinated.name
         case ikpStatus.followup.id:
           return ikpStatus.followup.name
         case ikpStatus.postponed.id:
@@ -348,16 +413,18 @@ export default {
           return ikpStatus.review.name
         case ikpStatus.finished.id:
           return ikpStatus.finished.name
+        case ikpStatus.not_yet_coordinated.id:
+          return ikpStatus.not_yet_coordinated.name
         default:
           return '-'
       }
     },
-    getColorText (status) {
+    getColorText(status) {
       const ikpStatusColor = this.ikpStatus[status].statusColor
       let statusColor = {}
       if (Array.isArray(ikpStatusColor)) {
-        statusColor = ikpStatusColor.find(
-          statusColor => statusColor.ikpType.includes(this.ikpTypePage)
+        statusColor = ikpStatusColor.find((statusColor) =>
+          statusColor.ikpType.includes(this.ikpTypePage)
         )
       }
 
@@ -380,9 +447,9 @@ export default {
           return 'text-gray-900'
       }
     },
-    listTabHandle (statusId) {
+    listTabHandle(statusId) {
       const query = {
-        page: 1
+        page: 1,
       }
 
       if (statusId !== 'total') {
@@ -395,20 +462,54 @@ export default {
       this.setQuery(query)
       this.$fetch()
     },
-    goToPageDetail (id) {
+    goToPageDetail(id) {
       this.$router.push({
         path: `${this.detailPage}/${id}`,
-        query: this.query
+        query: this.query,
       })
     },
-    async getCount () {
+    goToAppTrk() {
+      window.open(
+        'https://kinerja.jabarprov.go.id/lim/bukan-urusan-pemprov',
+        '_blank'
+      )
+    },
+    getCountNonPemProv() {
+      if (this.ikpTypePage === ikpType.instruksiNonPemprov.props) {
+        const listDataIkp = this.listDataIkp
+        const listNotYetCoordinated = listDataIkp.filter(
+          (item) => item.complaint_status_id === 'not_yet_coordinated'
+        )
+        const listCoordinated = listDataIkp.filter(
+          (item) => item.complaint_status_id === 'coordinated'
+        )
+        this.listStatisticIkp = [
+          {
+            id: 'coordinated',
+            name: 'Sudah Dikoordinasikan',
+            value: listCoordinated.length,
+          },
+          {
+            id: 'not_yet_coordinated',
+            name: 'Belum Dikoordinasikan',
+            value: listNotYetCoordinated.length,
+          },
+        ]
+      }
+      ikpStatus.total.value = this.getTotalStatistic()
+      this.listStatisticIkp.unshift(ikpStatus.total)
+      if (this.listStatisticIkp.length === 2) {
+        this.listStatisticIkp.pop()
+      }
+    },
+    async getCount() {
       const queryCount = { ...this.query }
       queryCount.status = ''
       try {
         const responseListStatisticIkp = await this.$axios.get(
           '/warga/ikp/statistics',
           {
-            params: queryCount
+            params: queryCount,
           }
         )
         this.listStatisticIkp = responseListStatisticIkp.data.data
@@ -420,17 +521,17 @@ export default {
       } catch (error) {
         console.error(error)
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
 <style scoped>
-  .jds-data-table::v-deep td:nth-child(2){
-    @apply !w-[237px]
-  }
+.jds-data-table::v-deep td:nth-child(2) {
+  @apply !w-[237px];
+}
 
-  .jds-data-table::v-deep td:nth-child(3){
-    @apply !w-[137px]
-  }
+.jds-data-table::v-deep td:nth-child(3) {
+  @apply !w-[137px];
+}
 </style>
