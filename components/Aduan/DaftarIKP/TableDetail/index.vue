@@ -4,31 +4,29 @@
       Detail Instruksi Aduan
     </h1>
     <div class="table-content">
-      <BaseTableDetail header="Informasi Umum" class="mb-4">
-        <tr>
+      <BaseTableDetail
+        v-for="keysField in Object.keys(fieldDetail)"
+        :key="keysField"
+        :header="fieldDetail[keysField].title"
+        class="mb-4"
+      >
+        <tr v-for="field in fieldDetail[keysField].field" :key="field.name">
           <td
             class="text-lato text-[14px]"
             :width="
-              typeAduan.instruksiKewenanganNonPemprov.props === ikpTypePage
+              ikpTypePage === ikpType.instruksiKewenanganNonPemprov.props ||
+              ikpTypePage === ikpType.instruksiNonPemprov.props
                 ? '244px'
                 : '164px'
             "
           >
-            <strong>Narasi Instruksi </strong>
+            <strong>{{ field.name }} </strong>
           </td>
-          <td v-html="formatingInstructionalNarrative()" />
-        </tr>
-        <tr>
-          <td class="text-lato w-[164px] text-[14px]">
-            <strong>Jumlah Aduan </strong>
-          </td>
-          <td>{{ dataDetail?.complaints_count }}</td>
-        </tr>
-        <tr>
-          <td class="text-lato w-[164px] text-[14px]">
-            <strong>Status </strong>
-          </td>
-          <td>
+          <td
+            v-if="field.key === 'narrative'"
+            v-html="formatingInstructionalNarrative()"
+          />
+          <td v-else-if="field.key === 'complaint_status_id'">
             <div class="flex items-center">
               <div
                 v-if="dataDetail?.complaint_status_id"
@@ -41,112 +39,50 @@
               {{ getStatusText(dataDetail?.complaint_status_id) }}
             </div>
           </td>
-        </tr>
-        <tr>
-          <td class="text-lato w-[164px] text-[14px]">
-            <strong>Keterangan </strong>
+          <td
+            v-else-if="
+              field.key === 'created_at' || field.key === 'deadline_at'
+            "
+          >
+            {{ formatDate(dataDetail[field.key]) || '-' }}
           </td>
-          <td>{{ dataDetail?.description || '-' }}</td>
+          <td v-else>{{ dataDetail[field.key] || '-' }}</td>
         </tr>
       </BaseTableDetail>
-    </div>
-
-    <BaseTableDetail header="Tanggal" class="mb-4">
-      <tr>
-        <td
-          class="text-lato text-[14px]"
-          :width="
-            typeAduan.instruksiKewenanganNonPemprov.props === ikpTypePage
-              ? '244px'
-              : '164px'
-          "
-        >
-          <strong>Tanggal Dibuat </strong>
-        </td>
-        <td>{{ dataDetail?.created_at || '-' }}</td>
-      </tr>
-      <tr>
-        <td class="text-lato w-[164px] text-[14px]">
-          <strong>Tanggal Deadline </strong>
-        </td>
-        <td>{{ dataDetail?.deadline_at || '-' }}</td>
-      </tr>
-    </BaseTableDetail>
-
-    <BaseTableDetail
-      v-if="ikpTypePage !== typeAduan.instruksiKewenanganNonPemprov.props"
-      header="Indikator"
-      class="mb-4"
-    >
-      <tr>
-        <td class="text-lato w-[164px] text-[14px]">
-          <strong>Indikator Nilai </strong>
-        </td>
-        <td>{{ dataDetail?.indicator_value || '-' }}</td>
-      </tr>
-      <tr>
-        <td class="text-lato w-[164px] text-[14px]">
-          <strong>Indikator Satuan </strong>
-        </td>
-        <td>{{ dataDetail?.indicator_unit || '-' }}</td>
-      </tr>
-    </BaseTableDetail>
-
-    <BaseTableDetail
-      v-if="ikpTypePage === typeAduan.instruksiKewenanganNonPemprov.props"
-      header="Lainnya"
-      class="mb-4"
-    >
-      <tr>
-        <td class="text-lato text-[14px]" width="244px">
-          <strong>Cakupan urusan </strong>
-        </td>
-        <td>{{ dataDetail?.scope_of_affairs || '-' }}</td>
-      </tr>
-      <tr>
-        <td class="text-lato text-[14px]" width="244px">
-          <strong>Instansi Penanggung Jawab </strong>
-        </td>
-        <td>{{ dataDetail?.responsible_agency || '-' }}</td>
-      </tr>
-      <tr>
-        <td class="text-lato text-[14px]" width="244px">
-          <strong>OPD Pemprov Penanggung Jawab </strong>
-        </td>
-        <td>{{ dataDetail?.responsible_provincial_government_opd || '-' }}</td>
-      </tr>
-    </BaseTableDetail>
-    <div
-      v-if="dataDetail?.complaints?.length > 0 && showDaftarAduan"
-      class="rounded-lg border border-gray-200"
-    >
-      <jds-data-table
-        :headers="filterHeaderTableComplaint()"
-        :items="dataDetail?.complaints"
-        class="default-table"
-        :class="{
-          'non-government-table':
-            ikpTypePage === typeAduan.instruksiKewenanganNonPemprov.props,
-        }"
+      <div
+        v-if="dataDetail?.complaints?.length > 0 && showDaftarAduan"
+        class="rounded-lg border border-gray-200"
       >
-        <!-- eslint-disable-next-line vue/valid-v-slot -->
-        <template #item.action="{ item }">
-          <BaseButton
-            class="w-full border border-green-700 !py-[6px] !px-[10px] text-green-700 hover:bg-green-50"
-            @click="goToDetailComplaint(item.id, item.ikp_code)"
-          >
-            Lihat Detail Aduan
-          </BaseButton>
-        </template>
-      </jds-data-table>
+        <jds-data-table
+          :headers="filterHeaderTableComplaint()"
+          :items="dataDetail?.complaints"
+          class="default-table"
+          :class="{
+            'non-government-table':
+              ikpTypePage === ikpType.instruksiKewenanganNonPemprov.props ||
+              ikpTypePage === ikpType.instruksiNonPemprov.props,
+          }"
+        >
+          <!-- eslint-disable-next-line vue/valid-v-slot -->
+          <template #item.action="{ item }">
+            <BaseButton
+              class="w-full border border-green-700 !py-[6px] !px-[10px] text-green-700 hover:bg-green-50"
+              @click="goToDetailComplaint(item.id, item.ikp_code)"
+            >
+              Lihat Detail Aduan
+            </BaseButton>
+          </template>
+        </jds-data-table>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { ikpStatus } from '~/constant/daftar-ikp'
-import { typeAduan } from '~/constant/aduan-masuk'
+import { ikpStatus, ikpType, detailField } from '~/constant/daftar-ikp'
 import { formatDate } from '~/utils'
+import detailInstruksiNonPemprov from '~/data/instruksi-non-pemprov-detail.json'
+
 export default {
   name: 'DaftarIKPTableDetail',
   props: {
@@ -175,26 +111,64 @@ export default {
         { key: 'sp4n_id', text: 'ID SP4N Lapor' },
         { key: 'action', text: 'Aksi' },
       ],
-      typeAduan,
+      ikpType,
+      fieldDetail: {},
+      formatDate,
     }
   },
   async fetch() {
+    this.dataDetail = {}
     try {
-      const response = await this.$axios.get(`/warga/ikp/${this.ikpCode}`)
-      this.dataDetail = response.data.data
-      this.dataDetail.created_at =
-        formatDate(this.dataDetail.created_at || '', 'dd/MM/yyyy HH:mm') || '-'
-
-      this.dataDetail.deadline_at =
-        formatDate(this.dataDetail.deadline_at || '', 'dd/MM/yyyy HH:mm') || '-'
+      if (this.ikpTypePage === ikpType.instruksiNonPemprov.props) {
+        this.dataDetail = detailInstruksiNonPemprov.data
+      } else {
+        const response = await this.$axios.get(`/warga/ikp/${this.ikpCode}`)
+        this.dataDetail = response.data.data
+      }
     } catch (error) {
       this.dataDetail = {}
     }
   },
+  computed: {
+    getDetailOtherField() {
+      return detailField.others.field.filter((item) =>
+        item.ikpType.includes(this.ikpTypePage)
+      )
+    },
+  },
+  mounted() {
+    const dataFieldDetail = {}
+    Object.keys(detailField).forEach((keyField) => {
+      const isCheckColumn = this.checkDetailColumn(keyField)
+      if (isCheckColumn) {
+        dataFieldDetail[keyField] = detailField[keyField]
+        dataFieldDetail[keyField] = {
+          ...dataFieldDetail[keyField],
+          field: this.filterDetailField(keyField),
+        }
+      }
+    })
+
+    this.fieldDetail = dataFieldDetail
+  },
   methods: {
+    checkDetailColumn(column) {
+      return (
+        detailField[column].ikpType.includes('all') ||
+        detailField[column].ikpType.includes(this.ikpTypePage)
+      )
+    },
+    filterDetailField(keyField) {
+      return detailField[keyField].field.filter(
+        (item) =>
+          item.ikpType.includes('all') ||
+          item.ikpType.includes(this.ikpTypePage)
+      )
+    },
     filterHeaderTableComplaint() {
       return this.headerTableComplaint.filter((item) =>
-        this.typeAduan.instruksiKewenanganNonPemprov.props !== this.ikpTypePage
+        this.ikpType.instruksiKewenanganNonPemprov.props !== this.ikpTypePage &&
+        this.ikpType.instruksiNonPemprov.props !== this.ikpTypePage
           ? item.key !== 'sp4n_id'
           : item
       )
@@ -210,7 +184,8 @@ export default {
       switch (status) {
         case ikpStatus.coordinated.id:
           return this.ikpTypePage ===
-            typeAduan.instruksiKewenanganNonPemprov.props
+            ikpType.instruksiKewenanganNonPemprov.props ||
+            this.ikpTypePage === ikpType.instruksiNonPemprov.props
             ? 'Sudah Dikoordinasikan'
             : ikpStatus.coordinated.name
         case ikpStatus.not_yet_coordinated.id:
@@ -261,6 +236,15 @@ export default {
       })
       if (this.$route.params.id === idComplaint) {
         this.$emit('select-tab', 'all')
+      }
+    },
+    showFieldByIkpType(ikpTypeParams, field) {
+      switch (field) {
+        case 'indikator':
+          return ikpTypeParams.includes([
+            ikpType.instruksiKewenanganPemprov.props,
+            ikpType.instruksiAduanWarga.props,
+          ])
       }
     },
   },
