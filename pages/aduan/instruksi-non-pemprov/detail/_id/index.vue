@@ -11,7 +11,7 @@
           Kembali
         </div>
       </jds-button>
-      <jds-button variant="primary">
+      <jds-button variant="primary" @click="goToAppTrk()">
         <div class="flex items-center text-sm font-bold">
           Link Instruksi di Aplikasi TRK
           <BaseIconSvg
@@ -93,6 +93,12 @@ export default {
         path: '/aduan/instruksi-non-pemprov',
         query: this.$route.query,
       })
+    },
+    goToAppTrk() {
+      window.open(
+        'https://kinerja.jabarprov.go.id/lim/bukan-urusan-pemprov',
+        '_blank'
+      )
     },
   },
 }
