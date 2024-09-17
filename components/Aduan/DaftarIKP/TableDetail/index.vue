@@ -238,15 +238,6 @@ export default {
         this.$emit('select-tab', 'all')
       }
     },
-    showFieldByIkpType(ikpTypeParams, field) {
-      switch (field) {
-        case 'indikator':
-          return ikpTypeParams.includes([
-            ikpType.instruksiKewenanganPemprov.props,
-            ikpType.instruksiAduanWarga.props,
-          ])
-      }
-    },
   },
 }
 </script>
