@@ -44,9 +44,9 @@
               field.key === 'created_at' || field.key === 'deadline_at'
             "
           >
-            {{ formatDate(dataDetail[field.key]) || '-' }}
+            {{ formatDate(dataDetail[field.key] || '') || '-' }}
           </td>
-          <td v-else>{{ dataDetail[field.key] || '-' }}</td>
+          <td v-else>{{ dataDetail[field.key] || '' || '-' }}</td>
         </tr>
       </BaseTableDetail>
       <div
