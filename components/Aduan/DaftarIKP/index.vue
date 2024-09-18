@@ -194,11 +194,14 @@ export default {
       // data instruksi non pemprov
       if (this.ikpTypePage === ikpType.instruksiNonPemprov.props) {
         if (this.query.search) {
-          this.listDataIkp = this.listDataIkp.filter(
-            (item) =>
-              item.ikp_code.includes(this.query.search) ||
-              item.narrative.includes(this.query.search)
-          )
+          this.listDataIkp = this.listDataIkp.filter((item) => {
+            const ikpCodeNormalized = this.normalizeText(item.ikp_code)
+            const narrativeNormalized = this.normalizeText(item.narrative)
+            return (
+              ikpCodeNormalized.includes(this.query.search) ||
+              narrativeNormalized.includes(this.query.search)
+            )
+          })
         }
         if (this.query.start_date && this.query.end_date) {
           const startDate = parseISO(this.query.start_date)
@@ -308,6 +311,7 @@ export default {
       if (value.length > 2 || value.length === 0) {
         this.query.page = 1
         this.query.search = value.length > 2 ? value : null
+        this.query.search = this.normalizeText(this.query.search)
         this.$fetch()
       }
     }, 500),
@@ -318,6 +322,10 @@ export default {
     )
   },
   methods: {
+    normalizeText(text) {
+      // /\s+/g => regrex untuk mengubah spasi berlebih dengan satu spasi.
+      return text.replace(/\s+/g, ' ').trim().toLowerCase()
+    },
     selectedTabHandle(index) {
       this.query.tabIndex = index
     },
@@ -327,11 +335,6 @@ export default {
           item.ikpType.includes('all') ||
           item.ikpType.includes(this.ikpTypePage)
       )
-      // if (status === 'finished') {
-      //   return this.menuTableAction.filter((item) => item.value === 'detail')
-      // } else {
-      //   return this.menuTableAction
-      // }
     },
     pageChange(value) {
       this.query.page = value
