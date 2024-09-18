@@ -92,6 +92,12 @@ export const typeAduan = {
     props: 'instruksi-aduan-warga',
     id: 'instruksiAduanWarga',
   },
+  instruksiNonPemprov: {
+    props: 'instruksi-non-pemprov',
+    label: 'Daftar Instruksi Aduan Non Pemprov',
+    link: '/aduan/instruksi-non-pemprov',
+    id: 'instruksiNonPemprov',
+  },
 }
 
 export const complaintSource = {
