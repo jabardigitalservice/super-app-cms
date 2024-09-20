@@ -247,10 +247,8 @@ export default {
         }
 
         this.pagination.totalRows = this.listDataIkp.length
-
         const start = (this.query.page - 1) * this.query.limit // index awal
         const end = start + this.query.limit // index akhir
-
         this.listDataIkp = this.listDataIkp.slice(start, end)
         this.pagination.currentPage = this.query.page
         this.pagination.itemsPerPage = this.query.limit
