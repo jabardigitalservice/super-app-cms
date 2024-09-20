@@ -567,16 +567,4 @@ export default {
 .jds-data-table::v-deep td:nth-child(3) {
   @apply !w-[137px];
 }
-
-/* .disabled-page.jds-data-table::v-deep
-  .jds-pagination__page-control--right
-  .jds-popover__activator {
-  @apply !cursor-not-allowed;
-}
-
-.disabled-page.jds-data-table::v-deep
-  .jds-pagination__page-control--right
-  .jds-input-text__input-wrapper {
-  @apply !opacity-25;
-} */
 </style>
