@@ -150,6 +150,7 @@ export default {
       ],
       listDataIkp: [],
       listStatisticIkp: [],
+      // currentPageLocal: null, // TO DO : If api has already
       pagination: {
         currentPage: 1,
         totalRows: 5,
@@ -173,7 +174,7 @@ export default {
       ],
       headerDaftarIkp,
       ikpStatus,
-      dataInstruksiNonPemprov,
+      listIkpDisplayed: [],
     }
   },
   async fetch() {
@@ -223,8 +224,29 @@ export default {
           )
         }
 
-        this.pagination.totalRows = this.listDataIkp.length
+        if (this.query?.sort_by && this.query?.sort_type) {
+          this.listIkpDisplayed = [...this.listDataIkp]
+          this.listIkpDisplayed = this.listIkpDisplayed.map((item) => {
+            return {
+              ...item,
+              created_at: parseISO(item.created_at),
+              deadline_at: parseISO(item.deadline_at),
+            }
+          })
+          this.listIkpDisplayed.sort((ikpAsc, ikpDesc) => {
+            let comparison = 0
+            const key = this.query.sort_by
+            if (this.query.sort_by === 'narrative') {
+              comparison = ikpAsc[key].localeCompare(ikpDesc[key])
+            } else {
+              comparison = ikpAsc[key] - ikpDesc[key]
+            }
+            return this.query.sort_type === 'asc' ? comparison : -comparison
+          })
+          this.listDataIkp = [...this.listIkpDisplayed]
+        }
 
+        this.pagination.totalRows = this.listDataIkp.length
         const start = (this.query.page - 1) * this.query.limit // index awal
         const end = start + this.query.limit // index akhir
         this.listDataIkp = this.listDataIkp.slice(start, end)
@@ -338,6 +360,13 @@ export default {
     },
     pageChange(value) {
       this.query.page = value
+      // TO DO : if api has already
+      // if (isNaN(value)) {
+      //   this.query.page = this.currentPageLocal
+      // } else {
+      //   this.currentPageLocal = value
+      //   this.query.page = value
+      // }
       this.$fetch()
     },
     perPageChange(value) {
@@ -355,11 +384,10 @@ export default {
         } else {
           this.query.sort_by = key
         }
-
         this.query.sort_type = value[key]
       } else {
-        delete this.query.sort_by
-        delete this.query.sort_type
+        const { sort_by: sortBy, sort_type: sortType, ...newQuery } = this.query // menghilangkan atribut sort by dan sort type
+        this.query = newQuery
       }
 
       this.$fetch()
