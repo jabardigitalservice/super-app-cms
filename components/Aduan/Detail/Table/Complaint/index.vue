@@ -575,6 +575,7 @@ export default {
       switch (this.typeAduanPage) {
         case this.typeAduan.aduanDialihkanSpanLapor.props:
         case this.typeAduan.instruksiKewenanganNonPemprov.props:
+        case this.typeAduan.instruksiNonPemprov.props:
           return true
         case this.typeAduan.penentuanKewenangan.props:
           {
