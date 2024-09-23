@@ -271,7 +271,7 @@
           <td>{{ detailComplaint?.description || '-' }}</td>
         </tr>
         <tr>
-          <td><strong>Lokasi Kejadian</strong></td>
+          <td colspan="2"><strong>Lokasi Kejadian</strong></td>
         </tr>
         <tr>
           <td>Kabupaten / Kota</td>
