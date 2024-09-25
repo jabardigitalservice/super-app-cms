@@ -384,9 +384,7 @@ export default {
       }
 
       // default sort by updated date
-      if (this.checkPropsSortByUpdatedDate() && !this.query.sort_by) {
-        this.setQuery({ sort_by: 'updated_at' })
-      }
+      this.setQuery({ sort_by: 'updated_at' })
 
       // handle list data complaint
       const responseListComplaint = await this.$axios.get(`/warga/${apiPath}`, {
