@@ -247,6 +247,10 @@ import {
   typeAduan,
   complaintSource,
 } from '~/constant/aduan-masuk'
+import {
+  ENDPOINT_ADUAN,
+  ENDPOINT_ADUAN_NON_PEMPROV,
+} from '~/constant/endpoint-api'
 import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
 
 export default {
@@ -366,17 +370,14 @@ export default {
   },
   async fetch() {
     try {
-      let apiPath = 'complaints'
+      const urlApi =
+        this.typeAduanPage === typeAduan.instruksiKewenanganNonPemprov.props
+          ? ENDPOINT_ADUAN_NON_PEMPROV
+          : ENDPOINT_ADUAN
       if (
         !JSON.stringify(Object.keys(this.query)).match('complaint_status_id')
       ) {
         this.query = this.addComplaintStatusFilterHandle()
-      }
-
-      if (
-        this.typeAduanPage === typeAduan.instruksiKewenanganNonPemprov.props
-      ) {
-        apiPath = 'non-pemprov-complaints'
       }
 
       if (this.typeAduan.aduanDariSpanLapor.props === this.typeAduanPage) {
@@ -384,14 +385,13 @@ export default {
       }
 
       // default sort by updated date
-      if (this.checkPropsSortByUpdatedDate() && !this.query.sort_by) {
-        this.setQuery({ sort_by: 'updated_at' })
-      }
+      this.setQuery({ sort_by: 'updated_at' })
 
       // handle list data complaint
-      const responseListComplaint = await this.$axios.get(`/warga/${apiPath}`, {
+      const responseListComplaint = await this.$axios.get(urlApi, {
         params: { ...this.query, is_admin: 1 },
       })
+
       const { data } = responseListComplaint.data
       this.listDataComplaint = data?.data || []
       if (this.listDataComplaint.length) {
