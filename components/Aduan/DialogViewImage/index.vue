@@ -32,7 +32,7 @@
             alt="photo"
             class="h-full w-full rounded-[4px]"
             :class="{ 'opacity-20': index !== swiperRef?.activeIndex }"
-          >
+          />
         </swiper-slide>
       </swiper>
       <footer class="flex items-center justify-center pt-7 pb-5">
@@ -48,7 +48,7 @@
           <jds-button
             variant="secondary"
             class="!rounded-full !border-2 !border-gray-200 !bg-white"
-            @click="downloadImageHandle()"
+            @click="downloadImage()"
           >
             <div class="flex items-center">
               <BaseIconSvg
@@ -75,7 +75,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+// import axios from 'axios'
 import { Navigation, Pagination, Autoplay } from 'swiper'
 import { SwiperCore, Swiper, SwiperSlide } from 'swiper-vue2'
 import 'swiper/swiper-bundle.css'
@@ -85,29 +85,29 @@ export default {
   name: 'PopupViewImage',
   components: {
     Swiper,
-    SwiperSlide
+    SwiperSlide,
   },
   props: {
     showPopup: {
       type: Boolean,
-      default: false
+      default: false,
     },
     listPhoto: {
       type: Array,
-      default: () => ([])
-    }
+      default: () => [],
+    },
   },
-  data () {
+  data() {
     return {
       swiperRef: null,
-      isShowPopupInformation: false
+      isShowPopupInformation: false,
     }
   },
   methods: {
-    getSwipperRefHandle (swiper) {
+    getSwipperRefHandle(swiper) {
       this.swiperRef = swiper
     },
-    swipperImageHandle (pathButton) {
+    swipperImageHandle(pathButton) {
       if (this.swiperRef?.activeIndex < this.listPhoto.length) {
         if (pathButton === 'next') {
           this.swiperRef.slideTo(this.swiperRef?.activeIndex + 1)
@@ -116,28 +116,43 @@ export default {
         }
       }
     },
-    // TODO: integration with url Fix from API
-    async downloadImageHandle () {
+    downloadImage() {
       if (this.swiperRef) {
         const activeIndex = this.swiperRef.activeIndex
         const activeItem = this.listPhoto[activeIndex]
-
-        try {
-          const imageUrl = activeItem.url
-          const splitUrl = imageUrl.split('/')
-          const imageName = splitUrl[splitUrl.length - 1]
-          const response = await axios.get(imageUrl, { responseType: 'blob' })
-          const link = document.createElement('a')
-          link.href = window.URL.createObjectURL(new Blob([response.data]))
-          link.download = imageName
-          document.body.appendChild(link)
-          link.click()
-          document.body.removeChild(link)
-        } catch (error) {
-          console.error('Gagal mendownload gambar', error)
-        }
+        const imageUrl = activeItem.url
+        const splitUrl = imageUrl.split('/')
+        const imageName = splitUrl[splitUrl.length - 1]
+        const downloadLink = document.createElement('a')
+        downloadLink.href = imageUrl
+        downloadLink.target = '_blank'
+        // Memberikan nama file untuk didownload
+        downloadLink.download = imageName
+        downloadLink.click()
       }
-    }
-  }
+    },
+    // TODO: integration with url Fix from API
+    // async downloadImageHandle () {
+    //   if (this.swiperRef) {
+    //     const activeIndex = this.swiperRef.activeIndex
+    //     const activeItem = this.listPhoto[activeIndex]
+
+    //     try {
+    //       const imageUrl = activeItem.url
+    //       const splitUrl = imageUrl.split('/')
+    //       const imageName = splitUrl[splitUrl.length - 1]
+    //       const response = await axios.get(imageUrl, { responseType: 'blob' })
+    //       const link = document.createElement('a')
+    //       link.href = window.URL.createObjectURL(new Blob([response.data]))
+    //       link.download = imageName
+    //       document.body.appendChild(link)
+    //       link.click()
+    //       document.body.removeChild(link)
+    //     } catch (error) {
+    //       console.error('Gagal mendownload gambar', error)
+    //     }
+    //   }
+    // }
+  },
 }
 </script>
