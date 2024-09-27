@@ -1,7 +1,13 @@
 <template>
-  <div class="h-[70px] bg-green-700 py-2 px-3 min-w-[180px] rounded-t-lg" :class="{'!bg-white':selected}">
+  <div
+    class="h-[70px] min-w-[150px] rounded-t-lg bg-green-700 py-2 px-3"
+    :class="{ '!bg-white': selected }"
+  >
     <slot>
-      <button class="text-sm text-green-100 items-center" :class="{'!text-gray-700':selected}">
+      <button
+        class="items-center text-sm text-green-100"
+        :class="{ '!text-gray-700': selected }"
+      >
         {{ title }}
       </button>
     </slot>
@@ -14,12 +20,12 @@ export default {
   props: {
     title: {
       type: String,
-      default: ''
+      default: '',
     },
     selected: {
       type: Boolean,
-      default: false
-    }
-  }
+      default: false,
+    },
+  },
 }
 </script>

@@ -50,6 +50,12 @@ export const ikpType = {
     link: '/aduan/instruksi-aduan-warga',
     id: 'instruksiAduan',
   },
+  instruksiNonPemprov: {
+    props: 'instruksi-non-pemprov',
+    label: 'Daftar Instruksi Aduan Non Pemprov',
+    link: '/aduan/instruksi-non-pemprov',
+    id: 'instruksiNonPemprov',
+  },
 }
 
 export const ikpStatus = Object.freeze({
@@ -59,6 +65,7 @@ export const ikpStatus = Object.freeze({
     value: 0,
     icon: '/icon/icon-aduan/complaint-status/complaint-all-icon.svg',
     statusColor: '-',
+    ikpType: ['all'],
   },
   coordinated: {
     id: 'coordinated',
@@ -69,8 +76,15 @@ export const ikpStatus = Object.freeze({
       { color: 'yellow', ikpType: [ikpType.instruksiKewenanganPemprov.props] },
       {
         color: 'green',
-        ikpType: [ikpType.instruksiKewenanganNonPemprov.props],
+        ikpType: [
+          ikpType.instruksiKewenanganNonPemprov.props,
+          ikpType.instruksiNonPemprov.props,
+        ],
       },
+    ],
+    ikpType: [
+      ikpType.instruksiKewenanganNonPemprov.props,
+      ikpType.instruksiNonPemprov.props,
     ],
   },
   followup: {
@@ -85,16 +99,29 @@ export const ikpStatus = Object.freeze({
       },
       { color: 'yellow', ikpType: [ikpType.instruksiAduanWarga.props] },
     ],
+    ikpType: [
+      ikpType.instruksiKewenanganPemprov.props,
+      ikpType.instruksiAduanWarga.props,
+    ],
   },
   not_yet_coordinated: {
     id: 'not_yet_coordinated',
     name: 'Belum Dikoordinasikan',
+    icon: '/icon/icon-aduan/complaint-status/complaint-not-yet-coordinated.svg',
     value: 0,
     statusColor: [
       {
         color: 'light-blue',
         ikpType: [ikpType.instruksiKewenanganNonPemprov.props],
       },
+      {
+        color: 'yellow',
+        ikpType: [ikpType.instruksiNonPemprov.props],
+      },
+    ],
+    ikpType: [
+      ikpType.instruksiKewenanganNonPemprov.props,
+      ikpType.instruksiNonPemprov.props,
     ],
   },
   postponed: {
@@ -102,20 +129,140 @@ export const ikpStatus = Object.freeze({
     name: 'Pengerjaan Ditunda',
     value: 0,
     icon: '/icon/icon-aduan/complaint-status/complaint-postponed-icon.svg',
-    statusColor: 'purple',
+    statusColor: [
+      {
+        color: 'purple',
+        ikpType: [
+          ikpType.instruksiKewenanganPemprov.props,
+          ikpType.instruksiAduanWarga.props,
+        ],
+      },
+    ],
+    ikpType: [
+      ikpType.instruksiKewenanganPemprov.props,
+      ikpType.instruksiAduanWarga.props,
+    ],
   },
   review: {
     id: 'review',
     name: 'Ditinjau Ulang',
     value: 0,
     icon: '/icon/icon-aduan/complaint-status/complaint-review-icon.svg',
-    statusColor: 'dark-blue',
+    statusColor: [
+      {
+        color: 'dark-blue',
+        ikpType: [
+          ikpType.instruksiKewenanganPemprov.props,
+          ikpType.instruksiAduanWarga.props,
+        ],
+      },
+    ],
+    ikpType: [
+      ikpType.instruksiKewenanganPemprov.props,
+      ikpType.instruksiAduanWarga.props,
+    ],
   },
   finished: {
     id: 'finished',
     name: 'Selesai',
     value: 0,
     icon: '/icon/icon-aduan/complaint-status/complaint-finished-icon.svg',
-    statusColor: 'green',
+    statusColor: [
+      {
+        color: 'green',
+        ikpType: [
+          ikpType.instruksiKewenanganPemprov.props,
+          ikpType.instruksiAduanWarga.props,
+        ],
+      },
+    ],
+    ikpType: [
+      ikpType.instruksiKewenanganPemprov.props,
+      ikpType.instruksiAduanWarga.props,
+    ],
   },
 })
+
+export const detailField = {
+  generalInformation: {
+    title: 'Informasi Umum',
+    field: [
+      { name: 'Narasi Instruksi', key: 'narrative', ikpType: ['all'] },
+      { name: 'Jumlah Aduan', key: 'complaints_count', ikpType: ['all'] },
+      { name: 'Status', key: 'complaint_status_id', ikpType: ['all'] },
+      { name: 'Keterangan', key: 'description', ikpType: ['all'] },
+    ],
+    ikpType: ['all'],
+  },
+  date: {
+    title: 'Tanggal',
+    field: [
+      { name: 'Tanggal Dibuat', key: 'created_at', ikpType: ['all'] },
+      { name: 'Tanggal Deadline', key: 'deadline_at', ikpType: ['all'] },
+    ],
+    ikpType: ['all'],
+  },
+  indicator: {
+    title: 'Indikator',
+    field: [
+      {
+        name: 'Indikator Nilai',
+        key: 'indicator_value',
+        ikpType: [
+          ikpType.instruksiAduanWarga.props,
+          ikpType.instruksiKewenanganPemprov.props,
+        ],
+      },
+      {
+        name: 'Indikator Satuan',
+        key: 'indicator_unit',
+        ikpType: [
+          ikpType.instruksiAduanWarga.props,
+          ikpType.instruksiKewenanganPemprov.props,
+        ],
+      },
+    ],
+    ikpType: [
+      ikpType.instruksiAduanWarga.props,
+      ikpType.instruksiKewenanganPemprov.props,
+    ],
+  },
+  others: {
+    title: 'Lainnya',
+    field: [
+      {
+        name: 'Cakupan Urusan',
+        key: 'scope_of_affairs',
+        ikpType: [
+          ikpType.instruksiKewenanganNonPemprov.props,
+          ikpType.instruksiNonPemprov.props,
+        ],
+      },
+      {
+        name: 'Instansi Penanggung Jawab',
+        key: 'responsible_agency',
+        ikpType: [
+          ikpType.instruksiKewenanganNonPemprov.props,
+          ikpType.instruksiNonPemprov.props,
+        ],
+      },
+      {
+        name: 'OPD Pemprov Penanggung Jawab',
+        key: 'responsible_provincial_government_opd',
+        ikpType: [
+          ikpType.instruksiKewenanganNonPemprov.props,
+          ikpType.instruksiNonPemprov.props,
+        ],
+      },
+      {
+        name: 'Perangkat Daerah',
+        key: 'opd_name',
+        ikpType: [
+          ikpType.instruksiAduanWarga.props,
+          ikpType.instruksiKewenanganPemprov.props,
+        ],
+      },
+    ],
+    ikpType: ['all'],
+  },
+}

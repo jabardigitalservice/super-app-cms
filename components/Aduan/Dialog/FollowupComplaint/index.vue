@@ -311,24 +311,26 @@ export default {
       this.isShowPopupIkpNarrative = true
     },
     showPopupCreateIkp() {
+      const {
+        opd_name: opdName,
+        deadline_date: deadlineDate,
+        coverage_of_affairs: coverageOfAffairs,
+      } = this.dataDialog.dataComplaint
       if (
         this.complaintType === typeAduan.instruksiKewenanganNonPemprov.props
       ) {
-        const {
-          coverage_of_affairs: coverageOfAffairs,
-          opd_name: opdName,
-          deadline_date: deadlineDate,
-          opd_pemprov_id: opdPemprovId,
-        } = this.dataDialog.dataComplaint
-
         this.$store.commit('create-ikp/setPayload', {
           ...this.payload,
-          coverage_of_affairs: coverageOfAffairs,
-          opd_name: opdName,
-          deadline_at: deadlineDate,
-          opd_pemprov_id: opdPemprovId,
+          opd_pemprov_id: this.dataDialog.dataComplaint.opd_pemprov_id,
         })
       }
+
+      this.$store.commit('create-ikp/setPayload', {
+        ...this.payload,
+        opd_name: opdName,
+        deadline_at: deadlineDate,
+        coverage_of_affairs: coverageOfAffairs,
+      })
 
       this.$store.commit('followup-complaint/setIsShowPopup', false)
       this.$store.commit(

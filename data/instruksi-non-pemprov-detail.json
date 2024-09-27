@@ -1,0 +1,49 @@
+{
+  "data": {
+      "id": "1cbd3151-43af-4ccb-a15e-1d6eeacbd6ce",
+      "ikp_code": "1228",
+      "narrative": "instruksi pertama",
+      "complaint_status_id": "coordinated",
+      "detail": "{\"id_ikp_aduan\":\"8928982938928392893293829\",\"id\":1228,\"instruksi\":\"instruksi pertama\",\"keterangan_instruksi\":\"Mohon berkoordinasi\",\"indikator\":\"1.00\",\"satuan\":\"dokumen laporan hasil pelaksanaan kegiatan.\",\"tanggal\":\"2023-10-02\",\"deadline\":\"2023-12-31\",\"kolok\":\"2-23.2-24.0-0.01.00.00.01\",\"unit_kerja_id\":null,\"kepala_pd\":\"I GUSTI AGUNG KIM FAJAR WIYATI OKA\",\"pd\":\"DINAS PERPUSTAKAAN DAN KEARSIPAN DAERAH\",\"duration\":90,\"deadline_format\":\"Minggu, 31 Desember 2023\",\"tanggal_format\":\"Senin, 2 Oktober 2023\",\"updated_by\":\"lapor_aduan\",\"created_at\":\"2023-10-02 15:11:40\",\"updated_at\":\"2023-10-02 15:11:40\",\"is_done\":false,\"status\":\"2.0 Instruksi Sedang dalam Proses Pengerjaan oleh SKPD\",\"banding\":false,\"laporan\":false}",
+      "created_by": null,
+      "created_at": "2024-09-03T04:10:33.000000Z",
+      "updated_at": "2024-09-03T04:10:33.000000Z",
+      "deadline_at": "2024-08-31 00:00:00",
+      "description": "Mohon berkoordinasi",
+      "indicator_value": "1",
+      "indicator_unit": "dokumen laporan hasil pelaksanaan kegiatan.",
+      "opd_name": "DINAS PERPUSTAKAAN DAN KEARSIPAN DAERAH",
+      "evidence": null,
+      "scope_of_affairs": "Pemerintah Kabupaten / Kota",
+      "responsible_agency": "Kabupaten Bekasi",
+      "responsible_provincial_government_opd": "Dinas Kependudukan dan Pencatatan Sipil Provinsi Jawa Barat",
+      "complaints_count": 3,
+      "complaint_status": {
+          "id": "coordinated",
+          "name": "Sudah Dikoordinasikan"
+      },
+      "complaints": [
+          {
+              "id": "c76313b2-2f03-4233-82bb-704a8dfcbf20",
+              "complaint_id": "SWA041220230000001",
+              "ikp_code": "1228",
+              "sp4n_id": "13212",
+              "complaint_source": "sp4n"
+          },
+          {
+              "id": "f1027511-8990-4baa-a58b-46f8a0545d12",
+              "complaint_id": "SWA191220230000006",
+              "ikp_code": "1228",
+              "sp4n_id": null,
+              "complaint_source": "sapawarga"
+          },
+          {
+              "id": "50b43cec-7aed-407c-bdbe-355e1314a583",
+              "complaint_id": "SWA080720240000002",
+              "ikp_code": "1228",
+              "sp4n_id": "23456789",
+              "complaint_source": "sp4n"
+          }
+      ]
+  }
+}

@@ -33,10 +33,7 @@
                     placeholder="Pilih Cakupan Urusan"
                     :options="listAuthority"
                     :error-message="errors[0]"
-                    :disabled="
-                      complaintType ===
-                      typeAduan.instruksiKewenanganNonPemprov.props
-                    "
+                    disabled
                   />
                 </ValidationProvider>
                 <ValidationProvider
@@ -52,10 +49,7 @@
                     label="Nama Instansi"
                     placeholder="Pilih Nama Instansi"
                     :error-message="errors[0]"
-                    :disabled="
-                      complaintType ===
-                      typeAduan.instruksiKewenanganNonPemprov.props
-                    "
+                    disabled
                     :options="listDisposition"
                   />
                 </ValidationProvider>
@@ -73,10 +67,7 @@
                     placeholder="Pilih OPD Pemprov Penanggungjawab"
                     helper-text="OPD Pemprov penanggungjawab bertugas untuk memeriksa tindaklanjut aduan di kota/kabupaten atau kementerian/lembaga."
                     :error-message="errors[0]"
-                    :disabled="
-                      complaintType ===
-                      typeAduan.instruksiKewenanganNonPemprov.props
-                    "
+                    disabled
                     :options="listGovResponsible"
                   />
                 </ValidationProvider>
@@ -98,6 +89,7 @@
                   placeholder="Pilih Perangkat Daerah"
                   :options="listDisposition"
                   :error-message="errors[0]"
+                  disabled
                 />
               </ValidationProvider>
               <div class="grid grid-cols-2 gap-3 pt-3">
@@ -136,15 +128,9 @@
                     placeholder="Pilih Tanggal Deadline"
                     :class="{
                       'mx-datepicker--error': errors[0],
-                      'mx-datepicker--disabled':
-                        complaintType ===
-                        typeAduan.instruksiKewenanganNonPemprov.props,
                     }"
-                    class="!w-full disabled:!bg-green-500"
-                    :disabled="
-                      complaintType ===
-                      typeAduan.instruksiKewenanganNonPemprov.props
-                    "
+                    class="mx-datepicker--disabled !w-full"
+                    disabled
                   >
                     <template #icon-calendar>
                       <jds-icon
@@ -192,7 +178,7 @@
                 name="Keterangan Instruksi Aduan"
               >
                 <BaseTextArea
-                  v-model="payload.description"
+                  v-model="instructionNote"
                   label="Keterangan Instruksi Aduan"
                   placeholder="Masukkan deskripsi"
                   maxlength="255"
@@ -201,7 +187,7 @@
                 />
               </ValidationProvider>
               <p class="pt-1 text-xs text-gray-600">
-                Tersisa {{ 255 - payload.description.length }} karakter
+                Tersisa {{ 255 - instructionNote.length }} karakter
               </p>
             </form>
           </ValidationObserver>
@@ -293,6 +279,7 @@ export default {
       },
       icon: {},
       typeAduan,
+      instructionNote: '',
     }
   },
   async fetch() {
@@ -354,6 +341,10 @@ export default {
       if (this.payload.coverage_of_affairs) {
         this.$fetch()
       }
+      if (this.payload.description) {
+        this.descriptionLength =
+          this.descriptionLength - this.payload.description.length
+      }
     },
   },
   methods: {
@@ -398,6 +389,7 @@ export default {
         coverage_of_affairs: '',
         opd_pemprov_id: '',
       }
+      this.instructionNote = ''
       this.$store.commit('create-ikp/setIsTruncate', false)
       this.$refs.form.reset()
     },
@@ -422,10 +414,11 @@ export default {
       this.isShowPopupConfirmation = false
       this.isShowPopupLoading = true
       try {
-        this.payload.deadline_at = formatDate(
-          this.payload.deadline_at,
-          'yyyy-MM-dd'
-        )
+        this.payload = {
+          ...this.payload,
+          deadline_at: formatDate(this.payload.deadline_at, 'yyyy-MM-dd'),
+          description: this.instructionNote,
+        }
         const response = await this.$axios.post('/warga/ikp', {
           ...this.payload,
           user_id: this.$auth?.user?.identifier,
