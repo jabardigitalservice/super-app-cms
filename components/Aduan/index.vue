@@ -746,7 +746,7 @@ export default {
         try {
           // handle data statistic complaint
           const responseListStatisticComplaint = await this.$axios.get(
-            '/warga/complaints/statistics',
+            `${ENDPOINT_ADUAN}/statistics`,
             {
               params: queryCount,
             }
@@ -775,7 +775,7 @@ export default {
       try {
         // handle list data category
         const responseListCategoryComplaint = await this.$axios.get(
-          '/warga/complaints/categories'
+          `${ENDPOINT_ADUAN}/categories`
         )
 
         this.listDataCategory = responseListCategoryComplaint.data.data
@@ -794,7 +794,7 @@ export default {
       try {
         // handle list data non government complaint status
         const responseDataNonGovComplaintStatus = await this.$axios.get(
-          '/warga/non-pemprov-complaint-status'
+          '/aduan/non-pemprov-complaint-status'
         )
 
         this.listDataNonGovComplaintStatus =

@@ -1,4 +1,5 @@
 import { complaintStatus } from '~/constant/aduan-masuk'
+import { ENDPOINT_ADUAN } from '~/constant/endpoint-api'
 export default {
   data() {
     return {
@@ -353,7 +354,7 @@ export default {
       this.dataDialog.subDescription = paramDialog.subDescription
       this.isLoading = true
       try {
-        await this.$axios.patch(`/warga/complaints/${this.idApi}/${pathApi}`, {
+        await this.$axios.patch(`${ENDPOINT_ADUAN}/${this.idApi}/${pathApi}`, {
           ...paramsInputRequest,
           user_id: this.$auth?.user?.identifier,
         })

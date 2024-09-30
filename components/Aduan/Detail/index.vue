@@ -126,6 +126,10 @@ import TableComplaintDetail from '~/components/Aduan/Detail/Table/Complaint'
 import { formatDate } from '~/utils'
 import DialogProcessComplaint from '~/components/Aduan/Dialog/ProcessComplaint'
 import DialogFollowupComplaint from '~/components/Aduan/Dialog/FollowupComplaint'
+import {
+  ENDPOINT_ADUAN,
+  ENDPOINT_ADUAN_NON_PEMPROV,
+} from '~/constant/endpoint-api'
 
 export default {
   name: 'DetailAduan',
@@ -174,13 +178,13 @@ export default {
   },
   async fetch() {
     try {
-      const apiPath =
+      const endpoint =
         this.typeAduan.instruksiKewenanganNonPemprov.props ===
         this.typeAduanPage
-          ? 'non-pemprov-complaints'
-          : 'complaints'
+          ? ENDPOINT_ADUAN_NON_PEMPROV
+          : ENDPOINT_ADUAN
       const response = await this.$axios.get(
-        `/warga/${apiPath}/${this.$route.params.id}`
+        `${endpoint}/${this.$route.params.id}`
       )
       const dataDetailComplaint = response.data.data
       dataDetailComplaint.complaint_status =
