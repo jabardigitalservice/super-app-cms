@@ -235,6 +235,7 @@ import DialogWithAlert from '~/components/Aduan/Dialog/CreateIkp/Dialog/WithAler
 import DialogInformation from '~/components/Aduan/Dialog/CreateIkp/Dialog/Information'
 import { formatDate } from '~/utils'
 import { typeAduan } from '~/constant/aduan-masuk'
+import { ENDPOINT_ADUAN, ENDPOINT_IKP } from '~/constant/endpoint-api'
 
 export default {
   name: 'DialogCreateIkp',
@@ -286,18 +287,18 @@ export default {
     try {
       // response cakupan urusan
       const responseAuthority = await this.$axios.get(
-        '/warga/complaints/authorities'
+        `${ENDPOINT_ADUAN}/authorities`
       )
       this.listDataAuthority = responseAuthority.data.data
       // response nama instansi
       const responseDisposition = await this.$axios.get(
-        'warga/complaints/dispositions',
+        `${ENDPOINT_ADUAN}/dispositions`,
         { params: { authority: this.payload.coverage_of_affairs } }
       )
       this.listDataDisposition = responseDisposition.data.data
       // response OPD Pemprov Penanggungjawab
       const responseGovResponsible = await this.$axios.get(
-        '/warga/complaints/opds'
+        `${ENDPOINT_ADUAN}/opds`
       )
       this.listDataGovResponsible = responseGovResponsible.data.data
     } catch {
@@ -419,7 +420,7 @@ export default {
           deadline_at: formatDate(this.payload.deadline_at, 'yyyy-MM-dd'),
           description: this.instructionNote,
         }
-        const response = await this.$axios.post('/warga/ikp', {
+        const response = await this.$axios.post(ENDPOINT_IKP, {
           ...this.payload,
           user_id: this.$auth?.user?.identifier,
         })

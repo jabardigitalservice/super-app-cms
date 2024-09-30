@@ -111,6 +111,7 @@
 
 <script>
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
+import { ENDPOINT_ADUAN } from '~/constant/endpoint-api'
 
 export default {
   name: 'FormLocationComplaint',
@@ -139,13 +140,13 @@ export default {
   async fetch() {
     try {
       const responseDataCategory = await this.$axios.get(
-        '/warga/complaints/categories'
+        `${ENDPOINT_ADUAN}/categories`
       )
       const dataCategoryComplaint = responseDataCategory.data.data
       this.listDataCategoryComplaint = dataCategoryComplaint
       if (this.payloadOtherComplaint.complaint_category_id) {
         const responseDataSubCategory = await this.$axios.get(
-          '/warga/complaints/subcategories',
+          `${ENDPOINT_ADUAN}/subcategories`,
           {
             params: {
               complaint_category_id:
@@ -157,7 +158,7 @@ export default {
         this.listDataSubCategoryComplaint = dataSubCategoryComplaint
       }
       const responseDataDisposition = await this.$axios.get(
-        '/warga/complaints/dispositions',
+        `${ENDPOINT_ADUAN}/dispositions`,
         { params: { authority: 'Pemerintah Provinsi Jawa Barat' } }
       )
       const dataDisposition = responseDataDisposition.data.data

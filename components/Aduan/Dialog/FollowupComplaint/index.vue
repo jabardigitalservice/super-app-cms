@@ -175,6 +175,7 @@ import DialogIkpNarrative from '~/components/Aduan/Dialog/IkpNarrative'
 import DialogCreateIkp from '~/components/Aduan/Dialog/CreateIkp'
 import Pagination from '~/components/Aduan/Dialog/FollowupComplaint/Pagination'
 import { typeAduan } from '~/constant/aduan-masuk'
+import { ENDPOINT_IKP } from '~/constant/endpoint-api'
 
 export default {
   name: 'DialogFollowupComplaint',
@@ -222,7 +223,7 @@ export default {
   async fetch() {
     try {
       this.setQuery({ sort_by: 'ikp_code', sort_type: 'ASC' })
-      const responseIkp = await this.$axios.get('/warga/ikp', {
+      const responseIkp = await this.$axios.get(ENDPOINT_IKP, {
         params: { ...this.query, is_admin: 1 },
       })
       this.listDataIkp = responseIkp.data.data.data

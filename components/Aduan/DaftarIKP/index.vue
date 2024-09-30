@@ -120,6 +120,7 @@ import {
 import TabBarList from '~/components/Aduan/TabBar/List'
 import { headerDaftarIkp, ikpStatus, ikpType } from '~/constant/daftar-ikp'
 import dataInstruksiNonPemprov from '~/data/instruksi-non-pemprov.json'
+import { ENDPOINT_IKP } from '~/constant/endpoint-api'
 
 export default {
   name: 'DaftarIkpTable',
@@ -182,7 +183,7 @@ export default {
       const responseList =
         this.ikpTypePage === ikpType.instruksiNonPemprov.props
           ? dataInstruksiNonPemprov
-          : await this.$axios.get('/warga/ikp', {
+          : await this.$axios.get(ENDPOINT_IKP, {
               params: { ...this.query },
             })
       const { data } = responseList.data
@@ -538,7 +539,7 @@ export default {
       queryCount.status = ''
       try {
         const responseListStatisticIkp = await this.$axios.get(
-          '/warga/ikp/statistics',
+          `${ENDPOINT_IKP}/statistics`,
           {
             params: queryCount,
           }
