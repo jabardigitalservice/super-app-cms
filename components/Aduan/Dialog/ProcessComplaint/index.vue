@@ -212,6 +212,7 @@
                   name="Tanggal Deadline"
                   :disabled-date="disabledDateHandle"
                   @change="changeUrgencyStatus"
+                  @clear="clearDate"
                 >
                   <template #icon-calendar>
                     <jds-icon
@@ -225,7 +226,7 @@
               </ValidationProvider>
               <div class="self-center">
                 <label class="text-sm">Tingkat Urgensi</label>
-                <p class="text-sm font-bold">
+                <p class="mt-1 text-sm font-bold">
                   {{ payload?.urgency_level || '-' }}
                 </p>
               </div>
@@ -423,6 +424,9 @@ export default {
           })
           break
       }
+    },
+    clearDate() {
+      this.payload.urgency_level = '-'
     },
     filterListAuthority() {
       switch (this.payload.complaint_status_id) {
