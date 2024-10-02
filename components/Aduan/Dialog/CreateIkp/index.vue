@@ -435,6 +435,7 @@ export default {
         this.setIconPopup({ name: 'check-mark-circle', fill: '#069550' })
         this.resetFormIkp()
         this.isShowPopupInformationSuccess = true
+        console.log("aaaa")
       } catch {
         this.payload.deadline_at = new Date(this.payload.deadline_at)
         this.setAlert({
