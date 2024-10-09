@@ -157,7 +157,15 @@
                   @verify="
                     showPopupConfirmationVerificationComplaintHandle(item)
                   "
-                  @failed="showPopupConfirmationFailedComplaintHandle(item)"
+                  @failed="
+                    showPopupConfirmationComplaint(item, 'failedComplaint')
+                  "
+                  @redirect-hotline-jabar="
+                    showPopupConfirmationComplaint(
+                      item,
+                      'redirectHotlineComplaint'
+                    )
+                  "
                   @add-span="showPopupInputIdSpanHandle(item)"
                   @process-complaint="showPopupProcessComplaintHandle(item)"
                   @change-authority="showPopupChangeAuthority(item)"
@@ -189,6 +197,12 @@
       @close="closePopupHandle()"
       @submit="submitPopupComplaintHandle"
     />
+    <!-- <DialogInputTextArea
+      :data-dialog="dataDialog"
+      :show-popup="isShowPopupConfirmationRedirectHotlineJabar"
+      @close="closePopupHandle()"
+      @submit="submitRedirectHotlineJabar"
+    /> -->
     <DialogInputText
       :data-dialog="dataDialog"
       :show-popup="isShowPopupInputIdSpan"
@@ -293,6 +307,12 @@ export default {
         {
           menu: 'Gagal Diverifikasi',
           value: 'failed',
+          complaintType: [typeAduan.aduanMasuk.props],
+          complaintStatus: [complaintStatus.unverified.id],
+        },
+        {
+          menu: 'Dialihkan ke Hotline Jabar',
+          value: 'redirect-hotline-jabar',
           complaintType: [typeAduan.aduanMasuk.props],
           complaintStatus: [complaintStatus.unverified.id],
         },
