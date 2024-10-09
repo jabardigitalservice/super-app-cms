@@ -470,7 +470,6 @@ export default {
         case 'verificationComplaint':
           return this.submitPopupComplaintHandle(this.dataDialog)
         case 'failedComplaint':
-          // return this.submitPopupComplaintHandle(this.dataDialog)
           return this.showPopupConfirmationComplaint(
             this.dataComplaint,
             'failedComplaint'
