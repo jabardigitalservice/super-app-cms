@@ -465,6 +465,7 @@ export default {
       this.isShowPopupInformation = true
     },
     submitRetryHandle() {
+      this.isShowPopupInformation = false
       switch (this.typeDialog) {
         case 'verificationComplaint':
           return this.submitPopupComplaintHandle(this.dataDialog)
