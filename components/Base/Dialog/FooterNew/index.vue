@@ -4,7 +4,7 @@
       <slot>
         <div class="mr-4">
           <jds-button
-            label="Batal"
+            label="Batalkan"
             type="button"
             variant="secondary"
             class="!text-[14px] !font-bold"
