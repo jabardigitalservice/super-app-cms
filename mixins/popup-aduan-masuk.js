@@ -5,6 +5,7 @@ export default {
     return {
       isShowPopupConfirmationVerification: false,
       isShowPopupConfirmationFailedVerification: false,
+      isShowPopupConfirmationRedirectHotlineJabar: false,
       isShowPopupInformation: false,
       isShowPopupInputIdSpan: false,
       isShowPopupProcessComplaint: false,
@@ -24,6 +25,7 @@ export default {
         fill: '',
         name: '',
       },
+      dataComplaint: {},
       complaintNote: '',
       isLoading: false,
       typeDialog: '',
@@ -69,18 +71,50 @@ export default {
       })
       this.isShowPopupConfirmationVerification = true
     },
-    showPopupConfirmationFailedComplaintHandle(dataComplaint) {
+    showPopupConfirmationComplaint(dataComplaint, typeDialog) {
       this.idApi = dataComplaint.id
-      this.typeDialog = 'failedComplaint'
+      this.dataComplaint = dataComplaint
+      if (typeDialog === 'failedComplaint') {
+        this.typeDialog = 'failedComplaint'
+        this.setDataDialog({
+          ...this.setDataDialogConfirmation(
+            'Konfirmasi Gagal Diverifikasi',
+            'No.Aduan',
+            dataComplaint.complaint_id,
+            'Konfirmasi'
+          ),
+          labelTextArea: 'Catatan Aduan Gagal Diverifikasi',
+          placeholder: 'Detail Aduan tidak lengkap : contoh (foto tidak jelas)',
+        })
+      }
+      if (typeDialog === 'redirectHotlineComplaint') {
+        this.typeDialog = 'redirectHotlineComplaint'
+        this.setDataDialog({
+          ...this.setDataDialogConfirmation(
+            'Konfirmasi Dialihkan ke Hotline Jabar',
+            'No.Aduan',
+            dataComplaint.complaint_id,
+            'Konfirmasi'
+          ),
+          labelTextArea: 'Alasan dialihkan ke Hotline Jabar',
+          placeholder: 'Contoh: Aduan terkait kegawat daruratan',
+        })
+      }
+      this.dataDialog.name = this.typeDialog
+      this.$store.commit('modals/OPEN', this.typeDialog)
+    },
+    showPopupConfirmationRedirectHotline(dataComplaint) {
+      this.idApi = dataComplaint.id
+      this.typeDialog = 'redirectHotlineComplaint'
       this.setDataDialog({
         ...this.setDataDialogConfirmation(
-          'Konfirmasi Gagal Diverifikasi',
+          'Konfirmasi Dialihkan ke Hotline Jabar',
           'No.Aduan',
           dataComplaint.complaint_id,
           'Konfirmasi'
         ),
-        labelTextArea: 'Catatan Aduan Gagal Diverifikasi',
-        placeholder: 'Detail Aduan tidak lengkap : contoh (foto tidak jelas)',
+        labelTextArea: 'Alasan dialihkan ke Hotline Jabar',
+        placeholder: 'Contoh: Aduan terkait kegawat daruratan',
       })
       this.isShowPopupConfirmationFailedVerification = true
     },
@@ -195,48 +229,101 @@ export default {
     },
     submitPopupComplaintHandle(item) {
       let dataDialogInformation = {}
-      const paramRequest = {}
-      if (this.typeDialog === 'verificationComplaint') {
-        this.isShowPopupConfirmationVerification = false
-        dataDialogInformation = {
-          ...this.setDataDialogInformation(
-            'Verifikasi Aduan',
-            item.subDescription
-          ),
-          success: this.setSucessFailedInformationHandle(
-            'Aduan berhasil diverifikasi',
-            true
-          ),
-          failed: this.setSucessFailedInformationHandle(
-            'Aduan gagal diverifikasi',
-            false
-          ),
-        }
-        paramRequest.complaint_status_id = 'verified'
-      } else {
-        this.isShowPopupConfirmationFailedVerification = false
-        dataDialogInformation = {
-          ...this.setDataDialogInformation(
-            'Aduan Gagal Diverifikasi',
-            item.subDescription
-          ),
-          success: this.setSucessFailedInformationHandle(
-            'Konfirmasi Aduan Gagal Diverifikasi berhasil dilakukan',
-            true
-          ),
-          failed: this.setSucessFailedInformationHandle(
-            'Konfirmasi Aduan Gagal Diverifikasi gagal dilakukan',
-            false
-          ),
-        }
-        paramRequest.complaint_status_id = 'failed'
+      let paramRequest = { complaint_status_note: item?.note }
+      let pathApi = 'change-status'
+      switch (this.typeDialog) {
+        case "'verificationComplaint":
+          this.isShowPopupConfirmationVerification = false
+          dataDialogInformation = {
+            ...this.setDataDialogInformation(
+              'Verifikasi Aduan',
+              item.subDescription
+            ),
+            success: this.setSucessFailedInformationHandle(
+              'Aduan berhasil diverifikasi',
+              true
+            ),
+            failed: this.setSucessFailedInformationHandle(
+              'Aduan gagal diverifikasi',
+              false
+            ),
+          }
+          paramRequest.complaint_status_id = 'verified'
+          break
+        case 'failedComplaint':
+          this.$store.commit('modals/CLOSEALL')
+          dataDialogInformation = {
+            ...this.setDataDialogInformation(
+              'Aduan Gagal Diverifikasi',
+              item.subDescription
+            ),
+            success: this.setSucessFailedInformationHandle(
+              'Konfirmasi Aduan Gagal Diverifikasi berhasil dilakukan',
+              true
+            ),
+            failed: this.setSucessFailedInformationHandle(
+              'Konfirmasi Aduan Gagal Diverifikasi gagal dilakukan',
+              false
+            ),
+          }
+          paramRequest.complaint_status_id = 'failed'
+          break
+        case 'redirectHotlineComplaint':
+          this.$store.commit('modals/CLOSEALL')
+          dataDialogInformation = {
+            ...this.setDataDialogInformation(
+              'Aduan Dialihkan ke Hotline Jabar',
+              item.subDescription
+            ),
+            success: this.setSucessFailedInformationHandle(
+              'Aduan berhasil dialihkan ke Hotline Jabar',
+              true
+            ),
+            failed: this.setSucessFailedInformationHandle(
+              'Aduan gagal dialihkan ke Hotline Jabar',
+              false
+            ),
+          }
+          paramRequest = { directed_to_hotline_jabar_note: item?.note }
+          pathApi = 'redirected-to-hotline-jabar'
       }
+      // if (this.typeDialog === 'verificationComplaint') {
+      //   this.isShowPopupConfirmationVerification = false
+      //   dataDialogInformation = {
+      //     ...this.setDataDialogInformation(
+      //       'Verifikasi Aduan',
+      //       item.subDescription
+      //     ),
+      //     success: this.setSucessFailedInformationHandle(
+      //       'Aduan berhasil diverifikasi',
+      //       true
+      //     ),
+      //     failed: this.setSucessFailedInformationHandle(
+      //       'Aduan gagal diverifikasi',
+      //       false
+      //     ),
+      //   }
+      //   paramRequest.complaint_status_id = 'verified'
+      // } else {
+      //   this.isShowPopupConfirmationFailedVerification = false
+      //   dataDialogInformation = {
+      //     ...this.setDataDialogInformation(
+      //       'Aduan Gagal Diverifikasi',
+      //       item.subDescription
+      //     ),
+      //     success: this.setSucessFailedInformationHandle(
+      //       'Konfirmasi Aduan Gagal Diverifikasi berhasil dilakukan',
+      //       true
+      //     ),
+      //     failed: this.setSucessFailedInformationHandle(
+      //       'Konfirmasi Aduan Gagal Diverifikasi gagal dilakukan',
+      //       false
+      //     ),
+      //   }
+      //   paramRequest.complaint_status_id = 'failed'
+      // }
 
-      this.integrationPopupHandle(
-        dataDialogInformation,
-        { ...paramRequest, complaint_status_note: item?.note },
-        'change-status'
-      )
+      this.integrationPopupHandle(dataDialogInformation, paramRequest, pathApi)
     },
 
     submitInputIdSpanHandle(item) {
@@ -353,11 +440,20 @@ export default {
       this.dataDialog.title = paramDialog.title
       this.dataDialog.subDescription = paramDialog.subDescription
       this.isLoading = true
+      const urlApi = `${ENDPOINT_ADUAN}/${this.idApi}/${pathApi}`
+
       try {
-        await this.$axios.patch(`${ENDPOINT_ADUAN}/${this.idApi}/${pathApi}`, {
-          ...paramsInputRequest,
-          user_id: this.$auth?.user?.identifier,
-        })
+        if (this.typeDialog === 'redirectHotlineComplaint') {
+          await this.$mockApi.patch(urlApi, {
+            ...paramsInputRequest,
+            user_id: this.$auth?.user?.identifier,
+          })
+        } else {
+          await this.$axios.patch(urlApi, {
+            ...paramsInputRequest,
+            user_id: this.$auth?.user?.identifier,
+          })
+        }
         this.setDataDialog({ ...paramDialog.success })
         this.setIconPopup({ name: 'check-mark-circle', fill: '#069550' })
       } catch {
@@ -373,7 +469,16 @@ export default {
         case 'verificationComplaint':
           return this.submitPopupComplaintHandle(this.dataDialog)
         case 'failedComplaint':
-          return this.submitPopupComplaintHandle(this.dataDialog)
+          // return this.submitPopupComplaintHandle(this.dataDialog)
+          return this.showPopupConfirmationComplaint(
+            this.dataComplaint,
+            'failedComplaint'
+          )
+        case 'redirectHotlineComplaint':
+          return this.showPopupConfirmationComplaint(
+            this.dataComplaint,
+            'redirectHotlineComplaint'
+          )
         case 'addIdSpan': {
           return this.submitInputIdSpanHandle(this.dataDialog)
         }
