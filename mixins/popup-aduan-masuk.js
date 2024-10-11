@@ -287,42 +287,6 @@ export default {
           paramRequest = { directed_to_hotline_jabar_note: item?.note }
           pathApi = 'redirected-to-hotline-jabar'
       }
-      // if (this.typeDialog === 'verificationComplaint') {
-      //   this.isShowPopupConfirmationVerification = false
-      //   dataDialogInformation = {
-      //     ...this.setDataDialogInformation(
-      //       'Verifikasi Aduan',
-      //       item.subDescription
-      //     ),
-      //     success: this.setSucessFailedInformationHandle(
-      //       'Aduan berhasil diverifikasi',
-      //       true
-      //     ),
-      //     failed: this.setSucessFailedInformationHandle(
-      //       'Aduan gagal diverifikasi',
-      //       false
-      //     ),
-      //   }
-      //   paramRequest.complaint_status_id = 'verified'
-      // } else {
-      //   this.isShowPopupConfirmationFailedVerification = false
-      //   dataDialogInformation = {
-      //     ...this.setDataDialogInformation(
-      //       'Aduan Gagal Diverifikasi',
-      //       item.subDescription
-      //     ),
-      //     success: this.setSucessFailedInformationHandle(
-      //       'Konfirmasi Aduan Gagal Diverifikasi berhasil dilakukan',
-      //       true
-      //     ),
-      //     failed: this.setSucessFailedInformationHandle(
-      //       'Konfirmasi Aduan Gagal Diverifikasi gagal dilakukan',
-      //       false
-      //     ),
-      //   }
-      //   paramRequest.complaint_status_id = 'failed'
-      // }
-
       this.integrationPopupHandle(dataDialogInformation, paramRequest, pathApi)
     },
 
