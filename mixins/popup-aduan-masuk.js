@@ -443,17 +443,10 @@ export default {
       const urlApi = `${ENDPOINT_ADUAN}/${this.idApi}/${pathApi}`
 
       try {
-        if (this.typeDialog === 'redirectHotlineComplaint') {
-          await this.$mockApi.patch(urlApi, {
-            ...paramsInputRequest,
-            user_id: this.$auth?.user?.identifier,
-          })
-        } else {
-          await this.$axios.patch(urlApi, {
-            ...paramsInputRequest,
-            user_id: this.$auth?.user?.identifier,
-          })
-        }
+        await this.$axios.patch(urlApi, {
+          ...paramsInputRequest,
+          user_id: this.$auth?.user?.identifier,
+        })
         this.setDataDialog({ ...paramDialog.success })
         this.setIconPopup({ name: 'check-mark-circle', fill: '#069550' })
       } catch {
