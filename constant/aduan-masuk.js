@@ -150,6 +150,19 @@ export const complaintStatus = Object.freeze({
     icon: '/icon/icon-aduan/complaint-status/complaint-failed-icon.svg',
     typeAduan: [typeAduan.aduanMasuk.props],
   },
+  directed_to_hotline_jabar: {
+    id: 'directed_to_hotline_jabar',
+    name: 'Dialihkan ke Hotline Jabar',
+    value: 0,
+    statusColor: [
+      {
+        color: 'purple',
+        typeAduan: [typeAduan.aduanMasuk.props],
+      },
+    ],
+    icon: '/icon/icon-aduan/complaint-status/complaint-redirect-to-hotline-jabar.svg',
+    typeAduan: [typeAduan.aduanMasuk.props],
+  },
   not_yet_instructed: {
     id: 'not_yet_instructed',
     name: 'Belum Diistruksikan',
