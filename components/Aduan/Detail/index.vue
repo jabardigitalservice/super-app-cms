@@ -11,7 +11,25 @@
           Kembali
         </div>
       </jds-button>
-      <div v-if="idTab === 'all'" class="flex">
+      <div v-if="typeAduanPage === typeAduan.aduanMasuk.props" class="w-fit">
+        <BaseButtonDropdown
+          label="Aksi"
+          :list-menu-pop-over="listMenuPopover"
+          @verified="
+            showPopupConfirmationVerificationComplaintHandle(detailComplaint)
+          "
+          @failed="
+            showPopupConfirmationComplaint(detailComplaint, 'failedComplaint')
+          "
+          @redirect-hotline-jabar="
+            showPopupConfirmationComplaint(
+              detailComplaint,
+              'redirectHotlineComplaint'
+            )
+          "
+        />
+      </div>
+      <div v-else-if="idTab === 'all'" class="flex">
         <div
           v-for="(button, index) in listButton"
           v-show="
@@ -167,11 +185,26 @@ export default {
           icon: '/icon/icon-aduan/instruction-detail.svg',
         },
       ],
+      listMenuPopover: [
+        {
+          menu: 'Terverifikasi',
+          value: 'verified',
+        },
+        {
+          menu: 'Gagal DIverifikasi',
+          value: 'failed',
+        },
+        {
+          menu: 'Dialihkan ke Hotline Jabar',
+          value: 'redirect-hotline-jabar',
+        },
+      ],
       detailComplaint: {},
       idTab: '',
       listPhoto: [],
       isShowPopupViewImage: false,
       isShowPopupDetailStatusComplaint: false,
+      isShowDropdown: false,
       ikpCode: '',
       typeAduan,
     }
@@ -196,6 +229,11 @@ export default {
       }
       this.detailComplaint = {
         ...dataDetailComplaint,
+        complaint_status_note:
+          dataDetailComplaint.complaint_status_id ===
+          complaintStatus.directed_to_hotline_jabar.id
+            ? dataDetailComplaint.directed_to_hotline_jabar_note
+            : dataDetailComplaint.complaint_status_note,
         created_at_api: dataDetailComplaint?.created_at,
         created_at_format:
           dataDetailComplaint?.created_at &&
@@ -274,14 +312,6 @@ export default {
     },
     clickButtonConfirmationHandle(idButton) {
       switch (idButton) {
-        case complaintButtonDetail.verified.idButton:
-          return this.showPopupConfirmationVerificationComplaintHandle(
-            this.detailComplaint
-          )
-        case complaintButtonDetail.failed.idButton:
-          return this.showPopupConfirmationFailedComplaintHandle(
-            this.detailComplaint
-          )
         case complaintButtonDetail.addIdSpan.idButton:
           return this.showPopupInputIdSpanHandle(this.detailComplaint)
         case complaintButtonDetail.complaintProcess.idButton:
