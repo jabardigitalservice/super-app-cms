@@ -303,19 +303,6 @@ export const complaintStatus = Object.freeze({
 })
 
 export const complaintButtonDetail = {
-  failed: {
-    idButton: 'button-confirmation-failed',
-    label: 'Gagal Terverifikasi',
-    variant: 'secondary',
-    classButton: '!text-red-400 !border-2 !border-red-400',
-    complaintStatus: complaintStatus.unverified.id,
-  },
-  verified: {
-    idButton: 'button-confirmation-verification',
-    label: 'Terverifikasi',
-    variant: 'primary',
-    complaintStatus: complaintStatus.unverified.id,
-  },
   addIdSpan: {
     idButton: 'button-add-id-span',
     label: 'Tambahkan ID SP4N Lapor',
