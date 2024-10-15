@@ -236,7 +236,6 @@
 
 <script>
 import debounce from 'lodash.debounce'
-// import { parseISO, isWithinInterval } from 'date-fns'
 import DialogFollowupComplaint from '~/components/Aduan/Dialog/FollowupComplaint'
 import {
   formatDate,
@@ -364,7 +363,7 @@ export default {
         page: 1,
         search: null,
         complaint_category_id: null,
-        // complaint_status_id: null,
+        complaint_status_id: null,
         tabIndex: 0,
         idTab: this.tabName,
       },
@@ -381,7 +380,6 @@ export default {
       listStatisticComplaint: [],
       listDataNonGovComplaintStatus: [], // list status complaint for non government
       isShowPopupDateRange: false,
-      isMockApi: false,
       complaintSource,
       dateRange: [
         new Date(new Date().setFullYear(new Date().getFullYear() - 1)),
@@ -546,7 +544,6 @@ export default {
     this.pagination.itemsPerPageOptions = generateItemsPerPageOptions(
       this.pagination.itemsPerPage
     )
-    this.isMockApi = true
     this.getCategory()
     this.getNonGovComplaintStatus()
   },
@@ -692,13 +689,9 @@ export default {
     },
     listTabHandle(status) {
       const query = { page: 1, limit: 10 }
-      // mock api
-      // this.isFilterStatistic = false
       this.deletePropertiesWithPrefix(this.query, 'complaint_status_id[')
 
       if (status !== 'total') {
-        // mock api
-        // this.isFilterStatistic = true
         query['complaint_status_id[0]'] = status
       }
       this.setQuery(query)
