@@ -236,7 +236,7 @@
 
 <script>
 import debounce from 'lodash.debounce'
-
+import DialogFollowupComplaint from '~/components/Aduan/Dialog/FollowupComplaint'
 import {
   formatDate,
   generateItemsPerPageOptions,
@@ -249,7 +249,6 @@ import 'vue2-datepicker/index.css'
 import TabBarList from '~/components/Aduan/TabBar/List'
 import DialogAddComplaint from '~/components/Aduan/Dialog/AddComplaint'
 import DialogProcessComplaint from '~/components/Aduan/Dialog/ProcessComplaint'
-import DialogFollowupComplaint from '~/components/Aduan/Dialog/FollowupComplaint'
 
 import {
   complaintHeader,
@@ -364,7 +363,7 @@ export default {
         page: 1,
         search: null,
         complaint_category_id: null,
-        // complaint_status_id: null,
+        complaint_status_id: null,
         tabIndex: 0,
         idTab: this.tabName,
       },
@@ -405,7 +404,9 @@ export default {
       }
 
       // default sort by updated date
-      this.setQuery({ sort_by: 'updated_at' })
+      if (!this.query.sort_by) {
+        this.setQuery({ sort_by: 'updated_at' })
+      }
 
       // handle list data complaint
       const responseListComplaint = await this.$axios.get(urlApi, {
@@ -688,7 +689,6 @@ export default {
     },
     listTabHandle(status) {
       const query = { page: 1, limit: 10 }
-
       this.deletePropertiesWithPrefix(this.query, 'complaint_status_id[')
 
       if (status !== 'total') {
