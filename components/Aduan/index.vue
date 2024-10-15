@@ -425,7 +425,7 @@ export default {
       this.pagination.totalRows = data?.total_data || 0
       this.pagination.itemsPerPage = data?.page_size || this.query.limit
       this.getCount()
-    } catch (error) {
+    } catch {
       this.pagination.disabled = true
     }
   },
