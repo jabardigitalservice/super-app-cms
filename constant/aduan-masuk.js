@@ -139,12 +139,19 @@ export const complaintStatus = Object.freeze({
     name: 'Terverifikasi',
     value: 0,
     statusColor: [
-      { color: 'yellow', typeAduan: [typeAduan.penentuanKewenangan.props] },
+      {
+        color: 'yellow',
+        typeAduan: [
+          typeAduan.penentuanKewenangan.props,
+          typeAduan.aduanDialihkanHotlineJabar.props,
+        ],
+      },
       { color: 'green', typeAduan: [typeAduan.aduanMasuk.props] },
     ],
     icon: '/icon/icon-aduan/complaint-status/complaint-verify-icon.svg',
     typeAduan: [
       typeAduan.aduanMasuk.props,
+      typeAduan.aduanDialihkanHotlineJabar.props,
       typeAduan.penentuanKewenangan.props,
     ],
   },
