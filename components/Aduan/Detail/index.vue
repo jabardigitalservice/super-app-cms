@@ -11,7 +11,13 @@
           Kembali
         </div>
       </jds-button>
-      <div v-if="typeAduanPage === typeAduan.aduanMasuk.props" class="w-fit">
+      <div
+        v-if="
+          typeAduanPage === typeAduan.aduanMasuk.props &&
+          complaintStatus.unverified.id === detailComplaint.complaint_status_id
+        "
+        class="w-fit"
+      >
         <BaseButtonDropdown
           label="Aksi"
           :list-menu-pop-over="listMenuPopover"
@@ -29,7 +35,12 @@
           "
         />
       </div>
-      <div v-else-if="idTab === 'all'" class="flex">
+      <div
+        v-else-if="
+          idTab === 'all' && typeAduanPage !== typeAduan.aduanMasuk.props
+        "
+        class="flex"
+      >
         <div
           v-for="(button, index) in listButton"
           v-show="
@@ -207,6 +218,7 @@ export default {
       isShowDropdown: false,
       ikpCode: '',
       typeAduan,
+      complaintStatus,
     }
   },
   async fetch() {
