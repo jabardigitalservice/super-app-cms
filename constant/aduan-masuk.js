@@ -58,6 +58,12 @@ export const typeAduan = {
     link: '/aduan/aduan-masuk',
     id: 'aduanMasuk',
   },
+  aduanDialihkanHotlineJabar: {
+    props: 'aduan-dialihkan-hotline-jabar',
+    label: 'Daftar Aduan Hotline Jabar',
+    link: '/aduan/aduan-hotline-jabar',
+    id: 'aduanDialihkanHotlineJabar',
+  },
   aduanDialihkanSpanLapor: {
     props: 'aduan-dialihkan-span-lapor',
     label: 'Daftar Aduan Dialihkan Ke SP4N Lapor',
