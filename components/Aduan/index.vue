@@ -262,6 +262,7 @@ import {
 } from '~/constant/aduan-masuk'
 import {
   ENDPOINT_ADUAN,
+  ENDPOINT_ADUAN_HOTLINE_JABAR,
   ENDPOINT_ADUAN_NON_PEMPROV,
 } from '~/constant/endpoint-api'
 import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
@@ -409,10 +410,17 @@ export default {
       }
 
       // handle list data complaint
-      const responseListComplaint = await this.$axios.get(urlApi, {
-        params: { ...this.query, is_admin: 1 },
-      })
-
+      let responseListComplaint = ''
+      if (this.typeAduanPage === typeAduan.aduanDialihkanHotlineJabar.props) {
+        responseListComplaint = await this.$mockApi.get(
+          ENDPOINT_ADUAN_HOTLINE_JABAR
+        )
+      } else {
+        responseListComplaint = await this.$axios.get(urlApi, {
+          params: { ...this.query, is_admin: 1 },
+        })
+      }
+      console.log(responseListComplaint)
       const { data } = responseListComplaint.data
       this.listDataComplaint = data?.data || []
       if (this.listDataComplaint.length) {
@@ -554,6 +562,7 @@ export default {
     checkTypeHeaderAduan(type) {
       switch (type) {
         case typeAduan.aduanMasuk.props:
+        case typeAduan.aduanDialihkanHotlineJabar.props:
           return this.complaintHeader
         case typeAduan.aduanDialihkanSpanLapor.props:
           return this.complaintDivertedToSpanHeader
