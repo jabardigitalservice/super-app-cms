@@ -342,8 +342,14 @@ export default {
         {
           menu: 'Tindaklanjuti Aduan',
           value: 'followup-complaint',
-          complaintType: [typeAduan.instruksiKewenanganPemprov.props],
-          complaintStatus: [complaintStatus.coordinated.id],
+          complaintType: [
+            typeAduan.instruksiKewenanganPemprov.props,
+            typeAduan.aduanDialihkanHotlineJabar.props,
+          ],
+          complaintStatus: [
+            complaintStatus.coordinated.id,
+            complaintStatus.verified.id,
+          ],
         },
         {
           menu: 'Buat Instruksi',
