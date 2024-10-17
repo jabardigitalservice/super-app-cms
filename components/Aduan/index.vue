@@ -696,8 +696,8 @@ export default {
 
         this.query.sort_type = value[key]
       } else {
-        delete this.query.sort_by
-        delete this.query.sort_type
+        const { sort_by: sortBy, sort_type: sortType, ...newQuery } = this.query // menghilangkan atribut sort by dan sort type
+        this.query = newQuery
       }
 
       this.$fetch()
