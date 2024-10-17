@@ -202,7 +202,7 @@ export default {
           value: 'verified',
         },
         {
-          menu: 'Gagal DIverifikasi',
+          menu: 'Gagal Diverifikasi',
           value: 'failed',
         },
         {
