@@ -115,6 +115,10 @@ export const complaintSource = {
     id: 'sp4n',
     name: 'SP4N Lapor',
   },
+  jotform: {
+    id: 'jotform',
+    name: 'Jotform',
+  },
 }
 
 export const complaintStatus = Object.freeze({
@@ -255,7 +259,10 @@ export const complaintStatus = Object.freeze({
     statusColor: [
       {
         color: 'light-blue',
-        typeAduan: [typeAduan.instruksiKewenanganPemprov.props],
+        typeAduan: [
+          typeAduan.instruksiKewenanganPemprov.props,
+          typeAduan.aduanDialihkanHotlineJabar.props,
+        ],
       },
       { color: 'yellow', typeAduan: [typeAduan.instruksiAduanWarga.props] },
     ],
@@ -263,6 +270,7 @@ export const complaintStatus = Object.freeze({
     typeAduan: [
       typeAduan.instruksiKewenanganPemprov.props,
       typeAduan.instruksiAduanWarga.props,
+      typeAduan.aduanDialihkanHotlineJabar.props,
     ],
   },
   postponed: {
@@ -304,13 +312,17 @@ export const complaintStatus = Object.freeze({
     statusColor: [
       {
         color: 'green',
-        typeAduan: [typeAduan.instruksiKewenanganPemprov.props],
+        typeAduan: [
+          typeAduan.instruksiKewenanganPemprov.props,
+          typeAduan.aduanDialihkanHotlineJabar.props,
+        ],
       },
     ],
     icon: '/icon/icon-aduan/complaint-status/complaint-finished-icon.svg',
     typeAduan: [
       typeAduan.instruksiKewenanganPemprov.props,
       typeAduan.instruksiAduanWarga.props,
+      typeAduan.aduanDialihkanHotlineJabar.props,
     ],
   },
 })
