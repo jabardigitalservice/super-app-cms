@@ -638,7 +638,8 @@ export default {
     this.pagination.itemsPerPageOptions = generateItemsPerPageOptions(
       this.pagination.itemsPerPage
     )
-    this.isMockApi = true // using mock api
+    this.isMockApi =
+      this.typeAduanPage === typeAduan.aduanDialihkanHotlineJabar.props // using mock api
     this.getCategory()
     this.getNonGovComplaintStatus()
   },
