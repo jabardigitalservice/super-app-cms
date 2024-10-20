@@ -166,7 +166,15 @@
                       'redirectHotlineComplaint'
                     )
                   "
-                  @followup-hotline-jabar="showPopupFollowupHotlineJabar(item)"
+                  @followup-hotline-jabar="
+                    $store.dispatch(
+                      'popup-complaint/showPopupFollowupHotlineJabar',
+                      {
+                        dataComplaint: item,
+                        dialogName: 'followupHotlineJabar',
+                      }
+                    )
+                  "
                   @add-span="showPopupInputIdSpanHandle(item)"
                   @process-complaint="showPopupProcessComplaintHandle(item)"
                   @change-authority="showPopupChangeAuthority(item)"
