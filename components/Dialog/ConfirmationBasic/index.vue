@@ -7,13 +7,16 @@
         :sub-description="detailItemModal.title"
         class="p-6"
       />
-      <BaseDialogFooterNew :name="`${dialogModal?.nameModal}`">
+      <BaseDialogFooterNew
+        :name="`${dialogModal?.nameModal}`"
+        @cancel="$emit('cancel')"
+      >
         <template #button-right>
           <jds-button
             :label="dialogModal?.button.label"
             type="button"
             :variant="dialogModal?.button.variant"
-            @click.prevent="$emit('confirmation-button')"
+            @click="$emit('confirmation-button')"
           />
         </template>
 
