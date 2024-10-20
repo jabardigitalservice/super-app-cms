@@ -166,6 +166,7 @@
                       'redirectHotlineComplaint'
                     )
                   "
+                  @followup-hotline-jabar="showPopupFollowupHotlineJabar(item)"
                   @add-span="showPopupInputIdSpanHandle(item)"
                   @process-complaint="showPopupProcessComplaintHandle(item)"
                   @change-authority="showPopupChangeAuthority(item)"
@@ -191,6 +192,7 @@
       @close="closePopupInformationHandle()"
       @submit="submitRetryHandle"
     />
+    <DialogFollowupHotlineJabar :data-complaint="dataComplaint" />
     <DialogInputTextArea
       :data-dialog="dataDialog"
       :show-popup="isShowPopupConfirmationFailedVerification"
@@ -237,6 +239,7 @@
 <script>
 import debounce from 'lodash.debounce'
 import { isWithinInterval, parseISO } from 'date-fns'
+import DialogFollowupHotlineJabar from '~/components/Aduan/Dialog/FollowupHotlineJabar'
 import DialogFollowupComplaint from '~/components/Aduan/Dialog/FollowupComplaint'
 import {
   formatDate,
@@ -276,6 +279,7 @@ export default {
     DialogAddComplaint,
     DialogProcessComplaint,
     DialogFollowupComplaint,
+    DialogFollowupHotlineJabar,
   },
   mixins: [popupAduanMasuk],
   props: {
@@ -319,6 +323,12 @@ export default {
           complaintStatus: [complaintStatus.unverified.id],
         },
         {
+          menu: 'Tindaklanjuti Aduan',
+          value: 'followup-hotline-jabar',
+          complaintType: [typeAduan.aduanDialihkanHotlineJabar.props],
+          complaintStatus: [complaintStatus.verified.id],
+        },
+        {
           menu: 'Tambahkan ID SP4N Lapor',
           value: 'add-span',
           complaintType: [typeAduan.aduanDialihkanSpanLapor.props],
@@ -342,14 +352,8 @@ export default {
         {
           menu: 'Tindaklanjuti Aduan',
           value: 'followup-complaint',
-          complaintType: [
-            typeAduan.instruksiKewenanganPemprov.props,
-            typeAduan.aduanDialihkanHotlineJabar.props,
-          ],
-          complaintStatus: [
-            complaintStatus.coordinated.id,
-            complaintStatus.verified.id,
-          ],
+          complaintType: [typeAduan.instruksiKewenanganPemprov.props],
+          complaintStatus: [complaintStatus.coordinated.id],
         },
         {
           menu: 'Buat Instruksi',
@@ -556,6 +560,9 @@ export default {
             : '',
           complaint_source_id: item?.complaint_source
             ? this.getComplaintSource(item).id
+            : '',
+          complaint_source: item?.complaint_source
+            ? this.getComplaintSource(item)
             : '',
           coverage_of_affairs: item?.coverage_of_affairs || '',
           authority: item?.authority || '',
