@@ -110,14 +110,17 @@ export const complaintSource = {
   sapawarga: {
     id: 'sapawarga',
     name: 'Sapawarga',
+    logo: 'sapawarga.svg',
   },
   span: {
     id: 'sp4n',
     name: 'SP4N Lapor',
+    logo: 'span-lapor.svg',
   },
   jotform: {
     id: 'jotform',
     name: 'Jotform',
+    logo: null,
   },
 }
 
