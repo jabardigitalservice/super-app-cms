@@ -124,12 +124,6 @@ export default {
     ValidationProvider,
     ValidationObserver,
   },
-  props: {
-    dataComplaint: {
-      type: Object,
-      default: () => ({}),
-    },
-  },
   data() {
     return {
       payload: {
@@ -143,6 +137,11 @@ export default {
     dataDialog() {
       return {
         ...this.$store.state['popup-complaint'].dataDialog,
+      }
+    },
+    dataComplaint() {
+      return {
+        ...this.$store.state['popup-complaint'].dataComplaint,
       }
     },
     isSuccess() {

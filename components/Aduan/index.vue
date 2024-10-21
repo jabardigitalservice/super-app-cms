@@ -200,7 +200,7 @@
       @close="closePopupInformationHandle()"
       @submit="submitRetryHandle"
     />
-    <DialogFollowupHotlineJabar :data-complaint="dataComplaint" />
+    <DialogFollowupHotlineJabar />
     <DialogInputTextArea
       :data-dialog="dataDialog"
       :show-popup="isShowPopupConfirmationFailedVerification"
