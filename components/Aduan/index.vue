@@ -175,6 +175,9 @@
                       }
                     )
                   "
+                  @evidence-followup-hotline="
+                    $store.commit('modals/OPEN', 'evidenceFollowupHotline')
+                  "
                   @add-span="showPopupInputIdSpanHandle(item)"
                   @process-complaint="showPopupProcessComplaintHandle(item)"
                   @change-authority="showPopupChangeAuthority(item)"
@@ -201,6 +204,7 @@
       @submit="submitRetryHandle"
     />
     <DialogFollowupHotlineJabar :data-complaint="dataComplaint" />
+    <DialogEvidenceFollowupHotline />
     <DialogInputTextArea
       :data-dialog="dataDialog"
       :show-popup="isShowPopupConfirmationFailedVerification"
@@ -248,6 +252,7 @@
 import debounce from 'lodash.debounce'
 import { isWithinInterval, parseISO } from 'date-fns'
 import DialogFollowupHotlineJabar from '~/components/Aduan/Dialog/FollowupHotlineJabar'
+import DialogEvidenceFollowupHotline from '~/components/Aduan/Dialog/EvidenceFollowupHotline'
 import DialogFollowupComplaint from '~/components/Aduan/Dialog/FollowupComplaint'
 import {
   formatDate,
@@ -288,6 +293,7 @@ export default {
     DialogProcessComplaint,
     DialogFollowupComplaint,
     DialogFollowupHotlineJabar,
+    DialogEvidenceFollowupHotline,
   },
   mixins: [popupAduanMasuk],
   props: {
@@ -335,6 +341,12 @@ export default {
           value: 'followup-hotline-jabar',
           complaintType: [typeAduan.aduanDialihkanHotlineJabar.props],
           complaintStatus: [complaintStatus.verified.id],
+        },
+        {
+          menu: 'Upload Bukti Tindaklanjut',
+          value: 'evidence-followup-hotline',
+          complaintType: [typeAduan.aduanDialihkanHotlineJabar.props],
+          complaintStatus: [complaintStatus.followup.id],
         },
         {
           menu: 'Tambahkan ID SP4N Lapor',
