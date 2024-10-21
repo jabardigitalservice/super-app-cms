@@ -390,8 +390,6 @@ export default {
       listDataNonGovComplaintStatus: [], // list status complaint for non government
       isShowPopupDateRange: false,
       complaintSource,
-      isMockApi: false, // using mock api
-      isFilterStatistic: false, // using mock api
       dateRange: [
         new Date(new Date().setFullYear(new Date().getFullYear() - 1)),
         new Date(),
@@ -400,10 +398,7 @@ export default {
   },
   async fetch() {
     try {
-      const urlApi =
-        this.typeAduanPage === typeAduan.instruksiKewenanganNonPemprov.props
-          ? ENDPOINT_ADUAN_NON_PEMPROV
-          : ENDPOINT_ADUAN
+      const urlApi = this.checkUrlApi()
       if (
         !JSON.stringify(Object.keys(this.query)).match('complaint_status_id')
       ) {
@@ -420,16 +415,10 @@ export default {
       }
 
       // handle list data complaint
-      let responseListComplaint = ''
-      if (this.typeAduanPage === typeAduan.aduanDialihkanHotlineJabar.props) {
-        responseListComplaint = await this.$mockApi.get(
-          ENDPOINT_ADUAN_HOTLINE_JABAR
-        )
-      } else {
-        responseListComplaint = await this.$axios.get(urlApi, {
-          params: { ...this.query, is_admin: 1 },
-        })
-      }
+      const responseListComplaint = await this.$axios.get(urlApi, {
+        params: { ...this.query, is_admin: 1 },
+      })
+
       const { data } = responseListComplaint.data
       this.listDataComplaint = data?.data || []
       if (this.listDataComplaint.length) {
@@ -438,87 +427,10 @@ export default {
         this.pagination.disabled = true
       }
 
-      // using mock api
-      if (this.isMockApi) {
-        if (this.query.search) {
-          this.query.search = this.normalizeText(this.query.search)
-          this.listDataComplaint = this.listDataComplaint.filter((item) => {
-            const complaintCode = this.normalizeText(item.complaint_id)
-            const username = this.normalizeText(item.user_name)
-            return (
-              complaintCode.includes(this.query.search) ||
-              username.includes(this.query.search)
-            )
-          })
-        }
-        if (this.query.start_date && this.query.end_date) {
-          const startDate = parseISO(this.query.start_date)
-          const endDate = parseISO(this.query.end_date)
-          this.listDataComplaint = this.listDataComplaint.filter((item) => {
-            const createdDate = parseISO(
-              formatDate(item.created_at, 'yyyy-MM-dd')
-            )
-            return isWithinInterval(createdDate, {
-              start: startDate,
-              end: endDate,
-            })
-          })
-        }
-
-        if (this.query['complaint_category_id[0]']) {
-          this.listDataComplaint = this.listDataComplaint.filter(
-            (item) =>
-              item.complaint_category_id ===
-              this.query['complaint_category_id[0]']
-          )
-        }
-
-        this.getCountMockApi()
-        if (this.isFilterStatistic) {
-          this.listDataComplaint = this.listDataComplaint.filter(
-            (item) =>
-              item.complaint_status_id === this.query['complaint_status_id[0]']
-          )
-        }
-
-        if (this.query?.sort_by && this.query?.sort_type) {
-          this.listComplaintDisplayed = [...this.listDataComplaint]
-          this.listComplaintDisplayed = this.listComplaintDisplayed.map(
-            (item) => {
-              return {
-                ...item,
-                created_at: parseISO(item.created_at),
-              }
-            }
-          )
-          this.listComplaintDisplayed.sort((complaintAsc, complaintDesc) => {
-            let comparison = 0
-            const key = this.query.sort_by
-            if (
-              this.query.sort_by === 'complaint_id' ||
-              this.query.sort_by === 'user_name'
-            ) {
-              comparison = complaintAsc[key].localeCompare(complaintDesc[key])
-            } else {
-              comparison = complaintAsc[key] - complaintDesc[key]
-            }
-            return this.query.sort_type === 'asc' ? comparison : -comparison
-          })
-          this.listDataComplaint = [...this.listComplaintDisplayed]
-        }
-
-        this.pagination.totalRows = this.listDataComplaint.length
-        const start = (this.query.page - 1) * this.query.limit // index awal
-        const end = start + this.query.limit // index akhir
-        this.listDataComplaint = this.listDataComplaint.slice(start, end)
-        this.pagination.currentPage = this.query.page
-        this.pagination.itemsPerPage = this.query.limit
-      } else {
-        this.pagination.currentPage = data?.page || 1
-        this.pagination.totalRows = data?.total_data || 0
-        this.pagination.itemsPerPage = data?.page_size || this.query.limit
-        this.getCount()
-      }
+      this.pagination.currentPage = data?.page || 1
+      this.pagination.totalRows = data?.total_data || 0
+      this.pagination.itemsPerPage = data?.page_size || this.query.limit
+      this.getCount()
     } catch {
       this.pagination.disabled = true
     }
@@ -638,17 +550,10 @@ export default {
     this.pagination.itemsPerPageOptions = generateItemsPerPageOptions(
       this.pagination.itemsPerPage
     )
-    this.isMockApi =
-      this.typeAduanPage === typeAduan.aduanDialihkanHotlineJabar.props // using mock api
     this.getCategory()
     this.getNonGovComplaintStatus()
   },
   methods: {
-    // using mock api
-    normalizeText(text) {
-      // /\s+/g => regrex untuk mengubah spasi berlebih dengan satu spasi.
-      return text.replace(/\s+/g, ' ').trim().toLowerCase()
-    },
     selectedTabHandle(index) {
       this.query.tabIndex = index
     },
@@ -792,13 +697,10 @@ export default {
     listTabHandle(status) {
       const query = { page: 1, limit: 10 }
       this.deletePropertiesWithPrefix(this.query, 'complaint_status_id[')
-      this.isFilterStatistic = false // using mockapi
       if (status !== 'total') {
-        this.isFilterStatistic = true // using mockapi
         query['complaint_status_id[0]'] = status
       }
       this.setQuery(query)
-
       this.isShowPopupDateRange = false
       this.$fetch()
     },
@@ -857,41 +759,6 @@ export default {
         return this.complaintSource.span
       }
       return this.complaintSource[dataComplaint.complaint_source]
-    },
-    // using mockapi
-    getCountMockApi() {
-      const listDataComplaint = this.listDataComplaint
-      const listVerified = listDataComplaint.filter(
-        (item) => item.complaint_status_id === 'verified'
-      )
-      const listFolowup = listDataComplaint.filter(
-        (item) => item.complaint_status_id === 'followup'
-      )
-      const listFinished = listDataComplaint.filter(
-        (item) => item.complaint_status_id === 'finished'
-      )
-      this.listStatisticComplaint = [
-        {
-          id: 'verified',
-          name: 'Terverifikasi',
-          value: listVerified.length,
-        },
-        {
-          id: 'followup',
-          name: 'Ditindaklanjuti',
-          value: listFolowup.length,
-        },
-        {
-          id: 'finished',
-          name: 'Selesai',
-          value: listFinished.length,
-        },
-      ]
-      complaintStatus.total.value = this.getTotalStatistic()
-      this.listStatisticComplaint.unshift(complaintStatus.total)
-      if (this.listStatisticComplaint.length === 2) {
-        this.listStatisticComplaint.pop()
-      }
     },
     async getCount() {
       const queryCount = { ...this.query, is_admin: 1 }
