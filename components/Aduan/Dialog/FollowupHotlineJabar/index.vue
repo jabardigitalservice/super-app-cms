@@ -104,12 +104,13 @@
       @cancel="backToForm()"
     />
     <DialogInformationNew
-      v-else
+      v-if="!isConfirmationDialog"
       :name-modal="dataDialog.nameModal"
       :dialog-modal="dataDialog.dialogModal"
       :is-success="isSuccess"
       @retry="backToForm()"
     />
+    <DialogLoading :show-popup="isLoading" />
   </div>
 </template>
 
@@ -147,6 +148,12 @@ export default {
     isSuccess() {
       return this.$store.state['popup-complaint'].isSuccess
     },
+    isLoading() {
+      return this.$store.state['popup-complaint'].isLoading
+    },
+  },
+  mounted() {
+    this.$store.commit('popup-complaint/setIsLoading', false)
   },
   methods: {
     disabledDate: function (date) {

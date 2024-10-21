@@ -240,7 +240,6 @@
       :complaint-type="typeAduanPage"
       @submit="submitFollowupComplaint"
     />
-    <DialogLoading :show-popup="isLoading" />
   </div>
 </template>
 
