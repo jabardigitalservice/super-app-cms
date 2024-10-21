@@ -553,6 +553,16 @@ export default {
     this.getNonGovComplaintStatus()
   },
   methods: {
+    checkUrlApi() {
+      switch (this.typeAduanPage) {
+        case typeAduan.aduanDialihkanHotlineJabar.props:
+          return ENDPOINT_ADUAN_HOTLINE_JABAR
+        case typeAduan.instruksiKewenanganNonPemprov.props:
+          return ENDPOINT_ADUAN_NON_PEMPROV
+        default:
+          return ENDPOINT_ADUAN
+      }
+    },
     selectedTabHandle(index) {
       this.query.tabIndex = index
     },
