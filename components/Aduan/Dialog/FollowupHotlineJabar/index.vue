@@ -153,7 +153,7 @@ export default {
     disabledDate: function (date) {
       const currentYear = new Date().getFullYear()
       const nextDate = new Date().setFullYear(currentYear + 1)
-      return date > nextDate
+      return date < new Date() || date > nextDate
     },
     clearDate() {
       this.payload.deadline_date = ''
