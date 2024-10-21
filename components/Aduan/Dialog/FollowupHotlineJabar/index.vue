@@ -104,12 +104,13 @@
       @cancel="backToForm()"
     />
     <DialogInformationNew
-      v-else
+      v-if="!isConfirmationDialog"
       :name-modal="dataDialog.nameModal"
       :dialog-modal="dataDialog.dialogModal"
       :is-success="isSuccess"
       @retry="backToForm()"
     />
+    <DialogLoading :show-popup="isLoading" />
   </div>
 </template>
 
@@ -123,12 +124,6 @@ export default {
   components: {
     ValidationProvider,
     ValidationObserver,
-  },
-  props: {
-    dataComplaint: {
-      type: Object,
-      default: () => ({}),
-    },
   },
   data() {
     return {
@@ -145,15 +140,26 @@ export default {
         ...this.$store.state['popup-complaint'].dataDialog,
       }
     },
+    dataComplaint() {
+      return {
+        ...this.$store.state['popup-complaint'].dataComplaint,
+      }
+    },
     isSuccess() {
       return this.$store.state['popup-complaint'].isSuccess
     },
+    isLoading() {
+      return this.$store.state['popup-complaint'].isLoading
+    },
+  },
+  mounted() {
+    this.$store.commit('popup-complaint/setIsLoading', false)
   },
   methods: {
     disabledDate: function (date) {
       const currentYear = new Date().getFullYear()
       const nextDate = new Date().setFullYear(currentYear + 1)
-      return date > nextDate
+      return date < new Date() || date > nextDate
     },
     clearDate() {
       this.payload.deadline_date = ''

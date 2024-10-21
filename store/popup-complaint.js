@@ -9,8 +9,10 @@ export const state = () => ({
       variant: '',
     },
   },
+  dataComplaint: {},
   isMockApi: false,
   isSuccess: false,
+  isLoading: false,
 })
 
 export const actions = {
@@ -23,6 +25,7 @@ export const actions = {
     { dataApi, payload, dataDialogSuccess, dataDialogFailed }
   ) {
     commit('modals/CLOSEALL', null, { root: true })
+    commit('setIsLoading', true)
     try {
       // using mock api
       if (state.isMockApi) {
@@ -49,11 +52,16 @@ export const actions = {
       })
       commit('setIsSuccess', false)
       commit('modals/OPEN', dataDialogFailed.nameModal, { root: true })
+    } finally {
+      commit('setIsLoading', false)
     }
   },
 }
 
 export const mutations = {
+  setDataComplaint(state, dataComplaint) {
+    state.dataComplaint = dataComplaint
+  },
   setDataDialog(state, dataDialog) {
     state.dataDialog = dataDialog
   },
@@ -62,5 +70,8 @@ export const mutations = {
   },
   setIsSuccess(state, isSuccess) {
     state.isSuccess = isSuccess
+  },
+  setIsLoading(state, isLoading) {
+    state.isLoading = isLoading
   },
 }

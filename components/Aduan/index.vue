@@ -203,7 +203,7 @@
       @close="closePopupInformationHandle()"
       @submit="submitRetryHandle"
     />
-    <DialogFollowupHotlineJabar :data-complaint="dataComplaint" />
+    <DialogFollowupHotlineJabar />
     <DialogEvidenceFollowupHotline />
     <DialogInputTextArea
       :data-dialog="dataDialog"
@@ -244,7 +244,6 @@
       :complaint-type="typeAduanPage"
       @submit="submitFollowupComplaint"
     />
-    <DialogLoading :show-popup="isLoading" />
   </div>
 </template>
 
