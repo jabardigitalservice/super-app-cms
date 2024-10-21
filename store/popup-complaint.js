@@ -9,6 +9,7 @@ export const state = () => ({
       variant: '',
     },
   },
+  dataComplaint: {},
   isMockApi: false,
   isSuccess: false,
 })
@@ -54,6 +55,9 @@ export const actions = {
 }
 
 export const mutations = {
+  setDataComplaint(state, dataComplaint) {
+    state.dataComplaint = dataComplaint
+  },
   setDataDialog(state, dataDialog) {
     state.dataDialog = dataDialog
   },
