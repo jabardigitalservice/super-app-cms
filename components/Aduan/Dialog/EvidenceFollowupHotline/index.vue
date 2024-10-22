@@ -6,7 +6,7 @@
         <ValidationObserver ref="form" v-slot="{ invalid }">
           <form class="w-full px-6 pb-3 pt-4">
             <BaseDragAndDropFile
-              ref="uploadFile"
+              ref="dragDropFile"
               height-drag-and-drop="h-[161px]"
               :detail-drag-and-drop="detailDragAndDrop"
               @get-decree-file="getResponseImage"
@@ -56,6 +56,7 @@
                 !$refs.uploadFile?.fileIsCorrect ||
                 checkValidationFile()
               "
+              @click="showConfirmationDialog()"
             />
           </BaseDialogFooterNew>
         </ValidationObserver>
@@ -67,6 +68,11 @@
       :file="dataEvidence.fileId"
       :mime-type="dataEvidence.mimeType"
       @close="dataEvidence.showDialog = false"
+    />
+    <DialogConfirmationBasic
+      :dialog-modal="dataDialogConfirmation"
+      @confirmation-button="submitEvidenceFollowup()"
+      @cancel="$store.dispatch('popup-complaint/backToForm', nameModal)"
     />
   </div>
 </template>
@@ -103,6 +109,7 @@ export default {
         mimeType: '',
       },
       nameModal: '',
+      refDragDropFile: {},
     }
   },
   mounted() {
@@ -131,6 +138,29 @@ export default {
       return !!(
         !this.$refs.uploadFile?.files && this.$refs.uploadFile?.isUpload
       )
+    },
+    async showConfirmationDialog() {
+      const isValid = await this.$refs.form.validate()
+      if (isValid) {
+        this.$store.commit('modals/CLOSEALL')
+
+        const dataDialog = {
+          title: 'Upload Bukti Tindaklanjut',
+          nameModal: `${this.nameModal}Confirmation`,
+          descriptionText:
+            'Apakah Anda yakin ingin mengupload bukti tindaklanjut ?',
+          button: {
+            label: 'Ya, lanjutkan',
+            variant: 'primary',
+          },
+        }
+        this.refsDragDropFile = this.$refs.dragDropFile
+        this.$store.commit(
+          'popup-complaint/setDataDialogConfirmation',
+          dataDialog
+        )
+        this.$store.commit('modals/OPEN', dataDialog.nameModal)
+      }
     },
   },
 }
