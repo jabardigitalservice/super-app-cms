@@ -102,11 +102,7 @@ export default {
         fileId: '',
         mimeType: '',
       },
-      files: '',
     }
-  },
-  mounted() {
-    this.files = '-'
   },
   methods: {
     closePopup() {
