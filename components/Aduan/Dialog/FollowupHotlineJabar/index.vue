@@ -200,7 +200,7 @@ export default {
       // SET API
       const dataApi = {
         method: 'patch',
-        url: `${ENDPOINT_ADUAN_HOTLINE_JABAR}/5x9-2xe-4x5-bxb-1x31/followup`,
+        url: `${ENDPOINT_ADUAN_HOTLINE_JABAR}/${this.dataComplaint.id}/followup`,
       }
 
       // SET PAYLOAD
