@@ -232,7 +232,7 @@ export default {
       let paramRequest = { complaint_status_note: item?.note }
       let pathApi = 'change-status'
       switch (this.typeDialog) {
-        case "'verificationComplaint":
+        case 'verificationComplaint':
           this.isShowPopupConfirmationVerification = false
           dataDialogInformation = {
             ...this.setDataDialogInformation(
