@@ -1,14 +1,7 @@
 export const state = () => ({
   detailItem: {},
-  dataDialog: {
-    title: '',
-    nameModal: '',
-    descriptionText: '',
-    button: {
-      label: '',
-      variant: '',
-    },
-  },
+  dataDialogConfirmation: {},
+  dataDialogInformation: {},
   dataComplaint: {},
   isMockApi: false,
   isSuccess: false,
@@ -20,12 +13,13 @@ export const actions = {
     commit('setDataComplaint', dataComplaint)
     commit('modals/OPEN', dialogName, { root: true })
   },
+
   async integrationApi(
     { state, commit },
     { dataApi, payload, dataDialogSuccess, dataDialogFailed }
   ) {
     commit('modals/CLOSEALL', null, { root: true })
-    commit('setIsLoading', true)
+    // commit('setIsLoading', true)
     try {
       // using mock api
       if (state.isMockApi) {
@@ -33,7 +27,7 @@ export const actions = {
       } else {
         await this.$axios[dataApi.method](dataApi.url, { ...payload })
       }
-      commit('setDataDialog', {
+      commit('setDataDialogInformation', {
         nameModal: dataDialogSuccess.nameModal,
         dialogModal: {
           ...dataDialogSuccess.dialogModal,
@@ -41,9 +35,9 @@ export const actions = {
         },
       })
       commit('setIsSuccess', true)
-      commit('modals/OPEN', state.dataDialog.nameModal, { root: true })
+      commit('modals/OPEN', dataDialogSuccess.nameModal, { root: true })
     } catch {
-      commit('setDataDialog', {
+      commit('setDataDialogInformation', {
         nameModal: dataDialogFailed.nameModal,
         dialogModal: {
           ...dataDialogFailed.dialogModal,
@@ -62,8 +56,11 @@ export const mutations = {
   setDataComplaint(state, dataComplaint) {
     state.dataComplaint = dataComplaint
   },
-  setDataDialog(state, dataDialog) {
-    state.dataDialog = dataDialog
+  setDataDialogConfirmation(state, dataDialogConfirmation) {
+    state.dataDialogConfirmation = dataDialogConfirmation
+  },
+  setDataDialogInformation(state, dataDialogInformation) {
+    state.dataDialogInformation = dataDialogInformation
   },
   setIsMockApi(state, isMockApi) {
     state.isMockApi = isMockApi
