@@ -6,12 +6,12 @@
       <div
         v-if="fileInputIsChange"
         class="flex w-full flex-col justify-center rounded-lg border-2 border-dashed px-4"
-
         :class="[
           fileIsCorrect
             ? 'border-green-300 bg-green-50'
-            : 'border-red-300 bg-red-50',heightDragAndDrop]
-        "
+            : 'border-red-300 bg-red-50',
+          heightDragAndDrop,
+        ]"
       >
         <div class="mb-3 flex items-center justify-center">
           <DokumenIcon class="h-9 w-9" />
@@ -32,7 +32,8 @@
                 />
               </div>
               <div class="mb-1">
-                <span class="font-lato text-[11px] font-normal text-gray-600">Diupload ... {{ percentageProggres }} %
+                <span class="font-lato text-[11px] font-normal text-gray-600"
+                  >Diupload ... {{ percentageProggres }} %
                 </span>
               </div>
             </template>
@@ -91,7 +92,7 @@
           class="hidden"
           :accept="detailDragAndDrop.acceptFile"
           @change="onChangeUpload"
-        >
+        />
       </label>
     </div>
   </div>
@@ -108,19 +109,19 @@ export default {
     UploadIcon,
     DokumenIcon,
     TrashIcon,
-    EyesIcon
+    EyesIcon,
   },
   props: {
     detailDragAndDrop: {
       type: Object,
-      default: () => ({})
+      default: () => ({}),
     },
     heightDragAndDrop: {
       type: String,
-      default: 'h-40'
-    }
+      default: 'h-40',
+    },
   },
-  data () {
+  data() {
     return {
       files: '',
       dataFiles: {
@@ -129,7 +130,7 @@ export default {
         mimeType: '',
         roles: ['admin', 'rw'],
         data: '',
-        fileSize: 0
+        fileSize: 0,
       },
       fileInputIsChange: false,
       proggresBarIsSuccess: false,
@@ -138,11 +139,13 @@ export default {
       formatSizeFile: ['Bytes', 'KB', 'MB', 'GB', 'TB'],
       responseImage: '',
       fileIsCorrect: false,
-      disabledButton: true
+      disabledButton: true,
+      isUpload: false,
     }
   },
   methods: {
-    onChangeUpload () {
+    onChangeUpload() {
+      this.isUpload = true
       if (this.$refs.file.files[0]) {
         this.files = this.$refs.file.files[0]
         this.dataFiles.name = this.files.name
@@ -162,7 +165,7 @@ export default {
         )
       }
     },
-    dragover (e) {
+    dragover(e) {
       // add style drag and drop
       if (!e.currentTarget.classList.contains('bg-gray-200')) {
         e.currentTarget.classList.remove('bg-gray-50')
@@ -170,12 +173,12 @@ export default {
       }
       e.preventDefault()
     },
-    dragleave (e) {
+    dragleave(e) {
       // clear style drag and drop
       e.currentTarget.classList.add('bg-gray-50')
       e.currentTarget.classList.remove('bg-gray-200')
     },
-    drop (e) {
+    drop(e) {
       e.preventDefault()
       this.$refs.file.files = e.dataTransfer.files
 
@@ -185,7 +188,7 @@ export default {
       e.currentTarget.classList.add('bg-gray-50')
       e.currentTarget.classList.remove('bg-gray-200')
     },
-    convertSize (sizeFile) {
+    convertSize(sizeFile) {
       if (sizeFile === 0) {
         return 'n/a'
       }
@@ -201,14 +204,14 @@ export default {
         this.formatSizeFile[indexFileSize]
       )
     },
-    runProgressBar () {
+    runProgressBar() {
       if (this.percentageProggres === 0) {
         this.proggresBarIsSuccess = true
         this.percentageProggres = 1
         this.intervalPercentage = setInterval(this.setProggresBar, 10)
       }
     },
-    setProggresBar () {
+    setProggresBar() {
       if (this.percentageProggres >= 100) {
         clearInterval(this.intervalPercentage)
         this.percentageProggres = 0
@@ -217,7 +220,7 @@ export default {
         this.percentageProggres++
       }
     },
-    resetDataFile () {
+    resetDataFile() {
       this.percentageProggres = 0
       this.proggresBarIsSuccess = false
       this.fileInputIsChange = false
@@ -228,10 +231,10 @@ export default {
       this.$emit('disabled-button', this.disabledButton)
       this.$store.commit('setDataImage', {})
     },
-    previewFile () {
+    previewFile() {
       this.$emit('preview-file')
     },
-    convertFileToBase64 (FileObject) {
+    convertFileToBase64(FileObject) {
       const reader = new FileReader()
       reader.onload = () => {
         this.dataFiles.data = reader.result.split(',')[1]
@@ -239,7 +242,7 @@ export default {
       }
       reader.readAsDataURL(FileObject)
     },
-    checkFileValidation () {
+    checkFileValidation() {
       if (this.files) {
         if (this.FileSizeIsCompatible() && this.FormatFileIsCompatible()) {
           this.fileIsCorrect = true
@@ -249,23 +252,25 @@ export default {
           this.fileIsCorrect = false
         }
       } else {
+        this.errorNoFiles =
+          'Pengunggahan file wajib dilakukan. Harap pastikan untuk menyertakan file yang diperlukan.'
         this.fileIsCorrect = false
       }
     },
-    FileSizeIsCompatible () {
+    FileSizeIsCompatible() {
       return this.files.size <= this.detailDragAndDrop.maxSizeFile
     },
-    FormatFileIsCompatible () {
+    FormatFileIsCompatible() {
       return this.detailDragAndDrop.formatTypeFile.includes(this.files.type)
     },
-    async uploadFile () {
+    async uploadFile() {
       this.checkFileValidation()
 
       if (this.fileIsCorrect) {
         try {
           let response = {}
           response = await this.$axios.post('/file/upload', {
-            ...this.dataFiles
+            ...this.dataFiles,
           })
 
           if (response.data.status) {
@@ -277,7 +282,7 @@ export default {
           this.$emit('get-decree-file', 'error')
         }
       }
-    }
-  }
+    },
+  },
 }
 </script>
