@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BaseDialogFrame name="evidenceFollowupHotline" @close="closePopup()">
+    <BaseDialogFrame :name="nameModal" @close="closePopup()">
       <BaseDialogPanel class="w-[520px]">
         <BaseDialogHeader title="Upload Bukti Tindaklanjut" />
         <ValidationObserver ref="form" v-slot="{ invalid }">
@@ -102,7 +102,11 @@ export default {
         fileId: '',
         mimeType: '',
       },
+      nameModal: '',
     }
+  },
+  mounted() {
+    this.nameModal = 'evidenceFollowupHotline'
   },
   methods: {
     closePopup() {
