@@ -13,7 +13,10 @@ export const actions = {
     commit('setDataComplaint', dataComplaint)
     commit('modals/OPEN', dialogName, { root: true })
   },
-
+  backToForm({ commit }, dialogName) {
+    commit('modals/CLOSEALL', { root: true })
+    commit('modals/OPEN', dialogName, { root: true })
+  },
   async integrationApi(
     { state, commit },
     { dataApi, payload, dataDialogSuccess, dataDialogFailed }
