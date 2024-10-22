@@ -58,6 +58,12 @@ export const typeAduan = {
     link: '/aduan/aduan-masuk',
     id: 'aduanMasuk',
   },
+  aduanDialihkanHotlineJabar: {
+    props: 'aduan-dialihkan-hotline-jabar',
+    label: 'Daftar Aduan Hotline Jabar',
+    link: '/aduan/aduan-hotline-jabar',
+    id: 'aduanDialihkanHotlineJabar',
+  },
   aduanDialihkanSpanLapor: {
     props: 'aduan-dialihkan-span-lapor',
     label: 'Daftar Aduan Dialihkan Ke SP4N Lapor',
@@ -109,6 +115,10 @@ export const complaintSource = {
     id: 'sp4n',
     name: 'SP4N Lapor',
   },
+  jotform: {
+    id: 'jotform',
+    name: 'Jotform',
+  },
 }
 
 export const complaintStatus = Object.freeze({
@@ -133,12 +143,19 @@ export const complaintStatus = Object.freeze({
     name: 'Terverifikasi',
     value: 0,
     statusColor: [
-      { color: 'yellow', typeAduan: [typeAduan.penentuanKewenangan.props] },
+      {
+        color: 'yellow',
+        typeAduan: [
+          typeAduan.penentuanKewenangan.props,
+          typeAduan.aduanDialihkanHotlineJabar.props,
+        ],
+      },
       { color: 'green', typeAduan: [typeAduan.aduanMasuk.props] },
     ],
     icon: '/icon/icon-aduan/complaint-status/complaint-verify-icon.svg',
     typeAduan: [
       typeAduan.aduanMasuk.props,
+      typeAduan.aduanDialihkanHotlineJabar.props,
       typeAduan.penentuanKewenangan.props,
     ],
   },
@@ -242,7 +259,10 @@ export const complaintStatus = Object.freeze({
     statusColor: [
       {
         color: 'light-blue',
-        typeAduan: [typeAduan.instruksiKewenanganPemprov.props],
+        typeAduan: [
+          typeAduan.instruksiKewenanganPemprov.props,
+          typeAduan.aduanDialihkanHotlineJabar.props,
+        ],
       },
       { color: 'yellow', typeAduan: [typeAduan.instruksiAduanWarga.props] },
     ],
@@ -250,6 +270,7 @@ export const complaintStatus = Object.freeze({
     typeAduan: [
       typeAduan.instruksiKewenanganPemprov.props,
       typeAduan.instruksiAduanWarga.props,
+      typeAduan.aduanDialihkanHotlineJabar.props,
     ],
   },
   postponed: {
@@ -291,13 +312,17 @@ export const complaintStatus = Object.freeze({
     statusColor: [
       {
         color: 'green',
-        typeAduan: [typeAduan.instruksiKewenanganPemprov.props],
+        typeAduan: [
+          typeAduan.instruksiKewenanganPemprov.props,
+          typeAduan.aduanDialihkanHotlineJabar.props,
+        ],
       },
     ],
     icon: '/icon/icon-aduan/complaint-status/complaint-finished-icon.svg',
     typeAduan: [
       typeAduan.instruksiKewenanganPemprov.props,
       typeAduan.instruksiAduanWarga.props,
+      typeAduan.aduanDialihkanHotlineJabar.props,
     ],
   },
 })

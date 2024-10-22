@@ -260,8 +260,10 @@ import {
   typeAduan,
   complaintSource,
 } from '~/constant/aduan-masuk'
+
 import {
   ENDPOINT_ADUAN,
+  ENDPOINT_ADUAN_HOTLINE_JABAR,
   ENDPOINT_ADUAN_NON_PEMPROV,
 } from '~/constant/endpoint-api'
 import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
@@ -339,8 +341,14 @@ export default {
         {
           menu: 'Tindaklanjuti Aduan',
           value: 'followup-complaint',
-          complaintType: [typeAduan.instruksiKewenanganPemprov.props],
-          complaintStatus: [complaintStatus.coordinated.id],
+          complaintType: [
+            typeAduan.instruksiKewenanganPemprov.props,
+            typeAduan.aduanDialihkanHotlineJabar.props,
+          ],
+          complaintStatus: [
+            complaintStatus.coordinated.id,
+            complaintStatus.verified.id,
+          ],
         },
         {
           menu: 'Buat Instruksi',
@@ -389,10 +397,7 @@ export default {
   },
   async fetch() {
     try {
-      const urlApi =
-        this.typeAduanPage === typeAduan.instruksiKewenanganNonPemprov.props
-          ? ENDPOINT_ADUAN_NON_PEMPROV
-          : ENDPOINT_ADUAN
+      const urlApi = this.checkUrlApi()
       if (
         !JSON.stringify(Object.keys(this.query)).match('complaint_status_id')
       ) {
@@ -548,12 +553,23 @@ export default {
     this.getNonGovComplaintStatus()
   },
   methods: {
+    checkUrlApi() {
+      switch (this.typeAduanPage) {
+        case typeAduan.aduanDialihkanHotlineJabar.props:
+          return ENDPOINT_ADUAN_HOTLINE_JABAR
+        case typeAduan.instruksiKewenanganNonPemprov.props:
+          return ENDPOINT_ADUAN_NON_PEMPROV
+        default:
+          return ENDPOINT_ADUAN
+      }
+    },
     selectedTabHandle(index) {
       this.query.tabIndex = index
     },
     checkTypeHeaderAduan(type) {
       switch (type) {
         case typeAduan.aduanMasuk.props:
+        case typeAduan.aduanDialihkanHotlineJabar.props:
           return this.complaintHeader
         case typeAduan.aduanDialihkanSpanLapor.props:
           return this.complaintDivertedToSpanHeader
@@ -594,8 +610,8 @@ export default {
 
         this.query.sort_type = value[key]
       } else {
-        delete this.query.sort_by
-        delete this.query.sort_type
+        const { sort_by: sortBy, sort_type: sortType, ...newQuery } = this.query // menghilangkan atribut sort by dan sort type
+        this.query = newQuery
       }
 
       this.$fetch()
@@ -690,12 +706,10 @@ export default {
     listTabHandle(status) {
       const query = { page: 1, limit: 10 }
       this.deletePropertiesWithPrefix(this.query, 'complaint_status_id[')
-
       if (status !== 'total') {
         query['complaint_status_id[0]'] = status
       }
       this.setQuery(query)
-
       this.isShowPopupDateRange = false
       this.$fetch()
     },
@@ -705,12 +719,13 @@ export default {
         end_date: formatDate(this.dateRange[1], 'yyyy-MM-dd'),
       })
       this.$fetch()
-
+      this.query.page = 1
       this.$refs.datepicker.closePopup()
     },
     closePopupDateHandle() {
       this.isShowPopupDateRange = false
       this.$refs.datepicker.closePopup()
+      this.query.page = 1
     },
     closePopupAddComplaint() {
       this.isShowPopupAddComplaint = false
@@ -730,6 +745,7 @@ export default {
       })
 
       this.isShowPopupDateRange = false
+      this.query.page = 1
       this.$fetch()
     },
     changeDateRangeHandle() {
