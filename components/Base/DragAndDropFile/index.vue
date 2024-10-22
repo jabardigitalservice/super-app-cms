@@ -265,7 +265,6 @@ export default {
     },
     async uploadFile() {
       this.checkFileValidation()
-
       if (this.fileIsCorrect) {
         try {
           let response = {}
@@ -275,6 +274,7 @@ export default {
 
           if (response.data.status) {
             this.responseImage = response.data.data
+            this.$store.commit('setResponseFile', { ...this.responseImage })
             this.$emit('get-decree-file', this.responseImage)
           }
         } catch {
