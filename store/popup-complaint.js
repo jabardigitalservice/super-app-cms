@@ -10,7 +10,6 @@ export const state = () => ({
     },
   },
   dataComplaint: {},
-  isMockApi: false,
   isSuccess: false,
   isLoading: false,
 })
@@ -27,12 +26,8 @@ export const actions = {
     commit('modals/CLOSEALL', null, { root: true })
     commit('setIsLoading', true)
     try {
-      // using mock api
-      if (state.isMockApi) {
-        await this.$mockApi[dataApi.method](dataApi.url, { ...payload })
-      } else {
-        await this.$axios[dataApi.method](dataApi.url, { ...payload })
-      }
+      await this.$axios[dataApi.method](dataApi.url, { ...payload })
+
       commit('setDataDialog', {
         nameModal: dataDialogSuccess.nameModal,
         dialogModal: {
@@ -64,9 +59,6 @@ export const mutations = {
   },
   setDataDialog(state, dataDialog) {
     state.dataDialog = dataDialog
-  },
-  setIsMockApi(state, isMockApi) {
-    state.isMockApi = isMockApi
   },
   setIsSuccess(state, isSuccess) {
     state.isSuccess = isSuccess

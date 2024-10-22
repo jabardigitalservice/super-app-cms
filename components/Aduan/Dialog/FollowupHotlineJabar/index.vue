@@ -228,7 +228,6 @@ export default {
           descriptionText: 'Tindaklanjuti Aduan Anda gagal diproses',
         },
       }
-      this.$store.commit('popup-complaint/setIsMockApi', true)
       this.$store.dispatch('popup-complaint/integrationApi', {
         dataApi,
         payload: this.payload,
