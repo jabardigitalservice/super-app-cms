@@ -5,6 +5,7 @@ export const state = () => ({
     descriptionPage: '',
   },
   dataImage: {},
+  responseFile: {},
 })
 
 export const actions = {
@@ -34,5 +35,8 @@ export const mutations = {
   },
   setDataImage(state, image) {
     state.dataImage = image
+  },
+  setResponseFile(state, responseFile) {
+    state.responseFile = responseFile
   },
 }
