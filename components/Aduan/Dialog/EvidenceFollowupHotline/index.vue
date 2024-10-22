@@ -53,7 +53,7 @@
               variant="primary"
               :disabled="
                 invalid ||
-                !$refs.uploadFile?.fileIsCorrect ||
+                !$refs.dragDropFile?.fileIsCorrect ||
                 checkValidationFile()
               "
               @click="showConfirmationDialog()"
@@ -124,10 +124,14 @@ export default {
   },
   computed: {
     dataDialogConfirmation() {
-      return { ...this.$store.state['popup-complaint'].dialogConfirmation }
+      return {
+        ...this.$store.state['popup-complaint'].dataDialogConfirmation,
+      }
     },
     dataDialogInformation() {
-      return { ...this.$store.state['popup-complaint'].dialogInformation }
+      return {
+        ...this.$store.state['popup-complaint'].dataDialogInformation,
+      }
     },
     isSuccess() {
       return this.$store.state['popup-complaint'].isSuccess
@@ -167,7 +171,6 @@ export default {
       const isValid = await this.$refs.form.validate()
       if (isValid) {
         this.$store.commit('modals/CLOSEALL')
-
         const dataDialog = {
           title: 'Upload Bukti Tindaklanjut',
           nameModal: `${this.nameModal}Confirmation`,
