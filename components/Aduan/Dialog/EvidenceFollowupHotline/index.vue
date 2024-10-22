@@ -74,11 +74,21 @@
       @confirmation-button="submitEvidenceFollowup()"
       @cancel="$store.dispatch('popup-complaint/backToForm', nameModal)"
     />
+    <DialogInformationNew
+      :name-modal="dataDialogInformation?.nameModal"
+      :dialog-modal="dataDialogInformation?.dialogModal"
+      :is-success="isSuccess"
+      :close-all-modal="clearPayload()"
+      @retry="$store.dispatch('popup-complaint/backToForm', nameModal)"
+    />
+    <DialogLoading v-if="isLoading" :show-popup="isLoading" />
   </div>
 </template>
 
 <script>
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
+import { ENDPOINT_ADUAN_HOTLINE_JABAR } from '~/constant/endpoint-api'
+
 export default {
   components: {
     ValidationProvider,
@@ -111,6 +121,20 @@ export default {
       nameModal: '',
       refDragDropFile: {},
     }
+  },
+  computed: {
+    dataDialogConfirmation() {
+      return { ...this.$store.state['popup-complaint'].dialogConfirmation }
+    },
+    dataDialogInformation() {
+      return { ...this.$store.state['popup-complaint'].dialogInformation }
+    },
+    isSuccess() {
+      return this.$store.state['popup-complaint'].isSuccess
+    },
+    isLoading() {
+      return this.$store.state['popup-complaint'].isLoading
+    },
   },
   mounted() {
     this.nameModal = 'evidenceFollowupHotline'
@@ -161,6 +185,47 @@ export default {
         )
         this.$store.commit('modals/OPEN', dataDialog.nameModal)
       }
+    },
+    async submitEvidenceFollowup() {
+      this.$store.commit('popup-complaint/setIsLoading', true)
+      await this.refsDragDropFile.uploadFile()
+      const responseFile = this.$store.state.responseFile
+      // SET API
+      const dataApi = {
+        method: 'patch',
+        url: `${ENDPOINT_ADUAN_HOTLINE_JABAR}/5x9-2xe-4x5-bxb-1x31/finished`,
+      }
+
+      // SET PAYLOAD
+      this.payload.files[0] = { url: responseFile.path }
+      this.payload.user_id = this.$auth?.user?.identifier
+
+      // SET DIALOG INFORMATION
+      const nameModal = `${this.nameModal}Information`
+      const dataDialogSuccess = {
+        nameModal,
+        dialogModal: {
+          title: 'Upload Bukti Tindaklanjut Berhasil',
+          descriptionText:
+            'File bukti tindaklanjut telah berhasil terupload, dan tersimpan pada tab bukti tindaklanjut di detail aduan. ',
+        },
+      }
+
+      const dataDialogFailed = {
+        nameModal,
+        dialogModal: {
+          title: 'Upload Bukti Tindaklanjut Gagal',
+          descriptionText:
+            'File bukti tindaklanjut gagal terupload. Silahkan coba kembali',
+        },
+      }
+      this.$store.commit('popup-complaint/setIsMockApi', true)
+      this.$store.dispatch('popup-complaint/integrationApi', {
+        dataApi,
+        payload: this.payload,
+        dataDialogSuccess,
+        dataDialogFailed,
+      })
     },
   },
 }
