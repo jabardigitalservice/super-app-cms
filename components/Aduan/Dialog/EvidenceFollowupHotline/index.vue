@@ -78,7 +78,7 @@
       :name-modal="dataDialogInformation?.nameModal"
       :dialog-modal="dataDialogInformation?.dialogModal"
       :is-success="isSuccess"
-      :close-all-modal="clearPayload()"
+      @close-all-modal="closePopup()"
       @retry="$store.dispatch('popup-complaint/backToForm', nameModal)"
     />
     <DialogLoading v-if="isLoading" :show-popup="isLoading" />
@@ -145,7 +145,11 @@ export default {
   },
   methods: {
     closePopup() {
-      this.$refs.form.reset()
+      this.payload = {
+        description: '',
+        files: [],
+      }
+      this.$refs.form?.reset()
       this.$store.commit('modals/CLOSEALL')
     },
     previewFile() {
