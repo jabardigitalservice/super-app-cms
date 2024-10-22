@@ -22,7 +22,6 @@ export const actions = {
     { dataApi, payload, dataDialogSuccess, dataDialogFailed }
   ) {
     commit('modals/CLOSEALL', null, { root: true })
-    // commit('setIsLoading', true)
     try {
       // using mock api
       if (state.isMockApi) {
