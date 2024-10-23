@@ -70,18 +70,18 @@
       @close="dataEvidence.showDialog = false"
     />
     <DialogConfirmationBasic
-      :dialog-modal="dataDialogConfirmation"
+      :dialog-modal="dialogConfirmation"
       @confirmation-button="submitEvidenceFollowup()"
-      @cancel="$store.dispatch('popup-complaint/backToForm', nameModal)"
+      @cancel="backToForm()"
     />
     <DialogInformationNew
-      :name-modal="dataDialogInformation?.nameModal"
-      :dialog-modal="dataDialogInformation?.dialogModal"
+      :name-modal="dialogInformation?.nameModal"
+      :dialog-modal="dialogInformation?.dialogModal"
       :is-success="isSuccess"
       @close-all-modal="closePopup()"
-      @retry="$store.dispatch('popup-complaint/backToForm', nameModal)"
+      @retry="backToForm()"
     />
-    <DialogLoading v-if="isLoading" :show-popup="isLoading" />
+    <DialogLoading :show-popup="isLoading" />
   </div>
 </template>
 
@@ -120,25 +120,11 @@ export default {
       },
       nameModal: '',
       refDragDropFile: {},
+      dialogConfirmation: {},
+      dialogInformation: {},
+      isLoading: false,
+      isSuccess: false,
     }
-  },
-  computed: {
-    dataDialogConfirmation() {
-      return {
-        ...this.$store.state['popup-complaint'].dataDialogConfirmation,
-      }
-    },
-    dataDialogInformation() {
-      return {
-        ...this.$store.state['popup-complaint'].dataDialogInformation,
-      }
-    },
-    isSuccess() {
-      return this.$store.state['popup-complaint'].isSuccess
-    },
-    isLoading() {
-      return this.$store.state['popup-complaint'].isLoading
-    },
   },
   mounted() {
     this.nameModal = 'evidenceFollowupHotline'
@@ -151,6 +137,10 @@ export default {
       }
       this.$refs.form?.reset()
       this.$store.commit('modals/CLOSEALL')
+    },
+    backToForm() {
+      this.$store.commit('modals/CLOSEALL')
+      this.$store.commit('modals/OPEN', this.nameModal)
     },
     previewFile() {
       this.dataEvidence.showDialog = true
@@ -186,27 +176,13 @@ export default {
           },
         }
         this.refsDragDropFile = this.$refs.dragDropFile
-        this.$store.commit(
-          'popup-complaint/setDataDialogConfirmation',
-          dataDialog
-        )
+        this.dialogConfirmation = dataDialog
         this.$store.commit('modals/OPEN', dataDialog.nameModal)
       }
     },
     async submitEvidenceFollowup() {
-      this.$store.commit('popup-complaint/setIsLoading', true)
-      await this.refsDragDropFile.uploadFile()
-      const responseFile = this.$store.state.responseFile
-      // SET API
-      const dataApi = {
-        method: 'patch',
-        url: `${ENDPOINT_ADUAN_HOTLINE_JABAR}/5x9-2xe-4x5-bxb-1x31/finished`,
-      }
-
-      // SET PAYLOAD
-      this.payload.files[0] = { url: responseFile.path }
-      this.payload.user_id = this.$auth?.user?.identifier
-
+      this.$store.commit('modals/CLOSEALL')
+      this.isLoading = true
       // SET DIALOG INFORMATION
       const nameModal = `${this.nameModal}Information`
       const dataDialogSuccess = {
@@ -215,6 +191,7 @@ export default {
           title: 'Upload Bukti Tindaklanjut Berhasil',
           descriptionText:
             'File bukti tindaklanjut telah berhasil terupload, dan tersimpan pada tab bukti tindaklanjut di detail aduan. ',
+          icon: { name: 'check-mark-circle', fill: '#069550' },
         },
       }
 
@@ -224,15 +201,38 @@ export default {
           title: 'Upload Bukti Tindaklanjut Gagal',
           descriptionText:
             'File bukti tindaklanjut gagal terupload. Silahkan coba kembali',
+          icon: { name: 'times-circle', fill: '#EF5350' },
         },
       }
-      this.$store.commit('popup-complaint/setIsMockApi', true)
-      this.$store.dispatch('popup-complaint/integrationApi', {
-        dataApi,
-        payload: this.payload,
-        dataDialogSuccess,
-        dataDialogFailed,
-      })
+      try {
+        await this.refsDragDropFile.uploadFile()
+        const responseFile = this.$store.state.responseFile
+        // SET API
+        const dataApi = {
+          method: 'patch',
+          url: `${ENDPOINT_ADUAN_HOTLINE_JABAR}/5x9-2xe-4x5-bxb-1x31/finished`,
+        }
+
+        // SET PAYLOAD
+        this.payload.files[0] = { url: responseFile.path }
+        this.payload.user_id = this.$auth?.user?.identifier
+
+        this.$store.commit('popup-complaint/setIsMockApi', true)
+        await this.$store.dispatch('popup-complaint/integrationApi', {
+          dataApi,
+          payload: this.payload,
+        })
+        this.dialogInformation = dataDialogSuccess
+        this.isSuccess = true
+      } catch (error) {
+        this.dialogInformation = dataDialogFailed
+        this.isSuccess = false
+      } finally {
+        this.isLoading = false
+      }
+      if (!this.isLoading) {
+        this.$store.commit('modals/OPEN', this.dialogInformmation?.nameModal)
+      }
     },
   },
 }
