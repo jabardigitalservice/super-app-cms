@@ -38,6 +38,10 @@
           <td><strong>Tanggal Aduan Masuk</strong></td>
           <td>{{ detailComplaint?.created_at_format }}</td>
         </tr>
+        <tr v-if="typeAduan.aduanDialihkanHotlineJabar.props === typeAduanPage">
+          <td><strong>Tanggal Deadline</strong></td>
+          <td>{{ detailComplaint?.deadline_at_format }}</td>
+        </tr>
         <tr
           v-if="
             typeAduanPage === typeAduan.aduanDialihkanSpanLapor.props ||
@@ -87,6 +91,12 @@
         >
           <td><strong>Alasan</strong></td>
           <td>{{ detailComplaint?.complaint_status_note }}</td>
+        </tr>
+        <tr v-if="typeAduanPage === typeAduan.aduanDialihkanHotlineJabar.props">
+          <td width="240px">
+            <strong>Alasan Dialihkan ke Hotline Jabar</strong>
+          </td>
+          <td>{{ detailComplaint?.directed_to_hotline_jabar_note || '-' }}</td>
         </tr>
         <tr
           v-if="
