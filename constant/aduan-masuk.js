@@ -331,6 +331,12 @@ export const complaintStatus = Object.freeze({
 })
 
 export const complaintButtonDetail = {
+  followupHotlineJabar: {
+    idButton: 'button-followup-hotline-jabar',
+    label: 'Tindaklanjuti Aduan',
+    variant: 'primary',
+    complaintStatus: complaintStatus.verified.id,
+  },
   addIdSpan: {
     idButton: 'button-add-id-span',
     label: 'Tambahkan ID SP4N Lapor',

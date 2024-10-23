@@ -50,10 +50,10 @@
         >
           <div :class="{ 'mr-3': listButton.length > 1 }">
             <jds-button
-              :label="button.label"
-              :variant="button.variant"
-              class="text-[14px] !font-bold"
-              :class="button.classButton"
+              :label="button?.label"
+              :variant="button?.variant"
+              class="!text-[14px] !font-bold"
+              :class="button?.classButton"
               @click="clickButtonConfirmationHandle(button.idButton)"
             />
           </div>
@@ -146,6 +146,7 @@ import {
   complaintStatus,
   typeAduan,
   complaintButtonDetail,
+  complaintSource,
 } from '~/constant/aduan-masuk'
 import ArrowLeft from '~/assets/icon/arrow-left.svg?inline'
 import DialogViewImage from '~/components/Aduan/DialogViewImage'
@@ -273,10 +274,9 @@ export default {
             dataDetailComplaint?.sp4n_added_at || '',
             'dd/MM/yyyy - HH:mm'
           ),
-        complaint_source:
-          dataDetailComplaint.complaint_source === 'sp4n'
-            ? 'SP4N Lapor'
-            : dataDetailComplaint.complaint_source,
+        complaint_source: dataDetailComplaint?.complaint_source
+          ? this.getComplaintSource(dataDetailComplaint)
+          : '',
       }
 
       this.ikpCode = dataDetailComplaint?.ikp_code
@@ -311,6 +311,12 @@ export default {
     this.selectedTab('all')
   },
   methods: {
+    getComplaintSource(dataComplaint) {
+      if (dataComplaint.complaint_source === 'sp4n') {
+        return complaintSource.span
+      }
+      return complaintSource[dataComplaint.complaint_source]
+    },
     selectedTab(idTab) {
       this.idTab = idTab
       const indexTab = this.listDataTab.findIndex(
