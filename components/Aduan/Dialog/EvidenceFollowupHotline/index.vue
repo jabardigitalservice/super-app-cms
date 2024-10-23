@@ -102,8 +102,8 @@ export default {
       detailDragAndDrop: {
         informationSizeCompatible: 'Ukuran file tidak boleh melebihi 2 MB.',
         informationFormatCompatible:
-          'Hanya file yang berformat JPG/JPEG/PNG/PDF yang dapat diupload.',
-        formatTypeFile: ['image/jpg', 'application/pdf'],
+          'Hanya file yang berformat JPG/PDF yang dapat diupload.',
+        formatTypeFile: ['image/jpeg', 'image/jpg', 'application/pdf'],
         maxSizeFile: 10485760,
         acceptFile: '.jpg,.pdf',
       },
@@ -229,7 +229,7 @@ export default {
         this.isLoading = false
       }
       if (!this.isLoading) {
-        this.$store.commit('modals/OPEN', this.dialogInformmation?.nameModal)
+        this.$store.commit('modals/OPEN', this.dialogInformation?.nameModal)
       }
     },
   },
