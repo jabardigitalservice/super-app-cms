@@ -103,6 +103,7 @@
       @close="isShowPopupDetailStatusComplaint = false"
     />
     <DialogFollowupHotlineJabar />
+    <DialogEvidenceFollowupHotline />
     <DialogInputText
       :data-dialog="dataDialog"
       :show-popup="isShowPopupInputIdSpan"
@@ -158,6 +159,7 @@ import { formatDate } from '~/utils'
 import DialogProcessComplaint from '~/components/Aduan/Dialog/ProcessComplaint'
 import DialogFollowupComplaint from '~/components/Aduan/Dialog/FollowupComplaint'
 import DialogFollowupHotlineJabar from '~/components/Aduan/Dialog/FollowupHotlineJabar'
+import DialogEvidenceFollowupHotline from '~/components/Aduan/Dialog/EvidenceFollowupHotline'
 import {
   ENDPOINT_ADUAN,
   ENDPOINT_ADUAN_HOTLINE_JABAR,
@@ -175,6 +177,7 @@ export default {
     TableComplaintDetail,
     DialogFollowupComplaint,
     DialogFollowupHotlineJabar,
+    DialogEvidenceFollowupHotline,
   },
   mixins: [popupAduanMasuk],
   props: {
@@ -353,6 +356,8 @@ export default {
       switch (idButton) {
         case complaintButtonDetail.followupHotlineJabar.idButton:
           return this.showPopupFollowupHotlineJabar()
+        case complaintButtonDetail.evidenceFollowupHotlineJabar.idButton:
+          return this.$store.commit('modals/OPEN', 'evidenceFollowupHotline')
         case complaintButtonDetail.addIdSpan.idButton:
           return this.showPopupInputIdSpanHandle(this.detailComplaint)
         case complaintButtonDetail.complaintProcess.idButton:
