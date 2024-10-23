@@ -12,6 +12,9 @@
               @get-decree-file="getResponseImage"
               @preview-file="previewFile"
             />
+            <p class="my-1 text-[13px]">
+              Tipe File JPG/PDF dengan maksimal ukuran file 10 MB
+            </p>
             <small class="text-red-600">{{
               checkValidationFile()
                 ? 'Pengunggahan file wajib dilakukan. Harap pastikan untuk menyertakan file yang diperlukan.'
@@ -100,14 +103,9 @@ export default {
         informationSizeCompatible: 'Ukuran file tidak boleh melebihi 2 MB.',
         informationFormatCompatible:
           'Hanya file yang berformat JPG/JPEG/PNG/PDF yang dapat diupload.',
-        formatTypeFile: [
-          'image/jpeg',
-          'image/png',
-          'image/jpg',
-          'application/pdf',
-        ],
-        maxSizeFile: 2097152,
-        acceptFile: '.jpg,.jpeg,.png,.pdf',
+        formatTypeFile: ['image/jpg', 'application/pdf'],
+        maxSizeFile: 10485760,
+        acceptFile: '.jpg,.pdf',
       },
       payload: {
         description: '',
