@@ -52,7 +52,7 @@
             <jds-button
               :label="button.label"
               :variant="button.variant"
-              class="!font-bold"
+              class="text-[14px] !font-bold"
               :class="button.classButton"
               @click="clickButtonConfirmationHandle(button.idButton)"
             />
@@ -102,6 +102,7 @@
       :data-dialog="dataDialog"
       @close="isShowPopupDetailStatusComplaint = false"
     />
+    <DialogFollowupHotlineJabar />
     <DialogInputText
       :data-dialog="dataDialog"
       :show-popup="isShowPopupInputIdSpan"
@@ -155,8 +156,10 @@ import TableComplaintDetail from '~/components/Aduan/Detail/Table/Complaint'
 import { formatDate } from '~/utils'
 import DialogProcessComplaint from '~/components/Aduan/Dialog/ProcessComplaint'
 import DialogFollowupComplaint from '~/components/Aduan/Dialog/FollowupComplaint'
+import DialogFollowupHotlineJabar from '~/components/Aduan/Dialog/FollowupHotlineJabar'
 import {
   ENDPOINT_ADUAN,
+  ENDPOINT_ADUAN_HOTLINE_JABAR,
   ENDPOINT_ADUAN_NON_PEMPROV,
 } from '~/constant/endpoint-api'
 
@@ -170,6 +173,7 @@ export default {
     DialogProcessComplaint,
     TableComplaintDetail,
     DialogFollowupComplaint,
+    DialogFollowupHotlineJabar,
   },
   mixins: [popupAduanMasuk],
   props: {
@@ -219,18 +223,22 @@ export default {
       ikpCode: '',
       typeAduan,
       complaintStatus,
+      isMockApi: true,
     }
   },
   async fetch() {
     try {
-      const endpoint =
-        this.typeAduan.instruksiKewenanganNonPemprov.props ===
-        this.typeAduanPage
-          ? ENDPOINT_ADUAN_NON_PEMPROV
-          : ENDPOINT_ADUAN
-      const response = await this.$axios.get(
-        `${endpoint}/${this.$route.params.id}`
-      )
+      const endpoint = this.checkEndpointComplaint()
+      let response = {}
+      // using mockapi
+      if (this.isMockApi) {
+        response = await this.$mockApi.get(
+          `${endpoint}/${this.$route.params.id}`
+        )
+      } else {
+        response = await this.$axios.get(`${endpoint}/${this.$route.params.id}`)
+      }
+
       const dataDetailComplaint = response.data.data
       dataDetailComplaint.complaint_status =
         complaintStatus[dataDetailComplaint?.complaint_status_id]
@@ -250,6 +258,9 @@ export default {
         created_at_format:
           dataDetailComplaint?.created_at &&
           formatDate(dataDetailComplaint?.created_at, 'dd/MM/yyyy - HH:mm'),
+        deadline_at_format:
+          dataDetailComplaint?.deadline_date &&
+          formatDate(dataDetailComplaint?.deadline_date, 'dd/MM/yyyy - HH:mm'),
         sp4n_created_at:
           dataDetailComplaint?.sp4n_created_at &&
           formatDate(
@@ -307,6 +318,16 @@ export default {
       )
       this.$refs.tabBarDetail.selectedTabIndexHandle(indexTab)
     },
+    checkEndpointComplaint() {
+      switch (this.typeAduanPage) {
+        case typeAduan.aduanDialihkanHotlineJabar.props:
+          return ENDPOINT_ADUAN_HOTLINE_JABAR
+        case typeAduan.instruksiKewenanganNonPemprov.props:
+          return ENDPOINT_ADUAN_NON_PEMPROV
+        default:
+          return ENDPOINT_ADUAN
+      }
+    },
     checkShowTabIkp() {
       return (
         this.checkTypePageForTab() &&
@@ -324,6 +345,8 @@ export default {
     },
     clickButtonConfirmationHandle(idButton) {
       switch (idButton) {
+        case complaintButtonDetail.followupHotlineJabar.idButton:
+          return this.showPopupFollowupHotlineJabar()
         case complaintButtonDetail.addIdSpan.idButton:
           return this.showPopupInputIdSpanHandle(this.detailComplaint)
         case complaintButtonDetail.complaintProcess.idButton:
@@ -342,6 +365,12 @@ export default {
       this.dataDialog = {
         subDescription: detailComplaint.complaint_id,
       }
+    },
+    showPopupFollowupHotlineJabar() {
+      this.$store.dispatch('popup-complaint/showPopupFollowupHotlineJabar', {
+        dataComplaint: this.detailComplaint,
+        dialogName: 'followupHotlineJabar',
+      })
     },
     goToBackHandle() {
       const { fromInstructionPage, ...newQuery } = this.$route.query
