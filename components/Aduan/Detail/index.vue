@@ -89,6 +89,12 @@
             :ikp-code="ikpCode"
             @select-tab="selectedTab"
           />
+          <AduanDetailTableEvidenceFollowup
+            v-else-if="idTab === 'bukti-tindak-lanjut'"
+            :list-photo="detailComplaint?.evidence?.photos"
+            :list-file="detailComplaint?.evidence?.files"
+            :detail-complaint="detailComplaint"
+          />
         </BaseTabPanel>
       </template>
     </BaseTabGroup>
@@ -189,6 +195,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    listTabDetail: {
+      type: Array,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -197,11 +207,32 @@ export default {
           id: 'all',
           name: 'Detail Aduan',
           icon: '/icon/icon-aduan/complaint-detail.svg',
+          complaintType: ['all'],
+          complaintStatus: ['all'],
         },
         {
           id: 'instruksi-aduan',
           name: 'Detail Instruksi Aduan',
           icon: '/icon/icon-aduan/instruction-detail.svg',
+          complaintType: [
+            typeAduan.instruksiKewenanganPemprov.props,
+            typeAduan.instruksiKewenanganNonPemprov.props,
+          ],
+          complaintStatus: [
+            complaintStatus.followup.id,
+            complaintStatus.finished.id,
+            complaintStatus.postponed.id,
+            complaintStatus.review.id,
+            complaintStatus.not_yet_coordinated.id,
+            complaintStatus.coordinated.id,
+          ],
+        },
+        {
+          id: 'bukti-tindak-lanjut',
+          name: 'Bukti Tindaklanjut',
+          icon: '/icon/icon-aduan/complaint-detail.svg',
+          complaintType: [typeAduan.aduanDialihkanHotlineJabar.props],
+          complaintStatus: [complaintStatus.finished.id],
         },
       ],
       listMenuPopover: [
@@ -305,8 +336,14 @@ export default {
       return listTypeAduanStatusAduan
     },
     listTab() {
-      return this.listDataTab.filter((item) =>
-        this.checkShowTabIkp() ? item : item.id !== 'instruksi-aduan'
+      console.log(this.detailComplaint)
+      return this.listDataTab.filter(
+        (item) =>
+          item.complaintType.includes('all') ||
+          (item.complaintType.includes(this.typeAduanPage) &&
+            item.complaintStatus.includes(
+              this.detailComplaint?.complaint_status_id
+            ))
       )
     },
   },
