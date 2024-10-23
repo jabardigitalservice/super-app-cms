@@ -226,7 +226,13 @@
       </BaseTableDetail>
       <BaseTableDetail header="Informasi Pelapor" class="mb-4">
         <tr>
-          <td class="w-[180px]">
+          <td
+            :width="
+              typeAduanPage === typeAduan.aduanDialihkanHotlineJabar.props
+                ? '240px'
+                : '180px'
+            "
+          >
             <strong class="text-[10px]">Nama Lengkap </strong>
           </td>
           <td>{{ detailComplaint?.user_name || '-' }}</td>
@@ -259,7 +265,13 @@
       </BaseTableDetail>
       <BaseTableDetail header="Detail Aduan" class="mb-4">
         <tr>
-          <td class="w-[180px]">
+          <td
+            :width="
+              typeAduanPage === typeAduan.aduanDialihkanHotlineJabar.props
+                ? '240px'
+                : '180px'
+            "
+          >
             <strong class="text-[10px]">Kategori Aduan </strong>
           </td>
           <td>
