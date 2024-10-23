@@ -1,8 +1,8 @@
 <template>
   <div>
-    <p class="text-sm">
+    <label class="mb-1 text-sm">
       {{ description }}
-    </p>
+    </label>
     <p class="text-sm font-bold">
       {{ subDescription }}
     </p>
@@ -15,12 +15,12 @@ export default {
   props: {
     description: {
       type: String,
-      default: ''
+      default: '',
     },
     subDescription: {
       type: String,
-      default: ''
-    }
-  }
+      default: '',
+    },
+  },
 }
 </script>
