@@ -215,7 +215,6 @@ export default {
         this.payload.files[0] = { url: responseFile.path }
         this.payload.user_id = this.$auth?.user?.identifier
 
-        this.$store.commit('popup-complaint/setIsMockApi', true)
         await this.$store.dispatch('popup-complaint/integrationApi', {
           dataApi,
           payload: this.payload,
