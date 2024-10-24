@@ -124,6 +124,11 @@ export default {
       isSuccess: false,
     }
   },
+  computed: {
+    dataComplaint() {
+      return { ...this.$store.state['popup-complaint'].dataComplaint }
+    },
+  },
   mounted() {
     this.nameModal = 'evidenceFollowupHotline'
   },
@@ -208,14 +213,14 @@ export default {
         // SET API
         const dataApi = {
           method: 'patch',
-          url: `${ENDPOINT_ADUAN_HOTLINE_JABAR}/5x9-2xe-4x5-bxb-1x31/finished`,
+          url: `${ENDPOINT_ADUAN_HOTLINE_JABAR}/${this.dataComplaint.id}/finished`,
         }
 
         // SET PAYLOAD
         this.payload.files[0] = { url: responseFile.path }
         this.payload.user_id = this.$auth?.user?.identifier
 
-        this.$store.commit('popup-complaint/setIsMockApi', true)
+        // INTEGRATION
         await this.$store.dispatch('popup-complaint/integrationApi', {
           dataApi,
           payload: this.payload,
