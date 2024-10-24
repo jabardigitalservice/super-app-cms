@@ -176,7 +176,7 @@
                     )
                   "
                   @evidence-followup-hotline="
-                    $store.commit('modals/OPEN', 'evidenceFollowupHotline')
+                    showPopupEvidenceFollowupHotline(item)
                   "
                   @add-span="showPopupInputIdSpanHandle(item)"
                   @process-complaint="showPopupProcessComplaintHandle(item)"
@@ -756,6 +756,10 @@ export default {
     closePopupAddComplaint() {
       this.isShowPopupAddComplaint = false
       this.$fetch()
+    },
+    showPopupEvidenceFollowupHotline(item) {
+      this.$store.commit('popup-complaint/setDataComplaint', item)
+      this.$store.commit('modals/OPEN', 'evidenceFollowupHotline')
     },
     setQuery(params) {
       this.query = { ...this.query, ...params }

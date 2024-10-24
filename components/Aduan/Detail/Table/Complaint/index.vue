@@ -245,12 +245,18 @@
           <td><strong>Email</strong></td>
           <td>{{ detailComplaint?.user_email || '-' }}</td>
         </tr>
-        <tr>
+        <tr v-if="typeAduanPage === typeAduan.aduanDialihkanHotlineJabar.props">
+          <td><strong>Sosial Media</strong></td>
+          <td>{{ detailComplaint?.social_media_link || '-' }}</td>
+        </tr>
+        <tr v-if="typeAduanPage !== typeAduan.aduanDialihkanHotlineJabar.props">
           <td><strong>Jenis Media Sosial</strong></td>
           <td>{{ detailComplaint?.social_media?.name || '-' }}</td>
         </tr>
-        <tr>
-          <td><strong>Link Akun Media Sosial</strong></td>
+        <tr v-if="typeAduanPage !== typeAduan.aduanDialihkanHotlineJabar.props">
+          <td>
+            <strong>Link Akun Media Sosial</strong>
+          </td>
           <td>{{ detailComplaint?.social_media_link || '-' }}</td>
         </tr>
         <tr>
