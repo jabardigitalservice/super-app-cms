@@ -116,7 +116,7 @@ export default {
         fileId: '',
         mimeType: '',
       },
-      nameModal: '',
+      nameModal: 'evidenceFollowupHotline',
       refDragDropFile: {},
       dialogConfirmation: {},
       dialogInformation: {},
@@ -128,9 +128,6 @@ export default {
     dataComplaint() {
       return { ...this.$store.state['popup-complaint'].dataComplaint }
     },
-  },
-  mounted() {
-    this.nameModal = 'evidenceFollowupHotline'
   },
   methods: {
     closePopup() {
