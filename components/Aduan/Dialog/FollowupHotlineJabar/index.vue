@@ -186,7 +186,7 @@ export default {
       // SET API
       const dataApi = {
         method: 'patch',
-        url: `${ENDPOINT_ADUAN_HOTLINE_JABAR}/5x9-2xe-4x5-bxb-1x31/followup`,
+        url: `${ENDPOINT_ADUAN_HOTLINE_JABAR}/${this.dataComplaint.id}/followup`,
       }
 
       // SET PAYLOAD
@@ -217,18 +217,15 @@ export default {
         },
       }
       try {
-        this.$store.commit('popup-complaint/setIsMockApi', true)
         await this.$store.dispatch('popup-complaint/integrationApi', {
           dataApi,
           payload: this.payload,
         })
         this.dialogInformmation = dataDialogSuccess
         this.isSuccess = true
-        // this.$store.commit('modals/OPEN', dataDialogSuccess.nameModal)
       } catch {
         this.dialogInformmation = dataDialogFailed
         this.isSuccess = false
-        // this.$store.commit('modals/OPEN', dataDialogFailed.nameModal)
       } finally {
         this.isLoading = false
       }
