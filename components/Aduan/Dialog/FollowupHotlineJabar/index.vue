@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BaseDialogFrame name="followupHotlineJabar">
+    <BaseDialogFrame :name="nameModal">
       <BaseDialogPanel class="!h-[370px] w-[510px]">
         <BaseDialogHeader title="Tindaklanjuti Aduan" />
         <ValidationObserver ref="form" v-slot="{ invalid }">
@@ -10,22 +10,22 @@
               <div class="mb-6 grid grid-cols-2 gap-x-2">
                 <BaseDialogDescription
                   description="No.Aduan"
-                  :sub-description="dataComplaint.complaint_id"
+                  :sub-description="dataComplaint?.complaint_id"
                 />
                 <div>
                   <label class="text-sm">Sumber Aduan</label>
                   <div class="mt-1 flex">
                     <div
-                      v-if="dataComplaint.complaint_source?.logo"
+                      v-if="dataComplaint?.complaint_source?.logo"
                       class="h-[23px] w-[23px] flex-shrink-0 rounded-[4px] bg-[#F6F6F9]"
                       :class="{
                         'py-[3px] px-[5px]':
-                          dataComplaint.complaint_source?.logo,
+                          dataComplaint?.complaint_source?.logo,
                       }"
                     >
                       <img
                         :src="
-                          require(`~/assets/logo/${dataComplaint.complaint_source?.logo}`)
+                          require(`~/assets/logo/${dataComplaint?.complaint_source?.logo}`)
                         "
                         alt="logo"
                         width="11"
@@ -36,7 +36,7 @@
                       class="text-sm font-bold"
                       :class="{ 'ml-2': dataComplaint?.complaint_source?.logo }"
                     >
-                      {{ dataComplaint.complaint_source?.name || '-' }}
+                      {{ dataComplaint?.complaint_source?.name || '-' }}
                     </p>
                   </div>
                 </div>
@@ -98,15 +98,13 @@
       </BaseDialogPanel>
     </BaseDialogFrame>
     <DialogConfirmationBasic
-      v-if="isConfirmationDialog"
-      :dialog-modal="dataDialog"
+      :dialog-modal="dialogConfirmation"
       @confirmation-button="submitFollowup()"
       @cancel="backToForm()"
     />
     <DialogInformationNew
-      v-if="!isConfirmationDialog"
-      :name-modal="dataDialog.nameModal"
-      :dialog-modal="dataDialog.dialogModal"
+      :name-modal="dialogInformmation.nameModal"
+      :dialog-modal="dialogInformmation.dialogModal"
       :is-success="isSuccess"
       @retry="backToForm()"
     />
@@ -118,6 +116,7 @@
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import { ENDPOINT_ADUAN_HOTLINE_JABAR } from '~/constant/endpoint-api'
 import { formatDate } from '~/utils'
+import { iconPopup } from '~/constant/icon-popup-new'
 
 export default {
   name: 'DialogFollowupHotlineJabar',
@@ -130,30 +129,20 @@ export default {
       payload: {
         deadline_date: new Date(),
       },
-      isConfirmationDialog: false,
-      isInformationDialog: false,
+      dialogConfirmation: {},
+      dialogInformmation: {},
+      isLoading: false,
+      isSuccess: false,
+      nameModal: '',
     }
   },
   computed: {
-    dataDialog() {
-      return {
-        ...this.$store.state['popup-complaint'].dataDialog,
-      }
-    },
     dataComplaint() {
-      return {
-        ...this.$store.state['popup-complaint'].dataComplaint,
-      }
-    },
-    isSuccess() {
-      return this.$store.state['popup-complaint'].isSuccess
-    },
-    isLoading() {
-      return this.$store.state['popup-complaint'].isLoading
+      return { ...this.$store.state['popup-complaint'].dataComplaint }
     },
   },
   mounted() {
-    this.$store.commit('popup-complaint/setIsLoading', false)
+    this.nameModal = 'followupHotlineJabar'
   },
   methods: {
     disabledDate: function (date) {
@@ -172,11 +161,10 @@ export default {
     async showConfirmationDialog() {
       const isValid = await this.$refs.form.validate()
       if (isValid) {
-        this.isConfirmationDialog = true
         this.$store.commit('modals/CLOSEALL')
         const dataDialog = {
           title: 'Tindaklanjuti Aduan',
-          nameModal: 'dialogConfirmationHotline',
+          nameModal: `${this.nameModal}Confirmation`,
           descriptionText:
             'Apakah anda yakin ingin menindaklanjuti aduan tersebut?',
           button: {
@@ -184,19 +172,17 @@ export default {
             variant: 'primary',
           },
         }
-        this.$store.commit('popup-complaint/setDataDialog', dataDialog)
-        this.$store.commit(
-          'modals/OPEN',
-          this.$store.state['popup-complaint'].dataDialog.nameModal
-        )
+        this.dialogConfirmation = dataDialog
+        this.$store.commit('modals/OPEN', dataDialog.nameModal)
       }
     },
     backToForm() {
       this.$store.commit('modals/CLOSEALL')
       this.$store.commit('modals/OPEN', 'followupHotlineJabar')
     },
-    submitFollowup() {
-      this.isConfirmationDialog = false
+    async submitFollowup() {
+      this.$store.commit('modals/CLOSEALL')
+      this.isLoading = true
       // SET API
       const dataApi = {
         method: 'patch',
@@ -212,12 +198,13 @@ export default {
         user_id: this.$auth?.user?.identifier,
       }
       // SET DIALOG INFORMATION
-      const nameModal = 'dialogInformationHotline'
+      const nameModal = `${this.nameModal}Information`
       const dataDialogSuccess = {
         nameModal,
         dialogModal: {
           title: 'Tindaklanjuti Aduan',
           descriptionText: 'Tindaklanjuti Aduan Anda berhasil diproses',
+          icon: { ...iconPopup.success },
         },
       }
 
@@ -226,14 +213,25 @@ export default {
         dialogModal: {
           title: 'Tindaklanjuti Aduan',
           descriptionText: 'Tindaklanjuti Aduan Anda gagal diproses',
+          icon: { ...iconPopup.failed },
         },
       }
-      this.$store.dispatch('popup-complaint/integrationApi', {
-        dataApi,
-        payload: this.payload,
-        dataDialogSuccess,
-        dataDialogFailed,
-      })
+      try {
+        await this.$store.dispatch('popup-complaint/integrationApi', {
+          dataApi,
+          payload: this.payload,
+        })
+        this.dialogInformmation = dataDialogSuccess
+        this.isSuccess = true
+      } catch {
+        this.dialogInformmation = dataDialogFailed
+        this.isSuccess = false
+      } finally {
+        this.isLoading = false
+      }
+      if (!this.isLoading) {
+        this.$store.commit('modals/OPEN', this.dialogInformmation?.nameModal)
+      }
     },
   },
 }

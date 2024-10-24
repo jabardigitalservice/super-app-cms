@@ -175,6 +175,9 @@
                       }
                     )
                   "
+                  @evidence-followup-hotline="
+                    showPopupEvidenceFollowupHotline(item)
+                  "
                   @add-span="showPopupInputIdSpanHandle(item)"
                   @process-complaint="showPopupProcessComplaintHandle(item)"
                   @change-authority="showPopupChangeAuthority(item)"
@@ -201,6 +204,7 @@
       @submit="submitRetryHandle"
     />
     <DialogFollowupHotlineJabar />
+    <DialogEvidenceFollowupHotline />
     <DialogInputTextArea
       :data-dialog="dataDialog"
       :show-popup="isShowPopupConfirmationFailedVerification"
@@ -246,6 +250,7 @@
 <script>
 import debounce from 'lodash.debounce'
 import DialogFollowupHotlineJabar from '~/components/Aduan/Dialog/FollowupHotlineJabar'
+import DialogEvidenceFollowupHotline from '~/components/Aduan/Dialog/EvidenceFollowupHotline'
 import DialogFollowupComplaint from '~/components/Aduan/Dialog/FollowupComplaint'
 import {
   formatDate,
@@ -286,6 +291,7 @@ export default {
     DialogProcessComplaint,
     DialogFollowupComplaint,
     DialogFollowupHotlineJabar,
+    DialogEvidenceFollowupHotline,
   },
   mixins: [popupAduanMasuk],
   props: {
@@ -333,6 +339,12 @@ export default {
           value: 'followup-hotline-jabar',
           complaintType: [typeAduan.aduanDialihkanHotlineJabar.props],
           complaintStatus: [complaintStatus.verified.id],
+        },
+        {
+          menu: 'Upload Bukti Tindaklanjut',
+          value: 'evidence-followup-hotline',
+          complaintType: [typeAduan.aduanDialihkanHotlineJabar.props],
+          complaintStatus: [complaintStatus.followup.id],
         },
         {
           menu: 'Tambahkan ID SP4N Lapor',
@@ -744,6 +756,10 @@ export default {
     closePopupAddComplaint() {
       this.isShowPopupAddComplaint = false
       this.$fetch()
+    },
+    showPopupEvidenceFollowupHotline(item) {
+      this.$store.commit('popup-complaint/setDataComplaint', item)
+      this.$store.commit('modals/OPEN', 'evidenceFollowupHotline')
     },
     setQuery(params) {
       this.query = { ...this.query, ...params }
