@@ -227,21 +227,14 @@ export default {
       ikpCode: '',
       typeAduan,
       complaintStatus,
-      isMockApi: true,
     }
   },
   async fetch() {
     try {
       const endpoint = this.checkEndpointComplaint()
-      let response = {}
-      // using mockapi
-      if (this.isMockApi) {
-        response = await this.$mockApi.get(
-          `${endpoint}/${this.$route.params.id}`
-        )
-      } else {
-        response = await this.$axios.get(`${endpoint}/${this.$route.params.id}`)
-      }
+      const response = await this.$axios.get(
+        `${endpoint}/${this.$route.params.id}`
+      )
 
       const dataDetailComplaint = response.data.data
       dataDetailComplaint.complaint_status =
