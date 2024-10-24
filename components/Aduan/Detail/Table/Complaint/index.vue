@@ -38,6 +38,10 @@
           <td><strong>Tanggal Aduan Masuk</strong></td>
           <td>{{ detailComplaint?.created_at_format }}</td>
         </tr>
+        <tr v-if="typeAduan.aduanDialihkanHotlineJabar.props === typeAduanPage">
+          <td><strong>Tanggal Deadline</strong></td>
+          <td>{{ detailComplaint?.deadline_at_format }}</td>
+        </tr>
         <tr
           v-if="
             typeAduanPage === typeAduan.aduanDialihkanSpanLapor.props ||
@@ -87,6 +91,12 @@
         >
           <td><strong>Alasan</strong></td>
           <td>{{ detailComplaint?.complaint_status_note }}</td>
+        </tr>
+        <tr v-if="typeAduanPage === typeAduan.aduanDialihkanHotlineJabar.props">
+          <td width="240px">
+            <strong>Alasan Dialihkan ke Hotline Jabar</strong>
+          </td>
+          <td>{{ detailComplaint?.directed_to_hotline_jabar_note || '-' }}</td>
         </tr>
         <tr
           v-if="
@@ -216,7 +226,13 @@
       </BaseTableDetail>
       <BaseTableDetail header="Informasi Pelapor" class="mb-4">
         <tr>
-          <td class="w-[180px]">
+          <td
+            :width="
+              typeAduanPage === typeAduan.aduanDialihkanHotlineJabar.props
+                ? '240px'
+                : '180px'
+            "
+          >
             <strong class="text-[10px]">Nama Lengkap </strong>
           </td>
           <td>{{ detailComplaint?.user_name || '-' }}</td>
@@ -229,12 +245,18 @@
           <td><strong>Email</strong></td>
           <td>{{ detailComplaint?.user_email || '-' }}</td>
         </tr>
-        <tr>
+        <tr v-if="typeAduanPage === typeAduan.aduanDialihkanHotlineJabar.props">
+          <td><strong>Sosial Media</strong></td>
+          <td>{{ detailComplaint?.social_media_link || '-' }}</td>
+        </tr>
+        <tr v-if="typeAduanPage !== typeAduan.aduanDialihkanHotlineJabar.props">
           <td><strong>Jenis Media Sosial</strong></td>
           <td>{{ detailComplaint?.social_media?.name || '-' }}</td>
         </tr>
-        <tr>
-          <td><strong>Link Akun Media Sosial</strong></td>
+        <tr v-if="typeAduanPage !== typeAduan.aduanDialihkanHotlineJabar.props">
+          <td>
+            <strong>Link Akun Media Sosial</strong>
+          </td>
           <td>{{ detailComplaint?.social_media_link || '-' }}</td>
         </tr>
         <tr>
@@ -249,7 +271,13 @@
       </BaseTableDetail>
       <BaseTableDetail header="Detail Aduan" class="mb-4">
         <tr>
-          <td class="w-[180px]">
+          <td
+            :width="
+              typeAduanPage === typeAduan.aduanDialihkanHotlineJabar.props
+                ? '240px'
+                : '180px'
+            "
+          >
             <strong class="text-[10px]">Kategori Aduan </strong>
           </td>
           <td>

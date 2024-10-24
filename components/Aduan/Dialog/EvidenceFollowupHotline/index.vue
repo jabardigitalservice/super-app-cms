@@ -231,7 +231,7 @@ export default {
         this.isLoading = false
       }
       if (!this.isLoading) {
-        this.$store.commit('modals/OPEN', this.dialogInformmation?.nameModal)
+        this.$store.commit('modals/OPEN', this.dialogInformation?.nameModal)
       }
     },
   },
