@@ -217,7 +217,6 @@ export default {
         },
       }
       try {
-        this.$store.commit('popup-complaint/setIsMockApi', true)
         await this.$store.dispatch('popup-complaint/integrationApi', {
           dataApi,
           payload: this.payload,
