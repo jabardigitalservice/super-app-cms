@@ -13,7 +13,7 @@
               @preview-file="previewFile"
             />
             <p class="my-1 text-[13px]">
-              Tipe File JPG/JPEG/PDF dengan maksimal ukuran file 10 MB
+              Tipe File JPG/JPEG/PNG/PDF dengan maksimal ukuran file 10 MB
             </p>
             <small class="text-red-600">{{
               checkValidationFile()
@@ -102,10 +102,15 @@ export default {
       detailDragAndDrop: {
         informationSizeCompatible: 'Ukuran file tidak boleh melebihi 10 MB.',
         informationFormatCompatible:
-          'Hanya file yang berformat JPG/JPEG/PDF yang dapat diupload.',
-        formatTypeFile: ['image/jpg', 'image/jpeg', 'application/pdf'],
+          'Hanya file yang berformat JPG/JPEG/PNG/PDF yang dapat diupload.',
+        formatTypeFile: [
+          'image/jpg',
+          'image/jpeg',
+          'image/png',
+          'application/pdf',
+        ],
         maxSizeFile: 10485760,
-        acceptFile: '.jpeg,.jpg,.pdf',
+        acceptFile: '.jpeg,.jpg,.png,.pdf',
       },
       payload: {
         description: '',
