@@ -334,7 +334,6 @@ export default {
       return listTypeAduanStatusAduan
     },
     listTab() {
-      console.log(this.detailComplaint)
       return this.listDataTab.filter(
         (item) =>
           item.complaintType.includes('all') ||
