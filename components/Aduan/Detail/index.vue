@@ -13,7 +13,7 @@
       </jds-button>
       <div
         v-if="
-          typeAduanPage === typeAduan.aduanMasuk.props &&
+          typeAduanPage.props === typeAduan.aduanMasuk.props &&
           complaintStatus.unverified.id === detailComplaint.complaint_status_id
         "
         class="w-fit"
@@ -37,7 +37,7 @@
       </div>
       <div
         v-else-if="
-          idTab === 'all' && typeAduanPage !== typeAduan.aduanMasuk.props
+          idTab === 'all' && typeAduanPage.props !== typeAduan.aduanMasuk.props
         "
         class="flex"
       >
@@ -76,15 +76,16 @@
             v-if="idTab === 'all'"
             :detail-complaint="detailComplaint"
             :list-photo="listPhoto"
-            :type-aduan-page="typeAduanPage"
+            :type-aduan-page="typeAduanPage.props"
             @button-image="isShowPopupViewImage = true"
           />
           <AduanDaftarIKPTableDetail
             v-else-if="idTab === 'instruksi-aduan'"
             :show-daftar-aduan="
-              typeAduanPage === typeAduan.instruksiKewenanganNonPemprov.props
+              typeAduanPage.props ===
+              typeAduan.instruksiKewenanganNonPemprov.props
             "
-            :ikp-type-page="typeAduanPage"
+            :ikp-type-page="typeAduanPage.props"
             detail-complaint-link="/aduan/instruksi-kewenangan-non-pemprov/detail"
             :ikp-code="ikpCode"
             @select-tab="selectedTab"
@@ -188,8 +189,8 @@ export default {
   mixins: [popupAduanMasuk],
   props: {
     typeAduanPage: {
-      type: String,
-      default: '',
+      type: Object,
+      default: () => ({}),
     },
     listButton: {
       type: Array,
@@ -269,7 +270,7 @@ export default {
       const dataDetailComplaint = response.data.data
       dataDetailComplaint.complaint_status =
         complaintStatus[dataDetailComplaint?.complaint_status_id]
-      if (typeAduan.aduanDialihkanSpanLapor.id === this.typeAduanPage) {
+      if (typeAduan.aduanDialihkanSpanLapor.id === this.typeAduanPage.props) {
         dataDetailComplaint.complaint_status_id = !dataDetailComplaint.sp4n_id
           ? 'no-id-span'
           : dataDetailComplaint.complaint_status_id
@@ -332,7 +333,7 @@ export default {
       return this.listDataTab.filter(
         (item) =>
           item.complaintType.includes('all') ||
-          (item.complaintType.includes(this.typeAduanPage) &&
+          (item.complaintType.includes(this.typeAduanPage.props) &&
             item.complaintStatus.includes(
               this.detailComplaint?.complaint_status_id
             ))
@@ -357,7 +358,7 @@ export default {
       this.$refs.tabBarDetail.selectedTabIndexHandle(indexTab)
     },
     checkEndpointComplaint() {
-      switch (this.typeAduanPage) {
+      switch (this.typeAduanPage.props) {
         case typeAduan.aduanDialihkanHotlineJabar.props:
           return ENDPOINT_ADUAN_HOTLINE_JABAR
         case typeAduan.instruksiKewenanganNonPemprov.props:
@@ -377,8 +378,10 @@ export default {
     },
     checkTypePageForTab() {
       return (
-        typeAduan.instruksiKewenanganPemprov.props === this.typeAduanPage ||
-        typeAduan.instruksiKewenanganNonPemprov.props === this.typeAduanPage
+        typeAduan.instruksiKewenanganPemprov.props ===
+          this.typeAduanPage.props ||
+        typeAduan.instruksiKewenanganNonPemprov.props ===
+          this.typeAduanPage.props
       )
     },
     clickButtonConfirmationHandle(idButton) {
@@ -416,7 +419,7 @@ export default {
       const { fromInstructionPage, ...newQuery } = this.$route.query
       this.$router.push({
         path:
-          this.typeAduanPage ===
+          this.typeAduanPage.props ===
           this.typeAduan.instruksiKewenanganNonPemprov.props
             ? '/aduan/instruksi-kewenangan-non-pemprov'
             : this.$nuxt.context.from.path,
