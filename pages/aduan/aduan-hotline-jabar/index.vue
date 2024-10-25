@@ -1,6 +1,6 @@
 <template>
   <Aduan
-    :type-aduan-page="typeAduan.aduanDialihkanHotlineJabar.props"
+    :type-aduan-page="typeAduan.aduanDialihkanHotlineJabar"
     link-page-detail="/aduan/aduan-hotline-jabar/detail"
   />
 </template>

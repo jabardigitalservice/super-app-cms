@@ -1,5 +1,8 @@
 <template>
-  <AduanDetail :type-aduan-page="typeAduan.aduanDariSpanLapor.props" :list-button="listButtonDetail" />
+  <AduanDetail
+    :type-aduan-page="typeAduan.aduanDariSpanLapor"
+    :list-button="listButtonDetail"
+  />
 </template>
 
 <script>
@@ -10,28 +13,28 @@ export default {
   name: 'PageDetailAduanDariSpanLapor',
   mixins: [popupAduanMasuk],
   layout: 'Dashboard',
-  data () {
+  data() {
     return {
       navigations: [
         {
           label: typeAduan.aduanDariSpanLapor.label,
-          link: typeAduan.aduanDariSpanLapor.link
+          link: typeAduan.aduanDariSpanLapor.link,
         },
         {
           label: 'Detail Aduan',
-          link: `/aduan/aduan-dari-span-lapor/detail/${this.$route.params.id}`
-        }
+          link: `/aduan/aduan-dari-span-lapor/detail/${this.$route.params.id}`,
+        },
       ],
       descriptionPage: 'Berisi detail aduan dari sp4n Lapor',
-      typeAduan
+      typeAduan,
     }
   },
-  mounted () {
+  mounted() {
     this.$store.commit('setActivePage', 'Daftar Aduan dari SP4N')
     this.$store.commit('setHeader', {
       navigations: this.navigations,
-      descriptionPage: this.descriptionPage
+      descriptionPage: this.descriptionPage,
     })
-  }
+  },
 }
 </script>

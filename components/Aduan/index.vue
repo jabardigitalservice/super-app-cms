@@ -4,7 +4,7 @@
       <template #tab-list>
         <TabBarList
           :list-tab="listStatistic"
-          :type-aduan="typeAduanPage"
+          :type-aduan="typeAduanPage.props"
           :tab-index="query.tabIndex"
           @selected="selectedTabHandle"
           @button-tab="listTabHandle"
@@ -67,7 +67,7 @@
               </date-picker>
               <jds-select
                 v-if="
-                  typeAduanPage ===
+                  typeAduanPage.props ===
                   typeAduan.instruksiKewenanganNonPemprov.props
                 "
                 v-model="query.complaint_status_id"
@@ -79,7 +79,9 @@
             </div>
 
             <jds-button
-              v-show="typeAduan.aduanDariSpanLapor.props === typeAduanPage"
+              v-show="
+                typeAduan.aduanDariSpanLapor.props === typeAduanPage.props
+              "
               label="Tambah Aduan"
               variant="primary"
               class="flex-shrink-0"
@@ -88,7 +90,7 @@
           </div>
           <div>
             <JdsDataTable
-              :headers="checkTypeHeaderAduan(typeAduanPage)"
+              :headers="checkTypeHeaderAduan(typeAduanPage.props)"
               :items="listData"
               :loading="$fetchState.pending"
               :pagination="pagination"
@@ -241,7 +243,7 @@
     />
     <DialogFollowupComplaint
       :data-dialog="dataDialog"
-      :complaint-type="typeAduanPage"
+      :complaint-type="typeAduanPage.props"
       @submit="submitFollowupComplaint"
     />
   </div>
@@ -296,8 +298,8 @@ export default {
   mixins: [popupAduanMasuk],
   props: {
     typeAduanPage: {
-      type: String,
-      default: '',
+      type: Object,
+      default: () => ({}),
     },
     linkPageDetail: {
       type: String,
@@ -427,7 +429,9 @@ export default {
         this.query = this.addComplaintStatusFilterHandle()
       }
 
-      if (this.typeAduan.aduanDariSpanLapor.props === this.typeAduanPage) {
+      if (
+        this.typeAduan.aduanDariSpanLapor.props === this.typeAduanPage.props
+      ) {
         this.setQuery({ complaint_source: 'sp4n' })
       }
 
@@ -438,7 +442,7 @@ export default {
 
       // handle list data complaint
       const responseListComplaint = await this.$axios.get(urlApi, {
-        params: { ...this.query, is_admin: 1 },
+        params: { ...this.query, is_admin: 1, phase: this.typeAduanPage.phase },
       })
 
       const { data } = responseListComplaint.data
@@ -461,7 +465,8 @@ export default {
     listData() {
       return this.listDataComplaint.map((item) => {
         if (
-          this.typeAduan.aduanDialihkanSpanLapor.props === this.typeAduanPage
+          this.typeAduan.aduanDialihkanSpanLapor.props ===
+          this.typeAduanPage.props
         ) {
           item.complaint_status_id = !item.sp4n_id
             ? 'no-id-span'
@@ -580,7 +585,7 @@ export default {
   },
   methods: {
     checkUrlApi() {
-      switch (this.typeAduanPage) {
+      switch (this.typeAduanPage.props) {
         case typeAduan.aduanDialihkanHotlineJabar.props:
           return ENDPOINT_ADUAN_HOTLINE_JABAR
         case typeAduan.instruksiKewenanganNonPemprov.props:
@@ -669,7 +674,8 @@ export default {
     },
     getStatusText(statusId) {
       if (
-        this.typeAduanPage === typeAduan.instruksiKewenanganNonPemprov.props &&
+        this.typeAduanPage.props ===
+          typeAduan.instruksiKewenanganNonPemprov.props &&
         statusId === 'coordinated'
       ) {
         return 'Sudah Dikoordinasikan'
@@ -678,7 +684,8 @@ export default {
     },
     getColorText(statusId) {
       const statusColor = complaintStatus[statusId].statusColor.find(
-        (statusColor) => statusColor.typeAduan.includes(this.typeAduanPage)
+        (statusColor) =>
+          statusColor.typeAduan.includes(this.typeAduanPage.props)
       )
       switch (statusColor?.color) {
         case 'yellow':
@@ -701,7 +708,7 @@ export default {
       return this.menuTableAction.filter(
         (item) =>
           item.complaintType.includes('all') ||
-          (item.complaintType.includes(this.typeAduanPage) &&
+          (item.complaintType.includes(this.typeAduanPage.props) &&
             item.complaintStatus.includes(complaintStatus))
       )
     },
@@ -716,7 +723,8 @@ export default {
     },
     addComplaintStatusFilterHandle() {
       if (
-        this.typeAduanPage !== typeAduan.instruksiKewenanganNonPemprov.props
+        this.typeAduanPage.props !==
+        typeAduan.instruksiKewenanganNonPemprov.props
       ) {
         const listValueStatusComplaint =
           this.getStatusComplaintByComplaintType()
@@ -786,11 +794,11 @@ export default {
         this.typeAduan.penentuanKewenangan.props,
         this.typeAduan.instruksiKewenanganPemprov.props,
       ]
-      return listPropsSortByUpdatedDate.includes(this.typeAduanPage)
+      return listPropsSortByUpdatedDate.includes(this.typeAduanPage.props)
     },
     getStatusComplaintByComplaintType() {
       return Object.values(complaintStatus).filter((item) =>
-        item.typeAduan.includes(this.typeAduanPage)
+        item.typeAduan.includes(this.typeAduanPage.props)
       )
     },
     getComplaintSource(dataComplaint) {
@@ -804,8 +812,9 @@ export default {
 
       this.deletePropertiesWithPrefix(queryCount, 'complaint_status_id[')
       if (
-        this.typeAduan.aduanDariSpanLapor.props === this.typeAduanPage ||
-        typeAduan.instruksiKewenanganNonPemprov.props === this.typeAduanPage
+        this.typeAduan.aduanDariSpanLapor.props === this.typeAduanPage.props ||
+        typeAduan.instruksiKewenanganNonPemprov.props ===
+          this.typeAduanPage.props
       ) {
         complaintStatus.total.value = this.pagination.totalRows
       } else {

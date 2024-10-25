@@ -1,6 +1,6 @@
 <template>
   <AduanDetail
-    :type-aduan-page="typeAduan.aduanMasuk.props"
+    :type-aduan-page="typeAduan.aduanMasuk"
     :list-button="listButtonDetail"
   />
 </template>
@@ -13,32 +13,32 @@ export default {
   name: 'PageDetailAduanMasuk',
   mixins: [popupAduanMasuk],
   layout: 'Dashboard',
-  data () {
+  data() {
     return {
       navigations: [
         {
           label: typeAduan.aduanMasuk.label,
-          link: typeAduan.aduanMasuk.link
+          link: typeAduan.aduanMasuk.link,
         },
         {
           label: 'Detail Aduan',
-          link: `/aduan/aduan-masuk/detail/${this.$route.params.id}`
-        }
+          link: `/aduan/aduan-masuk/detail/${this.$route.params.id}`,
+        },
       ],
       descriptionPage: 'Berisi detail aduan dari masyarakat Jabar',
       typeAduan,
       listButtonDetail: [
         complaintButtonDetail.failed,
-        complaintButtonDetail.verified
-      ]
+        complaintButtonDetail.verified,
+      ],
     }
   },
-  mounted () {
+  mounted() {
     this.$store.commit('setActivePage', typeAduan.aduanMasuk.label)
     this.$store.commit('setHeader', {
       navigations: this.navigations,
-      descriptionPage: this.descriptionPage
+      descriptionPage: this.descriptionPage,
     })
-  }
+  },
 }
 </script>

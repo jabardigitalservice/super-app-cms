@@ -1,5 +1,8 @@
 <template>
-  <AduanDetail :type-aduan-page="typeAduan.penentuanKewenangan.props" :list-button="listButtonDetail" />
+  <AduanDetail
+    :type-aduan-page="typeAduan.penentuanKewenangan"
+    :list-button="listButtonDetail"
+  />
 </template>
 
 <script>
@@ -10,31 +13,30 @@ export default {
   name: 'PageDetailPenentuanKewenangan',
   mixins: [popupAduanMasuk],
   layout: 'Dashboard',
-  data () {
+  data() {
     return {
       navigations: [
         {
           label: typeAduan.penentuanKewenangan.label,
-          link: typeAduan.penentuanKewenangan.link
+          link: typeAduan.penentuanKewenangan.link,
         },
         {
           label: 'Detail Aduan',
-          link: `/aduan/penentuan-kewenangan/detail/${this.$route.params.id}`
-        }
+          link: `/aduan/penentuan-kewenangan/detail/${this.$route.params.id}`,
+        },
       ],
-      descriptionPage: 'Berisi detail aduan dari masyarakat Jabar yang perlu untuk diproses ke tahap selanjutnya.',
+      descriptionPage:
+        'Berisi detail aduan dari masyarakat Jabar yang perlu untuk diproses ke tahap selanjutnya.',
       typeAduan,
-      listButtonDetail: [
-        complaintButtonDetail.complaintProcess
-      ]
+      listButtonDetail: [complaintButtonDetail.complaintProcess],
     }
   },
-  mounted () {
+  mounted() {
     this.$store.commit('setActivePage', typeAduan.penentuanKewenangan.label)
     this.$store.commit('setHeader', {
       navigations: this.navigations,
-      descriptionPage: this.descriptionPage
+      descriptionPage: this.descriptionPage,
     })
-  }
+  },
 }
 </script>
