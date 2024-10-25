@@ -265,7 +265,12 @@ export default {
     try {
       const endpoint = this.checkEndpointComplaint()
       const response = await this.$axios.get(
-        `${endpoint}/${this.$route.params.id}`
+        `${endpoint}/${this.$route.params.id}`,
+        {
+          params: {
+            phase: this.typeAduanPage.phase,
+          },
+        }
       )
       const dataDetailComplaint = response.data.data
       dataDetailComplaint.complaint_status =
