@@ -1,6 +1,6 @@
 <template>
   <AduanDetail
-    :type-aduan-page="typeAduan.instruksiKewenanganPemprov.props"
+    :type-aduan-page="typeAduan.instruksiKewenanganPemprov"
     :list-button="listButtonDetail"
   />
 </template>

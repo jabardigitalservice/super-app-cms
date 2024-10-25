@@ -8,7 +8,7 @@
     />
     <Aduan
       v-if="nameTabId === listTab.complaintTab.id"
-      :type-aduan-page="typeAduan.instruksiKewenanganPemprov.props"
+      :type-aduan-page="typeAduan.instruksiKewenanganPemprov"
       link-page-detail="/aduan/instruksi-kewenangan-pemprov/detail"
     />
     <AduanDaftarIKP

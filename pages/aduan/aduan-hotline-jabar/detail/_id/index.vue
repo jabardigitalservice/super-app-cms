@@ -1,6 +1,6 @@
 <template>
   <AduanDetail
-    :type-aduan-page="typeAduan.aduanDialihkanHotlineJabar.props"
+    :type-aduan-page="typeAduan.aduanDialihkanHotlineJabar"
     :list-button="listButtonDetail"
   />
 </template>
