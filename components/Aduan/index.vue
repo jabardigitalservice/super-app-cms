@@ -808,7 +808,11 @@ export default {
       return this.complaintSource[dataComplaint.complaint_source]
     },
     async getCount() {
-      const queryCount = { ...this.query, is_admin: 1 }
+      const queryCount = {
+        ...this.query,
+        is_admin: 1,
+        phase: this.typeAduanPage.phase,
+      }
 
       this.deletePropertiesWithPrefix(queryCount, 'complaint_status_id[')
       if (
