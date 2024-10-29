@@ -306,9 +306,6 @@ export default {
             dataDetailComplaint?.sp4n_added_at || '',
             'dd/MM/yyyy - HH:mm'
           ),
-        complaint_source: dataDetailComplaint?.complaint_source
-          ? this.getComplaintSource(dataDetailComplaint)
-          : '',
       }
 
       this.ikpCode = dataDetailComplaint?.ikp_code

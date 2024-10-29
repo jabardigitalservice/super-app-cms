@@ -32,7 +32,7 @@
         </tr>
         <tr v-if="typeAduan.penentuanKewenangan.props === typeAduanPage">
           <td><strong>Sumber Aduan</strong></td>
-          <td>{{ detailComplaint?.complaint_source || '-' }}</td>
+          <td>{{ detailComplaint?.complaint_source?.name || '-' }}</td>
         </tr>
         <tr>
           <td><strong>Tanggal Aduan Masuk</strong></td>

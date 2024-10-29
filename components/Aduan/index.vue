@@ -490,15 +490,9 @@ export default {
           sp4n_created_at: item.sp4n_created_at
             ? formatDate(item.sp4n_created_at || '', 'dd/MM/yyyy HH:mm')
             : 'Belum ada',
-          complaint_source_name: item?.complaint_source
-            ? this.getComplaintSource(item).name
-            : '',
-          complaint_source_id: item?.complaint_source
-            ? this.getComplaintSource(item).id
-            : '',
-          complaint_source: item?.complaint_source
-            ? this.getComplaintSource(item)
-            : '',
+          complaint_source_name: item?.complaint_source?.name || '-',
+          complaint_source_id: item?.complaint_source?.id,
+          complaint_source: item?.complaint_source,
           coverage_of_affairs: item?.coverage_of_affairs || '',
           authority: item?.authority || '',
           opd_name: item?.opd_name || '',
