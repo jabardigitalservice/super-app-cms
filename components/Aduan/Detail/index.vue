@@ -109,8 +109,8 @@
       :data-dialog="dataDialog"
       @close="isShowPopupDetailStatusComplaint = false"
     />
-    <DialogFollowupHotlineJabar />
-    <DialogEvidenceFollowupHotline />
+    <DialogFollowupHotlineJabar @close-all-modal="$fetch()" />
+    <DialogEvidenceFollowupHotline @close-all-modal="$fetch()" />
     <DialogInputText
       :data-dialog="dataDialog"
       :show-popup="isShowPopupInputIdSpan"

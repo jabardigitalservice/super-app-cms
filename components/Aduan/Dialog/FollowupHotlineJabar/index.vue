@@ -107,6 +107,7 @@
       :dialog-modal="dialogInformmation.dialogModal"
       :is-success="isSuccess"
       @retry="backToForm()"
+      @close-all-modal="$emit('close-all-modal')"
     />
     <DialogLoading :show-popup="isLoading" />
   </div>

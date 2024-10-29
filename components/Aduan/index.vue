@@ -205,8 +205,8 @@
       @close="closePopupInformationHandle()"
       @submit="submitRetryHandle"
     />
-    <DialogFollowupHotlineJabar />
-    <DialogEvidenceFollowupHotline />
+    <DialogFollowupHotlineJabar @close-all-modal="refreshPage()" />
+    <DialogEvidenceFollowupHotline @close-all-modal="refreshPage()" />
     <DialogInputTextArea
       :data-dialog="dataDialog"
       :show-popup="isShowPopupConfirmationFailedVerification"
@@ -588,6 +588,10 @@ export default {
         default:
           return ENDPOINT_ADUAN
       }
+    },
+    refreshPage() {
+      this.query.page = 1
+      this.$fetch()
     },
     selectedTabHandle(index) {
       this.query.tabIndex = index
