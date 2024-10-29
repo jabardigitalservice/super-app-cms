@@ -24,9 +24,7 @@
                       }"
                     >
                       <img
-                        :src="
-                          require(`~/assets/logo/${dataComplaint?.complaint_source?.logo}`)
-                        "
+                        :src="dataComplaint?.complaint_source?.logo"
                         alt="logo"
                         width="11"
                         height="15"
