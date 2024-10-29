@@ -819,8 +819,10 @@ export default {
       } else {
         try {
           // handle data statistic complaint
+
+          const urlApi = this.checkUrlApi()
           const responseListStatisticComplaint = await this.$axios.get(
-            `${ENDPOINT_ADUAN}/statistics`,
+            `${urlApi}/statistics`,
             {
               params: queryCount,
             }
