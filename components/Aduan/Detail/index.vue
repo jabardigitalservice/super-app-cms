@@ -390,7 +390,7 @@ export default {
         case complaintButtonDetail.followupHotlineJabar.idButton:
           return this.showPopupFollowupHotlineJabar()
         case complaintButtonDetail.evidenceFollowupHotlineJabar.idButton:
-          return this.$store.commit('modals/OPEN', 'evidenceFollowupHotline')
+          return this.showPopupEvidenceFollowupHotlineJabar()
         case complaintButtonDetail.addIdSpan.idButton:
           return this.showPopupInputIdSpanHandle(this.detailComplaint)
         case complaintButtonDetail.complaintProcess.idButton:
@@ -415,6 +415,13 @@ export default {
         dataComplaint: this.detailComplaint,
         dialogName: 'followupHotlineJabar',
       })
+    },
+    showPopupEvidenceFollowupHotlineJabar() {
+      this.$store.commit(
+        'popup-complaint/setDataComplaint',
+        this.detailComplaint
+      )
+      this.$store.commit('modals/OPEN', 'evidenceFollowupHotline')
     },
     goToBackHandle() {
       const { fromInstructionPage, ...newQuery } = this.$route.query
