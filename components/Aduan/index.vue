@@ -246,6 +246,7 @@
       :complaint-type="typeAduanPage.props"
       @submit="submitFollowupComplaint"
     />
+    <DialogLoading :show-popup="isLoading" />
   </div>
 </template>
 
