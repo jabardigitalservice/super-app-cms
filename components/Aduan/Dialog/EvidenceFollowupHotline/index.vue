@@ -219,7 +219,10 @@ export default {
         }
 
         // SET PAYLOAD
-        this.payload.files[0] = { url: responseFile.path }
+        this.payload.files[0] = {
+          url: responseFile.path,
+          name: this.$store.state.dataImage?.name,
+        }
         this.payload.user_id = this.$auth?.user?.identifier
 
         // INTEGRATION
