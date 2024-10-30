@@ -13,18 +13,18 @@
       v-if="detailComplaint?.evidence"
       header="Bukti Foto dan Dokumen"
     >
-      <tr v-if="listDataPhoto" class="table-file-image-title">
+      <tr v-if="listPhoto" class="table-file-image-title">
         <td class="px-2" colspan="2">
           <strong>Foto</strong>
         </td>
       </tr>
-      <tr v-if="listDataPhoto" class="table-file-image-content">
-        <td width="460px">Terlampir {{ listDataPhoto?.length }} foto</td>
+      <tr v-if="listPhoto" class="table-file-image-content">
+        <td width="460px">Terlampir {{ listPhoto?.length }} foto</td>
         <td class="px-2 py-[6px]">
           <jds-button
             variant="secondary"
             class="w-[100px] !border-green-600 !text-sm !font-medium !text-green-600 disabled:cursor-not-allowed disabled:opacity-50"
-            :disabled="listDataPhoto?.length === 0"
+            :disabled="listPhoto?.length === 0"
             @click="isShowPopupViewImage = true"
           >
             Lihat Foto
@@ -55,7 +55,7 @@
       </tr>
     </BaseTableDetail>
     <DialogViewImage
-      :list-photo="listDataPhoto"
+      :list-photo="listPhoto"
       :show-popup="isShowPopupViewImage"
       @close="isShowPopupViewImage = false"
     />
@@ -102,9 +102,6 @@ export default {
             return { ...this.getFile(item.url), name: item.name }
           })
         : null
-    },
-    listDataPhoto() {
-      return this.listPhoto ? this.listPhoto.map((item) => item.url) : null
     },
   },
   methods: {
