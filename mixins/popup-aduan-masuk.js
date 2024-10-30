@@ -448,6 +448,7 @@ export default {
       this.iconPopup = { ...this.iconPopup, ...newIconPopup }
     },
     closePopupInformationHandle() {
+      this.query.page = 1
       this.closePopupHandle()
       this.$fetch()
     },

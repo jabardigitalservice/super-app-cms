@@ -142,6 +142,7 @@ export default {
       }
       this.$refs.form?.reset()
       this.$store.commit('modals/CLOSEALL')
+      this.$emit('close-all-modal')
     },
     backToForm() {
       this.$store.commit('modals/CLOSEALL')

@@ -24,9 +24,7 @@
                       }"
                     >
                       <img
-                        :src="
-                          require(`~/assets/logo/${dataComplaint?.complaint_source?.logo}`)
-                        "
+                        :src="dataComplaint?.complaint_source?.logo"
                         alt="logo"
                         width="11"
                         height="15"
@@ -107,6 +105,7 @@
       :dialog-modal="dialogInformmation.dialogModal"
       :is-success="isSuccess"
       @retry="backToForm()"
+      @close-all-modal="$emit('close-all-modal')"
     />
     <DialogLoading :show-popup="isLoading" />
   </div>
