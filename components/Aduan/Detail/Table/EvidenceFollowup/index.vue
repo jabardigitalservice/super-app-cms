@@ -13,25 +13,25 @@
       v-if="detailComplaint?.evidence"
       header="Bukti Foto dan Dokumen"
     >
-      <tr class="table-file-image-title">
+      <tr v-if="listDataPhoto" class="table-file-image-title">
         <td class="px-2" colspan="2">
           <strong>Foto</strong>
         </td>
       </tr>
-      <tr class="table-file-image-content">
-        <td width="460px">Terlampir {{ listPhoto.length }} foto</td>
+      <tr v-if="listDataPhoto" class="table-file-image-content">
+        <td width="460px">Terlampir {{ listDataPhoto?.length }} foto</td>
         <td class="px-2 py-[6px]">
           <jds-button
             variant="secondary"
             class="w-[100px] !border-green-600 !text-sm !font-medium !text-green-600 disabled:cursor-not-allowed disabled:opacity-50"
-            :disabled="listPhoto.length === 0"
+            :disabled="listDataPhoto?.length === 0"
             @click="isShowPopupViewImage = true"
           >
             Lihat Foto
           </jds-button>
         </td>
       </tr>
-      <tr>
+      <tr v-if="listDataFile">
         <td class="table-file-image-title px-2" colspan="2">
           <strong>Dokumen</strong>
         </td>
@@ -41,7 +41,7 @@
         :key="file"
         class="table-file-image-content"
       >
-        <td>{{ file.name }}</td>
+        <td>{{ file?.name || '-' }}</td>
         <td class="px-2 py-[6px]">
           <jds-button
             variant="secondary"
@@ -55,7 +55,7 @@
       </tr>
     </BaseTableDetail>
     <DialogViewImage
-      :list-photo="listPhoto"
+      :list-photo="listDataPhoto"
       :show-popup="isShowPopupViewImage"
       @close="isShowPopupViewImage = false"
     />
@@ -63,7 +63,6 @@
 </template>
 
 <script>
-// import { typeAduan } from '~/constant/aduan-masuk'
 import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
 import DialogViewImage from '~/components/Aduan/DialogViewImage'
 import { downloadFile } from '~/utils'
@@ -98,9 +97,14 @@ export default {
   },
   computed: {
     listDataFile() {
-      return this.listFile.map((item) => {
-        return { ...this.getFile(item.url), name: item.name }
-      })
+      return this.listFile
+        ? this.listFile.map((item) => {
+            return { ...this.getFile(item.url), name: item.name }
+          })
+        : null
+    },
+    listDataPhoto() {
+      return this.listPhoto ? this.listPhoto.map((item) => item.url) : null
     },
   },
   methods: {
