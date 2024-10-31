@@ -31,16 +31,12 @@
           </jds-button>
         </td>
       </tr>
-      <tr v-if="listDataFile">
+      <tr v-if="listFile">
         <td class="table-file-image-title px-2" colspan="2">
           <strong>Dokumen</strong>
         </td>
       </tr>
-      <tr
-        v-for="file in listDataFile"
-        :key="file"
-        class="table-file-image-content"
-      >
+      <tr v-for="file in listFile" :key="file" class="table-file-image-content">
         <td width="460px">{{ file?.name || '-' }}</td>
         <td class="px-2 py-[6px]">
           <jds-button
@@ -94,15 +90,6 @@ export default {
       isShowPopupViewImage: false,
       downloadFile,
     }
-  },
-  computed: {
-    listDataFile() {
-      return this.listFile
-        ? this.listFile.map((item) => {
-            return { ...this.getFile(item.url), name: item.name }
-          })
-        : null
-    },
   },
   methods: {
     getFile(dataUrl) {
