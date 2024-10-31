@@ -41,7 +41,7 @@
         :key="file"
         class="table-file-image-content"
       >
-        <td>{{ file?.name || '-' }}</td>
+        <td width="460px">{{ file?.name || '-' }}</td>
         <td class="px-2 py-[6px]">
           <jds-button
             variant="secondary"
