@@ -75,7 +75,7 @@
           <TableComplaintDetail
             v-if="idTab === 'all'"
             :detail-complaint="detailComplaint"
-            :list-photo="listPhoto"
+            :list-photo="listPhotoComplaint"
             :type-aduan-page="typeAduanPage.props"
             @button-image="isShowPopupViewImage = true"
           />
@@ -92,15 +92,15 @@
           />
           <AduanDetailTableEvidenceFollowup
             v-else-if="idTab === 'bukti-tindak-lanjut'"
-            :list-photo="detailComplaint?.evidence?.photos"
-            :list-file="detailComplaint?.evidence?.files"
+            :list-photo="listPhotoEvidence"
+            :list-file="listFileEvidence"
             :detail-complaint="detailComplaint"
           />
         </BaseTabPanel>
       </template>
     </BaseTabGroup>
     <DialogViewImage
-      :list-photo="listPhoto"
+      :list-photo="listPhotoComplaint"
       :show-popup="isShowPopupViewImage"
       @close="isShowPopupViewImage = false"
     />
@@ -231,7 +231,7 @@ export default {
         {
           id: 'bukti-tindak-lanjut',
           name: 'Bukti Tindaklanjut',
-          icon: '/icon/icon-aduan/complaint-detail.svg',
+          icon: '/icon/icon-aduan/evidence-followup.svg',
           complaintType: [typeAduan.aduanDialihkanHotlineJabar.props],
           complaintStatus: [complaintStatus.finished.id],
         },
@@ -252,7 +252,9 @@ export default {
       ],
       detailComplaint: {},
       idTab: '',
-      listPhoto: [],
+      listPhotoComplaint: [],
+      listPhotoEvidence: [],
+      listFileEvidence: [],
       isShowPopupViewImage: false,
       isShowPopupDetailStatusComplaint: false,
       isShowDropdown: false,
@@ -310,10 +312,12 @@ export default {
 
       this.ikpCode = dataDetailComplaint?.ikp_code
 
-      this.listPhoto = dataDetailComplaint?.photos || []
+      this.listPhotoComplaint = dataDetailComplaint?.photos || []
+      this.listPhotoEvidence = dataDetailComplaint?.evidence?.photos || []
+      this.listFileEvidence = dataDetailComplaint?.evidence?.files || []
     } catch {
       this.detailComplaint = {}
-      this.listPhoto = []
+      this.listPhotoComplaint = []
     }
   },
   computed: {
