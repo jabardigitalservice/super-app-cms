@@ -231,7 +231,7 @@ export default {
         {
           id: 'bukti-tindak-lanjut',
           name: 'Bukti Tindaklanjut',
-          icon: '/icon/icon-aduan/complaint-detail.svg',
+          icon: '/icon/icon-aduan/evidence-followup.svg',
           complaintType: [typeAduan.aduanDialihkanHotlineJabar.props],
           complaintStatus: [complaintStatus.finished.id],
         },
