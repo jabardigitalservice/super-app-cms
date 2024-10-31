@@ -92,8 +92,8 @@
           />
           <AduanDetailTableEvidenceFollowup
             v-else-if="idTab === 'bukti-tindak-lanjut'"
-            :list-photo="detailComplaint?.evidence?.photos"
-            :list-file="detailComplaint?.evidence?.files"
+            :list-photo="listPhotoEvidence"
+            :list-file="listFileEvidence"
             :detail-complaint="detailComplaint"
           />
         </BaseTabPanel>
@@ -253,6 +253,8 @@ export default {
       detailComplaint: {},
       idTab: '',
       listPhoto: [],
+      listPhotoEvidence: [],
+      listFileEvidence: [],
       isShowPopupViewImage: false,
       isShowPopupDetailStatusComplaint: false,
       isShowDropdown: false,
@@ -311,6 +313,8 @@ export default {
       this.ikpCode = dataDetailComplaint?.ikp_code
 
       this.listPhoto = dataDetailComplaint?.photos || []
+      this.listPhotoEvidence = dataDetailComplaint?.evidence?.photos || []
+      this.listFileEvidence = dataDetailComplaint?.evidence?.files || []
     } catch {
       this.detailComplaint = {}
       this.listPhoto = []

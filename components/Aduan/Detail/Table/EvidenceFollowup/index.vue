@@ -13,12 +13,12 @@
       v-if="detailComplaint?.evidence"
       header="Bukti Foto dan Dokumen"
     >
-      <tr v-if="listPhoto" class="table-file-image-title">
+      <tr v-if="listPhoto.length > 0" class="table-file-image-title">
         <td class="px-2" colspan="2">
           <strong>Foto</strong>
         </td>
       </tr>
-      <tr v-if="listPhoto" class="table-file-image-content">
+      <tr v-if="listPhoto.length > 0" class="table-file-image-content">
         <td width="460px">Terlampir {{ listPhoto?.length }} foto</td>
         <td class="px-2 py-[6px]">
           <jds-button
@@ -31,8 +31,12 @@
           </jds-button>
         </td>
       </tr>
-      <tr v-if="listFile">
-        <td class="table-file-image-title px-2" colspan="2">
+      <tr>
+        <td
+          v-if="listFile.length > 0"
+          class="table-file-image-title px-2"
+          colspan="2"
+        >
           <strong>Dokumen</strong>
         </td>
       </tr>
