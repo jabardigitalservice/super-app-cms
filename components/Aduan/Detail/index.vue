@@ -75,7 +75,7 @@
           <TableComplaintDetail
             v-if="idTab === 'all'"
             :detail-complaint="detailComplaint"
-            :list-photo="listPhoto"
+            :list-photo="listPhotoComplaint"
             :type-aduan-page="typeAduanPage.props"
             @button-image="isShowPopupViewImage = true"
           />
@@ -100,7 +100,7 @@
       </template>
     </BaseTabGroup>
     <DialogViewImage
-      :list-photo="listPhoto"
+      :list-photo="listPhotoComplaint"
       :show-popup="isShowPopupViewImage"
       @close="isShowPopupViewImage = false"
     />
@@ -252,7 +252,7 @@ export default {
       ],
       detailComplaint: {},
       idTab: '',
-      listPhoto: [],
+      listPhotoComplaint: [],
       listPhotoEvidence: [],
       listFileEvidence: [],
       isShowPopupViewImage: false,
@@ -312,12 +312,12 @@ export default {
 
       this.ikpCode = dataDetailComplaint?.ikp_code
 
-      this.listPhoto = dataDetailComplaint?.photos || []
+      this.listPhotoComplaint = dataDetailComplaint?.photos || []
       this.listPhotoEvidence = dataDetailComplaint?.evidence?.photos || []
       this.listFileEvidence = dataDetailComplaint?.evidence?.files || []
     } catch {
       this.detailComplaint = {}
-      this.listPhoto = []
+      this.listPhotoComplaint = []
     }
   },
   computed: {
