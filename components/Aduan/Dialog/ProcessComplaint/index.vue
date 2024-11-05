@@ -477,8 +477,9 @@ export default {
       this.$store.commit('process-complaint/setPayload', { ...this.payload })
     },
     disabledDateHandle: function (date) {
-      const createdDate = new Date(this.dataDialog.createdDate)
-      return date < createdDate
+      const currentDate = new Date()
+      currentDate.setDate(currentDate.getDate() - 1)
+      return date <= currentDate
     },
     showPlaceholderProposedInstruction() {
       if (
