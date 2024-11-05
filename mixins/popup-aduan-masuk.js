@@ -149,8 +149,7 @@ export default {
         createdDate: dataComplaint.created_at_api,
       })
       this.$store.commit('process-complaint/setComplaintSource', {
-        id: dataComplaint.complaint_source_id,
-        name: dataComplaint.complaint_source_name,
+        complaint_source: dataComplaint?.complaint_source,
       })
       this.$store.dispatch('process-complaint/changeComplaintStatusId')
       this.isShowPopupProcessComplaint = true
@@ -183,8 +182,7 @@ export default {
         urgency_level: dataComplaint?.urgency_level,
       })
       this.$store.commit('process-complaint/setComplaintSource', {
-        id: dataComplaint.complaint_source_id,
-        name: dataComplaint.complaint_source_name,
+        complaint_source: dataComplaint?.complaint_source,
       })
       this.isShowPopupChangeAuthority = true
     },

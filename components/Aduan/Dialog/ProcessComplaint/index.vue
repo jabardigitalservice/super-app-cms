@@ -18,31 +18,22 @@
               <label class="text-sm">Sumber Aduan</label>
               <div class="mt-1 flex">
                 <div
-                  class="h-[23px] w-[23px] flex-shrink-0 rounded-[4px] bg-[#F6F6F9]"
-                  :class="{
-                    'py-[3px] px-[5px]':
-                      dataComplaintSource?.id === complaintSource.sapawarga.id,
-                  }"
+                  v-if="dataComplaintSource?.complaint_source?.logo"
+                  class="flex h-[23px] w-[23px] flex-shrink-0 items-center justify-center rounded-[4px] bg-[#F6F6F9] py-[3px] px-[5px]"
                 >
                   <img
-                    :src="
-                      dataComplaintSource?.id === complaintSource.sapawarga.id
-                        ? require('~/assets/logo/sapawarga.svg')
-                        : require('~/assets/logo/span-lapor.svg')
-                    "
+                    :src="dataComplaintSource?.complaint_source?.logo"
                     alt="logo"
-                    :width="
-                      dataComplaintSource?.id ===
-                        complaintSource.sapawarga.id && '11'
-                    "
-                    :height="
-                      dataComplaintSource?.id ===
-                        complaintSource.sapawarga.id && '15'
-                    "
+                    class="flex-shrink-0"
                   />
                 </div>
-                <p class="ml-2 text-sm font-bold">
-                  {{ dataComplaintSource?.name }}
+                <p
+                  class="text-sm font-bold"
+                  :class="{
+                    'ml-2': dataComplaintSource?.complaint_source?.logo,
+                  }"
+                >
+                  {{ dataComplaintSource?.complaint_source?.name || '-' }}
                 </p>
               </div>
             </div>
