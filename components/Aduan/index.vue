@@ -836,12 +836,14 @@ export default {
           const listDataStatisticComplaint =
             responseListStatisticComplaint.data.data
           const listComplaintStatus = this.getStatusComplaintByComplaintType()
-          this.listStatisticComplaint = listDataStatisticComplaint.filter(
-            (statisticComplaint) =>
-              listComplaintStatus.find(
-                (complaintStatus) =>
+          this.listStatisticComplaint = listComplaintStatus.map(
+            (complaintStatus) => {
+              const dataStatistic = listDataStatisticComplaint.find(
+                (statisticComplaint) =>
                   statisticComplaint.id === complaintStatus.id
               )
+              return { ...complaintStatus, value: dataStatistic?.value || 0 }
+            }
           )
           complaintStatus.total.value = this.getTotalStatistic()
         } catch (error) {
