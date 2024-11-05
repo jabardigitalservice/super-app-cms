@@ -424,11 +424,11 @@ export default {
   async fetch() {
     try {
       const urlApi = this.checkUrlApi()
-      if (
-        !JSON.stringify(Object.keys(this.query)).match('complaint_status_id')
-      ) {
-        this.query = this.addComplaintStatusFilterHandle()
-      }
+      // if (
+      //   !JSON.stringify(Object.keys(this.query)).match('complaint_status_id')
+      // ) {
+
+      // }
 
       if (
         this.typeAduan.aduanDariSpanLapor.props === this.typeAduanPage.props
@@ -441,6 +441,7 @@ export default {
         this.setQuery({ sort_by: 'updated_at' })
       }
 
+      console.log('fetch', this.query)
       // handle list data complaint
       const responseListComplaint = await this.$axios.get(urlApi, {
         params: { ...this.query, is_admin: 1, phase: this.typeAduanPage.phase },
@@ -571,12 +572,13 @@ export default {
       }
     }, 500),
   },
-  mounted() {
+  created() {
     this.pagination.itemsPerPageOptions = generateItemsPerPageOptions(
       this.pagination.itemsPerPage
     )
     this.getCategory()
     this.getNonGovComplaintStatus()
+    this.query = this.addComplaintStatusFilterHandle()
   },
   methods: {
     checkUrlApi() {

@@ -311,6 +311,7 @@ export default {
 
     submitProcessComplaint(dataComplaint) {
       this.isShowPopupProcessComplaint = false
+      this.dataComplaint = dataComplaint
       let dataDialogInformation = {}
       const dialogTitle =
         this.typeDialog === 'changeAuthority'
