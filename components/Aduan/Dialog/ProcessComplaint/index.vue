@@ -466,8 +466,7 @@ export default {
     },
     changeUrgencyStatus() {
       const millisecondDifferent =
-        new Date(this.payload.deadline_date).getTime() -
-        new Date(this.dataDialog.createdDate).getTime() // to get diffrent date in millisecond unit
+        new Date(this.payload.deadline_date).getTime() - new Date().getTime() // to get diffrent date in millisecond unit
       const result = Math.floor(millisecondDifferent / (1000 * 3600 * 24)) + 1 // to get different date with divide different millisecond and mllisecond in 24 hours
       if (result <= 7) {
         this.payload.urgency_level = 'Mendesak'
