@@ -189,11 +189,9 @@ export default {
     showPopupFollowupComplaint(dataComplaint) {
       this.idApi = dataComplaint.id
       this.typeDialog = 'followupComplaint'
-      dataComplaint = {
-        opd_name: dataComplaint.opd_name,
-        deadline_date: new Date(dataComplaint.deadline_date) || '-',
-        coverage_of_affairs: dataComplaint.coverage_of_affairs,
-      }
+      dataComplaint.deadline_date = new Date(dataComplaint.deadline_date) || '-'
+      this.dataComplaint = dataComplaint
+
       this.setDataDialog({
         dataComplaint,
         ...this.setDataDialogConfirmation(
