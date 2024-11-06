@@ -295,7 +295,7 @@ export default {
           formatDate(dataDetailComplaint?.created_at, 'dd/MM/yyyy - HH:mm'),
         deadline_at_format:
           dataDetailComplaint?.deadline_date &&
-          formatDate(dataDetailComplaint?.deadline_date, 'dd/MM/yyyy - HH:mm'),
+          formatDate(dataDetailComplaint?.deadline_date, 'dd/MM/yyyy'),
         sp4n_created_at:
           dataDetailComplaint?.sp4n_created_at &&
           formatDate(
