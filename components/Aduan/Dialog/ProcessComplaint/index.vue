@@ -259,7 +259,7 @@
     <DialogConfirmationBasic
       :dialog-modal="dialogConfirmation"
       :detail-item-modal="dialogConfirmation.detailItemModal"
-      @confirmation-button="submitFollowup()"
+      @confirmation-button="saveDataProcessComplaint()"
       @cancel="backToForm()"
     />
   </div>
@@ -492,20 +492,15 @@ export default {
     },
     backToForm() {
       this.$store.commit('modals/CLOSEALL')
-      if (this.typeDialog === 'changeAuthority') {
-        this.showPopupChangeAuthority(this.dataComplaint)
-      } else {
-        this.showPopupProcessComplaintHandle(this.dataComplaint)
-      }
+      this.$emit('back-to-form')
     },
     async showDialogConfirmation() {
       const isValid = await this.$refs.form.validate()
       if (isValid) {
-        this.closePopupProcessComplaint()
+        this.$emit('close')
         this.dialogConfirmation = {
           ...this.dataDialog,
           descriptionText: 'Apakah anda yakin ingin memproses aduan tersebut?',
-          detailItemModal: { title: this.dataDialog.subDescription },
           button: {
             label: 'Ya, lanjutkan',
             variant: 'primary',
@@ -516,10 +511,13 @@ export default {
       }
     },
     saveDataProcessComplaint() {
+      this.$store.commit('modals/CLOSEALL')
       this.payload.deadline_date = this.payload?.deadline_date
         ? formatDate(this.payload?.deadline_date || '', 'yyyy-MM-dd')
         : null
       this.$emit('submit', { ...this.dataDialog, payload: this.payload })
+      this.clearPopupProcessComplaint()
+      this.payload.complaint_status_id = null
     },
   },
 }
