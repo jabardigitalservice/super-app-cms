@@ -234,6 +234,7 @@
       :show-popup="isShowPopupProcessComplaint"
       @close="closePopupHandle()"
       @submit="submitProcessComplaint"
+      @back-to-form="isShowPopupProcessComplaint = true"
     />
     <DialogProcessComplaint
       :data-dialog="dataDialog"
