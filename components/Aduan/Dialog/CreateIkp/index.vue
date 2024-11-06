@@ -7,190 +7,192 @@
           class="form-input-ikp py-3 px-6 pb-6"
           :class="{ '!pr-0': !isTruncate }"
         >
-          <ValidationObserver ref="form">
-            <form class="w-[552px] rounded-lg border border-gray-300 p-3">
-              <AlertInformation
-                message="Pembuatan Instruksi Khusus Pimpinan baru."
-              />
-              <CardIkpNarrative class="mt-3" />
-              <div
-                v-if="
-                  complaintType ===
-                  typeAduan.instruksiKewenanganNonPemprov.props
-                "
-              >
+          <div class="w-[552px] rounded-lg border border-gray-300 p-3">
+            <AlertInformation
+              message="Pembuatan Instruksi Khusus Pimpinan baru."
+            />
+            <CardIkpNarrative class="mt-5" />
+            <ValidationObserver ref="form">
+              <form>
+                <div
+                  v-if="
+                    complaintType ===
+                    typeAduan.instruksiKewenanganNonPemprov.props
+                  "
+                >
+                  <ValidationProvider
+                    v-slot="{ errors }"
+                    rules="requiredSelectForm"
+                    name="Cakupan Urusan"
+                    class="py-3"
+                    tag="div"
+                  >
+                    <jds-select
+                      v-model="payload.coverage_of_affairs"
+                      name="Cakupan Urusan"
+                      label="Cakupan Urusan"
+                      placeholder="Pilih Cakupan Urusan"
+                      :options="listAuthority"
+                      :error-message="errors[0]"
+                      disabled
+                    />
+                  </ValidationProvider>
+                  <ValidationProvider
+                    v-slot="{ errors }"
+                    rules="requiredSelectForm"
+                    name="Nama Instansi"
+                    class="pb-3"
+                    tag="div"
+                  >
+                    <jds-select
+                      v-model="payload.opd_name"
+                      name="Nama Instansi"
+                      label="Nama Instansi"
+                      placeholder="Pilih Nama Instansi"
+                      :error-message="errors[0]"
+                      disabled
+                      :options="listDisposition"
+                    />
+                  </ValidationProvider>
+                  <ValidationProvider
+                    v-slot="{ errors }"
+                    rules="requiredSelectForm"
+                    name="OPD Pemprov Penanggungjawab"
+                    class="pb-3"
+                    tag="div"
+                  >
+                    <jds-select
+                      v-model="payload.opd_pemprov_id"
+                      name="OPD Pemprov Penanggungjawab"
+                      label="OPD Pemprov Penanggungjawab"
+                      placeholder="Pilih OPD Pemprov Penanggungjawab"
+                      helper-text="OPD Pemprov penanggungjawab bertugas untuk memeriksa tindaklanjut aduan di kota/kabupaten atau kementerian/lembaga."
+                      :error-message="errors[0]"
+                      disabled
+                      :options="listGovResponsible"
+                    />
+                  </ValidationProvider>
+                </div>
                 <ValidationProvider
+                  v-if="
+                    complaintType === typeAduan.instruksiKewenanganPemprov.props
+                  "
                   v-slot="{ errors }"
                   rules="requiredSelectForm"
-                  name="Cakupan Urusan"
+                  name="Perangkat Daerah"
                   class="py-3"
                   tag="div"
                 >
                   <jds-select
-                    v-model="payload.coverage_of_affairs"
-                    name="Cakupan Urusan"
-                    label="Cakupan Urusan"
-                    placeholder="Pilih Cakupan Urusan"
-                    :options="listAuthority"
-                    :error-message="errors[0]"
-                    disabled
-                  />
-                </ValidationProvider>
-                <ValidationProvider
-                  v-slot="{ errors }"
-                  rules="requiredSelectForm"
-                  name="Nama Instansi"
-                  class="pb-3"
-                  tag="div"
-                >
-                  <jds-select
                     v-model="payload.opd_name"
-                    name="Nama Instansi"
-                    label="Nama Instansi"
-                    placeholder="Pilih Nama Instansi"
-                    :error-message="errors[0]"
-                    disabled
+                    name="Perangkat Daerah"
+                    label="Perangkat Daerah"
+                    placeholder="Pilih Perangkat Daerah"
                     :options="listDisposition"
-                  />
-                </ValidationProvider>
-                <ValidationProvider
-                  v-slot="{ errors }"
-                  rules="requiredSelectForm"
-                  name="OPD Pemprov Penanggungjawab"
-                  class="pb-3"
-                  tag="div"
-                >
-                  <jds-select
-                    v-model="payload.opd_pemprov_id"
-                    name="OPD Pemprov Penanggungjawab"
-                    label="OPD Pemprov Penanggungjawab"
-                    placeholder="Pilih OPD Pemprov Penanggungjawab"
-                    helper-text="OPD Pemprov penanggungjawab bertugas untuk memeriksa tindaklanjut aduan di kota/kabupaten atau kementerian/lembaga."
                     :error-message="errors[0]"
                     disabled
-                    :options="listGovResponsible"
                   />
                 </ValidationProvider>
-              </div>
-              <ValidationProvider
-                v-if="
-                  complaintType === typeAduan.instruksiKewenanganPemprov.props
-                "
-                v-slot="{ errors }"
-                rules="requiredSelectForm"
-                name="Perangkat Daerah"
-                class="py-3"
-                tag="div"
-              >
-                <jds-select
-                  v-model="payload.opd_name"
-                  name="Perangkat Daerah"
-                  label="Perangkat Daerah"
-                  placeholder="Pilih Perangkat Daerah"
-                  :options="listDisposition"
-                  :error-message="errors[0]"
-                  disabled
-                />
-              </ValidationProvider>
-              <div class="grid grid-cols-2 gap-3 pt-3">
-                <div class="w-full">
-                  <label class="pb-1 text-[15px] text-gray-800"
-                    >Tanggal Instruksi Diberikan</label
-                  ><br />
-                  <date-picker
-                    v-model="instructionDate"
-                    format="DD/MM/YYYY"
-                    disabled
-                    placeholder="Pilih Tanggal Instruksi Diberikan"
-                    class="mx-datepicker--disabled !w-full"
+                <div class="grid grid-cols-2 gap-3 pt-3">
+                  <div class="w-full">
+                    <label class="pb-1 text-[15px] text-gray-800"
+                      >Tanggal Instruksi Diberikan</label
+                    ><br />
+                    <date-picker
+                      v-model="instructionDate"
+                      format="DD/MM/YYYY"
+                      disabled
+                      placeholder="Pilih Tanggal Instruksi Diberikan"
+                      class="mx-datepicker--disabled !w-full"
+                    >
+                      <template #icon-calendar>
+                        <jds-icon
+                          name="calendar-date-outline"
+                          size="sm"
+                          class="mx-icon-date"
+                        />
+                      </template>
+                    </date-picker>
+                  </div>
+                  <ValidationProvider
+                    v-slot="{ errors }"
+                    rules="required"
+                    name="Tanggal Deadline"
                   >
-                    <template #icon-calendar>
-                      <jds-icon
-                        name="calendar-date-outline"
-                        size="sm"
-                        class="mx-icon-date"
-                      />
-                    </template>
-                  </date-picker>
+                    <label class="pb-1 text-[15px] text-gray-800"
+                      >Tanggal Deadline</label
+                    ><br />
+                    <date-picker
+                      v-model="payload.deadline_at"
+                      format="DD/MM/YYYY"
+                      :disabled-date="disabledDeadlineDate"
+                      placeholder="Pilih Tanggal Deadline"
+                      :class="{
+                        'mx-datepicker--error': errors[0],
+                      }"
+                      class="mx-datepicker--disabled !w-full"
+                      disabled
+                    >
+                      <template #icon-calendar>
+                        <jds-icon
+                          name="calendar-date-outline"
+                          size="sm"
+                          class="mx-icon-date"
+                        />
+                      </template> </date-picker
+                    ><br />
+                    <small class="text-red-600">{{ errors[0] }}</small>
+                  </ValidationProvider>
+                </div>
+                <div class="grid grid-cols-2 gap-x-2 py-3">
+                  <ValidationProvider
+                    v-slot="{ errors }"
+                    rules="required|numeric"
+                    name="Indikator Nilai"
+                  >
+                    <BaseInputText
+                      v-model="payload.indicator_value"
+                      type="text"
+                      placeholder="Masukkan Indikator Nilai"
+                      label="Indikator Nilai"
+                      class="!bg-white"
+                      :error-message="errors[0]"
+                    />
+                  </ValidationProvider>
+                  <ValidationProvider
+                    v-slot="{ errors }"
+                    rules="required"
+                    name="Indikator Satuan"
+                  >
+                    <BaseInputText
+                      v-model="payload.indicator_unit"
+                      type="text"
+                      placeholder="Masukkan Indikator Satuan"
+                      label="Indikator Satuan"
+                      :error-message="errors[0]"
+                    />
+                  </ValidationProvider>
                 </div>
                 <ValidationProvider
                   v-slot="{ errors }"
                   rules="required"
-                  name="Tanggal Deadline"
+                  name="Keterangan Instruksi Aduan"
                 >
-                  <label class="pb-1 text-[15px] text-gray-800"
-                    >Tanggal Deadline</label
-                  ><br />
-                  <date-picker
-                    v-model="payload.deadline_at"
-                    format="DD/MM/YYYY"
-                    :disabled-date="disabledDeadlineDate"
-                    placeholder="Pilih Tanggal Deadline"
-                    :class="{
-                      'mx-datepicker--error': errors[0],
-                    }"
-                    class="mx-datepicker--disabled !w-full"
-                    disabled
-                  >
-                    <template #icon-calendar>
-                      <jds-icon
-                        name="calendar-date-outline"
-                        size="sm"
-                        class="mx-icon-date"
-                      />
-                    </template> </date-picker
-                  ><br />
-                  <small class="text-red-600">{{ errors[0] }}</small>
-                </ValidationProvider>
-              </div>
-              <div class="grid grid-cols-2 gap-x-2 py-3">
-                <ValidationProvider
-                  v-slot="{ errors }"
-                  rules="required|numeric"
-                  name="Indikator Nilai"
-                >
-                  <BaseInputText
-                    v-model="payload.indicator_value"
-                    type="text"
-                    placeholder="Masukkan Indikator Nilai"
-                    label="Indikator Nilai"
-                    class="!bg-white"
+                  <BaseTextArea
+                    v-model="instructionNote"
+                    label="Keterangan Instruksi Aduan"
+                    placeholder="Masukkan deskripsi"
+                    maxlength="255"
+                    class="pt-3"
                     :error-message="errors[0]"
                   />
                 </ValidationProvider>
-                <ValidationProvider
-                  v-slot="{ errors }"
-                  rules="required"
-                  name="Indikator Satuan"
-                >
-                  <BaseInputText
-                    v-model="payload.indicator_unit"
-                    type="text"
-                    placeholder="Masukkan Indikator Satuan"
-                    label="Indikator Satuan"
-                    :error-message="errors[0]"
-                  />
-                </ValidationProvider>
-              </div>
-              <ValidationProvider
-                v-slot="{ errors }"
-                rules="required"
-                name="Keterangan Instruksi Aduan"
-              >
-                <BaseTextArea
-                  v-model="instructionNote"
-                  label="Keterangan Instruksi Aduan"
-                  placeholder="Masukkan deskripsi"
-                  maxlength="255"
-                  class="pt-3"
-                  :error-message="errors[0]"
-                />
-              </ValidationProvider>
-              <p class="pt-1 text-xs text-gray-600">
-                Tersisa {{ 255 - instructionNote.length }} karakter
-              </p>
-            </form>
-          </ValidationObserver>
+                <p class="pt-1 text-xs text-gray-600">
+                  Tersisa {{ 255 - instructionNote.length }} karakter
+                </p>
+              </form>
+            </ValidationObserver>
+          </div>
         </div>
         <BaseDialogFooter
           :show-cancel-button="true"
