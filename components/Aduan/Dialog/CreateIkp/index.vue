@@ -4,13 +4,11 @@
       <BaseDialogPanel class="w-[600px]">
         <BaseDialogHeader title="Buat Instruksi Aduan Baru" />
         <div
-          class="form-input-ikp py-3 px-6 pb-6"
+          class="form-input-ikp px-6 pt-3 pb-6"
           :class="{ '!pr-0': !isTruncate }"
         >
-          <div class="w-[552px] rounded-lg border border-gray-300 p-3">
-            <AlertInformation
-              message="Pembuatan Instruksi Khusus Pimpinan baru."
-            />
+          <div class="w-full rounded-lg border border-gray-300 p-3">
+            <AlertInformation message="Pembuatan Instruksi Aduan baru." />
             <CardIkpNarrative class="mt-5" />
             <ValidationObserver ref="form">
               <form>
@@ -469,7 +467,7 @@ export default {
 
 <style>
 .form-input-ikp {
-  @apply max-h-[670px] overflow-y-auto;
+  @apply max-h-[825px] overflow-y-auto;
   scrollbar-color: #e0e0e0 transparent;
   scrollbar-width: thin;
 }
