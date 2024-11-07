@@ -209,7 +209,7 @@ export default {
           name: 'Detail Aduan',
           icon: '/icon/icon-aduan/complaint-detail.svg',
           complaintType: ['all'],
-          complaintStatus: ['all'],
+          complaintStatus: this.getTabDetailByComplaintStatus(),
         },
         {
           id: 'instruksi-aduan',
@@ -219,21 +219,14 @@ export default {
             typeAduan.instruksiKewenanganPemprov.props,
             typeAduan.instruksiKewenanganNonPemprov.props,
           ],
-          complaintStatus: [
-            complaintStatus.followup.id,
-            complaintStatus.finished.id,
-            complaintStatus.postponed.id,
-            complaintStatus.review.id,
-            complaintStatus.not_yet_coordinated.id,
-            complaintStatus.coordinated.id,
-          ],
+          complaintStatus: this.getTabDetailByComplaintStatus(),
         },
         {
           id: 'bukti-tindak-lanjut',
           name: 'Bukti Tindaklanjut',
           icon: '/icon/icon-aduan/evidence-followup.svg',
           complaintType: [typeAduan.aduanDialihkanHotlineJabar.props],
-          complaintStatus: [complaintStatus.finished.id],
+          complaintStatus: this.getTabDetailByComplaintStatus(),
         },
       ],
       listMenuPopover: [
@@ -349,6 +342,26 @@ export default {
     this.selectedTab('all')
   },
   methods: {
+    getTabDetailByComplaintStatus() {
+      switch (this.typeAduanPage.props) {
+        case typeAduan.instruksiKewenanganPemprov.props:
+          return [
+            complaintStatus.finished.id,
+            complaintStatus.postponed.id,
+            complaintStatus.review.id,
+            complaintStatus.followup.id,
+          ]
+        case typeAduan.instruksiKewenanganNonPemprov.props:
+          return [
+            complaintStatus.coordinated.id,
+            complaintStatus.not_yet_coordinated,
+          ]
+        case typeAduan.aduanDialihkanHotlineJabar.props:
+          return [complaintStatus.finished.id]
+        default:
+          return ['all']
+      }
+    },
     getComplaintSource(dataComplaint) {
       if (dataComplaint.complaint_source === 'sp4n') {
         return complaintSource.span
