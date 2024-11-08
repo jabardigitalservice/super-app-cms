@@ -23,8 +23,10 @@
           </div>
 
           <div class="mb-6">
-            <label class="mb-1 text-sm">Narasi Instruksi Aduan</label>
-            <p class="text-sm">
+            <label class="mb-1 text-sm text-gray-800"
+              >Narasi Instruksi Aduan</label
+            >
+            <p class="text-[14px] leading-[23px] text-gray-900">
               {{ dataDialog.proposed_ikp_narrative }}
             </p>
           </div>

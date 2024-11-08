@@ -10,8 +10,8 @@
           class="mr-2 flex-shrink-0"
         />
         <p class="text-sm">
-          Dibawah ini Narasi IKP Usulan yang anda bisa edit atau gunakan
-          langsung
+          Dibawah ini Narasi Instruksi Aduan Usulan yang anda bisa edit atau
+          gunakan langsung
         </p>
       </div>
     </div>
