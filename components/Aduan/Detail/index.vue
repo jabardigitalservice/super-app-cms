@@ -170,7 +170,7 @@ import DialogEvidenceFollowupHotline from '~/components/Aduan/Dialog/EvidenceFol
 import {
   ENDPOINT_ADUAN,
   ENDPOINT_ADUAN_HOTLINE_JABAR,
-  ENDPOINT_ADUAN_NON_PEMPROV,
+  // ENDPOINT_ADUAN_NON_PEMPROV,
 } from '~/constant/endpoint-api'
 
 export default {
@@ -363,13 +363,20 @@ export default {
       this.$refs.tabBarDetail.selectedTabIndexHandle(indexTab)
     },
     checkEndpointComplaint() {
-      switch (this.typeAduanPage.props) {
-        case typeAduan.aduanDialihkanHotlineJabar.props:
-          return ENDPOINT_ADUAN_HOTLINE_JABAR
-        case typeAduan.instruksiKewenanganNonPemprov.props:
-          return ENDPOINT_ADUAN_NON_PEMPROV
-        default:
-          return ENDPOINT_ADUAN
+      // switch (this.typeAduanPage.props) {
+      //   case typeAduan.aduanDialihkanHotlineJabar.props:
+      //     return ENDPOINT_ADUAN_HOTLINE_JABAR
+      //   case typeAduan.instruksiKewenanganNonPemprov.props:
+      //     return ENDPOINT_ADUAN_NON_PEMPROV
+      //   default:
+      //     return ENDPOINT_ADUAN
+      // }
+      if (
+        this.typeAduanPage.props === typeAduan.aduanDialihkanHotlineJabar.props
+      ) {
+        return ENDPOINT_ADUAN_HOTLINE_JABAR
+      } else {
+        return ENDPOINT_ADUAN
       }
     },
     checkShowTabIkp() {

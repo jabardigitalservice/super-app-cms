@@ -99,7 +99,7 @@ export const typeAduan = {
     label: 'Instruksi Kewenangan Non-Pemprov',
     link: '/aduan/instruksi-kewenangan-non-pemprov',
     id: 'instruksiKewenanganNonPemprov',
-    phase: 'coordination',
+    phase: 'sp4n',
   },
   instruksiAduanWarga: {
     props: 'instruksi-aduan-warga',
