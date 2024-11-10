@@ -419,6 +419,8 @@ export default {
           ...this.payload,
           deadline_at: formatDate(this.payload.deadline_at, 'yyyy-MM-dd'),
           description: this.instructionNote,
+          is_prov_responsibility:
+            this.complaintType === typeAduan.instruksiKewenanganPemprov.props, // jika buat ikp pemprov / non pemprov
         }
         const response = await this.$axios.post(ENDPOINT_IKP, {
           ...this.payload,
