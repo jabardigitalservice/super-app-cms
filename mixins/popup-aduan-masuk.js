@@ -433,9 +433,10 @@ export default {
             this.dataComplaint,
             'redirectHotlineComplaint'
           )
-        case 'addIdSpan': {
+        case 'addIdSpan':
           return this.submitInputIdSpanHandle(this.dataDialog)
-        }
+        case 'followupComplaint':
+          return this.showPopupFollowupComplaint(this.dataComplaint)
       }
     },
     setDataDialog(newDataDialog) {
