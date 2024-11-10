@@ -43,7 +43,7 @@
                     tag="div"
                   >
                     <jds-select
-                      v-model="payload.opd_name"
+                      v-model="payload.opd_id"
                       name="Nama Instansi"
                       label="Nama Instansi"
                       placeholder="Pilih Nama Instansi"
@@ -316,7 +316,7 @@ export default {
     },
     listDisposition() {
       return this.listDataDisposition.map((item) => {
-        return { label: item.name, value: item.name }
+        return { label: item.id, value: item.name }
       })
     },
     listGovResponsible() {

@@ -315,7 +315,7 @@ export default {
     },
     showPopupCreateIkp() {
       const {
-        opd_name: opdName,
+        opd_id: opdId,
         deadline_date: deadlineDate,
         coverage_of_affairs: coverageOfAffairs,
       } = this.dataDialog.dataComplaint
@@ -330,7 +330,7 @@ export default {
 
       this.$store.commit('create-ikp/setPayload', {
         ...this.payload,
-        opd_name: opdName,
+        opd_id: opdId,
         deadline_at: deadlineDate,
         coverage_of_affairs: coverageOfAffairs,
       })
@@ -342,6 +342,7 @@ export default {
       )
       this.$store.dispatch('create-ikp/checkTruncate')
       this.$store.commit('create-ikp/setIsShowPopup', true)
+      console.log(this.dataDialog.dataComplaint)
     },
     submitDataFollowupComplaint() {
       this.isShowPopupConfirmationFollowup = false
