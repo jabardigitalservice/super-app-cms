@@ -71,7 +71,7 @@ export const typeAduan = {
     label: 'Daftar Aduan Dialihkan Ke SP4N Lapor',
     link: '/aduan/dialihkan-ke-span-lapor',
     id: 'aduanDialihkanSpanLapor',
-    phase: 'verification',
+    phase: 'authorization',
   },
   penentuanKewenangan: {
     props: 'penentuan-kewenangan',
