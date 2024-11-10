@@ -8,6 +8,7 @@ export const state = () => ({
     description: '',
     indicator_value: '',
     indicator_unit: '',
+    opd_id: '',
     opd_name: '',
     coverage_of_affairs: '',
     opd_pemprov_id: '',
