@@ -188,7 +188,7 @@ export const detailField = {
     title: 'Informasi Umum',
     field: [
       { name: 'Narasi Instruksi', key: 'narrative', ikpType: ['all'] },
-      { name: 'Jumlah Aduan', key: 'complaints_count', ikpType: ['all'] },
+      { name: 'Jumlah Aduan', key: 'complaints_total', ikpType: ['all'] },
       { name: 'Status', key: 'complaint_status_id', ikpType: ['all'] },
       { name: 'Keterangan', key: 'description', ikpType: ['all'] },
     ],
