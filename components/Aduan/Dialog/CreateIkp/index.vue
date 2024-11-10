@@ -296,7 +296,6 @@ export default {
         { params: { authority: this.payload.coverage_of_affairs } }
       )
       this.listDataDisposition = responseDisposition.data.data
-      console.log(this.listDataDisposition)
       // response OPD Pemprov Penanggungjawab
       const responseGovResponsible = await this.$axios.get(
         `${ENDPOINT_ADUAN}/opds`
@@ -423,12 +422,14 @@ export default {
           is_prov_responsibility:
             this.complaintType === typeAduan.instruksiKewenanganPemprov.props, // jika buat ikp pemprov / non pemprov
         }
+
         const response = await this.$axios.post(ENDPOINT_IKP, {
           ...this.payload,
           user_id: this.$auth?.user?.identifier,
         })
+
         this.dataIkp = response.data.data
-        this.dataIkp.ikp_code = this.dataIkp.ikp_code.toString()
+        this.dataIkp.ikp_code = this.dataIkp.id.toString()
         this.setDataDialog({
           description:
             'Pembuatan Instruksi Aduan Baru telah berhasil dilakukan',
@@ -438,7 +439,7 @@ export default {
         this.setIconPopup({ name: 'check-mark-circle', fill: '#069550' })
         this.resetFormIkp()
         this.isShowPopupInformationSuccess = true
-      } catch {
+      } catch (error) {
         this.payload.deadline_at = new Date(this.payload.deadline_at)
         this.setAlert({
           variant: 'error',
