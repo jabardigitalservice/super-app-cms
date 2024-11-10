@@ -55,7 +55,10 @@
                 :error-message="errors[0]"
                 :options="listComplaintStatus"
                 :class="{ 'mb-2': errors.length > 0 }"
-                :disabled="dataComplaintSource?.id === complaintSource.span.id"
+                :disabled="
+                  dataComplaintSource?.complaint_source?.id ===
+                  complaintSource.span.id
+                "
                 @change="
                   changeSelectValue(
                     payload.complaint_status_id,
@@ -86,7 +89,10 @@
                   :class="{ 'mb-2': errors.length > 0 }"
                   class="!w-full"
                   @change="
-                    changeSelectValue(payload.opd_name, 'coverage_of_affairs')
+                    changeSelectValue(
+                      payload.coverage_of_affairs,
+                      'coverage_of_affairs'
+                    )
                   "
                 />
               </ValidationProvider>
@@ -98,7 +104,7 @@
                 tag="div"
               >
                 <jds-select
-                  v-model="payload.opd_name"
+                  v-model="payload.opd_id"
                   name="Nama Instansi"
                   label="Nama Instansi"
                   placeholder="Pilih Nama Instansi"
@@ -106,7 +112,7 @@
                   :options="listDisposition"
                   :class="{ 'mb-2': errors.length > 0 }"
                   class="!w-full"
-                  @change="changeSelectValue(payload.opd_name, 'opd_name')"
+                  @change="changeSelectValue(payload.opd_id, 'opd_id')"
                 />
               </ValidationProvider>
               <ValidationProvider
@@ -131,7 +137,10 @@
                   class="!w-full"
                   :options="listGovResponsible"
                   @change="
-                    changeSelectValue(payload.opd_name, 'coverage_of_affairs')
+                    changeSelectValue(
+                      payload.opd_pemprov_id,
+                      'coverage_of_affairs'
+                    )
                   "
                 />
               </ValidationProvider>
@@ -329,6 +338,7 @@ export default {
       },
       isShowFieldOPDPemprov: false,
       isShowFieldProposeIkpNarrative: true,
+      opd: {},
       dialogConfirmation: {},
     }
   },
@@ -368,7 +378,7 @@ export default {
     },
     listDisposition() {
       return this.listDataDisposition.map((item) => {
-        return { value: item.name, label: item.name }
+        return { value: item.id, label: item.name }
       })
     },
     listGovResponsible() {
@@ -417,7 +427,6 @@ export default {
           this.isShowFieldProposeIkpNarrative =
             this.payload.coverage_of_affairs !==
             this.coverageOfAffairs.institutions.id
-
           break
         default:
           this.paylod = { ...this.payload, [keyObject]: value }
