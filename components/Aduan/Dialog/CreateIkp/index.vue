@@ -82,7 +82,7 @@
                   tag="div"
                 >
                   <jds-select
-                    v-model="payload.opd_name"
+                    v-model="payload.opd_id"
                     name="Perangkat Daerah"
                     label="Perangkat Daerah"
                     placeholder="Pilih Perangkat Daerah"
@@ -296,6 +296,7 @@ export default {
         { params: { authority: this.payload.coverage_of_affairs } }
       )
       this.listDataDisposition = responseDisposition.data.data
+      console.log(this.listDataDisposition)
       // response OPD Pemprov Penanggungjawab
       const responseGovResponsible = await this.$axios.get(
         `${ENDPOINT_ADUAN}/opds`
@@ -316,7 +317,7 @@ export default {
     },
     listDisposition() {
       return this.listDataDisposition.map((item) => {
-        return { label: item.id, value: item.name }
+        return { label: item.name, value: item.id }
       })
     },
     listGovResponsible() {

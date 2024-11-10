@@ -334,7 +334,6 @@ export default {
         deadline_at: deadlineDate,
         coverage_of_affairs: coverageOfAffairs,
       })
-
       this.$store.commit('followup-complaint/setIsShowPopup', false)
       this.$store.commit(
         'create-ikp/setIkpNarrative',
@@ -342,7 +341,6 @@ export default {
       )
       this.$store.dispatch('create-ikp/checkTruncate')
       this.$store.commit('create-ikp/setIsShowPopup', true)
-      console.log(this.dataDialog.dataComplaint)
     },
     submitDataFollowupComplaint() {
       this.isShowPopupConfirmationFollowup = false
