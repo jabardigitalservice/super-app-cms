@@ -563,6 +563,7 @@ export default {
       if (value.length > 2 || value.length === 0) {
         this.query.page = 1
         this.query.search = value.length > 2 ? value : null
+        this.query.search = value.trim()
         this.$fetch()
       }
     }, 500),
@@ -585,12 +586,6 @@ export default {
         default:
           return ENDPOINT_ADUAN
       }
-      // if (
-      //   this.typeAduanPage.props === typeAduan.aduanDialihkanHotlineJabar.props
-      // ) {
-      //   return ENDPOINT_ADUAN_HOTLINE_JABAR
-      // }
-      // return ENDPOINT_ADUAN
     },
     refreshPage() {
       this.query.page = 1
