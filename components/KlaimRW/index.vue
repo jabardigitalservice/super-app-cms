@@ -110,16 +110,20 @@ import PopupRejectRw from './Popup/RejectConfirmation.vue'
 import PopupInformation from './Popup/Information.vue'
 import popup from '~/mixins/klaim-rw'
 import { headerTableKlaimRW, userStatus } from '~/constant/klaim-rw'
-import { generateItemsPerPageOptions, formatDate, resetQueryParamsUrl } from '~/utils'
+import {
+  generateItemsPerPageOptions,
+  formatDate,
+  resetQueryParamsUrl,
+} from '~/utils'
 
 export default {
   name: 'ComponentKlaimRW',
   components: {
     PopupRejectRw,
-    PopupInformation
+    PopupInformation,
   },
   mixins: [popup],
-  data () {
+  data() {
     return {
       search: '',
       data: [],
@@ -130,14 +134,14 @@ export default {
         totalRows: 0,
         itemsPerPage: 5,
         itemsPerPageOptions: [],
-        disabled: true
+        disabled: true,
       },
       query: {
         pageSize: 5,
         page: 1,
         nameFilter: '',
         sortType: 'desc',
-        sortBy: 'date'
+        sortBy: 'date',
       },
       headerTableKlaimRW,
       userStatus,
@@ -147,14 +151,14 @@ export default {
       dataUser: {
         id: null,
         name: '',
-        email: ''
-      }
+        email: '',
+      },
     }
   },
-  async fetch () {
+  async fetch() {
     try {
       const response = await this.$axios.get('/user/rw', {
-        params: this.query
+        params: this.query,
       })
 
       const { data } = response.data
@@ -172,38 +176,37 @@ export default {
     }
   },
   computed: {
-    dataRW () {
+    dataRW() {
       return this.data.map((item) => {
         return {
           ...item,
-          date: formatDate(item.createdAt || '')
+          date: formatDate(item.createdAt || ''),
         }
       })
-    }
+    },
   },
 
   watch: {
     query: {
       deep: true,
-      handler () {
+      handler() {
         resetQueryParamsUrl(this)
 
         this.$fetch()
-      }
+      },
     },
     '$route.query': {
       deep: true,
       immediate: true,
-      handler (newQuery) {
+      handler(newQuery) {
         if (Object.keys(newQuery).length > 0) {
           this.query = { ...newQuery }
           this.search = this.query.nameFilter || ''
         }
-      }
-
-    }
+      },
+    },
   },
-  mounted () {
+  mounted() {
     this.pagination.itemsPerPageOptions = generateItemsPerPageOptions(
       this.pagination.itemsPerPage
     )
@@ -219,19 +222,19 @@ export default {
         this.$fetch()
       }
     }, 500),
-    onSearch (value) {
+    onSearch(value) {
       this.searchTitle(value)
     },
-    pageChange (value) {
+    pageChange(value) {
       this.query.page = value
     },
-    perPageChange (value) {
+    perPageChange(value) {
       if (value) {
         this.query.pageSize = value
       }
       this.query.page = 1
     },
-    sortChange (value) {
+    sortChange(value) {
       const key = Object.keys(value)[0]
       if (key && value[key] !== 'no-sort') {
         this.query.sortType = value[key]
@@ -241,7 +244,7 @@ export default {
         this.query.sortBy = 'date'
       }
     },
-    async openModalDetailAddress (item) {
+    async openModalDetailAddress(item) {
       const { name, email } = item
       this.dataUser.name = name || '-'
       this.dataUser.email = email || '-'
@@ -258,24 +261,24 @@ export default {
             district: data?.district?.name,
             village: data?.village?.name,
             subVillage: data?.subVillage?.name,
-            rtRw: data?.rtRw?.name
-          }
+            rtRw: data?.rtRw?.name,
+          },
         }
         this.isLoadingDetailData = false
       } catch (error) {
         this.detailData = {
           dataKtp: {},
-          dataDomicile: {}
+          dataDomicile: {},
         }
         this.isLoadingDetailData = false
       }
     },
-    async onClickDocument (fileId) {
+    async onClickDocument(fileId) {
       this.showDocument = true
       this.informationDialog.file = 'loading'
       try {
         const response = await this.$axios.get(`/file/view/${fileId}`, {
-          headers: { 'x-file-id': fileId }
+          headers: { 'x-file-id': fileId },
         })
 
         this.informationDialog.file = response.data.data || ''
@@ -284,13 +287,13 @@ export default {
         this.informationDialog.file = ''
       }
     },
-    goToDetail (id) {
+    goToDetail(id) {
       this.$router.push({
         path: `/detail/${id}`,
-        query: this.query
+        query: this.query,
       })
-    }
-  }
+    },
+  },
 }
 </script>
 
