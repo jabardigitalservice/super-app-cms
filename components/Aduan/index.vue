@@ -562,8 +562,7 @@ export default {
     search: debounce(function (value) {
       if (value.length > 2 || value.length === 0) {
         this.query.page = 1
-        this.query.search = value.length > 2 ? value : null
-        this.query.search = value.trim()
+        this.query.search = value.length > 2 ? value.trim() : null
         this.$fetch()
       }
     }, 500),
