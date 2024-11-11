@@ -148,6 +148,7 @@ export default {
         ),
         createdDate: dataComplaint.created_at_api,
       })
+
       this.$store.commit('process-complaint/setComplaintSource', {
         complaint_source: dataComplaint?.complaint_source,
       })
@@ -177,6 +178,7 @@ export default {
           : '-',
         status_description: dataComplaint?.status_description || '-',
         proposed_ikp_narrative: dataComplaint?.proposed_ikp_narrative || '-',
+        opd_id: dataComplaint?.opd_id,
         opd_name: dataComplaint?.opd_name,
         complaint_status_id: dataComplaint?.complaint_status_id,
         urgency_level: dataComplaint?.urgency_level,
@@ -433,9 +435,10 @@ export default {
             this.dataComplaint,
             'redirectHotlineComplaint'
           )
-        case 'addIdSpan': {
+        case 'addIdSpan':
           return this.submitInputIdSpanHandle(this.dataDialog)
-        }
+        case 'followupComplaint':
+          return this.showPopupFollowupComplaint(this.dataComplaint)
       }
     },
     setDataDialog(newDataDialog) {

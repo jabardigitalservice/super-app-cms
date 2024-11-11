@@ -43,7 +43,7 @@
                     tag="div"
                   >
                     <jds-select
-                      v-model="payload.opd_name"
+                      v-model="payload.opd_id"
                       name="Nama Instansi"
                       label="Nama Instansi"
                       placeholder="Pilih Nama Instansi"
@@ -82,7 +82,7 @@
                   tag="div"
                 >
                   <jds-select
-                    v-model="payload.opd_name"
+                    v-model="payload.opd_id"
                     name="Perangkat Daerah"
                     label="Perangkat Daerah"
                     placeholder="Pilih Perangkat Daerah"
@@ -316,7 +316,7 @@ export default {
     },
     listDisposition() {
       return this.listDataDisposition.map((item) => {
-        return { label: item.name, value: item.name }
+        return { label: item.name, value: item.id }
       })
     },
     listGovResponsible() {
@@ -419,13 +419,17 @@ export default {
           ...this.payload,
           deadline_at: formatDate(this.payload.deadline_at, 'yyyy-MM-dd'),
           description: this.instructionNote,
+          is_prov_responsibility:
+            this.complaintType === typeAduan.instruksiKewenanganPemprov.props, // jika buat ikp pemprov / non pemprov
         }
+
         const response = await this.$axios.post(ENDPOINT_IKP, {
           ...this.payload,
           user_id: this.$auth?.user?.identifier,
         })
+
         this.dataIkp = response.data.data
-        this.dataIkp.ikp_code = this.dataIkp.ikp_code.toString()
+        this.dataIkp.ikp_code = this.dataIkp.id.toString()
         this.setDataDialog({
           description:
             'Pembuatan Instruksi Aduan Baru telah berhasil dilakukan',
@@ -435,7 +439,7 @@ export default {
         this.setIconPopup({ name: 'check-mark-circle', fill: '#069550' })
         this.resetFormIkp()
         this.isShowPopupInformationSuccess = true
-      } catch {
+      } catch (error) {
         this.payload.deadline_at = new Date(this.payload.deadline_at)
         this.setAlert({
           variant: 'error',

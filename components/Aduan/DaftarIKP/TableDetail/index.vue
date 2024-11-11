@@ -178,8 +178,8 @@ export default {
     },
     formatingInstructionalNarrative() {
       let result = '-'
-      if (this.dataDetail?.ikp_code) {
-        result = `<strong>(${this.dataDetail?.ikp_code})</strong> ${this.dataDetail?.narrative}`
+      if (this.dataDetail?.id) {
+        result = `<strong>(${this.dataDetail?.id})</strong> ${this.dataDetail?.narrative}`
       }
       return result
     },

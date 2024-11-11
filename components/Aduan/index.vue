@@ -585,6 +585,12 @@ export default {
         default:
           return ENDPOINT_ADUAN
       }
+      // if (
+      //   this.typeAduanPage.props === typeAduan.aduanDialihkanHotlineJabar.props
+      // ) {
+      //   return ENDPOINT_ADUAN_HOTLINE_JABAR
+      // }
+      // return ENDPOINT_ADUAN
     },
     refreshPage() {
       this.query.page = 1

@@ -1,7 +1,5 @@
 <template>
-  <AduanDetail
-    :type-aduan-page="typeAduan.instruksiKewenanganNonPemprov.props"
-  />
+  <AduanDetail :type-aduan-page="typeAduan.instruksiKewenanganNonPemprov" />
 </template>
 
 <script>

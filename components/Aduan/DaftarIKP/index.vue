@@ -108,7 +108,6 @@
 
 <script>
 import debounce from 'lodash.debounce'
-import { isWithinInterval, parseISO } from 'date-fns'
 import {
   formatDate,
   generateItemsPerPageOptions,
@@ -119,7 +118,6 @@ import {
 } from '~/utils'
 import TabBarList from '~/components/Aduan/TabBar/List'
 import { headerDaftarIkp, ikpStatus, ikpType } from '~/constant/daftar-ikp'
-import dataInstruksiNonPemprov from '~/data/instruksi-non-pemprov.json'
 import { ENDPOINT_IKP } from '~/constant/endpoint-api'
 
 export default {
@@ -151,7 +149,6 @@ export default {
       ],
       listDataIkp: [],
       listStatisticIkp: [],
-      // currentPageLocal: null, // TO DO : If api has already
       pagination: {
         currentPage: 1,
         totalRows: 5,
@@ -180,85 +177,20 @@ export default {
   },
   async fetch() {
     try {
-      const responseList =
-        this.ikpTypePage === ikpType.instruksiNonPemprov.props
-          ? dataInstruksiNonPemprov
-          : await this.$axios.get(ENDPOINT_IKP, {
-              params: { ...this.query },
-            })
-      const { data } = responseList.data
-      this.listDataIkp = data?.data || []
+      const responseList = await this.$axios.get(ENDPOINT_IKP, {
+        params: { ...this.query },
+      })
+      this.listDataIkp = responseList.data?.data?.data || []
       if (this.listDataIkp.length) {
         this.pagination.disabled = false
       } else {
         this.pagination.disabled = true
       }
-      // data instruksi non pemprov
-      if (this.ikpTypePage === ikpType.instruksiNonPemprov.props) {
-        if (this.query.search) {
-          this.listDataIkp = this.listDataIkp.filter((item) => {
-            const ikpCodeNormalized = this.normalizeText(item.ikp_code)
-            const narrativeNormalized = this.normalizeText(item.narrative)
-            return (
-              ikpCodeNormalized.includes(this.query.search) ||
-              narrativeNormalized.includes(this.query.search)
-            )
-          })
-        }
-        if (this.query.start_date && this.query.end_date) {
-          const startDate = parseISO(this.query.start_date)
-          const endDate = parseISO(this.query.end_date)
-          this.listDataIkp = this.listDataIkp.filter((item) => {
-            const createdDate = parseISO(
-              formatDate(item.created_at, 'yyyy-MM-dd')
-            )
-            return isWithinInterval(createdDate, {
-              start: startDate,
-              end: endDate,
-            })
-          })
-        }
-        this.getCountNonPemProv()
-        if (this.query.status) {
-          this.listDataIkp = this.listDataIkp.filter(
-            (item) => item.complaint_status_id === this.query.status
-          )
-        }
-
-        if (this.query?.sort_by && this.query?.sort_type) {
-          this.listIkpDisplayed = [...this.listDataIkp]
-          this.listIkpDisplayed = this.listIkpDisplayed.map((item) => {
-            return {
-              ...item,
-              created_at: parseISO(item.created_at),
-              deadline_at: parseISO(item.deadline_at),
-            }
-          })
-          this.listIkpDisplayed.sort((ikpAsc, ikpDesc) => {
-            let comparison = 0
-            const key = this.query.sort_by
-            if (this.query.sort_by === 'narrative') {
-              comparison = ikpAsc[key].localeCompare(ikpDesc[key])
-            } else {
-              comparison = ikpAsc[key] - ikpDesc[key]
-            }
-            return this.query.sort_type === 'asc' ? comparison : -comparison
-          })
-          this.listDataIkp = [...this.listIkpDisplayed]
-        }
-
-        this.pagination.totalRows = this.listDataIkp.length
-        const start = (this.query.page - 1) * this.query.limit // index awal
-        const end = start + this.query.limit // index akhir
-        this.listDataIkp = this.listDataIkp.slice(start, end)
-        this.pagination.currentPage = this.query.page
-        this.pagination.itemsPerPage = this.query.limit
-      } else {
-        this.pagination.currentPage = data?.page || 1
-        this.pagination.totalRows = data?.total_data || 0
-        this.pagination.itemsPerPage = data?.page_size || this.query.limit
-        this.getCount()
-      }
+      this.pagination.currentPage = responseList.data?.meta?.current_page || 1
+      this.pagination.totalRows = responseList.data?.meta?.total_count || 0
+      this.pagination.itemsPerPage =
+        responseList.data?.meta?.per_page || this.query.limit
+      this.getCount()
     } catch {
       this.pagination.disabled = true
     }
@@ -271,8 +203,8 @@ export default {
           created_at: item?.created_at
             ? formatDate(item?.created_at, 'dd/MM/yyyy HH:mm')
             : '-',
-          deadline_at: item?.created_at
-            ? formatDate(item?.created_at, 'dd/MM/yyyy HH:mm')
+          deadline_at: item?.deadline_at
+            ? formatDate(item?.deadline_at, 'dd/MM/yyyy')
             : '-',
         }
       })
@@ -452,7 +384,7 @@ export default {
       }
     },
     getColorText(status) {
-      const ikpStatusColor = this.ikpStatus[status].statusColor
+      const ikpStatusColor = this.ikpStatus[status]?.statusColor
       let statusColor = {}
       if (Array.isArray(ikpStatusColor)) {
         statusColor = ikpStatusColor.find((statusColor) =>
