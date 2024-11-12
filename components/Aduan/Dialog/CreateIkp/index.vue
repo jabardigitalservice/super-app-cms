@@ -396,19 +396,25 @@ export default {
     },
     async showPopupConfirmation() {
       const isValid = await this.$refs.form.validate()
-      this.setAlert({
-        variant: 'warning',
-        message: 'Pastikan data yang diisi telah sesuai dan benar',
-      })
-      this.setDataDialog({
-        description: 'Apakah Anda yakin ingin membuat instruksi aduan baru? ',
-        labelButtonSubmit: 'Simpan Instruksi Baru',
-        labelButtonCancel: 'Kembali',
-      })
+      // this.setAlert({
+      //   variant: 'warning',
+      //   message: 'Pastikan data yang diisi telah sesuai dan benar',
+      // })
+      // this.setDataDialog({
+      //   description: 'Apakah Anda yakin ingin membuat instruksi aduan baru? ',
+      //   labelButtonSubmit: 'Simpan Instruksi Baru',
+      //   labelButtonCancel: 'Kembali',
+      // })
       if (isValid) {
-        this.payload.narrative = this.ikpNarrative
-        this.isShowPopupConfirmation = true
-        this.$store.commit('create-ikp/setIsShowPopup', false)
+        // this.payload.narrative = this.ikpNarrative
+        // this.isShowPopupConfirmation = true
+        // this.$store.commit('create-ikp/setIsShowPopup', false)
+        this.payload = {
+          ...this.payload,
+          deadline_at: formatDate(this.payload.deadline_at, 'yyyy-MM-dd'),
+          description: this.instructionNote,
+        }
+        this.$emit('submit', this.payload)
       }
     },
     async submitIkp() {

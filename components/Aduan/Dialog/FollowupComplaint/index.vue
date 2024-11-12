@@ -162,7 +162,10 @@
       :data-ikp="dataIkp"
       @close="isShowPopupIkpNarrative = false"
     />
-    <DialogCreateIkp :complaint-type="complaintType" />
+    <DialogCreateIkp
+      :complaint-type="complaintType"
+      @submit="showPopupConfirmationFollowupComplaint"
+    />
   </div>
 </template>
 
@@ -294,7 +297,8 @@ export default {
       this.setQuery({ page: value })
       this.$fetch()
     },
-    showPopupConfirmationFollowupComplaint() {
+    showPopupConfirmationFollowupComplaint(value) {
+      this.$store.commit('create-ikp/setIsShowPopup', false)
       this.$store.commit('followup-complaint/setIsShowPopup', false)
       this.dataDialogConfirmation = {
         title: this.dataDialog.title,
@@ -302,6 +306,7 @@ export default {
         labelButtonSubmit: 'Ya, lanjutkan',
       }
       this.isShowPopupConfirmationFollowup = true
+      console.log(value)
     },
     closePopupConfirmationComplaint() {
       this.isShowPopupConfirmationFollowup = false
