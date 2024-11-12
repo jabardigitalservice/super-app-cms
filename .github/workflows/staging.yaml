@@ -56,6 +56,7 @@ jobs:
             URL_MAIN_SERVICE=${{secrets.URL_MAIN_SERVICE}}
             EXPIRY_FORGOT_PASSWORD_LINK=${{secrets.EXPIRY_FORGOT_PASSWORD_LINK}}
             EXPIRY_INVITATION_LINK=${{secrets.EXPIRY_INVITATION_LINK}}
+            NODE_ENV=${{secrets.NODE_ENV}}
       # GitOps
       - name: GitOps ArgoCD Setup
         run: |
@@ -63,7 +64,7 @@ jobs:
           chmod 600 /tmp/gitlab-deploy-ssh-key
           export GIT_SSH_COMMAND="ssh -i /tmp/gitlab-deploy-ssh-key -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
           git clone ${{ secrets.GITLAB_ARGOCD_REPOSITORY }}
-          
+
       - name: GitOps ArgoCD Update Image Tag
         uses: mikefarah/yq@master
         with:
