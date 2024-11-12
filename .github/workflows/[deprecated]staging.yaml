@@ -1,0 +1,82 @@
+# name: Jabar Super Apps Web Admin
+
+# on:
+#   push:
+#     branches: [development]
+
+# jobs:
+#   docker:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v2
+
+#       - name: Set up QEMU
+#         uses: docker/setup-qemu-action@v1
+
+#       - name: Set up Docker Buildx
+#         uses: docker/setup-buildx-action@v1
+
+#         # Configure Docker with Credentials
+#       - name: Configure Docker
+#         run: |
+#           docker login ${{ secrets.REGISTRY_URL }} -u ${{ secrets.REGISTRY_USERNAME }} -p '${{ secrets.REGISTRY_PASSWORD }}'
+#         # Set version tag using SHA Hash (short)
+#       - name: Set version tag
+#         id: vars
+#         run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+
+#         # Build the Docker image
+#       - name: Build and push
+#         uses: docker/build-push-action@v2
+#         with:
+#           context: .
+#           file: Dockerfile
+#           push: true
+#           tags: ${{ secrets.SERVICE_IMAGENAME_STAGING }}:${{ steps.vars.outputs.sha_short }}-test
+#           build-args: |
+#             KEYCLOCK_CLIENT_ID=${{ secrets.KEYCLOCK_CLIENT_ID_STAGING }}
+#             KEYCLOCK_ENDPOINT=${{ secrets.KEYCLOCK_ENDPOINT_STAGING }}
+#             KEYCLOCK_BASE_URL=${{ secrets.KEYCLOCK_BASE_URL_STAGING}}
+#             GOOGLE_ANALYTICS_ID=${{secrets.GOOGLE_ANALYTICS_ID_STAGING}}
+#             APPLICATION_ID_NEW_RELIC=${{secrets.APPLICATION_ID_NEW_RELIC_STAGING}}
+#             LICENSE_KEY_NEW_RELIC_ACCOUNT=${{secrets.LICENSE_KEY_NEW_RELIC_ACCOUNT}}
+#             ACCOUNT_ID_NEW_RELIC=${{secrets.ACCOUNT_ID_NEW_RELIC}}
+#             NEW_RELIC_APP_NAME=${{secrets.NEW_RELIC_APP_NAME}}
+#             NEW_RELIC_LICENSE_KEY=${{secrets.NEW_RELIC_LICENSE_KEY}}
+#             TINYMCE_API_KEY=${{secrets.TINYMCE_API_KEY}}
+#             GOOGLE_MAPS_API_KEY=${{secrets.GOOGLE_MAPS_API_KEY}}
+#             URL_TABLEAU_JABARPROV=${{secrets.URL_TABLEAU_JABARPROV}}
+#             URL_DASHBOARD_TAHURA=${{secrets.URL_DASHBOARD_TAHURA}}
+#             USERNAME_TABLEAU=${{secrets.USERNAME_TABLEAU}}
+#             URL_GET_TOKEN_TABLEAU=${{secrets.URL_GET_TOKEN_TABLEAU}}
+#             UNLEASH_URL=${{secrets.UNLEASH_URL}}
+#             UNLEASH_TOKEN=${{secrets.UNLEASH_TOKEN_STAGING}}
+#             URL_MOCKAPI=${{secrets.URL_MOCKAPI}}
+#             URL_MAIN_SERVICE=${{secrets.URL_MAIN_SERVICE}}
+#             EXPIRY_FORGOT_PASSWORD_LINK=${{secrets.EXPIRY_FORGOT_PASSWORD_LINK}}
+#             EXPIRY_INVITATION_LINK=${{secrets.EXPIRY_INVITATION_LINK}}
+#             NODE_ENV=${{secrets.STAGING_NODE_ENV}}
+#       # GitOps
+#       - name: GitOps ArgoCD Setup
+#         run: |
+#           echo "${{ secrets.GITLAB_ARGOCD_KEY }}" > /tmp/gitlab-deploy-ssh-key
+#           chmod 600 /tmp/gitlab-deploy-ssh-key
+#           export GIT_SSH_COMMAND="ssh -i /tmp/gitlab-deploy-ssh-key -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+#           git clone ${{ secrets.GITLAB_ARGOCD_REPOSITORY }}
+
+#       - name: GitOps ArgoCD Update Image Tag
+#         uses: mikefarah/yq@master
+#         with:
+#           cmd: yq -i '.spec.template.spec.containers[0].image = "${{ secrets.SERVICE_IMAGENAME_STAGING }}:${{ steps.vars.outputs.sha_short }}-test"' 'jds-terraform-gke/k8s/superapp/development/web-admin/deployment.yaml'
+
+#       - name: GitOps ArgoCD Create Branch, Commit, Push
+#         run: |
+#           export GIT_SSH_COMMAND="ssh -i /tmp/gitlab-deploy-ssh-key -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+#           cd jds-terraform-gke/k8s/superapp/development/web-admin
+#           git config user.email "github-action@github.com"
+#           git config user.name "Github Action"
+#           git checkout master
+#           git add deployment.yaml
+#           git commit -m "chore: update superapp web admin images ${{ steps.vars.outputs.sha_short }}-test to staging"
+#           git push origin master
