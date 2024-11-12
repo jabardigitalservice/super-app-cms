@@ -234,6 +234,7 @@
       :show-popup="isShowPopupProcessComplaint"
       @close="closePopupHandle()"
       @submit="submitProcessComplaint"
+      @back-to-form="isShowPopupProcessComplaint = true"
     />
     <DialogProcessComplaint
       :data-dialog="dataDialog"
@@ -424,11 +425,6 @@ export default {
   async fetch() {
     try {
       const urlApi = this.checkUrlApi()
-      if (
-        !JSON.stringify(Object.keys(this.query)).match('complaint_status_id')
-      ) {
-        this.query = this.addComplaintStatusFilterHandle()
-      }
 
       if (
         this.typeAduan.aduanDariSpanLapor.props === this.typeAduanPage.props
@@ -566,17 +562,18 @@ export default {
     search: debounce(function (value) {
       if (value.length > 2 || value.length === 0) {
         this.query.page = 1
-        this.query.search = value.length > 2 ? value : null
+        this.query.search = value.length > 2 ? value.trim() : null
         this.$fetch()
       }
     }, 500),
   },
-  mounted() {
+  created() {
     this.pagination.itemsPerPageOptions = generateItemsPerPageOptions(
       this.pagination.itemsPerPage
     )
     this.getCategory()
     this.getNonGovComplaintStatus()
+    this.query = this.addComplaintStatusFilterHandle()
   },
   methods: {
     checkUrlApi() {
@@ -834,12 +831,14 @@ export default {
           const listDataStatisticComplaint =
             responseListStatisticComplaint.data.data
           const listComplaintStatus = this.getStatusComplaintByComplaintType()
-          this.listStatisticComplaint = listDataStatisticComplaint.filter(
-            (statisticComplaint) =>
-              listComplaintStatus.find(
-                (complaintStatus) =>
+          this.listStatisticComplaint = listComplaintStatus.map(
+            (complaintStatus) => {
+              const dataStatistic = listDataStatisticComplaint.find(
+                (statisticComplaint) =>
                   statisticComplaint.id === complaintStatus.id
               )
+              return { ...complaintStatus, value: dataStatistic?.value || 0 }
+            }
           )
           complaintStatus.total.value = this.getTotalStatistic()
         } catch (error) {

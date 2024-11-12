@@ -148,9 +148,9 @@ export default {
         ),
         createdDate: dataComplaint.created_at_api,
       })
+
       this.$store.commit('process-complaint/setComplaintSource', {
-        id: dataComplaint.complaint_source_id,
-        name: dataComplaint.complaint_source_name,
+        complaint_source: dataComplaint?.complaint_source,
       })
       this.$store.dispatch('process-complaint/changeComplaintStatusId')
       this.isShowPopupProcessComplaint = true
@@ -178,24 +178,22 @@ export default {
           : '-',
         status_description: dataComplaint?.status_description || '-',
         proposed_ikp_narrative: dataComplaint?.proposed_ikp_narrative || '-',
+        opd_id: dataComplaint?.opd_id,
         opd_name: dataComplaint?.opd_name,
         complaint_status_id: dataComplaint?.complaint_status_id,
         urgency_level: dataComplaint?.urgency_level,
       })
       this.$store.commit('process-complaint/setComplaintSource', {
-        id: dataComplaint.complaint_source_id,
-        name: dataComplaint.complaint_source_name,
+        complaint_source: dataComplaint?.complaint_source,
       })
       this.isShowPopupChangeAuthority = true
     },
     showPopupFollowupComplaint(dataComplaint) {
       this.idApi = dataComplaint.id
       this.typeDialog = 'followupComplaint'
-      dataComplaint = {
-        opd_name: dataComplaint.opd_name,
-        deadline_date: new Date(dataComplaint.deadline_date) || '-',
-        coverage_of_affairs: dataComplaint.coverage_of_affairs,
-      }
+      dataComplaint.deadline_date = new Date(dataComplaint.deadline_date) || '-'
+      this.dataComplaint = dataComplaint
+
       this.setDataDialog({
         dataComplaint,
         ...this.setDataDialogConfirmation(
@@ -313,6 +311,7 @@ export default {
 
     submitProcessComplaint(dataComplaint) {
       this.isShowPopupProcessComplaint = false
+      this.dataComplaint = dataComplaint
       let dataDialogInformation = {}
       const dialogTitle =
         this.typeDialog === 'changeAuthority'
@@ -436,9 +435,10 @@ export default {
             this.dataComplaint,
             'redirectHotlineComplaint'
           )
-        case 'addIdSpan': {
+        case 'addIdSpan':
           return this.submitInputIdSpanHandle(this.dataDialog)
-        }
+        case 'followupComplaint':
+          return this.showPopupFollowupComplaint(this.dataComplaint)
       }
     },
     setDataDialog(newDataDialog) {

@@ -204,7 +204,7 @@
           <td class="w-[180px]">
             <strong>Tanggal Deadline</strong>
           </td>
-          <td>{{ detailComplaint?.deadline_date || '-' }}</td>
+          <td>{{ detailComplaint?.deadline_at_format || '-' }}</td>
         </tr>
         <tr
           v-if="

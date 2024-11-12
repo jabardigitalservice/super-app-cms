@@ -23,8 +23,10 @@
           </div>
 
           <div class="mb-6">
-            <label class="mb-1 text-sm">Narasi Instruksi Aduan</label>
-            <p class="text-sm">
+            <label class="mb-1 text-sm text-gray-800"
+              >Narasi Instruksi Aduan</label
+            >
+            <p class="text-[14px] leading-[23px] text-gray-900">
               {{ dataDialog.proposed_ikp_narrative }}
             </p>
           </div>
@@ -238,7 +240,7 @@ export default {
         totalPages: pagination?.total_pages || 0,
       })
     } catch {
-      this.listIkp = []
+      this.listDataIkp = []
     }
   },
   computed: {
@@ -261,6 +263,7 @@ export default {
       this.setQuery({ page: '' })
       if (value.length > 2 || value.length === 0) {
         this.query.search = value.length > 2 ? value : null
+        this.query.page = 1
         this.$fetch()
       }
     }, 500),
@@ -279,6 +282,9 @@ export default {
     closePopupFollowupComplaint() {
       this.$store.commit('followup-complaint/setIsFollowup', false)
       this.$store.commit('followup-complaint/setIsShowPopup', false)
+      this.query.page = 1
+      this.search = ''
+      this.$fetch()
     },
     nextPage() {
       if (this.pagination.currentPage < this.pagination.totalPages) {
@@ -318,7 +324,7 @@ export default {
     },
     showPopupCreateIkp() {
       const {
-        opd_name: opdName,
+        opd_id: opdId,
         deadline_date: deadlineDate,
         coverage_of_affairs: coverageOfAffairs,
       } = this.dataDialog.dataComplaint
@@ -333,11 +339,10 @@ export default {
 
       this.$store.commit('create-ikp/setPayload', {
         ...this.payload,
-        opd_name: opdName,
+        opd_id: opdId,
         deadline_at: deadlineDate,
         coverage_of_affairs: coverageOfAffairs,
       })
-
       this.$store.commit('followup-complaint/setIsShowPopup', false)
       this.$store.commit(
         'create-ikp/setIkpNarrative',
