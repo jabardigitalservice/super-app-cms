@@ -379,6 +379,7 @@ export default {
       if (isValid) {
         this.payload = {
           ...this.payload,
+          indicator_value: parseInt(this.payload.indicator_value),
           narrative: this.ikpNarrative,
           deadline_at: formatDate(this.payload.deadline_at, 'yyyy-MM-dd'),
           description: this.instructionNote,
