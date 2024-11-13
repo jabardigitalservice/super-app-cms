@@ -246,7 +246,7 @@ import DialogWithAlert from '~/components/Aduan/Dialog/CreateIkp/Dialog/WithAler
 import DialogInformation from '~/components/Aduan/Dialog/CreateIkp/Dialog/Information'
 import { formatDate } from '~/utils'
 import { typeAduan } from '~/constant/aduan-masuk'
-import { ENDPOINT_ADUAN, ENDPOINT_IKP } from '~/constant/endpoint-api'
+import { ENDPOINT_ADUAN } from '~/constant/endpoint-api'
 
 export default {
   name: 'DialogCreateIkp',
@@ -258,12 +258,6 @@ export default {
     ValidationObserver,
     ValidationProvider,
   },
-  // props: {
-  //   complaintType: {
-  //     type: String,
-  //     default: '',
-  //   },
-  // },
   data() {
     return {
       instructionDate: new Date(),
@@ -409,19 +403,7 @@ export default {
     },
     async showPopupConfirmation() {
       const isValid = await this.$refs.form.validate()
-      // this.setAlert({
-      //   variant: 'warning',
-      //   message: 'Pastikan data yang diisi telah sesuai dan benar',
-      // })
-      // this.setDataDialog({
-      //   description: 'Apakah Anda yakin ingin membuat instruksi aduan baru? ',
-      //   labelButtonSubmit: 'Simpan Instruksi Baru',
-      //   labelButtonCancel: 'Kembali',
-      // })
       if (isValid) {
-        // this.payload.narrative = this.ikpNarrative
-        // this.isShowPopupConfirmation = true
-        // this.$store.commit('create-ikp/setIsShowPopup', false)
         this.payload = {
           ...this.payload,
           narrative: this.ikpNarrative,
@@ -434,51 +416,6 @@ export default {
         this.$store.commit('create-ikp/setIsShowPopup', false)
         this.$store.commit('followup-complaint/setIsCreateIkp', true)
         this.$emit('submit')
-      }
-    },
-    async submitIkp() {
-      this.isShowPopupConfirmation = false
-      this.isShowPopupLoading = true
-      try {
-        this.payload = {
-          ...this.payload,
-          deadline_at: formatDate(this.payload.deadline_at, 'yyyy-MM-dd'),
-          description: this.instructionNote,
-          is_prov_responsibility:
-            this.complaintType === typeAduan.instruksiKewenanganPemprov.props, // jika buat ikp pemprov / non pemprov
-        }
-
-        const response = await this.$axios.post(ENDPOINT_IKP, {
-          ...this.payload,
-          user_id: this.$auth?.user?.identifier,
-        })
-
-        this.dataIkp = response.data.data
-        this.dataIkp.ikp_code = this.dataIkp.id.toString()
-        this.setDataDialog({
-          description:
-            'Pembuatan Instruksi Aduan Baru telah berhasil dilakukan',
-          labelButtonSubmit: 'Saya mengerti',
-          showCancelButton: false,
-        })
-        this.setIconPopup({ name: 'check-mark-circle', fill: '#069550' })
-        this.resetFormIkp()
-        this.isShowPopupInformationSuccess = true
-      } catch (error) {
-        this.payload.deadline_at = new Date(this.payload.deadline_at)
-        this.setAlert({
-          variant: 'error',
-          message: 'Pembuatan Instruksi Aduan Baru Gagal',
-        })
-        this.setDataDialog({
-          description:
-            'Maaf, pembuatan instruksi aduan baru tidak dapat disimpan saat ini karena terjadi kesalahan pada sistem. Silakan coba lagi untuk menyimpan instruksi aduan baru.',
-          labelButtonSubmit: 'Coba Lagi',
-          labelButtonCancel: 'Batalkan',
-        })
-        this.isShowPopupInformationError = true
-      } finally {
-        this.isShowPopupLoading = false
       }
     },
     setAlert(newAlert) {
