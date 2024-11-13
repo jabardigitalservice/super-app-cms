@@ -1,5 +1,6 @@
 import { complaintStatus, typeAduan } from '~/constant/aduan-masuk'
 import { ENDPOINT_ADUAN } from '~/constant/endpoint-api'
+
 export default {
   data() {
     return {
@@ -360,7 +361,7 @@ export default {
     },
 
     submitFollowupComplaint(dataIkp) {
-      this.isShowPopupConfirmationFollowup = false
+      this.$store.commit('modals/CLOSEALL')
       let dataDialogInformation = {}
       const dialogDescriptionSucceess =
         this.typeDialog === 'createInstruction'
@@ -488,6 +489,8 @@ export default {
           opd_id: this.dataComplaint.opd_id,
         })
         this.$store.commit('create-ikp/setIsShowPopup', true)
+      } else {
+        this.$store.commit('followup-complaint/setIsShowPopup', true)
       }
     },
     setDataDialog(newDataDialog) {
