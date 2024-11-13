@@ -481,6 +481,12 @@ export default {
         ),
       })
       if (isCreateIkp) {
+        const payload = this.$store.state['create-ikp'].payload
+        this.$store.commit('create-ikp/setPayload', {
+          ...payload,
+          deadline_at: new Date(payload.deadline_at),
+          opd_id: this.dataComplaint.opd_id,
+        })
         this.$store.commit('create-ikp/setIsShowPopup', true)
       }
     },
