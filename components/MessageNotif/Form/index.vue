@@ -38,9 +38,9 @@
             name="Judul Pesan"
             rules="max:100|min:10|required"
           >
-            <label class="message-notif-form__label-required"
-              >Judul Pesan</label
-            >
+            <label class="message-notif-form__label-required">
+              Judul Pesan
+            </label>
             <p class="mb-1 text-[13px] text-gray-700">
               Minimum 10 Karakter, maksimal 100 karakter
             </p>
@@ -60,9 +60,9 @@
               name="Subtext Pesan"
               rules="required|max:100|min:10"
             >
-              <label class="message-notif-form__label-required"
-                >Subtext Pesan</label
-              >
+              <label class="message-notif-form__label-required">
+                Subtext Pesan
+              </label>
               <div class="mt-1">
                 <textarea
                   v-model="fieldMessageNotif.notificationBody"
@@ -82,9 +82,9 @@
               name="Kategori Pesan"
               rules="requiredSelectForm"
             >
-              <label class="message-notif-form__label-required"
-                >Kategori Pesan</label
-              >
+              <label class="message-notif-form__label-required">
+                Kategori Pesan
+              </label>
               <jds-select
                 v-model="fieldMessageNotif.category"
                 placeholder="Pilih kategori"
@@ -115,9 +115,9 @@
             name="Detail Pesan"
             rules="required"
           >
-            <label class="message-notif-form__label-required"
-              >Detail Pesan</label
-            >
+            <label class="message-notif-form__label-required">
+              Detail Pesan
+            </label>
             <div class="mt-1">
               <Editor
                 v-model="fieldMessageNotif.content"
