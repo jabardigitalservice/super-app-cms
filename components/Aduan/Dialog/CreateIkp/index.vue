@@ -211,29 +211,6 @@
         </BaseDialogFooterNew>
       </BaseDialogPanel>
     </BaseDialog>
-    <DialogWithAlert
-      :show-popup="isShowPopupConfirmation"
-      :alert="alert"
-      :data-dialog="dataDialog"
-      @close="backToFormIkp()"
-      @submit="submitIkp"
-    />
-    <DialogInformation
-      :show-popup="isShowPopupInformationSuccess"
-      :data-ikp="dataIkp"
-      :data-dialog="dataDialog"
-      :icon="icon"
-      @close="closePopupInformation"
-      @submit="submitIkp"
-    />
-    <DialogWithAlert
-      :show-popup="isShowPopupInformationError"
-      :alert="alert"
-      :data-dialog="dataDialog"
-      @close="closePopupInformation"
-      @submit="backToFormIkp"
-    />
-    <DialogLoading :show-popup="isShowPopupLoading" />
   </div>
 </template>
 
@@ -242,8 +219,6 @@ import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import { mapGetters } from 'vuex'
 import AlertInformation from '~/components/Aduan/Alert/Information'
 import CardIkpNarrative from '~/components/Aduan/Dialog/CreateIkp/CardIkpNarrative'
-import DialogWithAlert from '~/components/Aduan/Dialog/CreateIkp/Dialog/WithAlert'
-import DialogInformation from '~/components/Aduan/Dialog/CreateIkp/Dialog/Information'
 import { formatDate } from '~/utils'
 import { typeAduan } from '~/constant/aduan-masuk'
 import { ENDPOINT_ADUAN } from '~/constant/endpoint-api'
@@ -253,8 +228,6 @@ export default {
   components: {
     AlertInformation,
     CardIkpNarrative,
-    DialogWithAlert,
-    DialogInformation,
     ValidationObserver,
     ValidationProvider,
   },
