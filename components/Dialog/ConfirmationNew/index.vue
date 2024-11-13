@@ -32,6 +32,7 @@ export default {
     path: { type: String, default: '' },
     httpMethod: { type: String, default: 'post' },
     params: { type: Object, default: () => ({}) },
+    isPushNotification: { type: Boolean, default: false },
   },
   methods: {
     async confirmationButton() {
