@@ -153,12 +153,6 @@
         />
       </BaseDialogPanel>
     </BaseDialog>
-    <!-- <DialogConfirmation
-      :data-dialog="dataDialogConfirmation"
-      :show-popup="isShowPopupConfirmationFollowup"
-      @close="closePopupConfirmationComplaint()"
-      @submit="submitDataFollowupComplaint()"
-    /> -->
     <DialogConfirmationBasic :dialog-modal="dialogConfirmation">
       <template #footer-custom>
         <div class="mr-4">
@@ -323,18 +317,7 @@ export default {
       this.setQuery({ page: value })
       this.$fetch()
     },
-    // showPopupConfirmationFollowupComplaint() {
-    //   this.$store.commit('create-ikp/setIsShowPopup', false)
-    //   this.$store.commit('followup-complaint/setIsShowPopup', false)
-    //   this.dataDialogConfirmation = {
-    //     title: this.dataDialog.title,
-    //     description: 'Apakah Anda yakin ingin menindaklanjuti aduan tersebut?',
-    //     labelButtonSubmit: 'Ya, lanjutkan',
-    //   }
-    //   this.isShowPopupConfirmationFollowup = true
-    // },
     closePopupConfirmationComplaint() {
-      // this.isShowPopupConfirmationFollowup = false
       this.$store.commit('modals/CLOSEALL')
       this.$store.commit('followup-complaint/setIsFollowup', false)
       if (this.isCreateIkp) {
