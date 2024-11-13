@@ -178,6 +178,7 @@
       @close="isShowPopupIkpNarrative = false"
     />
     <DialogCreateIkp
+      ref="dialogCreateIkp"
       @submit="$store.dispatch('followup-complaint/showPopupConfirmation')"
     />
   </div>
@@ -331,6 +332,7 @@ export default {
       this.isShowPopupIkpNarrative = true
     },
     showPopupCreateIkp() {
+      this.$refs.dialogCreateIkp.resetFormIkp()
       const {
         opd_id: opdId,
         deadline_date: deadlineDate,
