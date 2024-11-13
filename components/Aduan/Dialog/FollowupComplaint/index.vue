@@ -149,24 +149,42 @@
           :label-button-submit="dataDialog.labelButtonSubmit"
           :is-disabled-button-submit="!isFollowup"
           @close="closePopupFollowupComplaint()"
-          @submit="showPopupConfirmationFollowupComplaint()"
+          @submit="$store.dispatch('followup-complaint/showPopupConfirmation')"
         />
       </BaseDialogPanel>
     </BaseDialog>
-    <DialogConfirmation
+    <!-- <DialogConfirmation
       :data-dialog="dataDialogConfirmation"
       :show-popup="isShowPopupConfirmationFollowup"
       @close="closePopupConfirmationComplaint()"
       @submit="submitDataFollowupComplaint()"
-    />
+    /> -->
+    <DialogConfirmationBasic :dialog-modal="dialogConfirmation">
+      <template #footer-custom>
+        <div class="mr-4">
+          <jds-button
+            label="Kembali"
+            type="button"
+            variant="secondary"
+            @click="closePopupConfirmationComplaint()"
+          />
+        </div>
+
+        <jds-button
+          label="Ya,lanjutkan"
+          type="button"
+          variant="primary"
+          @click="submitDataFollowupComplaint()"
+        />
+      </template>
+    </DialogConfirmationBasic>
     <DialogIkpNarrative
       :show-popup="isShowPopupIkpNarrative"
       :data-ikp="dataIkp"
       @close="isShowPopupIkpNarrative = false"
     />
     <DialogCreateIkp
-      :complaint-type="complaintType"
-      @submit="showPopupConfirmationFollowupComplaint"
+      @submit="$store.dispatch('followup-complaint/showPopupConfirmation')"
     />
   </div>
 </template>
@@ -248,6 +266,8 @@ export default {
       isShowPopupFollowup: 'getIsShowPopup',
       isFollowup: 'getIsFollowup',
       dataIkp: 'getDataIkp',
+      dialogConfirmation: 'getDialogConfirmation',
+      isCreateIkp: 'getIsCreateIkp',
     }),
     ...mapGetters('create-ikp', {
       payload: 'getPayload',
@@ -303,20 +323,25 @@ export default {
       this.setQuery({ page: value })
       this.$fetch()
     },
-    showPopupConfirmationFollowupComplaint(value) {
-      this.$store.commit('create-ikp/setIsShowPopup', false)
-      this.$store.commit('followup-complaint/setIsShowPopup', false)
-      this.dataDialogConfirmation = {
-        title: this.dataDialog.title,
-        description: 'Apakah Anda yakin ingin menindaklanjuti aduan tersebut?',
-        labelButtonSubmit: 'Ya, lanjutkan',
-      }
-      this.isShowPopupConfirmationFollowup = true
-      console.log(value)
-    },
+    // showPopupConfirmationFollowupComplaint() {
+    //   this.$store.commit('create-ikp/setIsShowPopup', false)
+    //   this.$store.commit('followup-complaint/setIsShowPopup', false)
+    //   this.dataDialogConfirmation = {
+    //     title: this.dataDialog.title,
+    //     description: 'Apakah Anda yakin ingin menindaklanjuti aduan tersebut?',
+    //     labelButtonSubmit: 'Ya, lanjutkan',
+    //   }
+    //   this.isShowPopupConfirmationFollowup = true
+    // },
     closePopupConfirmationComplaint() {
-      this.isShowPopupConfirmationFollowup = false
+      // this.isShowPopupConfirmationFollowup = false
+      this.$store.commit('modals/CLOSEALL')
       this.$store.commit('followup-complaint/setIsFollowup', false)
+      if (this.isCreateIkp) {
+        this.$store.commit('create-ikp/setIsShowPopup', true)
+      } else {
+        this.$store.commit('followup-complaint/setIsShowPopup', true)
+      }
     },
     showPopupIkpNarrative(dataIkp) {
       this.$store.commit('followup-complaint/setDataIkp', dataIkp)
@@ -352,8 +377,8 @@ export default {
       this.$store.commit('create-ikp/setIsShowPopup', true)
     },
     submitDataFollowupComplaint() {
-      this.isShowPopupConfirmationFollowup = false
-      this.$emit('submit', this.dataIkp)
+      this.$store.commit('modals/CLOSEALL')
+      this.$emit('submit', this.isCreateIkp ? this.payload : this.dataIkp)
       this.$store.commit('followup-complaint/setIsFollowup', false)
     },
     setPagination(newPagination) {

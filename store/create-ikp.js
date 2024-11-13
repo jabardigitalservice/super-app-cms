@@ -13,6 +13,7 @@ export const state = () => ({
     coverage_of_affairs: '',
     opd_pemprov_id: '',
   },
+  complaintType: '',
 })
 
 export const getters = {
@@ -27,6 +28,9 @@ export const getters = {
   },
   getPayload: (state) => {
     return state.payload
+  },
+  getComplaintType: (state) => {
+    return state.complaintType
   },
 }
 
@@ -52,5 +56,8 @@ export const mutations = {
   },
   setPayload(state, payload) {
     state.payload = payload
+  },
+  setComplaintType(state, complaintType) {
+    state.complaintType = complaintType
   },
 }

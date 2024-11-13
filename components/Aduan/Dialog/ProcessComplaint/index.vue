@@ -280,7 +280,7 @@ import AlertMessage from '~/components/Aduan/Dialog/ProcessComplaint/AlertMessag
 import { complaintStatus, complaintSource } from '~/constant/aduan-masuk'
 import { ENDPOINT_ADUAN } from '~/constant/endpoint-api'
 import { formatDate } from '~/utils'
-import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
+// import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
 
 export default {
   name: 'DialogComplaintProcess',
@@ -289,7 +289,7 @@ export default {
     ValidationObserver,
     AlertMessage,
   },
-  mixins: [popupAduanMasuk],
+  // mixins: [popupAduanMasuk],
   props: {
     showPopup: {
       type: Boolean,

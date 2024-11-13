@@ -1,4 +1,4 @@
-import { complaintStatus } from '~/constant/aduan-masuk'
+import { complaintStatus, typeAduan } from '~/constant/aduan-masuk'
 import { ENDPOINT_ADUAN } from '~/constant/endpoint-api'
 export default {
   data() {
@@ -193,7 +193,17 @@ export default {
       this.typeDialog = 'followupComplaint'
       dataComplaint.deadline_date = new Date(dataComplaint.deadline_date) || '-'
       this.dataComplaint = dataComplaint
-
+      const dialogConfirmation =
+        this.$store.state['followup-complaint'].dialogConfirmation
+      this.$store.commit('followup-complaint/setDialogConfirmation', {
+        ...dialogConfirmation,
+        title: 'Tindaklanjuti Aduan',
+        nameModal: 'followupComplaintConfirmation',
+      })
+      this.$store.commit(
+        'create-ikp/setComplaintType',
+        typeAduan.instruksiKewenanganPemprov.props
+      )
       this.setDataDialog({
         dataComplaint,
         ...this.setDataDialogConfirmation(
@@ -213,6 +223,17 @@ export default {
         ...dataComplaint,
         deadline_date: new Date(dataComplaint.deadline_date) || '',
       }
+      const dialogConfirmation =
+        this.$store.state['followup-complaint'].dialogConfirmation
+      this.$store.commit('followup-complaint/setDataDialogConfirmation', {
+        ...dialogConfirmation,
+        title: 'Buat Instruksi',
+        nameModal: 'createInstructionConfirmation',
+      })
+      this.$store.commit(
+        'create-ikp/setComplaintType',
+        typeAduan.instruksiKewenanganNonPemprov.props
+      )
       this.setDataDialog({
         dataComplaint,
         ...this.setDataDialogConfirmation(
@@ -365,11 +386,12 @@ export default {
           false
         ),
       }
-      this.integrationPopupHandle(
-        dataDialogInformation,
-        { ikp_code: dataIkp.ikp_code },
-        'follow-up'
-      )
+      const isCreateIkp = this.$store.state['followup-complaint'].isCreateIkp
+      let payload = dataIkp
+      if (!isCreateIkp) {
+        payload = { ikp_code: dataIkp.ikp_code }
+      }
+      this.integrationPopupHandle(dataDialogInformation, payload, 'follow-up')
     },
 
     setDataDialogConfirmation(title, description, subDescription, labelButton) {
@@ -412,6 +434,12 @@ export default {
         })
         this.setDataDialog({ ...paramDialog.success })
         this.setIconPopup({ name: 'check-mark-circle', fill: '#069550' })
+        this.$store.commit('followup-complaint/setIsCreateIkp', false)
+        this.$store.commit('create-ikp/setPayload', {
+          description: '',
+          indicator_value: '',
+          indicator_unit: '',
+        })
       } catch {
         this.setDataDialog({ ...paramDialog.failed })
         this.setIconPopup({ name: 'times-circle', fill: '#EF5350' })
@@ -438,7 +466,22 @@ export default {
         case 'addIdSpan':
           return this.submitInputIdSpanHandle(this.dataDialog)
         case 'followupComplaint':
-          return this.showPopupFollowupComplaint(this.dataComplaint)
+          return this.retryFollowupComplaint()
+      }
+    },
+    retryFollowupComplaint() {
+      const isCreateIkp = this.$store.state['followup-complaint'].isCreateIkp
+      this.setDataDialog({
+        dataComplaint: this.dataComplaint,
+        ...this.setDataDialogConfirmation(
+          'Tindaklanjuti Aduan',
+          'No.Aduan',
+          this.dataComplaint.complaint_id,
+          'Tindaklanjuti Aduan'
+        ),
+      })
+      if (isCreateIkp) {
+        this.$store.commit('create-ikp/setIsShowPopup', true)
       }
     },
     setDataDialog(newDataDialog) {

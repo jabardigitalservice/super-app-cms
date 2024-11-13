@@ -192,12 +192,23 @@
             </ValidationObserver>
           </div>
         </div>
-        <BaseDialogFooter
-          :show-cancel-button="true"
-          label-button-submit="Lanjutkan"
-          @submit="showPopupConfirmation"
-          @close="closePopupCreateIkp()"
-        />
+        <BaseDialogFooterNew>
+          <div class="mr-4">
+            <jds-button
+              label="Kembali"
+              type="button"
+              variant="secondary"
+              @click="closePopupCreateIkp()"
+            />
+          </div>
+
+          <jds-button
+            label="Lanjutkan"
+            type="button"
+            variant="primary"
+            @click="showPopupConfirmation"
+          />
+        </BaseDialogFooterNew>
       </BaseDialogPanel>
     </BaseDialog>
     <DialogWithAlert
@@ -247,12 +258,12 @@ export default {
     ValidationObserver,
     ValidationProvider,
   },
-  props: {
-    complaintType: {
-      type: String,
-      default: '',
-    },
-  },
+  // props: {
+  //   complaintType: {
+  //     type: String,
+  //     default: '',
+  //   },
+  // },
   data() {
     return {
       instructionDate: new Date(),
@@ -327,6 +338,7 @@ export default {
     ...mapGetters('create-ikp', {
       isShowPopupCreateIkp: 'getIsShowPopup',
       ikpNarrative: 'getIkpNarrative',
+      complaintType: 'getComplaintType',
     }),
     payload: {
       get() {
@@ -372,6 +384,7 @@ export default {
       this.$store.commit('create-ikp/setIsShowPopup', false)
       this.$store.commit('followup-complaint/setIsFollowup', false)
       this.$store.commit('followup-complaint/setIsShowPopup', true)
+      this.$store.commit('followup-complaint/setIsCreateIkp', false)
     },
     disabledDeadlineDate: function (date) {
       return date <= new Date()
@@ -411,10 +424,16 @@ export default {
         // this.$store.commit('create-ikp/setIsShowPopup', false)
         this.payload = {
           ...this.payload,
+          narrative: this.ikpNarrative,
           deadline_at: formatDate(this.payload.deadline_at, 'yyyy-MM-dd'),
           description: this.instructionNote,
+          is_prov_responsibility:
+            this.complaintType === typeAduan.instruksiKewenanganPemprov.props, // jika buat ikp pemprov / non pemprov
         }
-        this.$emit('submit', this.payload)
+        this.$store.commit('create-ikp/setPayload', this.payload)
+        this.$store.commit('create-ikp/setIsShowPopup', false)
+        this.$store.commit('followup-complaint/setIsCreateIkp', true)
+        this.$emit('submit')
       }
     },
     async submitIkp() {
