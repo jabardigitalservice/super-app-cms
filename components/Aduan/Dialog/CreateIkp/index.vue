@@ -383,8 +383,6 @@ export default {
           narrative: this.ikpNarrative,
           deadline_at: formatDate(this.payload.deadline_at, 'yyyy-MM-dd'),
           description: this.instructionNote,
-          is_prov_responsibility:
-            this.complaintType === typeAduan.instruksiKewenanganPemprov.props, // jika buat ikp pemprov / non pemprov
         }
         this.$store.commit('create-ikp/setPayload', this.payload)
         this.$store.commit('create-ikp/setIsShowPopup', false)
