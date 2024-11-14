@@ -149,22 +149,38 @@
           :label-button-submit="dataDialog.labelButtonSubmit"
           :is-disabled-button-submit="!isFollowup"
           @close="closePopupFollowupComplaint()"
-          @submit="showPopupConfirmationFollowupComplaint()"
+          @submit="$store.dispatch('followup-complaint/showPopupConfirmation')"
         />
       </BaseDialogPanel>
     </BaseDialog>
-    <DialogConfirmation
-      :data-dialog="dataDialogConfirmation"
-      :show-popup="isShowPopupConfirmationFollowup"
-      @close="closePopupConfirmationComplaint()"
-      @submit="submitDataFollowupComplaint()"
-    />
+    <DialogConfirmationBasic :dialog-modal="dialogConfirmation">
+      <template #footer-custom>
+        <div class="mr-4">
+          <jds-button
+            label="Kembali"
+            type="button"
+            variant="secondary"
+            @click="closePopupConfirmationComplaint()"
+          />
+        </div>
+
+        <jds-button
+          label="Ya,lanjutkan"
+          type="button"
+          variant="primary"
+          @click="submitDataFollowupComplaint()"
+        />
+      </template>
+    </DialogConfirmationBasic>
     <DialogIkpNarrative
       :show-popup="isShowPopupIkpNarrative"
       :data-ikp="dataIkp"
       @close="isShowPopupIkpNarrative = false"
     />
-    <DialogCreateIkp :complaint-type="complaintType" />
+    <DialogCreateIkp
+      ref="dialogCreateIkp"
+      @submit="$store.dispatch('followup-complaint/showPopupConfirmation')"
+    />
   </div>
 </template>
 
@@ -245,9 +261,11 @@ export default {
       isShowPopupFollowup: 'getIsShowPopup',
       isFollowup: 'getIsFollowup',
       dataIkp: 'getDataIkp',
+      dialogConfirmation: 'getDialogConfirmation',
+      isCreateIkp: 'getIsCreateIkp',
     }),
     ...mapGetters('create-ikp', {
-      payload: 'getPayload',
+      payloadCreateIkp: 'getPayload',
     }),
     listIkp() {
       return this.listDataIkp.map((dataIkp) => {
@@ -300,24 +318,21 @@ export default {
       this.setQuery({ page: value })
       this.$fetch()
     },
-    showPopupConfirmationFollowupComplaint() {
-      this.$store.commit('followup-complaint/setIsShowPopup', false)
-      this.dataDialogConfirmation = {
-        title: this.dataDialog.title,
-        description: 'Apakah Anda yakin ingin menindaklanjuti aduan tersebut?',
-        labelButtonSubmit: 'Ya, lanjutkan',
-      }
-      this.isShowPopupConfirmationFollowup = true
-    },
     closePopupConfirmationComplaint() {
-      this.isShowPopupConfirmationFollowup = false
+      this.$store.commit('modals/CLOSEALL')
       this.$store.commit('followup-complaint/setIsFollowup', false)
+      if (this.isCreateIkp) {
+        this.$store.commit('create-ikp/setIsShowPopup', true)
+      } else {
+        this.$store.commit('followup-complaint/setIsShowPopup', true)
+      }
     },
     showPopupIkpNarrative(dataIkp) {
       this.$store.commit('followup-complaint/setDataIkp', dataIkp)
       this.isShowPopupIkpNarrative = true
     },
     showPopupCreateIkp() {
+      this.$refs.dialogCreateIkp.resetFormIkp()
       const {
         opd_id: opdId,
         deadline_date: deadlineDate,
@@ -327,13 +342,13 @@ export default {
         this.complaintType === typeAduan.instruksiKewenanganNonPemprov.props
       ) {
         this.$store.commit('create-ikp/setPayload', {
-          ...this.payload,
+          ...this.payloadCreateIkp,
           opd_pemprov_id: this.dataDialog.dataComplaint.opd_pemprov_id,
         })
       }
 
       this.$store.commit('create-ikp/setPayload', {
-        ...this.payload,
+        ...this.payloadCreateIkp,
         opd_id: opdId,
         deadline_at: deadlineDate,
         coverage_of_affairs: coverageOfAffairs,
@@ -347,8 +362,22 @@ export default {
       this.$store.commit('create-ikp/setIsShowPopup', true)
     },
     submitDataFollowupComplaint() {
-      this.isShowPopupConfirmationFollowup = false
-      this.$emit('submit', this.dataIkp)
+      this.$store.commit('modals/CLOSEALL')
+      let payloadFollowup = {
+        // ikp_code: this.dataIkp.ikp_code,
+        is_prov_responsibility:
+          this.complaintType === typeAduan.instruksiKewenanganPemprov.props,
+      }
+
+      if (this.isCreateIkp) {
+        payloadFollowup = { ...payloadFollowup, ...this.payloadCreateIkp }
+      } else {
+        payloadFollowup = {
+          ...payloadFollowup,
+          ikp_code: this.dataIkp.ikp_code,
+        }
+      }
+      this.$emit('submit', payloadFollowup)
       this.$store.commit('followup-complaint/setIsFollowup', false)
     },
     setPagination(newPagination) {
