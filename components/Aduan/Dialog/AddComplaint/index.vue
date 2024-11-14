@@ -10,16 +10,36 @@
       @submit="submitFormAddComplaint()"
     >
       <template #form-complaint>
-        <div class="mt-8 overflow-y-auto max-h-[450px]">
-          <FormInformationComplaint v-show="indexCurrentActive === 1" ref="formInformationComplaint" />
-          <FormLocationComplaint v-show="indexCurrentActive === 2" ref="formLocationComplaint" />
-          <FormOtherComplaint v-show="indexCurrentActive === 3" ref="formOtherComplaint" />
+        <div class="mt-8 max-h-[450px] overflow-y-auto">
+          <FormInformationComplaint
+            v-if="indexCurrentActive === 1"
+            ref="formInformationComplaint"
+          />
+          <FormLocationComplaint
+            v-if="indexCurrentActive === 2"
+            ref="formLocationComplaint"
+          />
+          <FormOtherComplaint
+            v-if="indexCurrentActive === 3"
+            ref="formOtherComplaint"
+          />
         </div>
       </template>
     </DialogWithStepper>
-    <DialogConfirmation :show-popup="isShowPopupConfirmation" :data-dialog="dataDialog" @submit="submitPopupConfirmationHandle()" @close="closePopupConfirmationHandle()" />
+    <DialogConfirmation
+      :show-popup="isShowPopupConfirmation"
+      :data-dialog="dataDialog"
+      @submit="submitPopupConfirmationHandle()"
+      @close="closePopupConfirmationHandle()"
+    />
     <DialogLoading :show-popup="isLoading" />
-    <DialogInformation :show-popup="isShowPopupInformation" :data-dialog="dataDialog" :icon-popup="iconPopup" @close="closePopupAddComplaintHandle ()" @submit="saveDataComplaintHandle()" />
+    <DialogInformation
+      :show-popup="isShowPopupInformation"
+      :data-dialog="dataDialog"
+      :icon-popup="iconPopup"
+      @close="closePopupAddComplaintHandle()"
+      @submit="saveDataComplaintHandle()"
+    />
   </div>
 </template>
 
@@ -32,21 +52,25 @@ import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
 
 export default {
   name: 'DialogAddComplaint',
-  components: { FormInformationComplaint, FormLocationComplaint, FormOtherComplaint },
+  components: {
+    FormInformationComplaint,
+    FormLocationComplaint,
+    FormOtherComplaint,
+  },
   mixins: [popupAduanMasuk],
   props: {
     showPopup: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
-  data () {
+  data() {
     return {
       indexCurrentActive: 1,
       labelButton: 'Lanjutkan',
       isShowPopupConfirmation: false,
       isShowPopupInformation: false,
-      typeConfirmation: 'cancel'
+      typeConfirmation: 'cancel',
     }
   },
   computed: {
@@ -55,43 +79,43 @@ export default {
       isValidFormLocationComplaint: 'getIsValidFormLocationComplaint',
       isValidFormOtherComplaint: 'getIsValidFormOtherComplaint',
       isLoading: 'getIsLoading',
-      isError: 'getIsError'
-    })
+      isError: 'getIsError',
+    }),
   },
   methods: {
-    submitFormAddComplaint () {
+    submitFormAddComplaint() {
       switch (this.indexCurrentActive) {
-        case 1 :
+        case 1:
           return this.submitFormInformationComplaintHandle()
         case 2:
           return this.submitFormLocationComplaintHandle()
-        case 3 :
+        case 3:
           return this.submitFormOtherComplaintHandle()
         default:
           return null
       }
     },
-    async submitFormInformationComplaintHandle () {
+    async submitFormInformationComplaintHandle() {
       await this.$refs.formInformationComplaint.inputDataInformationComplaintHandle()
       if (this.isValidFormInformationComplaint) {
         this.indexCurrentActive = 2
       }
     },
-    async submitFormLocationComplaintHandle () {
+    async submitFormLocationComplaintHandle() {
       await this.$refs.formLocationComplaint.inputDataLocationComplaintHandle()
       if (this.isValidFormLocationComplaint) {
         this.indexCurrentActive = 3
         this.labelButton = 'Simpan'
       }
     },
-    async submitFormOtherComplaintHandle () {
+    async submitFormOtherComplaintHandle() {
       await this.$refs.formOtherComplaint.inputDataOtherComplaintHandle()
       if (this.isValidFormOtherComplaint) {
         this.typeConfirmation = 'submit'
         this.showPopupConfirmationAddComplaint()
       }
     },
-    prevToFormHandle () {
+    prevToFormHandle() {
       if (this.indexCurrentActive > 1) {
         this.indexCurrentActive--
       }
@@ -100,7 +124,7 @@ export default {
         this.labelButton = 'Lanjutkan'
       }
     },
-    showPopupConfirmationAddComplaint () {
+    showPopupConfirmationAddComplaint() {
       this.isShowPopupConfirmation = true
       this.dataDialog = { showButtonCancel: true }
 
@@ -108,18 +132,18 @@ export default {
         this.setDataDialog({
           title: 'Konfirmasi Tambah Aduan',
           description: 'Apakah Anda yakin ingin menyimpan data ini?',
-          labelButtonSubmit: 'Ya Simpan'
+          labelButtonSubmit: 'Ya Simpan',
         })
       } else {
         this.setDataDialog({
           title: 'Konfirmasi Pembatalan',
           description: 'Apakah Anda yakin ingin membatalkan aduan ini?',
           labelButtonCancel: 'Ya, Batalkan Aduan',
-          labelButtonSubmit: 'Tetap Lanjutkan Aduan'
+          labelButtonSubmit: 'Tetap Lanjutkan Aduan',
         })
       }
     },
-    submitPopupConfirmationHandle () {
+    submitPopupConfirmationHandle() {
       if (this.typeConfirmation === 'submit') {
         this.saveDataComplaintHandle()
         this.$emit('close')
@@ -127,15 +151,21 @@ export default {
         this.isShowPopupConfirmation = false
       }
     },
-    async saveDataComplaintHandle () {
+    async saveDataComplaintHandle() {
       this.$emit('close')
       this.isShowPopupConfirmation = false
       await this.$store.dispatch('add-complaint/submitDataAddComplaint')
       this.isShowPopupInformation = true
       this.typeConfirmation = 'information'
       const dataDialogInformation = {
-        success: this.setSucessFailedInformationHandle('Tambah Data Aduan berhasil dilakukan', true),
-        failed: this.setSucessFailedInformationHandle('Tambah Data Aduan gagal dilakukan', false)
+        success: this.setSucessFailedInformationHandle(
+          'Tambah Data Aduan berhasil dilakukan',
+          true
+        ),
+        failed: this.setSucessFailedInformationHandle(
+          'Tambah Data Aduan gagal dilakukan',
+          false
+        ),
       }
       this.dataDialog.title = 'Informasi Tambah Aduan'
       if (this.isError) {
@@ -146,7 +176,7 @@ export default {
         this.setIconPopup({ ...dataDialogInformation.success.icon })
       }
     },
-    closePopupAddComplaintHandle () {
+    closePopupAddComplaintHandle() {
       this.indexCurrentActive = 1
       this.isShowPopupConfirmation = false
       this.isShowPopupInformation = false
@@ -156,13 +186,13 @@ export default {
       this.$emit('close')
       this.$store.commit('add-complaint/setIsError', false)
     },
-    closePopupConfirmationHandle () {
+    closePopupConfirmationHandle() {
       if (this.typeConfirmation === 'submit') {
         this.isShowPopupConfirmation = false
       } else {
         this.closePopupAddComplaintHandle()
       }
-    }
-  }
+    },
+  },
 }
 </script>

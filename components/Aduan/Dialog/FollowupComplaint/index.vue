@@ -164,7 +164,10 @@
       :data-ikp="dataIkp"
       @close="isShowPopupIkpNarrative = false"
     />
-    <DialogCreateIkp :complaint-type="complaintType" />
+    <DialogCreateIkp
+      v-if="isShowPopupFollowup"
+      :complaint-type="complaintType"
+    />
   </div>
 </template>
 

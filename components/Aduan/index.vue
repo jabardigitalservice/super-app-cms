@@ -230,6 +230,7 @@
       @close="closePopupAddComplaint()"
     />
     <DialogProcessComplaint
+      v-if="isShowPopupProcessComplaint"
       :data-dialog="dataDialog"
       :show-popup="isShowPopupProcessComplaint"
       @close="closePopupHandle()"
@@ -237,6 +238,7 @@
       @back-to-form="isShowPopupProcessComplaint = true"
     />
     <DialogProcessComplaint
+      v-if="isShowPopupChangeAuthority"
       :data-dialog="dataDialog"
       :show-popup="isShowPopupChangeAuthority"
       @close="closePopupHandle()"
