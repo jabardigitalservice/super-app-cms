@@ -387,15 +387,6 @@ export default {
           false
         ),
       }
-      // const isCreateIkp = this.$store.state['followup-complaint'].isCreateIkp
-
-      //   if (!isCreateIkp) {
-      //     payload = { ikp_code: dataIkp.ikp_code }
-      //   }
-      //   payload = {
-      //     ...payload,
-      //  ,
-      // } // jika buat ikp pemprov / non pemprov}
       this.integrationPopupHandle(dataDialogInformation, payload, 'follow-up')
     },
 
