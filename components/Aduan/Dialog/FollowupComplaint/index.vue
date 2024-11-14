@@ -265,7 +265,7 @@ export default {
       isCreateIkp: 'getIsCreateIkp',
     }),
     ...mapGetters('create-ikp', {
-      payload: 'getPayload',
+      payloadCreateIkp: 'getPayload',
     }),
     listIkp() {
       return this.listDataIkp.map((dataIkp) => {
@@ -342,13 +342,13 @@ export default {
         this.complaintType === typeAduan.instruksiKewenanganNonPemprov.props
       ) {
         this.$store.commit('create-ikp/setPayload', {
-          ...this.payload,
+          ...this.payloadCreateIkp,
           opd_pemprov_id: this.dataDialog.dataComplaint.opd_pemprov_id,
         })
       }
 
       this.$store.commit('create-ikp/setPayload', {
-        ...this.payload,
+        ...this.payloadCreateIkp,
         opd_id: opdId,
         deadline_at: deadlineDate,
         coverage_of_affairs: coverageOfAffairs,
@@ -363,7 +363,21 @@ export default {
     },
     submitDataFollowupComplaint() {
       this.$store.commit('modals/CLOSEALL')
-      this.$emit('submit', this.isCreateIkp ? this.payload : this.dataIkp)
+      let payloadFollowup = {
+        // ikp_code: this.dataIkp.ikp_code,
+        is_prov_responsibility:
+          this.complaintType === typeAduan.instruksiKewenanganPemprov.props,
+      }
+
+      if (this.isCreateIkp) {
+        payloadFollowup = { ...payloadFollowup, ...this.payloadCreateIkp }
+      } else {
+        payloadFollowup = {
+          ...payloadFollowup,
+          ikp_code: this.dataIkp.ikp_code,
+        }
+      }
+      this.$emit('submit', payloadFollowup)
       this.$store.commit('followup-complaint/setIsFollowup', false)
     },
     setPagination(newPagination) {

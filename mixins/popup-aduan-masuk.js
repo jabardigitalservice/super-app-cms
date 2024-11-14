@@ -360,7 +360,7 @@ export default {
       )
     },
 
-    submitFollowupComplaint(dataIkp) {
+    submitFollowupComplaint(payload) {
       this.$store.commit('modals/CLOSEALL')
       let dataDialogInformation = {}
       const dialogDescriptionSucceess =
@@ -376,7 +376,7 @@ export default {
       dataDialogInformation = {
         ...this.setDataDialogInformation(
           this.dataDialog.title,
-          dataIkp.ikp_code
+          payload.ikp_code
         ),
         success: this.setSucessFailedInformationHandle(
           dialogDescriptionSucceess,
@@ -387,11 +387,15 @@ export default {
           false
         ),
       }
-      const isCreateIkp = this.$store.state['followup-complaint'].isCreateIkp
-      let payload = dataIkp
-      if (!isCreateIkp) {
-        payload = { ikp_code: dataIkp.ikp_code }
-      }
+      // const isCreateIkp = this.$store.state['followup-complaint'].isCreateIkp
+
+      //   if (!isCreateIkp) {
+      //     payload = { ikp_code: dataIkp.ikp_code }
+      //   }
+      //   payload = {
+      //     ...payload,
+      //  ,
+      // } // jika buat ikp pemprov / non pemprov}
       this.integrationPopupHandle(dataDialogInformation, payload, 'follow-up')
     },
 
