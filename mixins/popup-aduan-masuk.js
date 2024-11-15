@@ -438,8 +438,16 @@ export default {
           indicator_unit: '',
         })
         this.$store.commit('popup-complaint/setFieldInput', '')
-      } catch {
+      } catch (error) {
+        const { code, errors } = error.response.data
         this.setDataDialog({ ...paramDialog.failed })
+        if (code === '4221400') {
+          this.setDataDialog({
+            ...paramDialog.failed,
+            description: errors.instruksi,
+          })
+        }
+
         this.setIconPopup({ name: 'times-circle', fill: '#EF5350' })
       } finally {
         this.isLoading = false
