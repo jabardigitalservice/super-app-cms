@@ -122,6 +122,7 @@ export default {
     showPopupInputIdSpanHandle(dataComplaint) {
       this.idApi = dataComplaint.id
       this.typeDialog = 'addIdSpan'
+      this.dataComplaint = dataComplaint
       this.setDataDialog({
         ...this.setDataDialogConfirmation(
           'Tambahkan ID SP4N Lapor',
@@ -436,6 +437,7 @@ export default {
           indicator_value: '',
           indicator_unit: '',
         })
+        this.$store.commit('popup-complaint/setFieldInput', '')
       } catch {
         this.setDataDialog({ ...paramDialog.failed })
         this.setIconPopup({ name: 'times-circle', fill: '#EF5350' })
@@ -460,7 +462,7 @@ export default {
             'redirectHotlineComplaint'
           )
         case 'addIdSpan':
-          return this.submitInputIdSpanHandle(this.dataDialog)
+          return this.showPopupInputIdSpanHandle(this.dataComplaint)
         case 'followupComplaint':
           return this.retryFollowupComplaint()
       }

@@ -1,5 +1,6 @@
 export const state = () => ({
   dataComplaint: {},
+  fieldInput: '',
 })
 
 export const actions = {
@@ -23,5 +24,8 @@ export const actions = {
 export const mutations = {
   setDataComplaint(state, dataComplaint) {
     state.dataComplaint = dataComplaint
+  },
+  setFieldInput(state, fieldInput) {
+    state.fieldInput = fieldInput
   },
 }
