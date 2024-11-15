@@ -246,6 +246,12 @@ export default {
         ),
         proposed_ikp_narrative: dataComplaint.proposed_ikp_narrative || '-',
       })
+
+      this.$store.commit('followup-complaint/setDialogConfirmation', {
+        ...dialogConfirmation,
+        title: 'Buat Instruksi',
+        nameModal: 'followupComplaintConfirmation',
+      })
       this.$store.commit('followup-complaint/setIsShowPopup', true)
     },
     submitPopupComplaintHandle(item) {
@@ -472,6 +478,7 @@ export default {
         case 'addIdSpan':
           return this.showPopupInputIdSpanHandle(this.dataComplaint)
         case 'followupComplaint':
+        case 'createInstruction':
           return this.retryFollowupComplaint()
       }
     },
@@ -491,7 +498,6 @@ export default {
         this.$store.commit('create-ikp/setPayload', {
           ...payload,
           deadline_at: new Date(payload.deadline_at),
-          opd_id: this.dataComplaint.opd_id,
         })
         this.$store.commit('create-ikp/setIsShowPopup', true)
       } else {
