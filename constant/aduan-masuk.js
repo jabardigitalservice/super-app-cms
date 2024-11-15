@@ -46,7 +46,7 @@ nonGovernmentAuthorityHeader.splice(1, 0, {
   sortable: true,
 })
 nonGovernmentAuthorityHeader.splice(4, 0, {
-  key: 'sp4n_added_at',
+  key: 'sp4n_created_at',
   text: 'Tanggal Diinput SP4N',
   sortable: true,
 })

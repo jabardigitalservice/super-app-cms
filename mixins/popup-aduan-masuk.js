@@ -122,6 +122,7 @@ export default {
     showPopupInputIdSpanHandle(dataComplaint) {
       this.idApi = dataComplaint.id
       this.typeDialog = 'addIdSpan'
+      this.dataComplaint = dataComplaint
       this.setDataDialog({
         ...this.setDataDialogConfirmation(
           'Tambahkan ID SP4N Lapor',
@@ -436,8 +437,17 @@ export default {
           indicator_value: '',
           indicator_unit: '',
         })
-      } catch {
+        this.$store.commit('popup-complaint/setFieldInput', '')
+      } catch (error) {
+        const { code, errors } = error.response.data
         this.setDataDialog({ ...paramDialog.failed })
+        if (code === '4221400') {
+          this.setDataDialog({
+            ...paramDialog.failed,
+            description: errors.instruksi,
+          })
+        }
+
         this.setIconPopup({ name: 'times-circle', fill: '#EF5350' })
       } finally {
         this.isLoading = false
@@ -460,7 +470,7 @@ export default {
             'redirectHotlineComplaint'
           )
         case 'addIdSpan':
-          return this.submitInputIdSpanHandle(this.dataDialog)
+          return this.showPopupInputIdSpanHandle(this.dataComplaint)
         case 'followupComplaint':
           return this.retryFollowupComplaint()
       }

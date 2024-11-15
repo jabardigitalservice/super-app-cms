@@ -52,10 +52,15 @@ export default {
       default: () => ({}),
     },
   },
-  data() {
-    return {
-      fieldInputText: '',
-    }
+  computed: {
+    fieldInputText: {
+      get() {
+        return this.$store.state['popup-complaint'].fieldInput
+      },
+      set(value) {
+        this.$store.commit('popup-complaint/setFieldInput', value)
+      },
+    },
   },
   methods: {
     async submitDialogInputTextHandle() {
@@ -65,12 +70,11 @@ export default {
           subDescription: this.dataDialog.subDescription,
           valueText: this.fieldInputText,
         })
-        this.fieldInputText = ''
       }
     },
     closePopupHandle() {
+      this.$store.commit('popup-complaint/setFieldInput', '')
       this.$refs.form.reset()
-      this.fieldInputText = ''
       this.$emit('close')
     },
   },
