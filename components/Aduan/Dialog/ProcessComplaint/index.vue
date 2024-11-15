@@ -461,6 +461,7 @@ export default {
         proposed_ikp_narrative: '',
         urgency_level: null,
         opd_pic: null,
+        opd_id: null,
         opd_name: null,
         opd_pemprov_id: null,
       }
@@ -525,7 +526,13 @@ export default {
         : null
       this.$emit('submit', { ...this.dataDialog, payload: this.payload })
       this.clearPopupProcessComplaint()
-      this.payload.complaint_status_id = null
+      if (
+        this.dataComplaintSource?.complaint_source?.id !==
+        complaintSource.span.id
+      ) {
+        this.payload.complaint_status_id = null
+      }
+      this.$store.commit('followup-complaint/setPayload', { ...this.payload })
     },
   },
 }
