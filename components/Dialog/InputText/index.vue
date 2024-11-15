@@ -70,7 +70,6 @@ export default {
           subDescription: this.dataDialog.subDescription,
           valueText: this.fieldInputText,
         })
-        // this.fieldInputText = ''
       }
     },
     closePopupHandle() {
