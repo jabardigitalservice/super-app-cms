@@ -120,7 +120,6 @@
 
 <script>
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
-// import { ENDPOINT_ADUAN } from '~/constant/endpoint-api'
 
 export default {
   name: 'FormLocationComplaint',

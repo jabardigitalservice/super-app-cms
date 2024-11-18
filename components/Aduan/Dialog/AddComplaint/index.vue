@@ -52,20 +52,7 @@
       @retry="backToForm()"
       @close-all-modal="closePopupInformation()"
     />
-    <!-- <DialogConfirmation
-      :show-popup="isShowPopupConfirmation"
-      :data-dialog="dataDialog"
-      @submit="submitPopupConfirmationHandle()"
-      @close="closePopupConfirmationHandle()"
-    /> -->
     <DialogLoading :show-popup="isLoading" />
-    <!-- <DialogInformation
-      :show-popup="isShowPopupInformation"
-      :data-dialog="dataDialog"
-      :icon-popup="iconPopup"
-      @close="closePopupAddComplaintHandle()"
-      @submit="saveDataComplaintHandle()"
-    /> -->
   </div>
 </template>
 
@@ -75,7 +62,6 @@ import FormInformationComplaint from '~/components/Aduan/Dialog/AddComplaint/For
 import FormLocationComplaint from '~/components/Aduan/Dialog/AddComplaint/Form/LocationComplaint'
 import FormOtherComplaint from '~/components/Aduan/Dialog/AddComplaint/Form/OthersComplaint'
 import { iconPopup } from '~/constant/icon-popup-new'
-// import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
 
 export default {
   name: 'DialogAddComplaint',
@@ -84,7 +70,6 @@ export default {
     FormLocationComplaint,
     FormOtherComplaint,
   },
-  // mixins: [popupAduanMasuk],
   props: {
     showPopup: {
       type: Boolean,
@@ -197,7 +182,6 @@ export default {
       }
     },
     async saveDataComplaintHandle() {
-      // await this.$store.dispatch('add-complaint/submitDataAddComplaint')
       this.typeConfirmation = 'information'
       const nameModal = `${this.nameModal}Information`
       const dataDialogSuccess = {

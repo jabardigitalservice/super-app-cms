@@ -278,7 +278,6 @@
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import AlertMessage from '~/components/Aduan/Dialog/ProcessComplaint/AlertMessage'
 import { complaintStatus, complaintSource } from '~/constant/aduan-masuk'
-// import { ENDPOINT_ADUAN } from '~/constant/endpoint-api'
 import { formatDate } from '~/utils'
 
 export default {
@@ -341,34 +340,6 @@ export default {
       dialogConfirmation: {},
     }
   },
-  // async fetch() {
-  //   try {
-  //     // get data Cakupan urusan
-  //     const responseAuthority = await this.$axios.get(
-  //       `${ENDPOINT_ADUAN}/authorities`
-  //     )
-  //     this.listDataAuthority = responseAuthority.data.data
-
-  //     if (this.payload.coverage_of_affairs) {
-  //       // get data nama instansi
-  //       const responseDisposition = await this.$axios.get(
-  //         `${ENDPOINT_ADUAN}/dispositions`,
-  //         { params: { authority: this.payload.coverage_of_affairs } }
-  //       )
-  //       this.listDataDisposition = responseDisposition.data.data
-  //     }
-
-  //     // get data OPD Pemprov Penanggungjawab
-  //     const responseGovResponsible = await this.$axios.get(
-  //       `${ENDPOINT_ADUAN}/opds`
-  //     )
-  //     this.listDataGovResponsible = responseGovResponsible.data.data
-  //   } catch {
-  //     this.listDataComplaintStatus = []
-  //     this.listDataAuthority = []
-  //     this.listDataDisposition = []
-  //   }
-  // },
   computed: {
     listAuthority() {
       return this.filterListAuthority().map((item) => {
@@ -405,24 +376,6 @@ export default {
       },
       set(value) {
         this.$store.commit('process-complaint/setComplaintSource', value)
-      },
-    },
-  },
-  watch: {
-    // payload() {
-    //   if (this.payload.coverage_of_affairs) {
-    //     this.$fetch()
-    //   }
-    // },
-    payload: {
-      deep: true,
-      handler() {
-        if (this.payload.coverage_of_affairs) {
-          this.$store.dispatch(
-            'utilities-complaint/getDataDispositions',
-            this.payload.coverage_of_affairs
-          )
-        }
       },
     },
   },
@@ -493,6 +446,7 @@ export default {
       }
       this.listDataDisposition = [{ label: '', value: '' }]
       this.$store.commit('process-complaint/setPayload', { ...this.payload })
+      this.$refs.form.reset()
     },
     closePopupProcessComplaint() {
       this.payload = { ...this.payload, complaint_status_id: null }

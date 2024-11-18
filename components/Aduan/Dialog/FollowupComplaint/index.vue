@@ -366,7 +366,6 @@ export default {
     submitDataFollowupComplaint() {
       this.$store.commit('modals/CLOSEALL')
       let payloadFollowup = {
-        // ikp_code: this.dataIkp.ikp_code,
         is_prov_responsibility:
           this.complaintType === typeAduan.instruksiKewenanganPemprov.props,
       }

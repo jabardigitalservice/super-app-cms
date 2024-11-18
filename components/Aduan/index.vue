@@ -573,7 +573,6 @@ export default {
     )
     this.addComplaintStatusFilterHandle()
     this.$store.dispatch('utilities-complaint/getDataCategory')
-    // this.getCategory()
     if (this.typeAduanPage === typeAduan.instruksiKewenanganNonPemprov.props) {
       this.getNonGovComplaintStatus()
     }
@@ -857,25 +856,6 @@ export default {
         this.listStatisticComplaint.pop()
       }
     },
-    // async getCategory() {
-    //   try {
-    //     // handle list data category
-    //     const responseListCategoryComplaint = await this.$axios.get(
-    //       `${ENDPOINT_ADUAN}/categories`
-    //     )
-
-    //     this.listDataCategory = responseListCategoryComplaint.data.data
-    //     this.listDataCategory = [
-    //       {
-    //         id: '',
-    //         name: 'Semua Kategori Aduan',
-    //       },
-    //       ...this.listDataCategory,
-    //     ]
-    //   } catch (error) {
-    //     console.error(error)
-    //   }
-    // },
     async getNonGovComplaintStatus() {
       try {
         // handle list data non government complaint status

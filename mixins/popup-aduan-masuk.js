@@ -252,32 +252,6 @@ export default {
         ),
         proposed_ikp_narrative: dataComplaint.proposed_ikp_narrative || '-',
       })
-      // dataComplaint = {
-      //   ...dataComplaint,
-      //   deadline_date: new Date(dataComplaint.deadline_date) || '',
-      // }
-      // const dialogConfirmation =
-      //   this.$store.state['followup-complaint'].dialogConfirmation
-      // this.$store.commit('followup-complaint/setDataDialogConfirmation', {
-      //   ...dialogConfirmation,
-      //   title: 'Buat Instruksi',
-      //   nameModal: 'createInstructionConfirmation',
-      // })
-      // this.$store.commit(
-      //   'create-ikp/setComplaintType',
-      //   typeAduan.instruksiKewenanganNonPemprov.props
-      // )
-      // this.setDataDialog({
-      //   dataComplaint,
-      //   ...this.setDataDialogConfirmation(
-      //     'Buat Instruksi',
-      //     'No.Aduan',
-      //     dataComplaint.complaint_id,
-      //     'Buat Instruksi'
-      //   ),
-      //   proposed_ikp_narrative: dataComplaint.proposed_ikp_narrative || '-',
-      // })
-
       this.$store.commit('followup-complaint/setDialogConfirmation', {
         ...dialogConfirmation,
         title: 'Buat Instruksi',
