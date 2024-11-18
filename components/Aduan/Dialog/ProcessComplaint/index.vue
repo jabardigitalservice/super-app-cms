@@ -388,13 +388,11 @@ export default {
       switch (keyObject) {
         case 'complaint_status_id':
           this.clearPopupProcessComplaint()
+          this.$refs.form.reset()
           this.isShowFieldProposeIkpNarrative = true
           break
         case 'coverage_of_affairs':
-          this.$store.dispatch(
-            'utilities-complaint/getDataDispositions',
-            this.payload.coverage_of_affairs
-          )
+          this.$store.dispatch('utilities-complaint/getDataDispositions', value)
           this.isShowFieldOPDPemprov =
             this.payload.coverage_of_affairs ===
             this.coverageOfAffairs.district.id
@@ -446,7 +444,6 @@ export default {
       }
       this.listDataDisposition = [{ label: '', value: '' }]
       this.$store.commit('process-complaint/setPayload', { ...this.payload })
-      this.$refs.form.reset()
     },
     closePopupProcessComplaint() {
       this.payload = { ...this.payload, complaint_status_id: null }
