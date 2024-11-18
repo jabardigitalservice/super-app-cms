@@ -12,15 +12,15 @@
       <template #form-complaint>
         <div class="mt-8 max-h-[450px] overflow-y-auto">
           <FormInformationComplaint
-            v-show="indexCurrentActive === 1"
+            v-if="indexCurrentActive === 1"
             ref="formInformationComplaint"
           />
           <FormLocationComplaint
-            v-show="indexCurrentActive === 2"
+            v-if="indexCurrentActive === 2"
             ref="formLocationComplaint"
           />
           <FormOtherComplaint
-            v-show="indexCurrentActive === 3"
+            v-if="indexCurrentActive === 3"
             ref="formOtherComplaint"
           />
         </div>
@@ -231,7 +231,6 @@ export default {
       this.$store.dispatch('add-complaint/clearDataInformationComplaint')
       this.$store.dispatch('add-complaint/clearDataLocationComplaint')
       this.$store.dispatch('add-complaint/clearDataOtherComplaint')
-      this.$store.dispatch()
       this.$emit('close')
     },
     backToForm() {
