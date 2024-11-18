@@ -144,7 +144,7 @@ export default {
         this.dialogConfirmation = {
           title: 'Konfirmasi Tambah Aduan',
           nameModal: `${this.nameModal}Confirmation`,
-          descriptionText: 'Apakah anda yakin ingin menyimpan data ini?',
+          descriptionText: 'Apakah Anda yakin ingin menyimpan data ini?',
           buttonSubmit: {
             label: 'Ya, Simpan',
             variant: 'primary',
@@ -159,7 +159,7 @@ export default {
         this.dialogConfirmation = {
           title: 'Konfirmasi Pembatalan',
           nameModal: `${this.nameModal}Confirmation`,
-          descriptionText: 'Apakah anda yakin ingin membatalkan aduan ini?',
+          descriptionText: 'Apakah Anda yakin ingin membatalkan aduan ini?',
           buttonSubmit: {
             label: 'Tetap Lanjutkan Aduan',
             variant: 'primary',
