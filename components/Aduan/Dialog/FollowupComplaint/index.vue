@@ -178,6 +178,7 @@
       @close="isShowPopupIkpNarrative = false"
     />
     <DialogCreateIkp
+      v-if="$store.state['followup-complaint'].isCreateIkp"
       ref="dialogCreateIkp"
       @submit="$store.dispatch('followup-complaint/showPopupConfirmation')"
     />
@@ -332,7 +333,7 @@ export default {
       this.isShowPopupIkpNarrative = true
     },
     showPopupCreateIkp() {
-      this.$refs.dialogCreateIkp.resetFormIkp()
+      console.log(this.dataDialog.dataComplaint)
       const {
         opd_id: opdId,
         deadline_date: deadlineDate,
@@ -358,6 +359,7 @@ export default {
         'create-ikp/setIkpNarrative',
         this.dataDialog.proposed_ikp_narrative
       )
+      this.$store.commit('followup-complaint/setIsCreateIkp', true)
       this.$store.dispatch('create-ikp/checkTruncate')
       this.$store.commit('create-ikp/setIsShowPopup', true)
     },

@@ -11,6 +11,7 @@ export default {
       isShowPopupInputIdSpan: false,
       isShowPopupProcessComplaint: false,
       isShowPopupChangeAuthority: false,
+      isPopupFollowupComplaint: false,
       dataDialog: {
         title: '',
         description: '',
@@ -50,6 +51,7 @@ export default {
       this.isShowPopupInputIdSpan = false
       this.isShowPopupProcessComplaint = false
       this.isShowPopupChangeAuthority = false
+      this.isPopupFollowupComplaint = false
     },
     filterComplaintStatus(listFilter) {
       return this.listComplaintStatus.filter(
@@ -149,6 +151,7 @@ export default {
           'Proses Aduan'
         ),
         createdDate: dataComplaint.created_at_api,
+        nameModal: this.typeDialog,
       })
 
       this.$store.commit('process-complaint/setComplaintSource', {
@@ -156,6 +159,7 @@ export default {
       })
       this.$store.dispatch('process-complaint/changeComplaintStatusId')
       this.isShowPopupProcessComplaint = true
+      this.$store.commit('modals/OPEN', this.dataDialog.nameModal)
     },
     showPopupChangeAuthority(dataComplaint) {
       this.idApi = dataComplaint.id
@@ -172,6 +176,7 @@ export default {
           'Ubah Kewenangan'
         ),
         createDate: dataComplaint.created_at_api,
+        nameModal: this.typeDialog,
       })
       this.$store.commit('process-complaint/setPayload', {
         coverage_of_affairs: dataComplaint?.coverage_of_affairs,
@@ -189,10 +194,12 @@ export default {
         complaint_source: dataComplaint?.complaint_source,
       })
       this.isShowPopupChangeAuthority = true
+      this.$store.commit('modals/OPEN', this.dataDialog.nameModal)
     },
     showPopupFollowupComplaint(dataComplaint) {
       this.idApi = dataComplaint.id
       this.typeDialog = 'followupComplaint'
+      this.isPopupFollowupComplaint = true
       dataComplaint.deadline_date = new Date(dataComplaint.deadline_date) || '-'
       this.dataComplaint = dataComplaint
       const dialogConfirmation =
@@ -221,13 +228,12 @@ export default {
     showPopupCreateInstruction(dataComplaint) {
       this.idApi = dataComplaint.id
       this.typeDialog = 'createInstruction'
-      dataComplaint = {
-        ...dataComplaint,
-        deadline_date: new Date(dataComplaint.deadline_date) || '',
-      }
+      this.isPopupFollowupComplaint = true
+      dataComplaint.deadline_date = new Date(dataComplaint.deadline_date) || '-'
+      this.dataComplaint = dataComplaint
       const dialogConfirmation =
         this.$store.state['followup-complaint'].dialogConfirmation
-      this.$store.commit('followup-complaint/setDataDialogConfirmation', {
+      this.$store.commit('followup-complaint/setDialogConfirmation', {
         ...dialogConfirmation,
         title: 'Buat Instruksi',
         nameModal: 'createInstructionConfirmation',
@@ -246,6 +252,31 @@ export default {
         ),
         proposed_ikp_narrative: dataComplaint.proposed_ikp_narrative || '-',
       })
+      // dataComplaint = {
+      //   ...dataComplaint,
+      //   deadline_date: new Date(dataComplaint.deadline_date) || '',
+      // }
+      // const dialogConfirmation =
+      //   this.$store.state['followup-complaint'].dialogConfirmation
+      // this.$store.commit('followup-complaint/setDataDialogConfirmation', {
+      //   ...dialogConfirmation,
+      //   title: 'Buat Instruksi',
+      //   nameModal: 'createInstructionConfirmation',
+      // })
+      // this.$store.commit(
+      //   'create-ikp/setComplaintType',
+      //   typeAduan.instruksiKewenanganNonPemprov.props
+      // )
+      // this.setDataDialog({
+      //   dataComplaint,
+      //   ...this.setDataDialogConfirmation(
+      //     'Buat Instruksi',
+      //     'No.Aduan',
+      //     dataComplaint.complaint_id,
+      //     'Buat Instruksi'
+      //   ),
+      //   proposed_ikp_narrative: dataComplaint.proposed_ikp_narrative || '-',
+      // })
 
       this.$store.commit('followup-complaint/setDialogConfirmation', {
         ...dialogConfirmation,
@@ -448,10 +479,12 @@ export default {
         const { code, errors } = error.response.data
         this.setDataDialog({ ...paramDialog.failed })
         if (code === '4221400') {
-          this.setDataDialog({
-            ...paramDialog.failed,
-            description: errors.instruksi,
-          })
+          if (this.errors?.instruksi) {
+            this.setDataDialog({
+              ...paramDialog.failed,
+              description: errors?.instruksi || '',
+            })
+          }
         }
 
         this.setIconPopup({ name: 'times-circle', fill: '#EF5350' })

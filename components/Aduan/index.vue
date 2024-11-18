@@ -85,7 +85,7 @@
               label="Tambah Aduan"
               variant="primary"
               class="flex-shrink-0"
-              @click="isShowPopupAddComplaint = true"
+              @click="showPopupAddComplaint()"
             />
           </div>
           <div>
@@ -226,10 +226,12 @@
       @submit="submitInputIdSpanHandle"
     />
     <DialogAddComplaint
-      :show-popup="isShowPopupAddComplaint"
+      v-if="isShowPopupAddComplaint"
+      name-modal="addComplaint"
       @close="closePopupAddComplaint()"
     />
     <DialogProcessComplaint
+      v-if="isShowPopupProcessComplaint"
       :data-dialog="dataDialog"
       :show-popup="isShowPopupProcessComplaint"
       @close="closePopupHandle()"
@@ -237,12 +239,14 @@
       @back-to-form="isShowPopupProcessComplaint = true"
     />
     <DialogProcessComplaint
+      v-if="isShowPopupChangeAuthority"
       :data-dialog="dataDialog"
       :show-popup="isShowPopupChangeAuthority"
       @close="closePopupHandle()"
       @submit="submitProcessComplaint"
     />
     <DialogFollowupComplaint
+      v-if="isPopupFollowupComplaint"
       :data-dialog="dataDialog"
       :complaint-type="typeAduanPage.props"
       @submit="submitFollowupComplaint"
@@ -498,12 +502,14 @@ export default {
       })
     },
     listCategory() {
-      return this.listDataCategory.map((item) => {
-        return {
-          value: item.id,
-          label: item.name,
+      return this.$store.state['utilities-complaint'].listCategory.map(
+        (item) => {
+          return {
+            value: item.id,
+            label: item.name,
+          }
         }
-      })
+      )
     },
     listNonGovComplaintStatus() {
       // list status complaint for non government
@@ -571,8 +577,13 @@ export default {
     this.pagination.itemsPerPageOptions = generateItemsPerPageOptions(
       this.pagination.itemsPerPage
     )
-    this.getCategory()
-    this.getNonGovComplaintStatus()
+    this.addComplaintStatusFilterHandle()
+    this.$store.dispatch('utilities-complaint/getDataCategory')
+    // this.getCategory()
+    if (this.typeAduanPage === typeAduan.instruksiKewenanganNonPemprov.props) {
+      this.getNonGovComplaintStatus()
+    }
+
     this.query = this.addComplaintStatusFilterHandle()
   },
   methods: {
@@ -738,6 +749,8 @@ export default {
       this.deletePropertiesWithPrefix(this.query, 'complaint_status_id[')
       if (status !== 'total') {
         query['complaint_status_id[0]'] = status
+      } else {
+        this.addComplaintStatusFilterHandle()
       }
       this.setQuery(query)
       this.isShowPopupDateRange = false
@@ -850,25 +863,25 @@ export default {
         this.listStatisticComplaint.pop()
       }
     },
-    async getCategory() {
-      try {
-        // handle list data category
-        const responseListCategoryComplaint = await this.$axios.get(
-          `${ENDPOINT_ADUAN}/categories`
-        )
+    // async getCategory() {
+    //   try {
+    //     // handle list data category
+    //     const responseListCategoryComplaint = await this.$axios.get(
+    //       `${ENDPOINT_ADUAN}/categories`
+    //     )
 
-        this.listDataCategory = responseListCategoryComplaint.data.data
-        this.listDataCategory = [
-          {
-            id: '',
-            name: 'Semua Kategori Aduan',
-          },
-          ...this.listDataCategory,
-        ]
-      } catch (error) {
-        console.error(error)
-      }
-    },
+    //     this.listDataCategory = responseListCategoryComplaint.data.data
+    //     this.listDataCategory = [
+    //       {
+    //         id: '',
+    //         name: 'Semua Kategori Aduan',
+    //       },
+    //       ...this.listDataCategory,
+    //     ]
+    //   } catch (error) {
+    //     console.error(error)
+    //   }
+    // },
     async getNonGovComplaintStatus() {
       try {
         // handle list data non government complaint status
@@ -895,6 +908,10 @@ export default {
           delete obj[prop]
         }
       }
+    },
+    showPopupAddComplaint() {
+      this.isShowPopupAddComplaint = true
+      this.$store.commit('modals/OPEN', 'addComplaint')
     },
   },
 }
