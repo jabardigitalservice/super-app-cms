@@ -341,34 +341,6 @@ export default {
       dialogConfirmation: {},
     }
   },
-  // async fetch() {
-  //   try {
-  //     // get data Cakupan urusan
-  //     const responseAuthority = await this.$axios.get(
-  //       `${ENDPOINT_ADUAN}/authorities`
-  //     )
-  //     this.listDataAuthority = responseAuthority.data.data
-
-  //     if (this.payload.coverage_of_affairs) {
-  //       // get data nama instansi
-  //       const responseDisposition = await this.$axios.get(
-  //         `${ENDPOINT_ADUAN}/dispositions`,
-  //         { params: { authority: this.payload.coverage_of_affairs } }
-  //       )
-  //       this.listDataDisposition = responseDisposition.data.data
-  //     }
-
-  //     // get data OPD Pemprov Penanggungjawab
-  //     const responseGovResponsible = await this.$axios.get(
-  //       `${ENDPOINT_ADUAN}/opds`
-  //     )
-  //     this.listDataGovResponsible = responseGovResponsible.data.data
-  //   } catch {
-  //     this.listDataComplaintStatus = []
-  //     this.listDataAuthority = []
-  //     this.listDataDisposition = []
-  //   }
-  // },
   computed: {
     listAuthority() {
       return this.filterListAuthority().map((item) => {
@@ -409,11 +381,6 @@ export default {
     },
   },
   watch: {
-    // payload() {
-    //   if (this.payload.coverage_of_affairs) {
-    //     this.$fetch()
-    //   }
-    // },
     payload: {
       deep: true,
       handler() {
