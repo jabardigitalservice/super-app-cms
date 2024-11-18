@@ -213,12 +213,6 @@
       @close="closePopupHandle()"
       @submit="submitPopupComplaintHandle"
     />
-    <!-- <DialogInputTextArea
-      :data-dialog="dataDialog"
-      :show-popup="isShowPopupConfirmationRedirectHotlineJabar"
-      @close="closePopupHandle()"
-      @submit="submitRedirectHotlineJabar"
-    /> -->
     <DialogInputText
       :data-dialog="dataDialog"
       :show-popup="isShowPopupInputIdSpan"

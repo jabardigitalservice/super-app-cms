@@ -221,7 +221,6 @@ import AlertInformation from '~/components/Aduan/Alert/Information'
 import CardIkpNarrative from '~/components/Aduan/Dialog/CreateIkp/CardIkpNarrative'
 import { formatDate } from '~/utils'
 import { typeAduan } from '~/constant/aduan-masuk'
-// import { ENDPOINT_ADUAN } from '~/constant/endpoint-api'
 
 export default {
   name: 'DialogCreateIkp',
@@ -261,30 +260,6 @@ export default {
       instructionNote: '',
     }
   },
-  // async fetch() {
-  //   try {
-  //     // response cakupan urusan
-  //     const responseAuthority = await this.$axios.get(
-  //       `${ENDPOINT_ADUAN}/authorities`
-  //     )
-  //     this.listDataAuthority = responseAuthority.data.data
-  //     // response nama instansi
-  //     const responseDisposition = await this.$axios.get(
-  //       `${ENDPOINT_ADUAN}/dispositions`,
-  //       { params: { authority: this.payload.coverage_of_affairs } }
-  //     )
-  //     this.listDataDisposition = responseDisposition.data.data
-  //     // response OPD Pemprov Penanggungjawab
-  //     const responseGovResponsible = await this.$axios.get(
-  //       `${ENDPOINT_ADUAN}/opds`
-  //     )
-  //     this.listDataGovResponsible = responseGovResponsible.data.data
-  //   } catch {
-  //     this.listDataDisposition = []
-  //     this.listDataAuthority = []
-  //     this.listDataGovResponsible = []
-  //   }
-  // },
 
   computed: {
     listAuthority() {
@@ -332,19 +307,6 @@ export default {
         }
       },
     },
-    // payload() {
-    //   if (this.payload.coverage_of_affairs) {
-    //     // this.$fetch()
-    //     this.$store.dispatch(
-    //       'utilities-complaint/getDataDispositions',
-    //       this.payload.coverage_of_affairs
-    //     )
-    //   }
-    //   if (this.payload.description) {
-    //     this.descriptionLength =
-    //       this.descriptionLength - this.payload.description.length
-    //   }
-    // },
   },
   mounted() {
     this.$store.dispatch('utilities-complaint/getDataAuthorities')

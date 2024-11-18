@@ -11,7 +11,7 @@
           tag="div"
         >
           <BaseInputText
-            v-model="payloadInformationComplaint.sp4n_id"
+            v-model="dataInformationComplaint.sp4n_id"
             type="text"
             placeholder="Masukkan ID SP4N Lapor"
             :error-message="errors[0]"
@@ -33,7 +33,7 @@
           </div>
           <div>
             <date-picker
-              v-model="payloadInformationComplaint.span_created_at"
+              v-model="dataInformationComplaint.sp4n_added_at"
               format="DD/MM/YYYY"
               :class="{
                 'mx-datepicker--error': errors[0],
@@ -51,7 +51,7 @@
           tag="div"
         >
           <jds-input-text
-            v-model="payloadInformationComplaint.user_name"
+            v-model="dataInformationComplaint.user_name"
             name="Nama Pelapor"
             label="Nama Pelapor"
             placeholder="Masukkan Nama Pelapor"
@@ -66,7 +66,7 @@
           tag="div"
         >
           <jds-input-text
-            v-model="payloadInformationComplaint.title"
+            v-model="dataInformationComplaint.title"
             name="Judul Aduan"
             label="Judul Aduan"
             placeholder="Masukkan Judul Aduan"
@@ -81,7 +81,7 @@
           tag="div"
         >
           <BaseTextArea
-            v-model="payloadInformationComplaint.description"
+            v-model="description"
             placeholder="Masukkan Isi Laporan"
             label="Isi Laporan"
             name="Isi Laporan"
@@ -91,7 +91,7 @@
         </ValidationProvider>
         <p class="text-sm text-gray-600">
           Tersisa
-          {{ 255 - payloadInformationComplaint.description.length }} karakter
+          {{ 255 - description.length }} karakter
         </p>
       </form>
     </ValidationObserver>
@@ -101,12 +101,10 @@
 <script>
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import { formatDate } from '~/utils'
-import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
 
 export default {
   name: 'FormInformationComplaint',
   components: { ValidationObserver, ValidationProvider },
-  mixins: [popupAduanMasuk],
   props: {
     showPopup: {
       type: Boolean,
@@ -115,15 +113,20 @@ export default {
   },
   data() {
     return {
-      payloadInformationComplaint: {
-        sp4n_id: '',
-        span_created_at: '',
-        user_name: '',
-        title: '',
-        description: '',
-      },
-      spanId: '',
+      description: '',
     }
+  },
+  computed: {
+    dataInformationComplaint: {
+      get() {
+        return {
+          ...this.$store.state['add-complaint'].dataInformationComplaint,
+        }
+      },
+      set(value) {
+        this.$store.commit('add-complaint/setDataInformationComplaint', value)
+      },
+    },
   },
   methods: {
     async inputDataInformationComplaintHandle() {
@@ -135,23 +138,19 @@ export default {
       )
       if (isValid) {
         this.$store.commit('add-complaint/setDataInformationComplaint', {
-          ...this.payloadInformationComplaint,
+          ...this.dataInformationComplaint,
           span_created_at: formatDate(
-            this.payloadInformationComplaint.span_created_at || '',
+            this.dataInformationComplaint.span_created_at || '',
             'yyyy-MM-dd'
           ),
+          description: this.description,
         })
         this.isSubmit = false
       }
     },
     clearFormInformationComplaintHandle() {
-      this.payloadInformationComplaint = {
-        sp4n_id: '',
-        span_created_at: '',
-        user_name: '',
-        title: '',
-        description: '',
-      }
+      this.$store.dispatch('add-complaint/clearDataInformationComplaint')
+      this.description = ''
       this.isSubmit = false
       this.$refs.informationComplaintValidate.reset()
     },
