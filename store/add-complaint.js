@@ -3,7 +3,7 @@ import { ENDPOINT_ADUAN } from '~/constant/endpoint-api'
 export const state = () => ({
   dataInformationComplaint: {
     sp4n_id: '',
-    span_created_at: '',
+    sp4n_created_at: '',
     user_name: '',
     title: '',
     description: '',
@@ -11,14 +11,14 @@ export const state = () => ({
   dataLocationComplaint: {
     city_id: '',
     district_id: '',
-    subdistrict_id: '',
+    village_id: '',
     address_detail: '',
   },
   dataOtherComplaint: {
-    complaint_category_id: '',
-    complaint_subcategory_id: '',
+    category_id: '',
+    subcategory_id: '',
     disposition: '',
-    authority: '',
+    authority: 'Pemerintah Provinsi Jawa Barat',
   },
   dataAddComplaint: {},
   isValidFormInformationComplaint: true,
@@ -57,6 +57,7 @@ export const actions = {
         ...state.dataInformationComplaint,
         ...state.dataLocationComplaint,
         ...state.dataOtherComplaint,
+        source_id: 'sp4n',
       }
       await this.$axios.post(ENDPOINT_ADUAN, {
         ...dataAddComplaint,
@@ -70,6 +71,34 @@ export const actions = {
     } finally {
       commit('setIsLoading', false)
     }
+  },
+  clearDataInformationComplaint({ commit }) {
+    const dataInformationComplaint = {
+      sp4n_id: '',
+      sp4n_created_at: '',
+      user_name: '',
+      title: '',
+      description: '',
+    }
+    commit('setDataInformationComplaint', dataInformationComplaint)
+  },
+  clearDataLocationComplaint({ commit }) {
+    const dataLocationComplaint = {
+      city_id: '',
+      district_id: '',
+      village_id: '',
+      address_detail: '',
+    }
+    commit('setDataLocationComplaint', dataLocationComplaint)
+  },
+  clearDataOtherComplaint({ commit }) {
+    const dataOtherComplaint = {
+      category_id: '',
+      subcategory_id: '',
+      disposition: '',
+      authority: 'Pemerintah Provinsi Jawa Barat',
+    }
+    commit('setDataLocationComplaint', dataOtherComplaint)
   },
 }
 

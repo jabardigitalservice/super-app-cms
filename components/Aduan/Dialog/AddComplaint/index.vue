@@ -1,7 +1,7 @@
 <template>
   <div>
     <DialogWithStepper
-      :show-popup="showPopup"
+      :name-modal="nameModal"
       title="Tambah Aduan"
       :index-current-active="indexCurrentActive"
       :label-button="labelButton"
@@ -10,16 +10,49 @@
       @submit="submitFormAddComplaint()"
     >
       <template #form-complaint>
-        <div class="mt-8 overflow-y-auto max-h-[450px]">
-          <FormInformationComplaint v-show="indexCurrentActive === 1" ref="formInformationComplaint" />
-          <FormLocationComplaint v-show="indexCurrentActive === 2" ref="formLocationComplaint" />
-          <FormOtherComplaint v-show="indexCurrentActive === 3" ref="formOtherComplaint" />
+        <div class="mt-8 max-h-[450px] overflow-y-auto">
+          <FormInformationComplaint
+            v-if="indexCurrentActive === 1"
+            ref="formInformationComplaint"
+          />
+          <FormLocationComplaint
+            v-if="indexCurrentActive === 2"
+            ref="formLocationComplaint"
+          />
+          <FormOtherComplaint
+            v-if="indexCurrentActive === 3"
+            ref="formOtherComplaint"
+          />
         </div>
       </template>
     </DialogWithStepper>
-    <DialogConfirmation :show-popup="isShowPopupConfirmation" :data-dialog="dataDialog" @submit="submitPopupConfirmationHandle()" @close="closePopupConfirmationHandle()" />
+    <DialogConfirmationBasic :dialog-modal="dialogConfirmation">
+      <template #footer-custom>
+        <div class="mr-4">
+          <jds-button
+            :label="dialogConfirmation.buttonCancel?.label"
+            type="button"
+            :variant="dialogConfirmation?.buttonCancel?.variant"
+            @click="closePopupConfirmationHandle()"
+          />
+        </div>
+
+        <jds-button
+          :label="dialogConfirmation?.buttonSubmit?.label"
+          type="button"
+          :variant="dialogConfirmation?.buttonSubmit?.variant"
+          @click="submitPopupConfirmationHandle()"
+        />
+      </template>
+    </DialogConfirmationBasic>
+    <DialogInformationNew
+      :name-modal="dialogInformmation.nameModal"
+      :dialog-modal="dialogInformmation.dialogModal"
+      :is-success="!isError"
+      @retry="backToForm()"
+      @close-all-modal="closePopupInformation()"
+    />
     <DialogLoading :show-popup="isLoading" />
-    <DialogInformation :show-popup="isShowPopupInformation" :data-dialog="dataDialog" :icon-popup="iconPopup" @close="closePopupAddComplaintHandle ()" @submit="saveDataComplaintHandle()" />
   </div>
 </template>
 
@@ -28,25 +61,31 @@ import { mapGetters } from 'vuex'
 import FormInformationComplaint from '~/components/Aduan/Dialog/AddComplaint/Form/InformationComplaint'
 import FormLocationComplaint from '~/components/Aduan/Dialog/AddComplaint/Form/LocationComplaint'
 import FormOtherComplaint from '~/components/Aduan/Dialog/AddComplaint/Form/OthersComplaint'
-import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
+import { iconPopup } from '~/constant/icon-popup-new'
 
 export default {
   name: 'DialogAddComplaint',
-  components: { FormInformationComplaint, FormLocationComplaint, FormOtherComplaint },
-  mixins: [popupAduanMasuk],
+  components: {
+    FormInformationComplaint,
+    FormLocationComplaint,
+    FormOtherComplaint,
+  },
   props: {
     showPopup: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
-  data () {
+  data() {
     return {
       indexCurrentActive: 1,
       labelButton: 'Lanjutkan',
       isShowPopupConfirmation: false,
       isShowPopupInformation: false,
-      typeConfirmation: 'cancel'
+      typeConfirmation: 'cancel',
+      dialogConfirmation: {},
+      dialogInformmation: {},
+      nameModal: 'addComplaint',
     }
   },
   computed: {
@@ -55,43 +94,43 @@ export default {
       isValidFormLocationComplaint: 'getIsValidFormLocationComplaint',
       isValidFormOtherComplaint: 'getIsValidFormOtherComplaint',
       isLoading: 'getIsLoading',
-      isError: 'getIsError'
-    })
+      isError: 'getIsError',
+    }),
   },
   methods: {
-    submitFormAddComplaint () {
+    submitFormAddComplaint() {
       switch (this.indexCurrentActive) {
-        case 1 :
+        case 1:
           return this.submitFormInformationComplaintHandle()
         case 2:
           return this.submitFormLocationComplaintHandle()
-        case 3 :
+        case 3:
           return this.submitFormOtherComplaintHandle()
         default:
           return null
       }
     },
-    async submitFormInformationComplaintHandle () {
+    async submitFormInformationComplaintHandle() {
       await this.$refs.formInformationComplaint.inputDataInformationComplaintHandle()
       if (this.isValidFormInformationComplaint) {
         this.indexCurrentActive = 2
       }
     },
-    async submitFormLocationComplaintHandle () {
+    async submitFormLocationComplaintHandle() {
       await this.$refs.formLocationComplaint.inputDataLocationComplaintHandle()
       if (this.isValidFormLocationComplaint) {
         this.indexCurrentActive = 3
         this.labelButton = 'Simpan'
       }
     },
-    async submitFormOtherComplaintHandle () {
+    async submitFormOtherComplaintHandle() {
       await this.$refs.formOtherComplaint.inputDataOtherComplaintHandle()
       if (this.isValidFormOtherComplaint) {
         this.typeConfirmation = 'submit'
         this.showPopupConfirmationAddComplaint()
       }
     },
-    prevToFormHandle () {
+    prevToFormHandle() {
       if (this.indexCurrentActive > 1) {
         this.indexCurrentActive--
       }
@@ -100,69 +139,104 @@ export default {
         this.labelButton = 'Lanjutkan'
       }
     },
-    showPopupConfirmationAddComplaint () {
-      this.isShowPopupConfirmation = true
-      this.dataDialog = { showButtonCancel: true }
-
+    showPopupConfirmationAddComplaint() {
       if (this.typeConfirmation === 'submit') {
-        this.setDataDialog({
+        this.dialogConfirmation = {
           title: 'Konfirmasi Tambah Aduan',
-          description: 'Apakah Anda yakin ingin menyimpan data ini?',
-          labelButtonSubmit: 'Ya Simpan'
-        })
+          nameModal: `${this.nameModal}Confirmation`,
+          descriptionText: 'Apakah Anda yakin ingin menyimpan data ini?',
+          buttonSubmit: {
+            label: 'Ya, Simpan',
+            variant: 'primary',
+          },
+          buttonCancel: {
+            label: 'Batalkan',
+            variant: 'secondary',
+          },
+        }
       } else {
-        this.setDataDialog({
+        // confirmation cancel add complaint
+        this.dialogConfirmation = {
           title: 'Konfirmasi Pembatalan',
-          description: 'Apakah Anda yakin ingin membatalkan aduan ini?',
-          labelButtonCancel: 'Ya, Batalkan Aduan',
-          labelButtonSubmit: 'Tetap Lanjutkan Aduan'
-        })
+          nameModal: `${this.nameModal}Confirmation`,
+          descriptionText: 'Apakah Anda yakin ingin membatalkan aduan ini?',
+          buttonSubmit: {
+            label: 'Tetap Lanjutkan Aduan',
+            variant: 'primary',
+          },
+          buttonCancel: {
+            label: 'Ya, Batalkan Aduan',
+            variant: 'secondary',
+          },
+        }
       }
+      this.$store.commit('modals/OPEN', this.dialogConfirmation.nameModal)
     },
-    submitPopupConfirmationHandle () {
+    submitPopupConfirmationHandle() {
       if (this.typeConfirmation === 'submit') {
+        this.$store.commit('modals/CLOSEALL')
         this.saveDataComplaintHandle()
-        this.$emit('close')
       } else {
-        this.isShowPopupConfirmation = false
+        // confirmation cancel add complaint
+        this.$store.commit('modals/CLOSE', this.dialogConfirmation?.nameModal)
       }
     },
-    async saveDataComplaintHandle () {
-      this.$emit('close')
-      this.isShowPopupConfirmation = false
-      await this.$store.dispatch('add-complaint/submitDataAddComplaint')
-      this.isShowPopupInformation = true
+    async saveDataComplaintHandle() {
       this.typeConfirmation = 'information'
-      const dataDialogInformation = {
-        success: this.setSucessFailedInformationHandle('Tambah Data Aduan berhasil dilakukan', true),
-        failed: this.setSucessFailedInformationHandle('Tambah Data Aduan gagal dilakukan', false)
+      const nameModal = `${this.nameModal}Information`
+      const dataDialogSuccess = {
+        nameModal,
+        dialogModal: {
+          title: 'Tambah Aduan',
+          descriptionText: 'Tambah Data Aduan berhasil dilakukan',
+          icon: { ...iconPopup.success },
+        },
       }
-      this.dataDialog.title = 'Informasi Tambah Aduan'
-      if (this.isError) {
-        this.setDataDialog({ ...dataDialogInformation.failed })
-        this.setIconPopup({ ...dataDialogInformation.failed.icon })
+
+      const dataDialogFailed = {
+        nameModal,
+        dialogModal: {
+          title: 'Informasi Tambah Aduan',
+          descriptionText: 'Tambah Data Aduan gagal dilakukan',
+          icon: { ...iconPopup.failed },
+        },
+      }
+      await this.$store.dispatch('add-complaint/submitDataAddComplaint')
+      if (!this.isError) {
+        this.dialogInformmation = dataDialogSuccess
       } else {
-        this.setDataDialog({ ...dataDialogInformation.success })
-        this.setIconPopup({ ...dataDialogInformation.success.icon })
+        this.dialogInformmation = dataDialogFailed
       }
+
+      this.$store.commit('modals/OPEN', nameModal)
     },
-    closePopupAddComplaintHandle () {
+    closePopupAddComplaintHandle() {
       this.indexCurrentActive = 1
-      this.isShowPopupConfirmation = false
-      this.isShowPopupInformation = false
       this.$refs.formInformationComplaint.clearFormInformationComplaintHandle()
       this.$refs.formLocationComplaint.clearFormLocationComplaintHandle()
       this.$refs.formOtherComplaint.clearFormOtherComplaintHandle()
-      this.$emit('close')
       this.$store.commit('add-complaint/setIsError', false)
     },
-    closePopupConfirmationHandle () {
+    closePopupConfirmationHandle() {
       if (this.typeConfirmation === 'submit') {
-        this.isShowPopupConfirmation = false
+        this.$store.commit('modals/CLOSE', this.dialogConfirmation?.nameModal)
       } else {
+        // confirmation cancel add complaint
+        this.$store.commit('modals/CLOSEALL')
         this.closePopupAddComplaintHandle()
       }
-    }
-  }
+    },
+    closePopupInformation() {
+      this.indexCurrentActive = 1
+      this.$store.dispatch('add-complaint/clearDataInformationComplaint')
+      this.$store.dispatch('add-complaint/clearDataLocationComplaint')
+      this.$store.dispatch('add-complaint/clearDataOtherComplaint')
+      this.$emit('close')
+    },
+    backToForm() {
+      this.$store.commit('modals/CLOSEALL')
+      this.$store.commit('modals/OPEN', this.nameModal)
+    },
+  },
 }
 </script>

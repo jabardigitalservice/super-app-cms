@@ -221,7 +221,6 @@ import AlertInformation from '~/components/Aduan/Alert/Information'
 import CardIkpNarrative from '~/components/Aduan/Dialog/CreateIkp/CardIkpNarrative'
 import { formatDate } from '~/utils'
 import { typeAduan } from '~/constant/aduan-masuk'
-import { ENDPOINT_ADUAN } from '~/constant/endpoint-api'
 
 export default {
   name: 'DialogCreateIkp',
@@ -261,46 +260,28 @@ export default {
       instructionNote: '',
     }
   },
-  async fetch() {
-    try {
-      // response cakupan urusan
-      const responseAuthority = await this.$axios.get(
-        `${ENDPOINT_ADUAN}/authorities`
-      )
-      this.listDataAuthority = responseAuthority.data.data
-      // response nama instansi
-      const responseDisposition = await this.$axios.get(
-        `${ENDPOINT_ADUAN}/dispositions`,
-        { params: { authority: this.payload.coverage_of_affairs } }
-      )
-      this.listDataDisposition = responseDisposition.data.data
-      // response OPD Pemprov Penanggungjawab
-      const responseGovResponsible = await this.$axios.get(
-        `${ENDPOINT_ADUAN}/opds`
-      )
-      this.listDataGovResponsible = responseGovResponsible.data.data
-    } catch {
-      this.listDataDisposition = []
-      this.listDataAuthority = []
-      this.listDataGovResponsible = []
-    }
-  },
 
   computed: {
     listAuthority() {
-      return this.listDataAuthority.map((item) => {
-        return { value: item.id, label: item.name }
-      })
+      return this.$store.state['utilities-complaint'].listAuthorities.map(
+        (item) => {
+          return { value: item.id, label: item.name }
+        }
+      )
     },
     listDisposition() {
-      return this.listDataDisposition.map((item) => {
-        return { label: item.name, value: item.id }
-      })
+      return this.$store.state['utilities-complaint'].listDisposition.map(
+        (item) => {
+          return { label: item.name, value: item.id }
+        }
+      )
     },
     listGovResponsible() {
-      return this.listDataGovResponsible.map((item) => {
-        return { label: item.name, value: item.id }
-      })
+      return this.$store.state['utilities-complaint'].listGovResponsible.map(
+        (item) => {
+          return { label: item.name, value: item.id }
+        }
+      )
     },
     ...mapGetters('create-ikp', {
       isShowPopupCreateIkp: 'getIsShowPopup',
@@ -317,15 +298,23 @@ export default {
     },
   },
   watch: {
-    payload() {
-      if (this.payload.coverage_of_affairs) {
-        this.$fetch()
-      }
-      if (this.payload.description) {
-        this.descriptionLength =
-          this.descriptionLength - this.payload.description.length
-      }
+    payload: {
+      deep: true,
+      handler() {
+        if (this.payload.description) {
+          this.descriptionLength =
+            this.descriptionLength - this.payload.description.length
+        }
+      },
     },
+  },
+  mounted() {
+    this.$store.dispatch('utilities-complaint/getDataAuthorities')
+    this.$store.dispatch(
+      'utilities-complaint/getDataDispositions',
+      this.payload.coverage_of_affairs
+    )
+    this.$store.dispatch('utilities-complaint/getDataGovResponsible')
   },
   methods: {
     backToFormIkp() {
@@ -361,14 +350,9 @@ export default {
     },
     resetFormIkp() {
       this.payload = {
-        narrative: '',
-        deadline_at: '',
         description: '',
         indicator_value: '',
         indicator_unit: '',
-        opd_name: '',
-        coverage_of_affairs: '',
-        opd_pemprov_id: '',
       }
       this.instructionNote = ''
       this.$store.commit('create-ikp/setIsTruncate', false)
@@ -388,6 +372,7 @@ export default {
         this.$store.commit('create-ikp/setIsShowPopup', false)
         this.$store.commit('followup-complaint/setIsCreateIkp', true)
         this.$emit('submit')
+        this.$refs.form.reset()
       }
     },
     setAlert(newAlert) {
