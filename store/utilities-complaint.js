@@ -99,30 +99,6 @@ export const actions = {
       console.error(error)
     }
   },
-  // async fetch() {
-  //   try {
-  //     // response cakupan urusan
-  //     const responseAuthority = await this.$axios.get(
-  //       `${ENDPOINT_ADUAN}/authorities`
-  //     )
-  //     this.listDataAuthority = responseAuthority.data.data
-  //     // response nama instansi
-  //     const responseDisposition = await this.$axios.get(
-  //       `${ENDPOINT_ADUAN}/dispositions`,
-  //       { params: { authority: this.payload.coverage_of_affairs } }
-  //     )
-  //     this.listDataDisposition = responseDisposition.data.data
-  //     // response OPD Pemprov Penanggungjawab
-  //     const responseGovResponsible = await this.$axios.get(
-  //       `${ENDPOINT_ADUAN}/opds`
-  //     )
-  //     this.listDataGovResponsible = responseGovResponsible.data.data
-  //   } catch {
-  //     this.listDataDisposition = []
-  //     this.listDataAuthority = []
-  //     this.listDataGovResponsible = []
-  //   }
-  // },
 }
 
 export const mutations = {
@@ -151,3 +127,4 @@ export const mutations = {
     state.listVillage = listVillage
   },
 }
+//
