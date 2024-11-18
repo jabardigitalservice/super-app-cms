@@ -225,24 +225,6 @@ export default {
       }
 
       this.$store.commit('modals/OPEN', nameModal)
-      // const dataDialogInformation = {
-      // success: this.setSucessFailedInformationHandle(
-      //   'Tambah Data Aduan berhasil dilakukan',
-      //   true
-      // ),
-      // failed: this.setSucessFailedInformationHandle(
-      //   'Tambah Data Aduan gagal dilakukan',
-      //   false
-      // ),
-      // }
-      // this.dataDialog.title = 'Informasi Tambah Aduan'
-      // if (this.isError) {
-      //   this.setDataDialog({ ...dataDialogInformation.failed })
-      //   this.setIconPopup({ ...dataDialogInformation.failed.icon })
-      // } else {
-      //   this.setDataDialog({ ...dataDialogInformation.success })
-      //   this.setIconPopup({ ...dataDialogInformation.success.icon })
-      // }
     },
     closePopupAddComplaintHandle() {
       this.indexCurrentActive = 1
@@ -261,39 +243,11 @@ export default {
       }
     },
     closePopupInformation() {
-      // this.closePopupAddComplaintHandle()
-      const dataInformationComplaint = {
-        sp4n_id: '',
-        span_created_at: '',
-        user_name: '',
-        title: '',
-        description: '',
-      }
-      const dataLocationComplaint = {
-        city_id: '',
-        district_id: '',
-        subdistrict_id: '',
-        address_detail: '',
-      }
-      const dataOtherComplaint = {
-        complaint_category_id: '',
-        complaint_subcategory_id: '',
-        disposition: '',
-        authority: 'Pemerintah Provinsi Jawa Barat',
-      }
       this.indexCurrentActive = 1
-      this.$store.commit(
-        'add-complaint/setDataInformationComplaint',
-        dataInformationComplaint
-      )
-      this.$store.commit(
-        'add-complaint/setDataLocationComplaint',
-        dataLocationComplaint
-      )
-      this.$store.commit(
-        'add-complaint/setDataOtherComplaint',
-        dataOtherComplaint
-      )
+      this.$store.dispatch('add-complaint/clearDataInformationComplaint')
+      this.$store.dispatch('add-complaint/clearDataLocationComplaint')
+      this.$store.dispatch('add-complaint/clearDataOtherComplaint')
+      this.$store.dispatch()
       this.$emit('close')
     },
     backToForm() {
