@@ -1,5 +1,8 @@
 import { complaintStatus, typeAduan } from '~/constant/aduan-masuk'
-import { ENDPOINT_ADUAN } from '~/constant/endpoint-api'
+import {
+  ENDPOINT_ADUAN,
+  ENDPOINT_ADUAN_NON_PEMPROV,
+} from '~/constant/endpoint-api'
 
 export default {
   data() {
@@ -338,7 +341,10 @@ export default {
       }
       this.integrationPopupHandle(
         dataDialogInformation,
-        { sp4n_id: item.valueText },
+        {
+          sp4n_id: item.valueText,
+          complaint_number: this.dataComplaint.complaint_id,
+        },
         'add-sp4n'
       )
     },
@@ -433,7 +439,13 @@ export default {
       this.dataDialog.title = paramDialog.title
       this.dataDialog.subDescription = paramDialog.subDescription
       this.isLoading = true
-      const urlApi = `${ENDPOINT_ADUAN}/${this.idApi}/${pathApi}`
+      const complaintType =
+        this.$store.state['followup-complaint'].complaintType
+      const endpointApi =
+        complaintType === typeAduan.instruksiKewenanganNonPemprov.props
+          ? ENDPOINT_ADUAN_NON_PEMPROV
+          : ENDPOINT_ADUAN
+      const urlApi = `${endpointApi}/${this.idApi}/${pathApi}`
 
       try {
         await this.$axios.patch(urlApi, {
