@@ -1,6 +1,6 @@
 <template>
   <AduanDetail
-    :type-aduan-page="typeAduan.aduanMasuk"
+    :type-aduan-page="typeAduan.aduanDialihkanHotlineJabar"
     :list-button="listButtonDetail"
   />
 </template>
@@ -10,26 +10,26 @@ import { typeAduan, complaintButtonDetail } from '~/constant/aduan-masuk'
 import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
 
 export default {
-  name: 'PageDetailAduanMasuk',
+  name: 'PageDetailAduanHotlineJabar',
   mixins: [popupAduanMasuk],
   layout: 'Dashboard',
   data() {
     return {
       navigations: [
         {
-          label: typeAduan.aduanMasuk.label,
-          link: typeAduan.aduanMasuk.link,
+          label: typeAduan.aduanDialihkanHotlineJabar.label,
+          link: typeAduan.aduanDialihkanHotlineJabar.link,
         },
         {
           label: 'Detail Aduan',
-          link: `/aduan/aduan-masuk/detail/${this.$route.params.id}`,
+          link: `/aduan/aduan-hotline-jabar/detail/${this.$route.params.id}`,
         },
       ],
       descriptionPage: 'Berisi detail aduan dari masyarakat Jabar',
       typeAduan,
       listButtonDetail: [
-        complaintButtonDetail.failed,
-        complaintButtonDetail.verified,
+        complaintButtonDetail.followupHotlineJabar,
+        complaintButtonDetail.evidenceFollowupHotlineJabar,
       ],
     }
   },

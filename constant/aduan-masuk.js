@@ -46,7 +46,7 @@ nonGovernmentAuthorityHeader.splice(1, 0, {
   sortable: true,
 })
 nonGovernmentAuthorityHeader.splice(4, 0, {
-  key: 'sp4n_added_at',
+  key: 'sp4n_created_at',
   text: 'Tanggal Diinput SP4N',
   sortable: true,
 })
@@ -57,46 +57,61 @@ export const typeAduan = {
     label: 'Daftar Aduan Masuk',
     link: '/aduan/aduan-masuk',
     id: 'aduanMasuk',
+    phase: 'verification',
+  },
+  aduanDialihkanHotlineJabar: {
+    props: 'aduan-dialihkan-hotline-jabar',
+    label: 'Daftar Aduan Hotline Jabar',
+    link: '/aduan/aduan-hotline-jabar',
+    id: 'aduanDialihkanHotlineJabar',
+    phase: 'hotlinejabar',
   },
   aduanDialihkanSpanLapor: {
     props: 'aduan-dialihkan-span-lapor',
     label: 'Daftar Aduan Dialihkan Ke SP4N Lapor',
     link: '/aduan/dialihkan-ke-span-lapor',
     id: 'aduanDialihkanSpanLapor',
+    phase: 'authorization',
   },
   penentuanKewenangan: {
     props: 'penentuan-kewenangan',
     label: 'Daftar Penentuan Kewenangan',
     link: '/aduan/penentuan-kewenangan',
     id: 'penentuanKewenangan',
+    phase: 'authorization',
   },
   aduanDariSpanLapor: {
     props: 'aduan-dari-soab-lapor',
     label: 'Daftar Aduan dari SP4N Lapor',
     link: '/aduan/aduan-dari-span-lapor',
     id: 'aduanDariSpanLapor',
+    phase: 'authorization',
   },
   instruksiKewenanganPemprov: {
     props: 'instruksi-kewenangan-pemprov',
     label: 'Instruksi Kewenangan Pemprov',
     link: '/aduan/instruksi-kewenangan-pemprov',
     id: 'instruksiKewenanganPemprov',
+    phase: 'coordination',
   },
   instruksiKewenanganNonPemprov: {
     props: 'instruksi-kewenangan-non-pemprov',
     label: 'Instruksi Kewenangan Non-Pemprov',
     link: '/aduan/instruksi-kewenangan-non-pemprov',
     id: 'instruksiKewenanganNonPemprov',
+    phase: 'sp4n',
   },
   instruksiAduanWarga: {
     props: 'instruksi-aduan-warga',
     id: 'instruksiAduanWarga',
+    phase: 'coordination',
   },
   instruksiNonPemprov: {
     props: 'instruksi-non-pemprov',
     label: 'Daftar Instruksi Aduan Non Pemprov',
     link: '/aduan/instruksi-non-pemprov',
     id: 'instruksiNonPemprov',
+    phase: 'coordination',
   },
 }
 
@@ -104,10 +119,17 @@ export const complaintSource = {
   sapawarga: {
     id: 'sapawarga',
     name: 'Sapawarga',
+    logo: 'sapawarga.svg',
   },
   span: {
     id: 'sp4n',
     name: 'SP4N Lapor',
+    logo: 'span-lapor.svg',
+  },
+  jotform: {
+    id: 'jotform',
+    name: 'Jotform',
+    logo: null,
   },
 }
 
@@ -133,12 +155,19 @@ export const complaintStatus = Object.freeze({
     name: 'Terverifikasi',
     value: 0,
     statusColor: [
-      { color: 'yellow', typeAduan: [typeAduan.penentuanKewenangan.props] },
+      {
+        color: 'yellow',
+        typeAduan: [
+          typeAduan.penentuanKewenangan.props,
+          typeAduan.aduanDialihkanHotlineJabar.props,
+        ],
+      },
       { color: 'green', typeAduan: [typeAduan.aduanMasuk.props] },
     ],
     icon: '/icon/icon-aduan/complaint-status/complaint-verify-icon.svg',
     typeAduan: [
       typeAduan.aduanMasuk.props,
+      typeAduan.aduanDialihkanHotlineJabar.props,
       typeAduan.penentuanKewenangan.props,
     ],
   },
@@ -148,6 +177,19 @@ export const complaintStatus = Object.freeze({
     value: 0,
     statusColor: [{ color: 'red', typeAduan: [typeAduan.aduanMasuk.props] }],
     icon: '/icon/icon-aduan/complaint-status/complaint-failed-icon.svg',
+    typeAduan: [typeAduan.aduanMasuk.props],
+  },
+  directed_to_hotline_jabar: {
+    id: 'directed_to_hotline_jabar',
+    name: 'Dialihkan ke Hotline Jabar',
+    value: 0,
+    statusColor: [
+      {
+        color: 'purple',
+        typeAduan: [typeAduan.aduanMasuk.props],
+      },
+    ],
+    icon: '/icon/icon-aduan/complaint-status/complaint-redirect-to-hotline-jabar.svg',
     typeAduan: [typeAduan.aduanMasuk.props],
   },
   not_yet_instructed: {
@@ -229,7 +271,10 @@ export const complaintStatus = Object.freeze({
     statusColor: [
       {
         color: 'light-blue',
-        typeAduan: [typeAduan.instruksiKewenanganPemprov.props],
+        typeAduan: [
+          typeAduan.instruksiKewenanganPemprov.props,
+          typeAduan.aduanDialihkanHotlineJabar.props,
+        ],
       },
       { color: 'yellow', typeAduan: [typeAduan.instruksiAduanWarga.props] },
     ],
@@ -237,6 +282,7 @@ export const complaintStatus = Object.freeze({
     typeAduan: [
       typeAduan.instruksiKewenanganPemprov.props,
       typeAduan.instruksiAduanWarga.props,
+      typeAduan.aduanDialihkanHotlineJabar.props,
     ],
   },
   postponed: {
@@ -278,31 +324,35 @@ export const complaintStatus = Object.freeze({
     statusColor: [
       {
         color: 'green',
-        typeAduan: [typeAduan.instruksiKewenanganPemprov.props],
+        typeAduan: [
+          typeAduan.instruksiKewenanganPemprov.props,
+          typeAduan.aduanDialihkanHotlineJabar.props,
+        ],
       },
     ],
     icon: '/icon/icon-aduan/complaint-status/complaint-finished-icon.svg',
     typeAduan: [
       typeAduan.instruksiKewenanganPemprov.props,
       typeAduan.instruksiAduanWarga.props,
+      typeAduan.aduanDialihkanHotlineJabar.props,
     ],
   },
 })
 
 export const complaintButtonDetail = {
-  failed: {
-    idButton: 'button-confirmation-failed',
-    label: 'Gagal Terverifikasi',
-    variant: 'secondary',
-    classButton: '!text-red-400 !border-2 !border-red-400',
-    complaintStatus: complaintStatus.unverified.id,
-  },
-  verified: {
-    idButton: 'button-confirmation-verification',
-    label: 'Terverifikasi',
+  followupHotlineJabar: {
+    idButton: 'button-followup-hotline-jabar',
+    label: 'Tindaklanjuti Aduan',
     variant: 'primary',
-    complaintStatus: complaintStatus.unverified.id,
+    complaintStatus: complaintStatus.verified.id,
   },
+  evidenceFollowupHotlineJabar: {
+    idButton: 'button-evidence-followup-hotline-jabar',
+    label: 'Upload Tindaklanjuti Aduan',
+    variant: 'primary',
+    complaintStatus: complaintStatus.followup.id,
+  },
+
   addIdSpan: {
     idButton: 'button-add-id-span',
     label: 'Tambahkan ID SP4N Lapor',

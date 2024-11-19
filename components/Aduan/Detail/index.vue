@@ -11,7 +11,36 @@
           Kembali
         </div>
       </jds-button>
-      <div v-if="idTab === 'all'" class="flex">
+      <div
+        v-if="
+          typeAduanPage.props === typeAduan.aduanMasuk.props &&
+          complaintStatus.unverified.id === detailComplaint.complaint_status_id
+        "
+        class="w-fit"
+      >
+        <BaseButtonDropdown
+          label="Aksi"
+          :list-menu-pop-over="listMenuPopover"
+          @verified="
+            showPopupConfirmationVerificationComplaintHandle(detailComplaint)
+          "
+          @failed="
+            showPopupConfirmationComplaint(detailComplaint, 'failedComplaint')
+          "
+          @redirect-hotline-jabar="
+            showPopupConfirmationComplaint(
+              detailComplaint,
+              'redirectHotlineComplaint'
+            )
+          "
+        />
+      </div>
+      <div
+        v-else-if="
+          idTab === 'all' && typeAduanPage.props !== typeAduan.aduanMasuk.props
+        "
+        class="flex"
+      >
         <div
           v-for="(button, index) in listButton"
           v-show="
@@ -21,10 +50,10 @@
         >
           <div :class="{ 'mr-3': listButton.length > 1 }">
             <jds-button
-              :label="button.label"
-              :variant="button.variant"
-              class="!font-bold"
-              :class="button.classButton"
+              :label="button?.label"
+              :variant="button?.variant"
+              class="!text-[14px] !font-bold"
+              :class="button?.classButton"
               @click="clickButtonConfirmationHandle(button.idButton)"
             />
           </div>
@@ -46,25 +75,32 @@
           <TableComplaintDetail
             v-if="idTab === 'all'"
             :detail-complaint="detailComplaint"
-            :list-photo="listPhoto"
-            :type-aduan-page="typeAduanPage"
+            :list-photo="listPhotoComplaint"
+            :type-aduan-page="typeAduanPage.props"
             @button-image="isShowPopupViewImage = true"
           />
           <AduanDaftarIKPTableDetail
             v-else-if="idTab === 'instruksi-aduan'"
             :show-daftar-aduan="
-              typeAduanPage === typeAduan.instruksiKewenanganNonPemprov.props
+              typeAduanPage.props ===
+              typeAduan.instruksiKewenanganNonPemprov.props
             "
-            :ikp-type-page="typeAduanPage"
+            :ikp-type-page="typeAduanPage.props"
             detail-complaint-link="/aduan/instruksi-kewenangan-non-pemprov/detail"
             :ikp-code="ikpCode"
             @select-tab="selectedTab"
+          />
+          <AduanDetailTableEvidenceFollowup
+            v-else-if="idTab === 'bukti-tindak-lanjut'"
+            :list-photo="listPhotoEvidence"
+            :list-file="listFileEvidence"
+            :detail-complaint="detailComplaint"
           />
         </BaseTabPanel>
       </template>
     </BaseTabGroup>
     <DialogViewImage
-      :list-photo="listPhoto"
+      :list-photo="listPhotoComplaint"
       :show-popup="isShowPopupViewImage"
       @close="isShowPopupViewImage = false"
     />
@@ -73,6 +109,8 @@
       :data-dialog="dataDialog"
       @close="isShowPopupDetailStatusComplaint = false"
     />
+    <DialogFollowupHotlineJabar @close-all-modal="$fetch()" />
+    <DialogEvidenceFollowupHotline @close-all-modal="$fetch()" />
     <DialogInputText
       :data-dialog="dataDialog"
       :show-popup="isShowPopupInputIdSpan"
@@ -116,6 +154,7 @@ import {
   complaintStatus,
   typeAduan,
   complaintButtonDetail,
+  complaintSource,
 } from '~/constant/aduan-masuk'
 import ArrowLeft from '~/assets/icon/arrow-left.svg?inline'
 import DialogViewImage from '~/components/Aduan/DialogViewImage'
@@ -126,6 +165,13 @@ import TableComplaintDetail from '~/components/Aduan/Detail/Table/Complaint'
 import { formatDate } from '~/utils'
 import DialogProcessComplaint from '~/components/Aduan/Dialog/ProcessComplaint'
 import DialogFollowupComplaint from '~/components/Aduan/Dialog/FollowupComplaint'
+import DialogFollowupHotlineJabar from '~/components/Aduan/Dialog/FollowupHotlineJabar'
+import DialogEvidenceFollowupHotline from '~/components/Aduan/Dialog/EvidenceFollowupHotline'
+import {
+  ENDPOINT_ADUAN,
+  ENDPOINT_ADUAN_HOTLINE_JABAR,
+  // ENDPOINT_ADUAN_NON_PEMPROV,
+} from '~/constant/endpoint-api'
 
 export default {
   name: 'DetailAduan',
@@ -137,14 +183,20 @@ export default {
     DialogProcessComplaint,
     TableComplaintDetail,
     DialogFollowupComplaint,
+    DialogFollowupHotlineJabar,
+    DialogEvidenceFollowupHotline,
   },
   mixins: [popupAduanMasuk],
   props: {
     typeAduanPage: {
-      type: String,
-      default: '',
+      type: Object,
+      default: () => ({}),
     },
     listButton: {
+      type: Array,
+      default: () => [],
+    },
+    listTabDetail: {
       type: Array,
       default: () => [],
     },
@@ -156,46 +208,87 @@ export default {
           id: 'all',
           name: 'Detail Aduan',
           icon: '/icon/icon-aduan/complaint-detail.svg',
+          complaintType: ['all'],
+          complaintStatus: this.getTabDetailByComplaintStatus(),
         },
         {
           id: 'instruksi-aduan',
           name: 'Detail Instruksi Aduan',
           icon: '/icon/icon-aduan/instruction-detail.svg',
+          complaintType: [
+            typeAduan.instruksiKewenanganPemprov.props,
+            typeAduan.instruksiKewenanganNonPemprov.props,
+          ],
+          complaintStatus: this.getTabDetailByComplaintStatus(),
+        },
+        {
+          id: 'bukti-tindak-lanjut',
+          name: 'Bukti Tindaklanjut',
+          icon: '/icon/icon-aduan/evidence-followup.svg',
+          complaintType: [typeAduan.aduanDialihkanHotlineJabar.props],
+          complaintStatus: this.getTabDetailByComplaintStatus(),
+        },
+      ],
+      listMenuPopover: [
+        {
+          menu: 'Terverifikasi',
+          value: 'verified',
+        },
+        {
+          menu: 'Gagal Diverifikasi',
+          value: 'failed',
+        },
+        {
+          menu: 'Dialihkan ke Hotline Jabar',
+          value: 'redirect-hotline-jabar',
         },
       ],
       detailComplaint: {},
       idTab: '',
-      listPhoto: [],
+      listPhotoComplaint: [],
+      listPhotoEvidence: [],
+      listFileEvidence: [],
       isShowPopupViewImage: false,
       isShowPopupDetailStatusComplaint: false,
+      isShowDropdown: false,
       ikpCode: '',
       typeAduan,
+      complaintStatus,
     }
   },
   async fetch() {
     try {
-      const apiPath =
-        this.typeAduan.instruksiKewenanganNonPemprov.props ===
-        this.typeAduanPage
-          ? 'non-pemprov-complaints'
-          : 'complaints'
+      const endpoint = this.checkEndpointComplaint()
       const response = await this.$axios.get(
-        `/warga/${apiPath}/${this.$route.params.id}`
+        `${endpoint}/${this.$route.params.id}`,
+        {
+          params: {
+            phase: this.typeAduanPage.phase,
+          },
+        }
       )
       const dataDetailComplaint = response.data.data
       dataDetailComplaint.complaint_status =
         complaintStatus[dataDetailComplaint?.complaint_status_id]
-      if (typeAduan.aduanDialihkanSpanLapor.id === this.typeAduanPage) {
+      if (typeAduan.aduanDialihkanSpanLapor.id === this.typeAduanPage.props) {
         dataDetailComplaint.complaint_status_id = !dataDetailComplaint.sp4n_id
           ? 'no-id-span'
           : dataDetailComplaint.complaint_status_id
       }
       this.detailComplaint = {
         ...dataDetailComplaint,
+        complaint_status_note:
+          dataDetailComplaint.complaint_status_id ===
+          complaintStatus.directed_to_hotline_jabar.id
+            ? dataDetailComplaint.directed_to_hotline_jabar_note
+            : dataDetailComplaint.complaint_status_note,
         created_at_api: dataDetailComplaint?.created_at,
         created_at_format:
           dataDetailComplaint?.created_at &&
           formatDate(dataDetailComplaint?.created_at, 'dd/MM/yyyy - HH:mm'),
+        deadline_at_format:
+          dataDetailComplaint?.deadline_date &&
+          formatDate(dataDetailComplaint?.deadline_date, 'dd/MM/yyyy'),
         sp4n_created_at:
           dataDetailComplaint?.sp4n_created_at &&
           formatDate(
@@ -208,18 +301,16 @@ export default {
             dataDetailComplaint?.sp4n_added_at || '',
             'dd/MM/yyyy - HH:mm'
           ),
-        complaint_source:
-          dataDetailComplaint.complaint_source === 'sp4n'
-            ? 'SP4N Lapor'
-            : dataDetailComplaint.complaint_source,
       }
 
       this.ikpCode = dataDetailComplaint?.ikp_code
 
-      this.listPhoto = dataDetailComplaint?.photos || []
+      this.listPhotoComplaint = dataDetailComplaint?.photos || []
+      this.listPhotoEvidence = dataDetailComplaint?.evidence?.photos || []
+      this.listFileEvidence = dataDetailComplaint?.evidence?.files || []
     } catch {
       this.detailComplaint = {}
-      this.listPhoto = []
+      this.listPhotoComplaint = []
     }
   },
   computed: {
@@ -237,8 +328,13 @@ export default {
       return listTypeAduanStatusAduan
     },
     listTab() {
-      return this.listDataTab.filter((item) =>
-        this.checkShowTabIkp() ? item : item.id !== 'instruksi-aduan'
+      return this.listDataTab.filter(
+        (item) =>
+          item.complaintType.includes('all') ||
+          (item.complaintType.includes(this.typeAduanPage.props) &&
+            item.complaintStatus.includes(
+              this.detailComplaint?.complaint_status_id
+            ))
       )
     },
   },
@@ -246,12 +342,55 @@ export default {
     this.selectedTab('all')
   },
   methods: {
+    getTabDetailByComplaintStatus() {
+      switch (this.typeAduanPage.props) {
+        case typeAduan.instruksiKewenanganPemprov.props:
+          return [
+            complaintStatus.finished.id,
+            complaintStatus.postponed.id,
+            complaintStatus.review.id,
+            complaintStatus.followup.id,
+          ]
+        case typeAduan.instruksiKewenanganNonPemprov.props:
+          return [
+            complaintStatus.coordinated.id,
+            complaintStatus.not_yet_coordinated,
+          ]
+        case typeAduan.aduanDialihkanHotlineJabar.props:
+          return [complaintStatus.finished.id]
+        default:
+          return ['all']
+      }
+    },
+    getComplaintSource(dataComplaint) {
+      if (dataComplaint.complaint_source === 'sp4n') {
+        return complaintSource.span
+      }
+      return complaintSource[dataComplaint.complaint_source]
+    },
     selectedTab(idTab) {
       this.idTab = idTab
       const indexTab = this.listDataTab.findIndex(
         (dataTab) => dataTab.id === idTab
       )
       this.$refs.tabBarDetail.selectedTabIndexHandle(indexTab)
+    },
+    checkEndpointComplaint() {
+      // switch (this.typeAduanPage.props) {
+      //   case typeAduan.aduanDialihkanHotlineJabar.props:
+      //     return ENDPOINT_ADUAN_HOTLINE_JABAR
+      //   case typeAduan.instruksiKewenanganNonPemprov.props:
+      //     return ENDPOINT_ADUAN_NON_PEMPROV
+      //   default:
+      //     return ENDPOINT_ADUAN
+      // }
+      if (
+        this.typeAduanPage.props === typeAduan.aduanDialihkanHotlineJabar.props
+      ) {
+        return ENDPOINT_ADUAN_HOTLINE_JABAR
+      } else {
+        return ENDPOINT_ADUAN
+      }
     },
     checkShowTabIkp() {
       return (
@@ -264,20 +403,18 @@ export default {
     },
     checkTypePageForTab() {
       return (
-        typeAduan.instruksiKewenanganPemprov.props === this.typeAduanPage ||
-        typeAduan.instruksiKewenanganNonPemprov.props === this.typeAduanPage
+        typeAduan.instruksiKewenanganPemprov.props ===
+          this.typeAduanPage.props ||
+        typeAduan.instruksiKewenanganNonPemprov.props ===
+          this.typeAduanPage.props
       )
     },
     clickButtonConfirmationHandle(idButton) {
       switch (idButton) {
-        case complaintButtonDetail.verified.idButton:
-          return this.showPopupConfirmationVerificationComplaintHandle(
-            this.detailComplaint
-          )
-        case complaintButtonDetail.failed.idButton:
-          return this.showPopupConfirmationFailedComplaintHandle(
-            this.detailComplaint
-          )
+        case complaintButtonDetail.followupHotlineJabar.idButton:
+          return this.showPopupFollowupHotlineJabar()
+        case complaintButtonDetail.evidenceFollowupHotlineJabar.idButton:
+          return this.showPopupEvidenceFollowupHotlineJabar()
         case complaintButtonDetail.addIdSpan.idButton:
           return this.showPopupInputIdSpanHandle(this.detailComplaint)
         case complaintButtonDetail.complaintProcess.idButton:
@@ -297,11 +434,24 @@ export default {
         subDescription: detailComplaint.complaint_id,
       }
     },
+    showPopupFollowupHotlineJabar() {
+      this.$store.dispatch('popup-complaint/showPopupFollowupHotlineJabar', {
+        dataComplaint: this.detailComplaint,
+        dialogName: 'followupHotlineJabar',
+      })
+    },
+    showPopupEvidenceFollowupHotlineJabar() {
+      this.$store.commit(
+        'popup-complaint/setDataComplaint',
+        this.detailComplaint
+      )
+      this.$store.commit('modals/OPEN', 'evidenceFollowupHotline')
+    },
     goToBackHandle() {
       const { fromInstructionPage, ...newQuery } = this.$route.query
       this.$router.push({
         path:
-          this.typeAduanPage ===
+          this.typeAduanPage.props ===
           this.typeAduan.instruksiKewenanganNonPemprov.props
             ? '/aduan/instruksi-kewenangan-non-pemprov'
             : this.$nuxt.context.from.path,

@@ -1,175 +1,241 @@
 <template>
-  <BaseDialog :show-popup="showPopup">
-    <BaseDialogPanel class="w-[510px]">
-      <BaseDialogHeader :title="dataDialog.title" />
-      <ValidationObserver ref="form">
-        <form
-          class="form-process-complaint h-[576px] w-full overflow-auto px-6"
-        >
-          <h1 class="font-roboto text-base font-bold">Informasi Aduan</h1>
-          <div class="mb-4 grid grid-cols-2 gap-x-2">
-            <div>
-              <label class="text-sm">{{ dataDialog.description }}</label>
-              <p class="mt-1 text-sm font-bold">
-                {{ dataDialog.subDescription }}
-              </p>
-            </div>
-            <div>
-              <label class="text-sm">Sumber Aduan</label>
-              <div class="mt-1 flex">
-                <div
-                  class="h-[23px] w-[23px] flex-shrink-0 rounded-[4px] bg-[#F6F6F9]"
-                  :class="{
-                    'py-[3px] px-[5px]':
-                      dataComplaintSource?.id === complaintSource.sapawarga.id,
-                  }"
-                >
-                  <img
-                    :src="
-                      dataComplaintSource?.id === complaintSource.sapawarga.id
-                        ? require('~/assets/logo/sapawarga.svg')
-                        : require('~/assets/logo/span-lapor.svg')
-                    "
-                    alt="logo"
-                    :width="
-                      dataComplaintSource?.id ===
-                        complaintSource.sapawarga.id && '11'
-                    "
-                    :height="
-                      dataComplaintSource?.id ===
-                        complaintSource.sapawarga.id && '15'
-                    "
-                  />
-                </div>
-                <p class="ml-2 text-sm font-bold">
-                  {{ dataComplaintSource?.name }}
+  <div>
+    <BaseDialogFrame :name="dataDialog?.nameModal">
+      <BaseDialogPanel class="w-[510px]">
+        <BaseDialogHeader :title="dataDialog.title" />
+        <ValidationObserver ref="form">
+          <form
+            class="form-process-complaint h-[576px] w-full overflow-auto px-6"
+          >
+            <h1 class="font-roboto text-base font-bold">Informasi Aduan</h1>
+            <div class="mb-4 grid grid-cols-2 gap-x-2">
+              <div>
+                <label class="text-sm">{{ dataDialog.description }}</label>
+                <p class="mt-1 text-sm font-bold">
+                  {{ dataDialog.subDescription }}
                 </p>
               </div>
+              <div>
+                <label class="text-sm">Sumber Aduan</label>
+                <div class="mt-1 flex">
+                  <div
+                    v-if="dataComplaintSource?.complaint_source?.logo"
+                    class="flex h-[23px] w-[23px] flex-shrink-0 items-center justify-center rounded-[4px] bg-[#F6F6F9] py-[3px] px-[5px]"
+                  >
+                    <img
+                      :src="dataComplaintSource?.complaint_source?.logo"
+                      alt="logo"
+                      class="flex-shrink-0"
+                    />
+                  </div>
+                  <p
+                    class="text-sm font-bold"
+                    :class="{
+                      'ml-2': dataComplaintSource?.complaint_source?.logo,
+                    }"
+                  >
+                    {{ dataComplaintSource?.complaint_source?.name || '-' }}
+                  </p>
+                </div>
+              </div>
             </div>
-          </div>
 
-          <ValidationProvider
-            v-slot="{ errors }"
-            rules="requiredSelectForm"
-            name="Status Aduan"
-            class="mb-5"
-            tag="div"
-          >
-            <jds-select
-              v-model="payload.complaint_status_id"
+            <ValidationProvider
+              v-slot="{ errors }"
+              rules="requiredSelectForm"
               name="Status Aduan"
-              label="Status Aduan"
-              placeholder="Pilih Status Aduan"
-              :error-message="errors[0]"
-              :options="listComplaintStatus"
-              :class="{ 'mb-2': errors.length > 0 }"
-              :disabled="dataComplaintSource?.id === complaintSource.span.id"
-              @change="
-                changeSelectValue(
-                  payload.complaint_status_id,
-                  'complaint_status_id'
-                )
-              "
-            />
-          </ValidationProvider>
-          <!-- SHOW FIELD STATUS COORDINATED & DIVERTED TO SPAN -->
-          <div
-            v-if="payload.complaint_status_id !== complaintStatus.rejected.id"
-            class="mb-4"
-          >
-            <ValidationProvider
-              v-slot="{ errors }"
-              rules="requiredSelectForm"
-              name="Cakupan urusan"
               class="mb-5"
               tag="div"
             >
               <jds-select
-                v-model="payload.coverage_of_affairs"
-                name="Cakupan Urusan"
-                label="Cakupan Urusan"
-                placeholder="Pilih Cakupan Urusan"
+                v-model="payload.complaint_status_id"
+                name="Status Aduan"
+                label="Status Aduan"
+                placeholder="Pilih Status Aduan"
                 :error-message="errors[0]"
-                :options="listAuthority"
+                :options="listComplaintStatus"
                 :class="{ 'mb-2': errors.length > 0 }"
-                class="!w-full"
+                :disabled="
+                  dataComplaintSource?.complaint_source?.id ===
+                  complaintSource.span.id
+                "
                 @change="
-                  changeSelectValue(payload.opd_name, 'coverage_of_affairs')
+                  changeSelectValue(
+                    payload.complaint_status_id,
+                    'complaint_status_id'
+                  )
                 "
               />
             </ValidationProvider>
-            <ValidationProvider
-              v-slot="{ errors }"
-              rules="requiredSelectForm"
-              name="Nama Instansi"
-              class="mb-5"
-              tag="div"
+            <!-- SHOW FIELD STATUS COORDINATED & DIVERTED TO SPAN -->
+            <div
+              v-if="payload.complaint_status_id !== complaintStatus.rejected.id"
+              class="mb-4"
             >
-              <jds-select
-                v-model="payload.opd_name"
+              <ValidationProvider
+                v-slot="{ errors }"
+                rules="requiredSelectForm"
+                name="Cakupan urusan"
+                class="mb-5"
+                tag="div"
+              >
+                <jds-select
+                  v-model="payload.coverage_of_affairs"
+                  name="Cakupan Urusan"
+                  label="Cakupan Urusan"
+                  placeholder="Pilih Cakupan Urusan"
+                  :error-message="errors[0]"
+                  :options="listAuthority"
+                  :class="{ 'mb-2': errors.length > 0 }"
+                  class="!w-full"
+                  @change="
+                    changeSelectValue(
+                      payload.coverage_of_affairs,
+                      'coverage_of_affairs'
+                    )
+                  "
+                />
+              </ValidationProvider>
+              <ValidationProvider
+                v-slot="{ errors }"
+                rules="requiredSelectForm"
                 name="Nama Instansi"
-                label="Nama Instansi"
-                placeholder="Pilih Nama Instansi"
-                :error-message="errors[0]"
-                :options="listDisposition"
-                :class="{ 'mb-2': errors.length > 0 }"
-                class="!w-full"
-                @change="changeSelectValue(payload.opd_name, 'opd_name')"
-              />
-            </ValidationProvider>
-            <ValidationProvider
-              v-if="
-                payload.complaint_status_id ===
-                  complaintStatus.diverted_to_span.id && isShowFieldOPDPemprov
-              "
-              v-slot="{ errors }"
-              rules="requiredSelectForm"
-              name="OPD Pemprov Penanggungjawab"
-              class="mb-5"
-              tag="div"
-            >
-              <jds-select
-                v-model="payload.opd_pemprov_id"
-                name="OPD Pemprov Penanggungjawab"
-                label="OPD Pemprov Penanggungjawab"
-                placeholder="Pilih OPD Pemprov"
-                helper-text="OPD Pemprov penanggungjawab bertugas untuk memeriksa tindaklanjut aduan di kota/kabupaten atau kementerian/lembaga."
-                :error-message="errors[0]"
-                :class="{ 'mb-2': errors.length > 0 }"
-                class="!w-full"
-                :options="listGovResponsible"
-                @change="
-                  changeSelectValue(payload.opd_name, 'coverage_of_affairs')
+                class="mb-5"
+                tag="div"
+              >
+                <jds-select
+                  v-model="payload.opd_id"
+                  name="Nama Instansi"
+                  label="Nama Instansi"
+                  placeholder="Pilih Nama Instansi"
+                  :error-message="errors[0]"
+                  :options="listDisposition"
+                  :class="{ 'mb-2': errors.length > 0 }"
+                  class="!w-full"
+                  @change="changeSelectValue(payload.opd_id, 'opd_id')"
+                />
+              </ValidationProvider>
+              <ValidationProvider
+                v-if="
+                  payload.complaint_status_id ===
+                    complaintStatus.diverted_to_span.id && isShowFieldOPDPemprov
                 "
+                v-slot="{ errors }"
+                rules="requiredSelectForm"
+                name="OPD Pemprov Penanggungjawab"
+                class="mb-5"
+                tag="div"
+              >
+                <jds-select
+                  v-model="payload.opd_pemprov_id"
+                  name="OPD Pemprov Penanggungjawab"
+                  label="OPD Pemprov Penanggungjawab"
+                  placeholder="Pilih OPD Pemprov"
+                  helper-text="OPD Pemprov penanggungjawab bertugas untuk memeriksa tindaklanjut aduan di kota/kabupaten atau kementerian/lembaga."
+                  :error-message="errors[0]"
+                  :class="{ 'mb-2': errors.length > 0 }"
+                  class="!w-full"
+                  :options="listGovResponsible"
+                  @change="
+                    changeSelectValue(
+                      payload.opd_pemprov_id,
+                      'coverage_of_affairs'
+                    )
+                  "
+                />
+              </ValidationProvider>
+              <ValidationProvider
+                v-if="isShowFieldProposeIkpNarrative"
+                v-slot="{ errors }"
+                rules="required"
+                name="Usulan Narasi Instruksi"
+                class="mb-2"
+                tag="div"
+              >
+                <BaseTextArea
+                  v-model="payload.proposed_ikp_narrative"
+                  :placeholder="showPlaceholderProposedInstruction()"
+                  label="Usulan Narasi Instruksi"
+                  class="text-area"
+                  :error-message="errors[0]"
+                  maxlength="500"
+                />
+                <p class="mt-1 text-xs text-gray-600">
+                  Tersisa
+                  {{ 500 - payload.proposed_ikp_narrative.length }} karakter
+                </p>
+              </ValidationProvider>
+              <AlertMessage
+                v-if="isShowFieldProposeIkpNarrative"
+                message="Usulan Narasi akan digunakan untuk Instruksi Khusus Pimpinan."
+                class="mb-5 !w-[462px]"
               />
-            </ValidationProvider>
-            <ValidationProvider
-              v-if="isShowFieldProposeIkpNarrative"
-              v-slot="{ errors }"
-              rules="required"
-              name="Usulan Narasi Instruksi"
-              class="mb-2"
-              tag="div"
-            >
-              <BaseTextArea
-                v-model="payload.proposed_ikp_narrative"
-                :placeholder="showPlaceholderProposedInstruction()"
-                label="Usulan Narasi Instruksi"
-                class="text-area"
-                :error-message="errors[0]"
-                maxlength="500"
+              <ValidationProvider
+                v-slot="{ errors }"
+                rules="required"
+                name="Keterangan Status Aduan"
+                class="mb-2"
+                tag="div"
+              >
+                <BaseTextArea
+                  v-model="payload.status_description"
+                  placeholder="Masukkan keterangan disini"
+                  label="Keterangan Status Aduan"
+                  class="text-area"
+                  :error-message="errors[0]"
+                  maxlength="255"
+                />
+                <p class="mt-1 text-xs text-gray-600">
+                  Tersisa {{ 255 - payload.status_description.length }} karakter
+                </p>
+              </ValidationProvider>
+              <AlertMessage
+                message="Keterangan status aduan ini akan disampaikan ke pelapor."
+                class="mb-5 !w-[462px]"
               />
-              <p class="mt-1 text-xs text-gray-600">
-                Tersisa
-                {{ 500 - payload.proposed_ikp_narrative.length }} karakter
-              </p>
-            </ValidationProvider>
-            <AlertMessage
-              v-if="isShowFieldProposeIkpNarrative"
-              message="Usulan Narasi akan digunakan untuk Instruksi Khusus Pimpinan."
-              class="mb-5 !w-[462px]"
-            />
+              <h1 class="mb-2 font-roboto text-base font-bold">Lainnya</h1>
+              <div class="mb-4 grid grid-cols-2 gap-x-2">
+                <ValidationProvider
+                  v-slot="{ errors }"
+                  rules="required"
+                  name="Tanggal Deadline"
+                  class="mb-4"
+                  tag="div"
+                >
+                  <label class="mb-1 text-[15px] text-gray-800"
+                    >Tanggal Deadline</label
+                  ><br />
+                  <date-picker
+                    v-model="payload.deadline_date"
+                    format="DD/MM/YYYY"
+                    :class="{ 'mx-datepicker--error': errors[0] }"
+                    placeholder="Pilih Tanggal Deadline"
+                    name="Tanggal Deadline"
+                    :disabled-date="disabledDateHandle"
+                    @change="changeUrgencyStatus"
+                    @clear="clearDate"
+                  >
+                    <template #icon-calendar>
+                      <jds-icon
+                        name="calendar-date-outline"
+                        size="sm"
+                        fill="#069550"
+                      />
+                    </template> </date-picker
+                  ><br />
+                  <small class="text-red-600">{{ errors[0] }}</small>
+                </ValidationProvider>
+                <div class="self-center">
+                  <label class="text-sm">Tingkat Urgensi</label>
+                  <p class="mt-1 text-sm font-bold">
+                    {{ payload?.urgency_level || '-' }}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <!-- SHOW FIELD STATUS REJECTED -->
             <ValidationProvider
+              v-else
               v-slot="{ errors }"
               rules="required"
               name="Keterangan Status Aduan"
@@ -181,6 +247,7 @@
                 placeholder="Masukkan keterangan disini"
                 label="Keterangan Status Aduan"
                 class="text-area"
+                helper-text="Perhatikan kembali alasan penolakan, silahkan lengkapi alasan jika dibutuhkan."
                 :error-message="errors[0]"
                 maxlength="255"
               />
@@ -188,81 +255,23 @@
                 Tersisa {{ 255 - payload.status_description.length }} karakter
               </p>
             </ValidationProvider>
-            <AlertMessage
-              message="Keterangan status aduan ini akan disampaikan ke pelapor."
-              class="mb-5 !w-[462px]"
-            />
-            <h1 class="mb-2 font-roboto text-base font-bold">Lainnya</h1>
-            <div class="mb-4 grid grid-cols-2 gap-x-2">
-              <ValidationProvider
-                v-slot="{ errors }"
-                rules="required"
-                name="Tanggal Deadline"
-                class="mb-4"
-                tag="div"
-              >
-                <label class="mb-1 text-[15px] text-gray-800"
-                  >Tanggal Deadline</label
-                ><br />
-                <date-picker
-                  v-model="payload.deadline_date"
-                  format="DD/MM/YYYY"
-                  :class="{ 'mx-datepicker--error': errors[0] }"
-                  placeholder="Pilih Tanggal Deadline"
-                  name="Tanggal Deadline"
-                  :disabled-date="disabledDateHandle"
-                  @change="changeUrgencyStatus"
-                >
-                  <template #icon-calendar>
-                    <jds-icon
-                      name="calendar-date-outline"
-                      size="sm"
-                      fill="#069550"
-                    />
-                  </template> </date-picker
-                ><br />
-                <small class="text-red-600">{{ errors[0] }}</small>
-              </ValidationProvider>
-              <div class="self-center">
-                <label class="text-sm">Tingkat Urgensi</label>
-                <p class="text-sm font-bold">
-                  {{ payload?.urgency_level || '-' }}
-                </p>
-              </div>
-            </div>
-          </div>
-          <!-- SHOW FIELD STATUS REJECTED -->
-          <ValidationProvider
-            v-else
-            v-slot="{ errors }"
-            rules="required"
-            name="Keterangan Status Aduan"
-            class="mb-2"
-            tag="div"
-          >
-            <BaseTextArea
-              v-model="payload.status_description"
-              placeholder="Masukkan keterangan disini"
-              label="Keterangan Status Aduan"
-              class="text-area"
-              helper-text="Perhatikan kembali alasan penolakan, silahkan lengkapi alasan jika dibutuhkan."
-              :error-message="errors[0]"
-              maxlength="255"
-            />
-            <p class="mt-1 text-xs text-gray-600">
-              Tersisa {{ 255 - payload.status_description.length }} karakter
-            </p>
-          </ValidationProvider>
-        </form>
-      </ValidationObserver>
-      <BaseDialogFooter
-        :show-cancel-button="true"
-        :label-button-submit="dataDialog.labelButtonSubmit"
-        @close="closePopupProcessComplaint()"
-        @submit="saveDataProcessComplaint()"
-      />
-    </BaseDialogPanel>
-  </BaseDialog>
+          </form>
+        </ValidationObserver>
+        <BaseDialogFooter
+          :show-cancel-button="true"
+          :label-button-submit="dataDialog.labelButtonSubmit"
+          @close="closePopupProcessComplaint()"
+          @submit="showDialogConfirmation()"
+        />
+      </BaseDialogPanel>
+    </BaseDialogFrame>
+    <DialogConfirmationBasic
+      :dialog-modal="dialogConfirmation"
+      :detail-item-modal="dialogConfirmation.detailItemModal"
+      @confirmation-button="saveDataProcessComplaint()"
+      @cancel="backToForm()"
+    />
+  </div>
 </template>
 
 <script>
@@ -278,6 +287,7 @@ export default {
     ValidationObserver,
     AlertMessage,
   },
+
   props: {
     showPopup: {
       type: Boolean,
@@ -326,34 +336,8 @@ export default {
       },
       isShowFieldOPDPemprov: false,
       isShowFieldProposeIkpNarrative: true,
-    }
-  },
-  async fetch() {
-    try {
-      // get data Cakupan urusan
-      const responseAuthority = await this.$axios.get(
-        '/warga/complaints/authorities'
-      )
-      this.listDataAuthority = responseAuthority.data.data
-
-      if (this.payload.coverage_of_affairs) {
-        // get data nama instansi
-        const responseDisposition = await this.$axios.get(
-          '/warga/complaints/dispositions',
-          { params: { authority: this.payload.coverage_of_affairs } }
-        )
-        this.listDataDisposition = responseDisposition.data.data
-      }
-
-      // get data OPD Pemprov Penanggungjawab
-      const responseGovResponsible = await this.$axios.get(
-        '/warga/complaints/opds'
-      )
-      this.listDataGovResponsible = responseGovResponsible.data.data
-    } catch {
-      this.listDataComplaintStatus = []
-      this.listDataAuthority = []
-      this.listDataDisposition = []
+      opd: {},
+      dialogConfirmation: {},
     }
   },
   computed: {
@@ -363,14 +347,18 @@ export default {
       })
     },
     listDisposition() {
-      return this.listDataDisposition.map((item) => {
-        return { value: item.name, label: item.name }
-      })
+      return this.$store.state['utilities-complaint'].listDisposition.map(
+        (item) => {
+          return { value: item.id, label: item.name }
+        }
+      )
     },
     listGovResponsible() {
-      return this.listDataGovResponsible.map((item) => {
-        return { value: item.id, label: item.name }
-      })
+      return this.$store.state['utilities-complaint'].listGovResponsible.map(
+        (item) => {
+          return { value: item.id, label: item.name }
+        }
+      )
     },
     payload: {
       get() {
@@ -391,29 +379,26 @@ export default {
       },
     },
   },
-  watch: {
-    payload() {
-      if (this.payload.coverage_of_affairs) {
-        this.$fetch()
-      }
-    },
+  mounted() {
+    this.$store.dispatch('utilities-complaint/getDataAuthorities')
+    this.$store.dispatch('utilities-complaint/getDataGovResponsible')
   },
   methods: {
     changeSelectValue(value, keyObject) {
       switch (keyObject) {
         case 'complaint_status_id':
           this.clearPopupProcessComplaint()
+          this.$refs.form.reset()
           this.isShowFieldProposeIkpNarrative = true
           break
         case 'coverage_of_affairs':
-          this.$fetch()
+          this.$store.dispatch('utilities-complaint/getDataDispositions', value)
           this.isShowFieldOPDPemprov =
             this.payload.coverage_of_affairs ===
             this.coverageOfAffairs.district.id
           this.isShowFieldProposeIkpNarrative =
             this.payload.coverage_of_affairs !==
             this.coverageOfAffairs.institutions.id
-
           break
         default:
           this.paylod = { ...this.payload, [keyObject]: value }
@@ -423,14 +408,21 @@ export default {
           break
       }
     },
+    clearDate() {
+      this.payload.urgency_level = '-'
+    },
     filterListAuthority() {
       switch (this.payload.complaint_status_id) {
         case complaintStatus.coordinated.id:
-          return this.listDataAuthority.filter(
+          return this.$store.state[
+            'utilities-complaint'
+          ].listAuthorities.filter(
             (item) => item.id === 'Pemerintah Provinsi Jawa Barat'
           )
         case complaintStatus.diverted_to_span.id:
-          return this.listDataAuthority.filter(
+          return this.$store.state[
+            'utilities-complaint'
+          ].listAuthorities.filter(
             (item) => item.id !== 'Pemerintah Provinsi Jawa Barat'
           )
         default:
@@ -446,23 +438,23 @@ export default {
         proposed_ikp_narrative: '',
         urgency_level: null,
         opd_pic: null,
+        opd_id: null,
         opd_name: null,
         opd_pemprov_id: null,
       }
       this.listDataDisposition = [{ label: '', value: '' }]
       this.$store.commit('process-complaint/setPayload', { ...this.payload })
-      this.$refs.form.reset()
     },
     closePopupProcessComplaint() {
       this.payload = { ...this.payload, complaint_status_id: null }
       this.$store.commit('process-complaint/setPayload', { ...this.payload })
       this.clearPopupProcessComplaint()
+      this.$refs.form.reset()
       this.$emit('close')
     },
     changeUrgencyStatus() {
       const millisecondDifferent =
-        new Date(this.payload.deadline_date).getTime() -
-        new Date(this.dataDialog.createdDate).getTime() // to get diffrent date in millisecond unit
+        new Date(this.payload.deadline_date).getTime() - new Date().getTime() // to get diffrent date in millisecond unit
       const result = Math.floor(millisecondDifferent / (1000 * 3600 * 24)) + 1 // to get different date with divide different millisecond and mllisecond in 24 hours
       if (result <= 7) {
         this.payload.urgency_level = 'Mendesak'
@@ -472,8 +464,9 @@ export default {
       this.$store.commit('process-complaint/setPayload', { ...this.payload })
     },
     disabledDateHandle: function (date) {
-      const createdDate = new Date(this.dataDialog.createdDate)
-      return date < createdDate
+      const currentDate = new Date()
+      currentDate.setDate(currentDate.getDate() - 1)
+      return date <= currentDate
     },
     showPlaceholderProposedInstruction() {
       if (
@@ -483,15 +476,41 @@ export default {
       }
       return 'Contoh: Melakukan survey dan perbaikan jalan berlubang di jl. Laswi'
     },
-    async saveDataProcessComplaint() {
+    backToForm() {
+      this.$store.commit('modals/CLOSEALL')
+      this.$emit('back-to-form')
+    },
+    async showDialogConfirmation() {
       const isValid = await this.$refs.form.validate()
+      this.$refs.form.reset()
       if (isValid) {
-        this.payload.deadline_date = this.payload?.deadline_date
-          ? formatDate(this.payload?.deadline_date || '', 'yyyy-MM-dd')
-          : null
-        this.$emit('submit', { ...this.dataDialog, payload: this.payload })
-        this.closePopupProcessComplaint()
+        this.$store.commit('modals/CLOSEALL')
+        this.dialogConfirmation = {
+          ...this.dataDialog,
+          descriptionText: 'Apakah anda yakin ingin memproses aduan tersebut?',
+          button: {
+            label: 'Ya, lanjutkan',
+            variant: 'primary',
+          },
+          nameModal: 'dialogConfirmationComplaintProcess',
+        }
+        this.$store.commit('modals/OPEN', this.dialogConfirmation.nameModal)
       }
+    },
+    saveDataProcessComplaint() {
+      this.$store.commit('modals/CLOSEALL')
+      this.payload.deadline_date = this.payload?.deadline_date
+        ? formatDate(this.payload?.deadline_date || '', 'yyyy-MM-dd')
+        : null
+      this.$emit('submit', { ...this.dataDialog, payload: this.payload })
+      this.clearPopupProcessComplaint()
+      if (
+        this.dataComplaintSource?.complaint_source?.id !==
+        complaintSource.span.id
+      ) {
+        this.payload.complaint_status_id = null
+      }
+      this.$store.commit('followup-complaint/setPayload', { ...this.payload })
     },
   },
 }

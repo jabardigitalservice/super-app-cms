@@ -4,7 +4,7 @@
       <template #tab-list>
         <TabBarList
           :list-tab="listStatistic"
-          :type-aduan="typeAduanPage"
+          :type-aduan="typeAduanPage.props"
           :tab-index="query.tabIndex"
           @selected="selectedTabHandle"
           @button-tab="listTabHandle"
@@ -67,7 +67,7 @@
               </date-picker>
               <jds-select
                 v-if="
-                  typeAduanPage ===
+                  typeAduanPage.props ===
                   typeAduan.instruksiKewenanganNonPemprov.props
                 "
                 v-model="query.complaint_status_id"
@@ -79,16 +79,18 @@
             </div>
 
             <jds-button
-              v-show="typeAduan.aduanDariSpanLapor.props === typeAduanPage"
+              v-show="
+                typeAduan.aduanDariSpanLapor.props === typeAduanPage.props
+              "
               label="Tambah Aduan"
               variant="primary"
               class="flex-shrink-0"
-              @click="isShowPopupAddComplaint = true"
+              @click="showPopupAddComplaint()"
             />
           </div>
           <div>
             <JdsDataTable
-              :headers="checkTypeHeaderAduan(typeAduanPage)"
+              :headers="checkTypeHeaderAduan(typeAduanPage.props)"
               :items="listData"
               :loading="$fetchState.pending"
               :pagination="pagination"
@@ -157,7 +159,27 @@
                   @verify="
                     showPopupConfirmationVerificationComplaintHandle(item)
                   "
-                  @failed="showPopupConfirmationFailedComplaintHandle(item)"
+                  @failed="
+                    showPopupConfirmationComplaint(item, 'failedComplaint')
+                  "
+                  @redirect-hotline-jabar="
+                    showPopupConfirmationComplaint(
+                      item,
+                      'redirectHotlineComplaint'
+                    )
+                  "
+                  @followup-hotline-jabar="
+                    $store.dispatch(
+                      'popup-complaint/showPopupFollowupHotlineJabar',
+                      {
+                        dataComplaint: item,
+                        dialogName: 'followupHotlineJabar',
+                      }
+                    )
+                  "
+                  @evidence-followup-hotline="
+                    showPopupEvidenceFollowupHotline(item)
+                  "
                   @add-span="showPopupInputIdSpanHandle(item)"
                   @process-complaint="showPopupProcessComplaintHandle(item)"
                   @change-authority="showPopupChangeAuthority(item)"
@@ -183,6 +205,8 @@
       @close="closePopupInformationHandle()"
       @submit="submitRetryHandle"
     />
+    <DialogFollowupHotlineJabar @close-all-modal="refreshPage()" />
+    <DialogEvidenceFollowupHotline @close-all-modal="refreshPage()" />
     <DialogInputTextArea
       :data-dialog="dataDialog"
       :show-popup="isShowPopupConfirmationFailedVerification"
@@ -196,24 +220,29 @@
       @submit="submitInputIdSpanHandle"
     />
     <DialogAddComplaint
-      :show-popup="isShowPopupAddComplaint"
+      v-if="isShowPopupAddComplaint"
+      name-modal="addComplaint"
       @close="closePopupAddComplaint()"
     />
     <DialogProcessComplaint
+      v-if="isShowPopupProcessComplaint"
       :data-dialog="dataDialog"
       :show-popup="isShowPopupProcessComplaint"
       @close="closePopupHandle()"
       @submit="submitProcessComplaint"
+      @back-to-form="isShowPopupProcessComplaint = true"
     />
     <DialogProcessComplaint
+      v-if="isShowPopupChangeAuthority"
       :data-dialog="dataDialog"
       :show-popup="isShowPopupChangeAuthority"
       @close="closePopupHandle()"
       @submit="submitProcessComplaint"
     />
     <DialogFollowupComplaint
+      v-if="isPopupFollowupComplaint"
       :data-dialog="dataDialog"
-      :complaint-type="typeAduanPage"
+      :complaint-type="typeAduanPage.props"
       @submit="submitFollowupComplaint"
     />
     <DialogLoading :show-popup="isLoading" />
@@ -222,7 +251,9 @@
 
 <script>
 import debounce from 'lodash.debounce'
-
+import DialogFollowupHotlineJabar from '~/components/Aduan/Dialog/FollowupHotlineJabar'
+import DialogEvidenceFollowupHotline from '~/components/Aduan/Dialog/EvidenceFollowupHotline'
+import DialogFollowupComplaint from '~/components/Aduan/Dialog/FollowupComplaint'
 import {
   formatDate,
   generateItemsPerPageOptions,
@@ -235,7 +266,6 @@ import 'vue2-datepicker/index.css'
 import TabBarList from '~/components/Aduan/TabBar/List'
 import DialogAddComplaint from '~/components/Aduan/Dialog/AddComplaint'
 import DialogProcessComplaint from '~/components/Aduan/Dialog/ProcessComplaint'
-import DialogFollowupComplaint from '~/components/Aduan/Dialog/FollowupComplaint'
 
 import {
   complaintHeader,
@@ -247,8 +277,10 @@ import {
   typeAduan,
   complaintSource,
 } from '~/constant/aduan-masuk'
+
 import {
   ENDPOINT_ADUAN,
+  ENDPOINT_ADUAN_HOTLINE_JABAR,
   ENDPOINT_ADUAN_NON_PEMPROV,
 } from '~/constant/endpoint-api'
 import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
@@ -260,12 +292,14 @@ export default {
     DialogAddComplaint,
     DialogProcessComplaint,
     DialogFollowupComplaint,
+    DialogFollowupHotlineJabar,
+    DialogEvidenceFollowupHotline,
   },
   mixins: [popupAduanMasuk],
   props: {
     typeAduanPage: {
-      type: String,
-      default: '',
+      type: Object,
+      default: () => ({}),
     },
     linkPageDetail: {
       type: String,
@@ -295,6 +329,24 @@ export default {
           value: 'failed',
           complaintType: [typeAduan.aduanMasuk.props],
           complaintStatus: [complaintStatus.unverified.id],
+        },
+        {
+          menu: 'Dialihkan ke Hotline Jabar',
+          value: 'redirect-hotline-jabar',
+          complaintType: [typeAduan.aduanMasuk.props],
+          complaintStatus: [complaintStatus.unverified.id],
+        },
+        {
+          menu: 'Tindaklanjuti Aduan',
+          value: 'followup-hotline-jabar',
+          complaintType: [typeAduan.aduanDialihkanHotlineJabar.props],
+          complaintStatus: [complaintStatus.verified.id],
+        },
+        {
+          menu: 'Upload Bukti Tindaklanjut',
+          value: 'evidence-followup-hotline',
+          complaintType: [typeAduan.aduanDialihkanHotlineJabar.props],
+          complaintStatus: [complaintStatus.followup.id],
         },
         {
           menu: 'Tambahkan ID SP4N Lapor',
@@ -344,7 +396,7 @@ export default {
         page: 1,
         search: null,
         complaint_category_id: null,
-        // complaint_status_id: null,
+        complaint_status_id: null,
         tabIndex: 0,
         idTab: this.tabName,
       },
@@ -370,26 +422,22 @@ export default {
   },
   async fetch() {
     try {
-      const urlApi =
-        this.typeAduanPage === typeAduan.instruksiKewenanganNonPemprov.props
-          ? ENDPOINT_ADUAN_NON_PEMPROV
-          : ENDPOINT_ADUAN
-      if (
-        !JSON.stringify(Object.keys(this.query)).match('complaint_status_id')
-      ) {
-        this.query = this.addComplaintStatusFilterHandle()
-      }
+      const urlApi = this.checkUrlApi()
 
-      if (this.typeAduan.aduanDariSpanLapor.props === this.typeAduanPage) {
+      if (
+        this.typeAduan.aduanDariSpanLapor.props === this.typeAduanPage.props
+      ) {
         this.setQuery({ complaint_source: 'sp4n' })
       }
 
       // default sort by updated date
-      this.setQuery({ sort_by: 'updated_at' })
+      if (!this.query.sort_by) {
+        this.setQuery({ sort_by: 'updated_at' })
+      }
 
       // handle list data complaint
       const responseListComplaint = await this.$axios.get(urlApi, {
-        params: { ...this.query, is_admin: 1 },
+        params: { ...this.query, is_admin: 1, phase: this.typeAduanPage.phase },
       })
 
       const { data } = responseListComplaint.data
@@ -412,7 +460,8 @@ export default {
     listData() {
       return this.listDataComplaint.map((item) => {
         if (
-          this.typeAduan.aduanDialihkanSpanLapor.props === this.typeAduanPage
+          this.typeAduan.aduanDialihkanSpanLapor.props ===
+          this.typeAduanPage.props
         ) {
           item.complaint_status_id = !item.sp4n_id
             ? 'no-id-span'
@@ -436,12 +485,9 @@ export default {
           sp4n_created_at: item.sp4n_created_at
             ? formatDate(item.sp4n_created_at || '', 'dd/MM/yyyy HH:mm')
             : 'Belum ada',
-          complaint_source_name: item?.complaint_source
-            ? this.getComplaintSource(item).name
-            : '',
-          complaint_source_id: item?.complaint_source
-            ? this.getComplaintSource(item).id
-            : '',
+          complaint_source_name: item?.complaint_source?.name || '-',
+          complaint_source_id: item?.complaint_source?.id,
+          complaint_source: item?.complaint_source,
           coverage_of_affairs: item?.coverage_of_affairs || '',
           authority: item?.authority || '',
           opd_name: item?.opd_name || '',
@@ -450,16 +496,20 @@ export default {
       })
     },
     listCategory() {
-      return this.listDataCategory.map((item) => {
-        return {
-          value: item.id,
-          label: item.name,
+      return this.$store.state['utilities-complaint'].listCategory.map(
+        (item) => {
+          return {
+            value: item.id,
+            label: item.name,
+          }
         }
-      })
+      )
     },
     listNonGovComplaintStatus() {
       // list status complaint for non government
-      return this.listDataNonGovComplaintStatus.map((item) => {
+      return this.$store.state[
+        'utilities-complaint'
+      ].listNonGovComplaintStatus.map((item) => {
         return {
           value: item.id,
           label: item.name,
@@ -514,25 +564,60 @@ export default {
     search: debounce(function (value) {
       if (value.length > 2 || value.length === 0) {
         this.query.page = 1
-        this.query.search = value.length > 2 ? value : null
+        this.query.search = value.length > 2 ? value.trim() : null
         this.$fetch()
       }
     }, 500),
   },
-  mounted() {
+  async created() {
     this.pagination.itemsPerPageOptions = generateItemsPerPageOptions(
       this.pagination.itemsPerPage
     )
-    this.getCategory()
-    this.getNonGovComplaintStatus()
+    this.addComplaintStatusFilterHandle()
+    await this.$store.dispatch('utilities-complaint/getDataCategory')
+    const listCategory = [
+      { id: '', name: 'Semua Kategori' },
+      ...this.$store.state['utilities-complaint'].listCategory,
+    ]
+    this.$store.commit('utilities-complaint/setListCategory', listCategory)
+    if (
+      this.typeAduanPage.props === typeAduan.instruksiKewenanganNonPemprov.props
+    ) {
+      await this.$store.dispatch('utilities-complaint/getNonGovComplaintStatus')
+      const listNonGovComplaintStatus = [
+        { id: '', name: 'Semua Status Aduan' },
+        ...this.$store.state['utilities-complaint'].listNonGovComplaintStatus,
+      ]
+      this.$store.commit(
+        'utilities-complaint/setListNonGovComplaintStatus',
+        listNonGovComplaintStatus
+      )
+    }
+
+    this.query = this.addComplaintStatusFilterHandle()
   },
   methods: {
+    checkUrlApi() {
+      switch (this.typeAduanPage.props) {
+        case typeAduan.aduanDialihkanHotlineJabar.props:
+          return ENDPOINT_ADUAN_HOTLINE_JABAR
+        case typeAduan.instruksiKewenanganNonPemprov.props:
+          return ENDPOINT_ADUAN_NON_PEMPROV
+        default:
+          return ENDPOINT_ADUAN
+      }
+    },
+    refreshPage() {
+      this.query.page = 1
+      this.$fetch()
+    },
     selectedTabHandle(index) {
       this.query.tabIndex = index
     },
     checkTypeHeaderAduan(type) {
       switch (type) {
         case typeAduan.aduanMasuk.props:
+        case typeAduan.aduanDialihkanHotlineJabar.props:
           return this.complaintHeader
         case typeAduan.aduanDialihkanSpanLapor.props:
           return this.complaintDivertedToSpanHeader
@@ -573,8 +658,8 @@ export default {
 
         this.query.sort_type = value[key]
       } else {
-        delete this.query.sort_by
-        delete this.query.sort_type
+        const { sort_by: sortBy, sort_type: sortType, ...newQuery } = this.query // menghilangkan atribut sort by dan sort type
+        this.query = newQuery
       }
 
       this.$fetch()
@@ -606,7 +691,8 @@ export default {
     },
     getStatusText(statusId) {
       if (
-        this.typeAduanPage === typeAduan.instruksiKewenanganNonPemprov.props &&
+        this.typeAduanPage.props ===
+          typeAduan.instruksiKewenanganNonPemprov.props &&
         statusId === 'coordinated'
       ) {
         return 'Sudah Dikoordinasikan'
@@ -615,7 +701,8 @@ export default {
     },
     getColorText(statusId) {
       const statusColor = complaintStatus[statusId].statusColor.find(
-        (statusColor) => statusColor.typeAduan.includes(this.typeAduanPage)
+        (statusColor) =>
+          statusColor.typeAduan.includes(this.typeAduanPage.props)
       )
       switch (statusColor?.color) {
         case 'yellow':
@@ -638,7 +725,7 @@ export default {
       return this.menuTableAction.filter(
         (item) =>
           item.complaintType.includes('all') ||
-          (item.complaintType.includes(this.typeAduanPage) &&
+          (item.complaintType.includes(this.typeAduanPage.props) &&
             item.complaintStatus.includes(complaintStatus))
       )
     },
@@ -653,7 +740,8 @@ export default {
     },
     addComplaintStatusFilterHandle() {
       if (
-        this.typeAduanPage !== typeAduan.instruksiKewenanganNonPemprov.props
+        this.typeAduanPage.props !==
+        typeAduan.instruksiKewenanganNonPemprov.props
       ) {
         const listValueStatusComplaint =
           this.getStatusComplaintByComplaintType()
@@ -668,14 +756,13 @@ export default {
     },
     listTabHandle(status) {
       const query = { page: 1, limit: 10 }
-
       this.deletePropertiesWithPrefix(this.query, 'complaint_status_id[')
-
       if (status !== 'total') {
         query['complaint_status_id[0]'] = status
+      } else {
+        this.addComplaintStatusFilterHandle()
       }
       this.setQuery(query)
-
       this.isShowPopupDateRange = false
       this.$fetch()
     },
@@ -685,16 +772,21 @@ export default {
         end_date: formatDate(this.dateRange[1], 'yyyy-MM-dd'),
       })
       this.$fetch()
-
+      this.query.page = 1
       this.$refs.datepicker.closePopup()
     },
     closePopupDateHandle() {
       this.isShowPopupDateRange = false
       this.$refs.datepicker.closePopup()
+      this.query.page = 1
     },
     closePopupAddComplaint() {
       this.isShowPopupAddComplaint = false
       this.$fetch()
+    },
+    showPopupEvidenceFollowupHotline(item) {
+      this.$store.commit('popup-complaint/setDataComplaint', item)
+      this.$store.commit('modals/OPEN', 'evidenceFollowupHotline')
     },
     setQuery(params) {
       this.query = { ...this.query, ...params }
@@ -710,6 +802,7 @@ export default {
       })
 
       this.isShowPopupDateRange = false
+      this.query.page = 1
       this.$fetch()
     },
     changeDateRangeHandle() {
@@ -720,11 +813,11 @@ export default {
         this.typeAduan.penentuanKewenangan.props,
         this.typeAduan.instruksiKewenanganPemprov.props,
       ]
-      return listPropsSortByUpdatedDate.includes(this.typeAduanPage)
+      return listPropsSortByUpdatedDate.includes(this.typeAduanPage.props)
     },
     getStatusComplaintByComplaintType() {
       return Object.values(complaintStatus).filter((item) =>
-        item.typeAduan.includes(this.typeAduanPage)
+        item.typeAduan.includes(this.typeAduanPage.props)
       )
     },
     getComplaintSource(dataComplaint) {
@@ -734,19 +827,26 @@ export default {
       return this.complaintSource[dataComplaint.complaint_source]
     },
     async getCount() {
-      const queryCount = { ...this.query, is_admin: 1 }
+      const queryCount = {
+        ...this.query,
+        is_admin: 1,
+        phase: this.typeAduanPage.phase,
+      }
 
       this.deletePropertiesWithPrefix(queryCount, 'complaint_status_id[')
       if (
-        this.typeAduan.aduanDariSpanLapor.props === this.typeAduanPage ||
-        typeAduan.instruksiKewenanganNonPemprov.props === this.typeAduanPage
+        this.typeAduan.aduanDariSpanLapor.props === this.typeAduanPage.props ||
+        typeAduan.instruksiKewenanganNonPemprov.props ===
+          this.typeAduanPage.props
       ) {
         complaintStatus.total.value = this.pagination.totalRows
       } else {
         try {
           // handle data statistic complaint
+
+          const urlApi = this.checkUrlApi()
           const responseListStatisticComplaint = await this.$axios.get(
-            '/warga/complaints/statistics',
+            `${urlApi}/statistics`,
             {
               params: queryCount,
             }
@@ -754,12 +854,14 @@ export default {
           const listDataStatisticComplaint =
             responseListStatisticComplaint.data.data
           const listComplaintStatus = this.getStatusComplaintByComplaintType()
-          this.listStatisticComplaint = listDataStatisticComplaint.filter(
-            (statisticComplaint) =>
-              listComplaintStatus.find(
-                (complaintStatus) =>
+          this.listStatisticComplaint = listComplaintStatus.map(
+            (complaintStatus) => {
+              const dataStatistic = listDataStatisticComplaint.find(
+                (statisticComplaint) =>
                   statisticComplaint.id === complaintStatus.id
               )
+              return { ...complaintStatus, value: dataStatistic?.value || 0 }
+            }
           )
           complaintStatus.total.value = this.getTotalStatistic()
         } catch (error) {
@@ -771,51 +873,17 @@ export default {
         this.listStatisticComplaint.pop()
       }
     },
-    async getCategory() {
-      try {
-        // handle list data category
-        const responseListCategoryComplaint = await this.$axios.get(
-          '/warga/complaints/categories'
-        )
 
-        this.listDataCategory = responseListCategoryComplaint.data.data
-        this.listDataCategory = [
-          {
-            id: '',
-            name: 'Semua Kategori Aduan',
-          },
-          ...this.listDataCategory,
-        ]
-      } catch (error) {
-        console.error(error)
-      }
-    },
-    async getNonGovComplaintStatus() {
-      try {
-        // handle list data non government complaint status
-        const responseDataNonGovComplaintStatus = await this.$axios.get(
-          '/warga/non-pemprov-complaint-status'
-        )
-
-        this.listDataNonGovComplaintStatus =
-          responseDataNonGovComplaintStatus.data.data
-        this.listDataNonGovComplaintStatus = [
-          {
-            id: '',
-            name: 'Semua Status',
-          },
-          ...this.listDataNonGovComplaintStatus,
-        ]
-      } catch (error) {
-        console.error(error)
-      }
-    },
     deletePropertiesWithPrefix(obj, prefix) {
       for (const prop in obj) {
         if (prop.startsWith(prefix)) {
           delete obj[prop]
         }
       }
+    },
+    showPopupAddComplaint() {
+      this.isShowPopupAddComplaint = true
+      this.$store.commit('modals/OPEN', 'addComplaint')
     },
   },
 }

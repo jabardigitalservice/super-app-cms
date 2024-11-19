@@ -38,7 +38,9 @@
             name="Judul Pesan"
             rules="max:100|min:10|required"
           >
-            <label class="message-notif-form__label-required">Judul Pesan</label>
+            <label class="message-notif-form__label-required">
+              Judul Pesan
+            </label>
             <p class="mb-1 text-[13px] text-gray-700">
               Minimum 10 Karakter, maksimal 100 karakter
             </p>
@@ -49,7 +51,7 @@
               maxlength="100"
               placeholder="Masukkan judul pesan"
               :class="{ '!border !border-red-600': errors.length > 0 }"
-            >
+            />
             <small class="text-red-600">{{ errors[0] }}</small>
           </ValidationProvider>
           <div class="mt-4">
@@ -58,7 +60,9 @@
               name="Subtext Pesan"
               rules="required|max:100|min:10"
             >
-              <label class="message-notif-form__label-required">Subtext Pesan</label>
+              <label class="message-notif-form__label-required">
+                Subtext Pesan
+              </label>
               <div class="mt-1">
                 <textarea
                   v-model="fieldMessageNotif.notificationBody"
@@ -78,7 +82,9 @@
               name="Kategori Pesan"
               rules="requiredSelectForm"
             >
-              <label class="message-notif-form__label-required">Kategori Pesan</label>
+              <label class="message-notif-form__label-required">
+                Kategori Pesan
+              </label>
               <jds-select
                 v-model="fieldMessageNotif.category"
                 placeholder="Pilih kategori"
@@ -109,7 +115,9 @@
             name="Detail Pesan"
             rules="required"
           >
-            <label class="message-notif-form__label-required">Detail Pesan</label>
+            <label class="message-notif-form__label-required">
+              Detail Pesan
+            </label>
             <div class="mt-1">
               <Editor
                 v-model="fieldMessageNotif.content"
@@ -167,9 +175,7 @@
         </div> -->
         <small class="text-red-600">{{ errMessageTarget }}</small>
         <div class="col-span-2 mt-4">
-          <h2 class="text-sm font-bold text-gray-800">
-            Tombol Tautan
-          </h2>
+          <h2 class="text-sm font-bold text-gray-800">Tombol Tautan</h2>
         </div>
         <div class="mt-1">
           <label class="message-notif-form__label">Teks Tombol</label>
@@ -237,7 +243,7 @@ import {
   savedConfirmationPopup,
   savedInformationPopup,
   publishedConfirmationPopup,
-  publishedInformationPopup
+  publishedInformationPopup,
 } from '~/constant/message-notif'
 
 export default {
@@ -246,9 +252,9 @@ export default {
     Editor,
     ArrowLeft,
     ValidationObserver,
-    ValidationProvider
+    ValidationProvider,
   },
-  data () {
+  data() {
     return {
       fieldMessageNotif: {
         title: '',
@@ -258,7 +264,7 @@ export default {
         content: '',
         actionTitle: '',
         actionUrl: '',
-        category: ''
+        category: '',
         // TODO: comment code for production
         // target: {
         //   platform: '',
@@ -272,7 +278,7 @@ export default {
           'Hanya file yang berformat JPG/JPEG/PNG yang dapat diupload.',
         formatTypeFile: ['image/jpeg', 'image/png', 'image/jpg'],
         maxSizeFile: 2097152,
-        acceptFile: '.jpg,.jpeg,.png'
+        acceptFile: '.jpg,.jpeg,.png',
       },
       categoryOptions: [],
       // TODO: comment code for production
@@ -286,7 +292,7 @@ export default {
       dataImage: {
         showDialog: false,
         fileId: '',
-        mimeType: ''
+        mimeType: '',
       },
       tinymceApiKey: this.$config.tinymceApiKey,
       isDisabledPlatform: false,
@@ -294,15 +300,15 @@ export default {
       errMessageTarget: '',
       detailItem: {
         id: '',
-        title: ''
+        title: '',
       },
       dialogInformationPopup: {},
       modalNameInformation: '',
       isSuccessConfirmation: false,
-      isWarningInformation: false
+      isWarningInformation: false,
     }
   },
-  async fetch () {
+  async fetch() {
     try {
       const response = await this.$axios.get('/messages/category')
       response.data.data.forEach((item) => {
@@ -313,13 +319,13 @@ export default {
     }
   },
   methods: {
-    previewFile () {
+    previewFile() {
       this.dataImage.showDialog = true
       this.dataImage.fileId = 'loading'
       this.dataImage.fileId = this.$store.state.dataImage.data
       this.dataImage.mimeType = this.$store.state.dataImage.mimeType
     },
-    getResponseImage (responseImage) {
+    getResponseImage(responseImage) {
       if (responseImage === 'error') {
         this.isError = true
         this.showInformationPopupHandle()
@@ -327,7 +333,7 @@ export default {
         this.fieldMessageNotif.imageBackground = responseImage.path
       }
     },
-    async validHandle (fileCorrect = true) {
+    async validHandle(fileCorrect = true) {
       const isDataValid = await this.$refs.form.validate()
       // TODO:
       // if (this.fieldMessageNotif.target.platform === '' && this.fieldMessageNotif.target.topic === '') {
@@ -338,29 +344,34 @@ export default {
       }
       return true
     },
-    checkFormSelectPlatformDisabled (value) {
+    checkFormSelectPlatformDisabled(value) {
       if (value !== null) {
         this.isDisabledTopic = true
         this.errMessageTarget = ''
       }
     },
-    checkFormSelectTopicDisabled (value) {
+    checkFormSelectTopicDisabled(value) {
       if (value !== null) {
         this.isDisabledPlatform = true
         this.errMessageTarget = ''
       }
     },
-    async submitForm (typeForm) {
+    async submitForm(typeForm) {
       this.dataImage = this.$store.state.dataImage
       this.fieldMessageNotif.originalFilename = this.dataImage.name
 
       if (await this.validHandle(this.dataImage?.fileCorrect)) {
+        // check type modal
+        if (Object.keys(this.dataImage).length > 0) {
+          await this.$refs.BaseDragAndDropFile.uploadFile()
+          this.$refs.BaseDragAndDropFile.resetDataFile()
+        }
         this.showConfirmation(typeForm)
       } else {
         this.openWarningInformationDialog()
       }
     },
-    openWarningInformationDialog () {
+    openWarningInformationDialog() {
       const modalName = 'warning'
       this.isWarningInformation = true
       this.modalNameInformation = modalName
@@ -369,23 +380,19 @@ export default {
       const modalFullName = `${modalName}-information`
       this.$store.commit('modals/OPEN', modalFullName)
     },
-    goToBackHandle () {
+    goToBackHandle() {
       this.$router.push('/message-notif/')
     },
-    closeAllModalSuccess () {
+    closeAllModalSuccess() {
       if (this.isSuccessConfirmation) {
         this.goToBackHandle()
       }
     },
-    showConfirmation (typeForm) {
+    showConfirmation(typeForm) {
       this.detailItem.title = this.fieldMessageNotif.title
       this.$store.commit('modals/OPEN', typeForm)
     },
-    async emitOpenModalInformation (
-      modalNameEmitted,
-      isSuccessEmitted,
-      response
-    ) {
+    emitOpenModalInformation(modalNameEmitted, isSuccessEmitted, response) {
       this.modalNameInformation = modalNameEmitted
 
       if (modalNameEmitted === this.publishedConfirmationPopup.nameModal) {
@@ -397,20 +404,12 @@ export default {
           : savedInformationPopup.failedInformation
         this.isSuccessConfirmation = isSuccessEmitted
       }
-      // check type modal
-      if (
-        this.isSuccessConfirmation &&
-        Object.keys(this.dataImage).length > 0
-      ) {
-        await this.$refs.BaseDragAndDropFile.uploadFile()
-        this.$refs.BaseDragAndDropFile.resetDataFile()
-      }
 
       // open modal information
       const modalFullName = `${modalNameEmitted}-information`
       this.$store.commit('modals/OPEN', modalFullName)
     },
-    async handlePublishedMessage (id) {
+    async handlePublishedMessage(id) {
       try {
         await this.$axios.post(`/messages/${id}/send`)
         this.dialogInformationPopup =
@@ -421,8 +420,8 @@ export default {
           publishedInformationPopup.failedInformation
         this.isSuccessConfirmation = false
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -433,12 +432,12 @@ export default {
 }
 
 .message-notif-form__label-required::before {
-  content: "*";
+  content: '*';
   color: red;
   margin-right: 4px;
 }
 
-.message-notif-form input[type="text"] {
+.message-notif-form input[type='text'] {
   @apply h-[38px] w-full rounded-lg border border-gray-500 bg-gray-50 px-2 py-[11px] font-lato text-gray-600 placeholder:text-sm placeholder:text-gray-600 focus:outline-none;
 }
 

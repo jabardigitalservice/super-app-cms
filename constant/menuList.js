@@ -102,6 +102,14 @@ const aduanMenu = {
       unleashVariable: 'SAPAWARGA-CMS__ADUAN--ADUAN-MASUK',
     },
     {
+      name: 'Daftar Aduan Hotline Jabar',
+      path: '/aduan/aduan-hotline-jabar',
+      arrow: false,
+      showMenuAndAccessForRoles: ['admin', 'admin:aduan-team-hotline'],
+      icon: 'phone.svg',
+      unleashVariable: 'SAPAWARGA-CMS__ADUAN--ADUAN-HOTLINE-JABAR',
+    },
+    {
       name: 'Daftar Penentuan Kewenangan',
       path: '/aduan/penentuan-kewenangan',
       arrow: false,

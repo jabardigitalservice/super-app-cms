@@ -1,36 +1,50 @@
 <template>
-  <BaseDialog :show-popup="showPopup">
-    <BaseDialogPanel>
-      <BaseDialogHeader :title="dataDialog.title" />
-      <div class="px-6 pb-6">
-        <ValidationObserver ref="form">
-          <form>
-            <BaseDialogDescription :description="dataDialog.description" :sub-description="dataDialog.subDescription" />
-            <div class="mt-4">
-              <ValidationProvider v-slot="{errors}" :name="dataDialog.labelTextArea" rules="required">
-                <label class="text-[15px] text-gray-800 font-lato">{{ dataDialog.labelTextArea }}</label><br>
-                <div class="mt-1">
-                  <textarea
-                    v-model="fieldTextArea"
-                    :class="{ 'border border-red-600': (isInputDirty || isSubmit) && errors[0] }"
-                    :placeholder="dataDialog.placeholder"
-                    maxlength="255"
-                    class="w-[462px] h-[83px] border border-gray-300 rounded-lg focus:outline-none px-2 py-[10px] placeholder:text-[14px] placeholder:font-lato"
-                  />
-                </div>
-
-                <small v-show="(isInputDirty || isSubmit) && errors[0]" class="text-red-600">{{ errors[0] }}</small>
-              </ValidationProvider>
-              <p class="text-xs text-gray-600">
-                Tersisa {{ 255 - fieldTextArea.length }} Karakter
-              </p>
-            </div>
-          </form>
-        </ValidationObserver>
-      </div>
-      <BaseDialogFooter :label-button-submit=" dataDialog.labelButtonSubmit" @close="closePopupHandle()" @submit="submitConfirmationFaileComplaintdHandle()" />
-    </BaseDialogPanel>
-  </BaseDialog>
+  <ValidationObserver v-slot="{ invalid }" ref="form">
+    <BaseDialogFrame :name="dataDialog.name" @close="closePopup()">
+      <BaseDialogPanel>
+        <BaseDialogHeader :title="dataDialog.title" />
+        <div class="px-6 pb-6">
+          <BaseDialogDescription
+            :description="dataDialog.description"
+            :sub-description="dataDialog.subDescription"
+          />
+          <ValidationProvider
+            v-slot="{ errors }"
+            :name="dataDialog.labelTextArea"
+            rules="required"
+            tag="div"
+            class="mt-4"
+          >
+            <BaseTextArea
+              v-model="fieldTextArea"
+              :placeholder="dataDialog.placeholder"
+              :label="dataDialog.labelTextArea"
+              class="text-area"
+              :error-message="errors[0]"
+              maxlength="255"
+            />
+          </ValidationProvider>
+          <p class="mt-1 text-xs text-gray-600">
+            Tersisa {{ 255 - fieldTextArea.length }} Karakter
+          </p>
+        </div>
+        <BaseDialogFooterNew
+          :name="dataDialog.name"
+          @cancel="closePopup(invalid)"
+        >
+          <template #button-right>
+            <jds-button
+              :label="dataDialog.labelButtonSubmit"
+              type="button"
+              variant="primary"
+              :disabled="invalid"
+              @click="submitConfirmationComplaint()"
+            />
+          </template>
+        </BaseDialogFooterNew>
+      </BaseDialogPanel>
+    </BaseDialogFrame>
+  </ValidationObserver>
 </template>
 
 <script>
@@ -41,44 +55,38 @@ export default {
   props: {
     showPopup: {
       type: Boolean,
-      default: false
+      default: false,
     },
     dataDialog: {
       type: Object,
-      default: () => ({})
-    }
+      default: () => ({}),
+    },
   },
-  data () {
+  data() {
     return {
       fieldTextArea: '',
-      isInputDirty: false, // for check if user has typing something or no
-      isSubmit: false
-    }
-  },
-  watch: {
-    fieldTextArea () {
-      if (this.fieldTextArea.length > 0) {
-        this.isInputDirty = true
-      }
     }
   },
   methods: {
-    async submitConfirmationFaileComplaintdHandle () {
+    async submitConfirmationComplaint() {
       this.isSubmit = true
       const isDataValid = await this.$refs.form.validate()
       if (isDataValid) {
         this.$emit('submit', { ...this.dataDialog, note: this.fieldTextArea })
-        this.fieldTextArea = ''
-        this.isInputDirty = false
-        this.isSubmit = false
+        this.closePopup()
       }
     },
-    closePopupHandle () {
-      this.isInputDirty = false
-      this.isSubmit = false
+    closePopup() {
       this.fieldTextArea = ''
-      this.$emit('close')
-    }
-  }
+      this.$refs.form.reset()
+      this.$store.commit('modals/CLOSEALL')
+    },
+  },
 }
 </script>
+
+<style scoped>
+.text-area::v-deep .input-wrapper {
+  @apply !h-[83px] !w-[462px] !bg-white;
+}
+</style>

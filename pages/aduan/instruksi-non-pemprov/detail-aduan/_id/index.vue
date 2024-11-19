@@ -1,5 +1,5 @@
 <template>
-  <AduanDetail :type-aduan-page="typeAduan.instruksiNonPemprov.props" />
+  <AduanDetail :type-aduan-page="typeAduan.instruksiNonPemprov" />
 </template>
 
 <script>

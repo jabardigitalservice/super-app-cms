@@ -82,6 +82,7 @@
 import { ikpStatus, ikpType, detailField } from '~/constant/daftar-ikp'
 import { formatDate } from '~/utils'
 import detailInstruksiNonPemprov from '~/data/instruksi-non-pemprov-detail.json'
+import { ENDPOINT_IKP } from '~/constant/endpoint-api'
 
 export default {
   name: 'DaftarIKPTableDetail',
@@ -122,7 +123,9 @@ export default {
       if (this.ikpTypePage === ikpType.instruksiNonPemprov.props) {
         this.dataDetail = detailInstruksiNonPemprov.data
       } else {
-        const response = await this.$axios.get(`/warga/ikp/${this.ikpCode}`)
+        const response = await this.$axios.get(
+          `${ENDPOINT_IKP}/${this.ikpCode}`
+        )
         this.dataDetail = response.data.data
       }
     } catch (error) {
@@ -175,8 +178,8 @@ export default {
     },
     formatingInstructionalNarrative() {
       let result = '-'
-      if (this.dataDetail?.ikp_code) {
-        result = `<strong>(${this.dataDetail?.ikp_code})</strong> ${this.dataDetail?.narrative}`
+      if (this.dataDetail?.id) {
+        result = `<strong>(${this.dataDetail?.id})</strong> ${this.dataDetail?.narrative}`
       }
       return result
     },

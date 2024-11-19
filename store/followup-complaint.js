@@ -1,7 +1,14 @@
 export const state = () => ({
   isShowPopup: false,
   isFollowup: false,
-  dataIkp: {}
+  dataIkp: {},
+  dialogConfirmation: {
+    title: '',
+    nameModal: '',
+    descriptionText: 'Apakah Anda yakin ingin menindaklanjuti aduan tersebut?',
+  },
+  isCreateIkp: false, // popup confirmation for form create ikp
+  complaintType: '',
 })
 
 export const getters = {
@@ -13,17 +20,42 @@ export const getters = {
   },
   getDataIkp: (state) => {
     return state.dataIkp
-  }
+  },
+  getDialogConfirmation: (state) => {
+    return state.dialogConfirmation
+  },
+  getIsCreateIkp: (state) => {
+    return state.isCreateIkp
+  },
+  getComplaintType: (state) => {
+    return state.complaintType
+  },
+}
+
+export const actions = {
+  showPopupConfirmation({ commit, state }) {
+    commit('setIsShowPopup', false)
+    commit('modals/OPEN', state.dialogConfirmation.nameModal, { root: true })
+  },
 }
 
 export const mutations = {
-  setIsShowPopup (state, isShowPopup) {
+  setIsShowPopup(state, isShowPopup) {
     state.isShowPopup = isShowPopup
   },
-  setIsFollowup (state, isFollowup) {
+  setIsFollowup(state, isFollowup) {
     state.isFollowup = isFollowup
   },
-  setDataIkp (state, dataIkp) {
+  setDataIkp(state, dataIkp) {
     state.dataIkp = dataIkp
-  }
+  },
+  setDialogConfirmation(state, dialogConfirmation) {
+    state.dialogConfirmation = dialogConfirmation
+  },
+  setIsCreateIkp(state, isCreateIkp) {
+    state.isCreateIkp = isCreateIkp
+  },
+  setComplaintType(state, complaintType) {
+    state.complaintType = complaintType
+  },
 }

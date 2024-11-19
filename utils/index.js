@@ -100,3 +100,11 @@ export function resetQueryParamsUrl(context) {
     })
   }
 }
+
+export function downloadFile(url, typeFile) {
+  if (typeFile === 'pdf') {
+    window.open(url, '_blank')
+  } else {
+    window.location.href = url
+  }
+}
