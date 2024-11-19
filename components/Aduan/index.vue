@@ -860,7 +860,7 @@ export default {
       try {
         // handle list data non government complaint status
         const responseDataNonGovComplaintStatus = await this.$axios.get(
-          '/aduan/non-pemprov-complaint-status'
+          `${ENDPOINT_ADUAN_NON_PEMPROV}/status`
         )
 
         this.listDataNonGovComplaintStatus =
