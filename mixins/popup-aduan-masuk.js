@@ -465,10 +465,17 @@ export default {
         const { code, errors } = error.response.data
         this.setDataDialog({ ...paramDialog.failed })
         if (code === '4221400') {
-          if (this.errors?.instruksi) {
+          if (errors?.instruksi) {
             this.setDataDialog({
               ...paramDialog.failed,
               description: errors?.instruksi || '',
+            })
+          }
+          if (errors?.sp4n_id) {
+            this.setDataDialog({
+              ...paramDialog.failed,
+              description: 'Id sp4n tidak ditemukan',
+              subDescription: '',
             })
           }
         }
@@ -478,6 +485,7 @@ export default {
         this.isLoading = false
       }
       this.isShowPopupInformation = true
+      this.$store.commit('followup-complaint/setComplaintType', '')
     },
     submitRetryHandle() {
       this.isShowPopupInformation = false
