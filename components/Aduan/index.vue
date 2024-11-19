@@ -499,7 +499,7 @@ export default {
       return this.$store.state['utilities-complaint'].listCategory.map(
         (item) => {
           return {
-            value: item.id,
+            value: item.id || '',
             label: item.name,
           }
         }
@@ -511,7 +511,7 @@ export default {
         'utilities-complaint'
       ].listNonGovComplaintStatus.map((item) => {
         return {
-          value: item.id,
+          value: item.id || '',
           label: item.name,
         }
       })
@@ -676,7 +676,6 @@ export default {
       this.$fetch()
     },
     filterNonGovComplaintStatusHandle(value) {
-      this.query.complaint_status_id = null
       this.query.page = 1
       if (value) {
         this.query.complaint_status_id = value
