@@ -1,4 +1,7 @@
-import { ENDPOINT_ADUAN } from '~/constant/endpoint-api'
+import {
+  ENDPOINT_ADUAN,
+  ENDPOINT_ADUAN_NON_PEMPROV,
+} from '~/constant/endpoint-api'
 
 export const state = () => ({
   listCategory: [],
@@ -9,6 +12,7 @@ export const state = () => ({
   listCity: [], // list data kabupaten / kota
   listDistrict: [], // list data kecamatan
   listVillage: [], // list data desa/ kelurahan
+  listNonGovComplaintStatus: [], // list status aduan khusus non pemprov
 })
 
 export const actions = {
@@ -59,7 +63,6 @@ export const actions = {
   // handle data opd pemprov penanggung jawab
   async getDataGovResponsible({ commit }) {
     try {
-      // handle list data category
       const response = await this.$axios.get(`${ENDPOINT_ADUAN}/opds`)
       commit('setListGovResponsible', response.data.data)
     } catch (error) {
@@ -99,6 +102,17 @@ export const actions = {
       console.error(error)
     }
   },
+  async getNonGovComplaintStatus({ commit }) {
+    try {
+      const response = await this.$axios.get(
+        `${ENDPOINT_ADUAN_NON_PEMPROV}/status`
+      )
+
+      commit('setListNonGovComplaintStatus', response.data.data)
+    } catch (error) {
+      console.error(error)
+    }
+  },
 }
 
 export const mutations = {
@@ -125,5 +139,8 @@ export const mutations = {
   },
   setListVillage(state, listVillage) {
     state.listVillage = listVillage
+  },
+  setListNonGovComplaintStatus(state, listNonGovComplaintStatus) {
+    state.listNonGovComplaintStatus = listNonGovComplaintStatus
   },
 }
