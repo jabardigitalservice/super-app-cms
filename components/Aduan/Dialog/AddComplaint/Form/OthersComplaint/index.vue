@@ -11,23 +11,20 @@
           tag="div"
         >
           <jds-select
-            v-model="dataOtherComplaint.complaint_category_id"
+            v-model="dataOtherComplaint.category_id"
             name="Kategori"
             label="Kategori"
             placeholder="Pilih Kategori"
             :error-message="errors[0]"
             :options="listCategoryComplaint"
             @change="
-              changeSelectForm(
-                dataOtherComplaint.complaint_category_id,
-                'category'
-              )
+              changeSelectForm(dataOtherComplaint.category_id, 'category')
             "
           />
         </ValidationProvider>
 
         <ValidationProvider
-          v-if="dataOtherComplaint.complaint_category_id === 'lainnya'"
+          v-if="dataOtherComplaint.category_id === 'lainnya'"
           v-slot="{ errors }"
           name="Kategori"
           class="mb-4"
@@ -35,7 +32,7 @@
           tag="div"
         >
           <BaseInputText
-            v-model="dataOtherComplaint.complaint_subcategory_id"
+            v-model="dataOtherComplaint.subcategory_id"
             placeholder="Masukkan Kategori"
             :error-message="errors[0]"
             maxlength="50"
@@ -43,7 +40,7 @@
         </ValidationProvider>
 
         <ValidationProvider
-          v-if="dataOtherComplaint.complaint_category_id !== 'lainnya'"
+          v-if="dataOtherComplaint.category_id !== 'lainnya'"
           v-slot="{ errors }"
           name="Sub Kategori"
           rules="requiredSelectForm"
@@ -51,18 +48,15 @@
           tag="div"
         >
           <jds-select
-            v-model="dataOtherComplaint.complaint_subcategory_id"
-            :disabled="!dataOtherComplaint.complaint_category_id"
+            v-model="dataOtherComplaint.subcategory_id"
+            :disabled="!dataOtherComplaint.category_id"
             name="Sub Kategori"
             label="Sub Kategori"
             placeholder="Pilih Sub Kategori"
             :error-message="errors[0]"
             :options="listSubCategoryComplaint"
             @change="
-              changeSelectForm(
-                dataOtherComplaint.complaint_subcategory_id,
-                'subcategory'
-              )
+              changeSelectForm(dataOtherComplaint.subcategory_id, 'subcategory')
             "
           />
         </ValidationProvider>
@@ -120,7 +114,6 @@
 
 <script>
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
-// import { ENDPOINT_ADUAN } from '~/constant/endpoint-api'
 
 export default {
   name: 'FormLocationComplaint',

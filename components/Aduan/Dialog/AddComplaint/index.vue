@@ -12,15 +12,15 @@
       <template #form-complaint>
         <div class="mt-8 max-h-[450px] overflow-y-auto">
           <FormInformationComplaint
-            v-show="indexCurrentActive === 1"
+            v-if="indexCurrentActive === 1"
             ref="formInformationComplaint"
           />
           <FormLocationComplaint
-            v-show="indexCurrentActive === 2"
+            v-if="indexCurrentActive === 2"
             ref="formLocationComplaint"
           />
           <FormOtherComplaint
-            v-show="indexCurrentActive === 3"
+            v-if="indexCurrentActive === 3"
             ref="formOtherComplaint"
           />
         </div>
@@ -52,20 +52,7 @@
       @retry="backToForm()"
       @close-all-modal="closePopupInformation()"
     />
-    <!-- <DialogConfirmation
-      :show-popup="isShowPopupConfirmation"
-      :data-dialog="dataDialog"
-      @submit="submitPopupConfirmationHandle()"
-      @close="closePopupConfirmationHandle()"
-    /> -->
     <DialogLoading :show-popup="isLoading" />
-    <!-- <DialogInformation
-      :show-popup="isShowPopupInformation"
-      :data-dialog="dataDialog"
-      :icon-popup="iconPopup"
-      @close="closePopupAddComplaintHandle()"
-      @submit="saveDataComplaintHandle()"
-    /> -->
   </div>
 </template>
 
@@ -75,7 +62,6 @@ import FormInformationComplaint from '~/components/Aduan/Dialog/AddComplaint/For
 import FormLocationComplaint from '~/components/Aduan/Dialog/AddComplaint/Form/LocationComplaint'
 import FormOtherComplaint from '~/components/Aduan/Dialog/AddComplaint/Form/OthersComplaint'
 import { iconPopup } from '~/constant/icon-popup-new'
-// import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
 
 export default {
   name: 'DialogAddComplaint',
@@ -84,7 +70,6 @@ export default {
     FormLocationComplaint,
     FormOtherComplaint,
   },
-  // mixins: [popupAduanMasuk],
   props: {
     showPopup: {
       type: Boolean,
@@ -159,7 +144,7 @@ export default {
         this.dialogConfirmation = {
           title: 'Konfirmasi Tambah Aduan',
           nameModal: `${this.nameModal}Confirmation`,
-          descriptionText: 'Apakah anda yakin ingin menyimpan data ini?',
+          descriptionText: 'Apakah Anda yakin ingin menyimpan data ini?',
           buttonSubmit: {
             label: 'Ya, Simpan',
             variant: 'primary',
@@ -174,7 +159,7 @@ export default {
         this.dialogConfirmation = {
           title: 'Konfirmasi Pembatalan',
           nameModal: `${this.nameModal}Confirmation`,
-          descriptionText: 'Apakah anda yakin ingin membatalkan aduan ini?',
+          descriptionText: 'Apakah Anda yakin ingin membatalkan aduan ini?',
           buttonSubmit: {
             label: 'Tetap Lanjutkan Aduan',
             variant: 'primary',
@@ -197,7 +182,6 @@ export default {
       }
     },
     async saveDataComplaintHandle() {
-      // await this.$store.dispatch('add-complaint/submitDataAddComplaint')
       this.typeConfirmation = 'information'
       const nameModal = `${this.nameModal}Information`
       const dataDialogSuccess = {
@@ -225,24 +209,6 @@ export default {
       }
 
       this.$store.commit('modals/OPEN', nameModal)
-      // const dataDialogInformation = {
-      // success: this.setSucessFailedInformationHandle(
-      //   'Tambah Data Aduan berhasil dilakukan',
-      //   true
-      // ),
-      // failed: this.setSucessFailedInformationHandle(
-      //   'Tambah Data Aduan gagal dilakukan',
-      //   false
-      // ),
-      // }
-      // this.dataDialog.title = 'Informasi Tambah Aduan'
-      // if (this.isError) {
-      //   this.setDataDialog({ ...dataDialogInformation.failed })
-      //   this.setIconPopup({ ...dataDialogInformation.failed.icon })
-      // } else {
-      //   this.setDataDialog({ ...dataDialogInformation.success })
-      //   this.setIconPopup({ ...dataDialogInformation.success.icon })
-      // }
     },
     closePopupAddComplaintHandle() {
       this.indexCurrentActive = 1
@@ -261,39 +227,10 @@ export default {
       }
     },
     closePopupInformation() {
-      // this.closePopupAddComplaintHandle()
-      const dataInformationComplaint = {
-        sp4n_id: '',
-        span_created_at: '',
-        user_name: '',
-        title: '',
-        description: '',
-      }
-      const dataLocationComplaint = {
-        city_id: '',
-        district_id: '',
-        subdistrict_id: '',
-        address_detail: '',
-      }
-      const dataOtherComplaint = {
-        complaint_category_id: '',
-        complaint_subcategory_id: '',
-        disposition: '',
-        authority: 'Pemerintah Provinsi Jawa Barat',
-      }
       this.indexCurrentActive = 1
-      this.$store.commit(
-        'add-complaint/setDataInformationComplaint',
-        dataInformationComplaint
-      )
-      this.$store.commit(
-        'add-complaint/setDataLocationComplaint',
-        dataLocationComplaint
-      )
-      this.$store.commit(
-        'add-complaint/setDataOtherComplaint',
-        dataOtherComplaint
-      )
+      this.$store.dispatch('add-complaint/clearDataInformationComplaint')
+      this.$store.dispatch('add-complaint/clearDataLocationComplaint')
+      this.$store.dispatch('add-complaint/clearDataOtherComplaint')
       this.$emit('close')
     },
     backToForm() {

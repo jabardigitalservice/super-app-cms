@@ -3,7 +3,7 @@ import { ENDPOINT_ADUAN } from '~/constant/endpoint-api'
 export const state = () => ({
   dataInformationComplaint: {
     sp4n_id: '',
-    sp4n_added_at: '',
+    sp4n_created_at: '',
     user_name: '',
     title: '',
     description: '',

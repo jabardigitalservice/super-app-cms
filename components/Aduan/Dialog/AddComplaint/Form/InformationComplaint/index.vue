@@ -33,7 +33,7 @@
           </div>
           <div>
             <date-picker
-              v-model="dataInformationComplaint.sp4n_added_at"
+              v-model="dataInformationComplaint.sp4n_created_at"
               format="DD/MM/YYYY"
               :class="{
                 'mx-datepicker--error': errors[0],

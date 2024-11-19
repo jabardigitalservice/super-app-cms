@@ -286,6 +286,8 @@ export default {
     ...mapGetters('create-ikp', {
       isShowPopupCreateIkp: 'getIsShowPopup',
       ikpNarrative: 'getIkpNarrative',
+    }),
+    ...mapGetters('followup-complaint', {
       complaintType: 'getComplaintType',
     }),
     payload: {

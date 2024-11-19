@@ -278,7 +278,6 @@
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import AlertMessage from '~/components/Aduan/Dialog/ProcessComplaint/AlertMessage'
 import { complaintStatus, complaintSource } from '~/constant/aduan-masuk'
-// import { ENDPOINT_ADUAN } from '~/constant/endpoint-api'
 import { formatDate } from '~/utils'
 
 export default {
@@ -380,6 +379,7 @@ export default {
       },
     },
   },
+<<<<<<< HEAD
   watch: {
     payload: {
       deep: true,
@@ -393,6 +393,8 @@ export default {
       },
     },
   },
+=======
+>>>>>>> b1ad2bb9999bc1673450e4cb0d4bace090777529
   mounted() {
     this.$store.dispatch('utilities-complaint/getDataAuthorities')
     this.$store.dispatch('utilities-complaint/getDataGovResponsible')
@@ -402,13 +404,11 @@ export default {
       switch (keyObject) {
         case 'complaint_status_id':
           this.clearPopupProcessComplaint()
+          this.$refs.form.reset()
           this.isShowFieldProposeIkpNarrative = true
           break
         case 'coverage_of_affairs':
-          this.$store.dispatch(
-            'utilities-complaint/getDataDispositions',
-            this.payload.coverage_of_affairs
-          )
+          this.$store.dispatch('utilities-complaint/getDataDispositions', value)
           this.isShowFieldOPDPemprov =
             this.payload.coverage_of_affairs ===
             this.coverageOfAffairs.district.id

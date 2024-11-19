@@ -1,5 +1,8 @@
 import { complaintStatus, typeAduan } from '~/constant/aduan-masuk'
-import { ENDPOINT_ADUAN } from '~/constant/endpoint-api'
+import {
+  ENDPOINT_ADUAN,
+  ENDPOINT_ADUAN_NON_PEMPROV,
+} from '~/constant/endpoint-api'
 
 export default {
   data() {
@@ -252,32 +255,6 @@ export default {
         ),
         proposed_ikp_narrative: dataComplaint.proposed_ikp_narrative || '-',
       })
-      // dataComplaint = {
-      //   ...dataComplaint,
-      //   deadline_date: new Date(dataComplaint.deadline_date) || '',
-      // }
-      // const dialogConfirmation =
-      //   this.$store.state['followup-complaint'].dialogConfirmation
-      // this.$store.commit('followup-complaint/setDataDialogConfirmation', {
-      //   ...dialogConfirmation,
-      //   title: 'Buat Instruksi',
-      //   nameModal: 'createInstructionConfirmation',
-      // })
-      // this.$store.commit(
-      //   'create-ikp/setComplaintType',
-      //   typeAduan.instruksiKewenanganNonPemprov.props
-      // )
-      // this.setDataDialog({
-      //   dataComplaint,
-      //   ...this.setDataDialogConfirmation(
-      //     'Buat Instruksi',
-      //     'No.Aduan',
-      //     dataComplaint.complaint_id,
-      //     'Buat Instruksi'
-      //   ),
-      //   proposed_ikp_narrative: dataComplaint.proposed_ikp_narrative || '-',
-      // })
-
       this.$store.commit('followup-complaint/setDialogConfirmation', {
         ...dialogConfirmation,
         title: 'Buat Instruksi',
@@ -364,7 +341,10 @@ export default {
       }
       this.integrationPopupHandle(
         dataDialogInformation,
-        { sp4n_id: item.valueText },
+        {
+          sp4n_id: item.valueText,
+          complaint_number: this.dataComplaint.complaint_id,
+        },
         'add-sp4n'
       )
     },
@@ -459,7 +439,13 @@ export default {
       this.dataDialog.title = paramDialog.title
       this.dataDialog.subDescription = paramDialog.subDescription
       this.isLoading = true
-      const urlApi = `${ENDPOINT_ADUAN}/${this.idApi}/${pathApi}`
+      const complaintType =
+        this.$store.state['followup-complaint'].complaintType
+      const endpointApi =
+        complaintType === typeAduan.instruksiKewenanganNonPemprov.props
+          ? ENDPOINT_ADUAN_NON_PEMPROV
+          : ENDPOINT_ADUAN
+      const urlApi = `${endpointApi}/${this.idApi}/${pathApi}`
 
       try {
         await this.$axios.patch(urlApi, {
@@ -479,10 +465,17 @@ export default {
         const { code, errors } = error.response.data
         this.setDataDialog({ ...paramDialog.failed })
         if (code === '4221400') {
-          if (this.errors?.instruksi) {
+          if (errors?.instruksi) {
             this.setDataDialog({
               ...paramDialog.failed,
               description: errors?.instruksi || '',
+            })
+          }
+          if (errors?.sp4n_id) {
+            this.setDataDialog({
+              ...paramDialog.failed,
+              description: 'Id sp4n tidak ditemukan',
+              subDescription: '',
             })
           }
         }
@@ -492,6 +485,7 @@ export default {
         this.isLoading = false
       }
       this.isShowPopupInformation = true
+      this.$store.commit('followup-complaint/setComplaintType', '')
     },
     submitRetryHandle() {
       this.isShowPopupInformation = false

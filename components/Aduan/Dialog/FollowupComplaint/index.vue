@@ -236,14 +236,21 @@ export default {
         itemsPerPage: '',
         totalPages: '',
       },
+      is_prov_responsibility: false,
       typeAduan,
     }
   },
   async fetch() {
+    this.is_prov_responsibility =
+      this.complaintType === typeAduan.instruksiKewenanganPemprov.props
     try {
       this.setQuery({ sort_by: 'ikp_code', sort_type: 'ASC' })
       const responseIkp = await this.$axios.get(ENDPOINT_IKP, {
-        params: { ...this.query, is_admin: 1 },
+        params: {
+          ...this.query,
+          is_admin: 1,
+          is_prov_responsibility: this.is_prov_responsibility,
+        },
       })
       this.listDataIkp = responseIkp.data.data.data
       const pagination = responseIkp.data.data
@@ -333,7 +340,6 @@ export default {
       this.isShowPopupIkpNarrative = true
     },
     showPopupCreateIkp() {
-      console.log(this.dataDialog.dataComplaint)
       const {
         opd_id: opdId,
         deadline_date: deadlineDate,
@@ -359,6 +365,10 @@ export default {
         'create-ikp/setIkpNarrative',
         this.dataDialog.proposed_ikp_narrative
       )
+      this.$store.commit(
+        'followup-complaint/setComplaintType',
+        this.complaintType
+      )
       this.$store.commit('followup-complaint/setIsCreateIkp', true)
       this.$store.dispatch('create-ikp/checkTruncate')
       this.$store.commit('create-ikp/setIsShowPopup', true)
@@ -366,11 +376,13 @@ export default {
     submitDataFollowupComplaint() {
       this.$store.commit('modals/CLOSEALL')
       let payloadFollowup = {
-        // ikp_code: this.dataIkp.ikp_code,
         is_prov_responsibility:
           this.complaintType === typeAduan.instruksiKewenanganPemprov.props,
       }
-
+      this.$store.commit(
+        'followup-complaint/setComplaintType',
+        this.complaintType
+      )
       if (this.isCreateIkp) {
         payloadFollowup = { ...payloadFollowup, ...this.payloadCreateIkp }
       } else {
