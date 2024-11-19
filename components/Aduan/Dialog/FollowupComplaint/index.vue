@@ -236,14 +236,21 @@ export default {
         itemsPerPage: '',
         totalPages: '',
       },
+      is_prov_responsibility: false,
       typeAduan,
     }
   },
   async fetch() {
+    this.is_prov_responsibility =
+      this.complaintType === typeAduan.instruksiKewenanganPemprov.props
     try {
       this.setQuery({ sort_by: 'ikp_code', sort_type: 'ASC' })
       const responseIkp = await this.$axios.get(ENDPOINT_IKP, {
-        params: { ...this.query, is_admin: 1 },
+        params: {
+          ...this.query,
+          is_admin: 1,
+          is_prov_responsibility: this.is_prov_responsibility,
+        },
       })
       this.listDataIkp = responseIkp.data.data.data
       const pagination = responseIkp.data.data
