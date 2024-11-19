@@ -27,6 +27,9 @@ export const getters = {
   getIsCreateIkp: (state) => {
     return state.isCreateIkp
   },
+  getComplaintType: (state) => {
+    return state.complaintType
+  },
 }
 
 export const actions = {
