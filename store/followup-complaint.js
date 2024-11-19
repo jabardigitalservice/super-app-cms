@@ -8,6 +8,7 @@ export const state = () => ({
     descriptionText: 'Apakah Anda yakin ingin menindaklanjuti aduan tersebut?',
   },
   isCreateIkp: false, // popup confirmation for form create ikp
+  complaintType: '',
 })
 
 export const getters = {
@@ -50,5 +51,8 @@ export const mutations = {
   },
   setIsCreateIkp(state, isCreateIkp) {
     state.isCreateIkp = isCreateIkp
+  },
+  setComplaintType(state, complaintType) {
+    state.complaintType = complaintType
   },
 }

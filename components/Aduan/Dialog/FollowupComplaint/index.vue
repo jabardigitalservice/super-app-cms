@@ -333,7 +333,6 @@ export default {
       this.isShowPopupIkpNarrative = true
     },
     showPopupCreateIkp() {
-      console.log(this.dataDialog.dataComplaint)
       const {
         opd_id: opdId,
         deadline_date: deadlineDate,
@@ -359,6 +358,10 @@ export default {
         'create-ikp/setIkpNarrative',
         this.dataDialog.proposed_ikp_narrative
       )
+      this.$store.commit(
+        'followup-complaint/setComplaintType',
+        this.complaintType
+      )
       this.$store.commit('followup-complaint/setIsCreateIkp', true)
       this.$store.dispatch('create-ikp/checkTruncate')
       this.$store.commit('create-ikp/setIsShowPopup', true)
@@ -369,7 +372,10 @@ export default {
         is_prov_responsibility:
           this.complaintType === typeAduan.instruksiKewenanganPemprov.props,
       }
-
+      this.$store.commit(
+        'followup-complaint/setComplaintType',
+        this.complaintType
+      )
       if (this.isCreateIkp) {
         payloadFollowup = { ...payloadFollowup, ...this.payloadCreateIkp }
       } else {
