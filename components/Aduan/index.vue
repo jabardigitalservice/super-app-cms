@@ -507,7 +507,9 @@ export default {
     },
     listNonGovComplaintStatus() {
       // list status complaint for non government
-      return this.listDataNonGovComplaintStatus.map((item) => {
+      return this.$store.state[
+        'utilities-complaint'
+      ].listNonGovComplaintStatus.map((item) => {
         return {
           value: item.id,
           label: item.name,
@@ -567,14 +569,29 @@ export default {
       }
     }, 500),
   },
-  created() {
+  async created() {
     this.pagination.itemsPerPageOptions = generateItemsPerPageOptions(
       this.pagination.itemsPerPage
     )
     this.addComplaintStatusFilterHandle()
-    this.$store.dispatch('utilities-complaint/getDataCategory')
-    if (this.typeAduanPage === typeAduan.instruksiKewenanganNonPemprov.props) {
-      this.getNonGovComplaintStatus()
+    await this.$store.dispatch('utilities-complaint/getDataCategory')
+    const listCategory = [
+      { id: '', name: 'Semua Kategori' },
+      ...this.$store.state['utilities-complaint'].listCategory,
+    ]
+    this.$store.commit('utilities-complaint/setListCategory', listCategory)
+    if (
+      this.typeAduanPage.props === typeAduan.instruksiKewenanganNonPemprov.props
+    ) {
+      await this.$store.dispatch('utilities-complaint/getNonGovComplaintStatus')
+      const listNonGovComplaintStatus = [
+        { id: '', name: 'Semua Status Aduan' },
+        ...this.$store.state['utilities-complaint'].listNonGovComplaintStatus,
+      ]
+      this.$store.commit(
+        'utilities-complaint/setListNonGovComplaintStatus',
+        listNonGovComplaintStatus
+      )
     }
 
     this.query = this.addComplaintStatusFilterHandle()
@@ -856,26 +873,7 @@ export default {
         this.listStatisticComplaint.pop()
       }
     },
-    async getNonGovComplaintStatus() {
-      try {
-        // handle list data non government complaint status
-        const responseDataNonGovComplaintStatus = await this.$axios.get(
-          '/aduan/non-pemprov-complaint-status'
-        )
 
-        this.listDataNonGovComplaintStatus =
-          responseDataNonGovComplaintStatus.data.data
-        this.listDataNonGovComplaintStatus = [
-          {
-            id: '',
-            name: 'Semua Status',
-          },
-          ...this.listDataNonGovComplaintStatus,
-        ]
-      } catch (error) {
-        console.error(error)
-      }
-    },
     deletePropertiesWithPrefix(obj, prefix) {
       for (const prop in obj) {
         if (prop.startsWith(prefix)) {
