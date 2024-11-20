@@ -153,6 +153,22 @@ export default {
         isValid
       )
       if (isValid) {
+        const city = this.$store.state['utilities-complaint'].listCity.find(
+          (item) => item.id === this.dataLocationComplaint.city_id
+        )
+        const district = this.$store.state[
+          'utilities-complaint'
+        ].listDistrict.find(
+          (item) => item.id === this.dataLocationComplaint.district_id
+        )
+        const village = this.$store.state[
+          'utilities-complaint'
+        ].listVillage.find(
+          (item) => item.id === this.dataLocationComplaint.village_id
+        )
+        this.dataLocationComplaint.city_name = city.name
+        this.dataLocationComplaint.district_name = district.name
+        this.dataLocationComplaint.village_name = village.name
         this.$store.commit('add-complaint/setDataLocationComplaint', {
           ...this.dataLocationComplaint,
           address_detail: this.addressDetail,
