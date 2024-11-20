@@ -1,9 +1,15 @@
 <template>
   <div>
     <BaseDialog :show-popup="isShowPopupFollowup">
-      <BaseDialogPanel class="max-h-[750px] w-[600px]">
+      <BaseDialogPanel
+        class="max-h-fit w-[600px] sm:h-[calc(100vh-50px)]"
+        :class="{ 'max-h-[445px]': isFollowup }"
+      >
         <BaseDialogHeader :title="dataDialog.title" />
-        <div class="form-followup-ikp max-h-[630px] overflow-y-auto px-6 pt-2">
+        <div
+          class="form-followup-ikp max-h-fit overflow-y-auto px-6 sm:h-[calc(100vh-150px)]"
+          :class="{ 'max-h-fit': isFollowup }"
+        >
           <div class="grid grid-cols-2">
             <BaseDialogDescription
               description="No.Aduan"
@@ -26,9 +32,20 @@
             <label class="mb-1 text-sm text-gray-800"
               >Narasi Instruksi Aduan</label
             >
-            <p class="text-[14px] leading-[23px] text-gray-900">
+            <p class="text-[14px] leading-[23px] text-gray-900 line-clamp-2">
               {{ dataDialog.proposed_ikp_narrative }}
             </p>
+            <button
+              type="button"
+              class="mt-[6px] text-sm font-bold text-green-600"
+              @click="
+                showPopupIkpNarrative({
+                  narrative: dataDialog.proposed_ikp_narrative,
+                })
+              "
+            >
+              Selengkapnya
+            </button>
           </div>
           <div class="mb-3">
             <label class="mb-1 text-[15px]">Pencarian</label>
@@ -53,9 +70,17 @@
               @click="showPopupCreateIkp()"
             />
           </div>
+          <div v-if="isLoading">
+            <div class="flex h-[300px] flex-col items-center justify-center">
+              <jds-spinner class="mb-4" size="30" />
+              <p class="font-lato text-base font-bold text-green-700">
+                Loading....
+              </p>
+            </div>
+          </div>
           <!-- Show no data found when user searching data IKP -->
           <div
-            v-if="listIkp.length === 0 && search.length > 0 && !isFollowup"
+            v-else-if="listIkp.length === 0 && search.length > 0 && !isFollowup"
             class="mb-6 flex flex-col items-center rounded-lg bg-gray-50 py-[10px] text-gray-900"
           >
             <div
@@ -75,9 +100,10 @@
               Cobalah menggunakan id atau narasi yang berbeda.
             </p>
           </div>
+
           <!-- data IKP -->
           <div
-            v-if="!isFollowup && listIkp.length > 0"
+            v-else-if="!isFollowup && listIkp.length > 0"
             class="mb-6 rounded-lg border border-gray-200"
           >
             <jds-simple-table>
@@ -138,6 +164,7 @@
           <!-- show list followup process when choose IKP want to followup -->
           <ListFollowupProcess
             v-if="isFollowup"
+            class="mb-6"
             :data-ikp="dataIkp"
             :list-menu-table-action="listMenuTableAction"
             @detail-narrative="showPopupIkpNarrative"
@@ -238,11 +265,13 @@ export default {
       },
       is_prov_responsibility: false,
       typeAduan,
+      isLoading: false,
     }
   },
   async fetch() {
     this.is_prov_responsibility =
       this.complaintType === typeAduan.instruksiKewenanganPemprov.props
+    this.isLoading = true
     try {
       this.setQuery({ sort_by: 'ikp_code', sort_type: 'ASC' })
       const responseIkp = await this.$axios.get(ENDPOINT_IKP, {
@@ -262,6 +291,8 @@ export default {
       })
     } catch {
       this.listDataIkp = []
+    } finally {
+      this.isLoading = false
     }
   },
   computed: {
