@@ -35,6 +35,17 @@
             <p class="text-[14px] leading-[23px] text-gray-900 line-clamp-2">
               {{ dataDialog.proposed_ikp_narrative }}
             </p>
+            <button
+              type="button"
+              class="mt-[6px] text-sm font-bold text-green-600"
+              @click="
+                showPopupIkpNarrative({
+                  narrative: dataDialog.proposed_ikp_narrative,
+                })
+              "
+            >
+              Selengkapnya
+            </button>
           </div>
           <div class="mb-3">
             <label class="mb-1 text-[15px]">Pencarian</label>
