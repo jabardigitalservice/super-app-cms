@@ -1,9 +1,13 @@
 <template>
   <div>
     <BaseDialog :show-popup="isShowPopupFollowup">
-      <BaseDialogPanel class="max-h-[750px] w-[600px]">
+      <BaseDialogPanel
+        class="max-h-[750px] w-[600px] sm:max-h-[500px] md:max-h-[600px]"
+      >
         <BaseDialogHeader :title="dataDialog.title" />
-        <div class="form-followup-ikp max-h-[630px] overflow-y-auto px-6 pt-2">
+        <div
+          class="form-followup-ikp max-h-[630px] overflow-y-auto px-6 pt-2 sm:max-h-[410px] md:max-h-[510px]"
+        >
           <div class="grid grid-cols-2">
             <BaseDialogDescription
               description="No.Aduan"

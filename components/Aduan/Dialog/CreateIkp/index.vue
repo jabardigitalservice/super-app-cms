@@ -1,13 +1,15 @@
 <template>
   <div>
     <BaseDialog :show-popup="isShowPopupCreateIkp">
-      <BaseDialogPanel class="w-[600px]">
+      <BaseDialogPanel class="max-h-[720px] w-[600px] sm:h-[calc(100vh-70px)]">
         <BaseDialogHeader title="Buat Instruksi Aduan Baru" />
         <div
           class="form-input-ikp px-6 pt-3 pb-6"
           :class="{ '!pr-0': !isTruncate }"
         >
-          <div class="w-full rounded-lg border border-gray-300 p-3">
+          <div
+            class="w-full overflow-y-auto rounded-lg border border-gray-300 p-3"
+          >
             <AlertInformation message="Pembuatan Instruksi Aduan baru." />
             <CardIkpNarrative class="mt-5" />
             <ValidationObserver ref="form">
@@ -22,7 +24,7 @@
                     v-slot="{ errors }"
                     rules="requiredSelectForm"
                     name="Cakupan Urusan"
-                    class="py-3"
+                    class="max-w-full py-3"
                     tag="div"
                   >
                     <jds-select
@@ -392,7 +394,7 @@ export default {
 
 <style>
 .form-input-ikp {
-  @apply max-h-[825px] overflow-y-auto;
+  @apply max-h-[600px] w-full overflow-y-auto sm:h-[calc(100vh-200px)];
   scrollbar-color: #e0e0e0 transparent;
   scrollbar-width: thin;
 }
@@ -420,28 +422,28 @@ export default {
 .form-input-ikp
   .jds-select.jds-select--disabled
   .jds-input-text__input-wrapper {
-  @apply !w-[528px] !bg-gray-200;
+  @apply !w-[510px] !bg-gray-200;
 }
 
 .form-input-ikp
   .jds-select.jds-select--disabled
   .jds-input-text__input-wrapper {
-  @apply !w-[528px] !bg-gray-200;
+  @apply !w-[510px] !bg-gray-200;
 }
 
 .form-input-ikp
   .jds-select.jds-select--disabled
   .jds-input-text__input-wrapper
   input {
-  @apply !w-[528px] !bg-gray-200 !text-gray-600;
+  @apply !max-w-[510px] !bg-gray-200 !text-gray-600;
 }
 
 .form-input-ikp .jds-select .jds-input-text__input-wrapper {
-  @apply !w-[528px] !bg-white;
+  @apply !max-w-full !bg-white;
 }
 
 .form-input-ikp .jds-select__options {
-  @apply !max-h-[500px] !max-w-[528px] !overflow-y-auto;
+  @apply !max-h-[500px] !max-w-full !overflow-y-auto;
   scrollbar-color: #e0e0e0 transparent;
   scrollbar-width: thin;
 }

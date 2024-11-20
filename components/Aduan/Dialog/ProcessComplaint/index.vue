@@ -379,22 +379,6 @@ export default {
       },
     },
   },
-<<<<<<< HEAD
-  watch: {
-    payload: {
-      deep: true,
-      handler() {
-        if (this.payload.coverage_of_affairs) {
-          this.$store.dispatch(
-            'utilities-complaint/getDataDispositions',
-            this.payload.coverage_of_affairs
-          )
-        }
-      },
-    },
-  },
-=======
->>>>>>> b1ad2bb9999bc1673450e4cb0d4bace090777529
   mounted() {
     this.$store.dispatch('utilities-complaint/getDataAuthorities')
     this.$store.dispatch('utilities-complaint/getDataGovResponsible')

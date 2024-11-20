@@ -142,13 +142,13 @@
         v-if="
           typeAduan.aduanDialihkanSpanLapor.props === typeAduanPage &&
           detailComplaint?.diverted_to_span_at &&
-          detailComplaint?.sp4n_created_at
+          detailComplaint?.sp4n_id
         "
         header="Status SPAN Lapor"
         class="mb-4"
       >
         <tr>
-          <td class="w-[180px] px-2">Data Table</td>
+          <td class="w-[180px] px-2">Status SP4N Lapor</td>
           <td class="px-2 py-[6px]">
             <jds-button
               variant="secondary"
