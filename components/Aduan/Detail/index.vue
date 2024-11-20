@@ -86,6 +86,7 @@
               typeAduan.instruksiKewenanganNonPemprov.props
             "
             :ikp-type-page="typeAduanPage.props"
+            :complaint-id="detailComplaint.complaint_id"
             detail-complaint-link="/aduan/instruksi-kewenangan-non-pemprov/detail"
             :ikp-code="ikpCode"
             @select-tab="selectedTab"
