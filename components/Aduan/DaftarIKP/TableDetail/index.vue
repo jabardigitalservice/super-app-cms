@@ -95,6 +95,10 @@ export default {
       type: String,
       default: '',
     },
+    complaintId: {
+      type: String,
+      default: '',
+    },
     ikpTypePage: {
       type: String,
       default: '',

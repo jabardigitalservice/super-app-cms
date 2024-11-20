@@ -119,6 +119,7 @@ import {
 import TabBarList from '~/components/Aduan/TabBar/List'
 import { headerDaftarIkp, ikpStatus, ikpType } from '~/constant/daftar-ikp'
 import { ENDPOINT_IKP } from '~/constant/endpoint-api'
+import { typeAduan } from '~/constant/aduan-masuk'
 
 export default {
   name: 'DaftarIkpTable',
@@ -176,9 +177,12 @@ export default {
     }
   },
   async fetch() {
+    const isProvResponsibility =
+      this.typeAduanPage.props === typeAduan.instruksiKewenanganPemprov.props ||
+      typeAduan.instruksiAduanWarga.props
     try {
       const responseList = await this.$axios.get(ENDPOINT_IKP, {
-        params: { ...this.query },
+        params: { ...this.query, is_prov_responsibility: isProvResponsibility },
       })
       this.listDataIkp = responseList.data?.data?.data || []
       if (this.listDataIkp.length) {
