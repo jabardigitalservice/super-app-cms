@@ -1,10 +1,10 @@
 <template>
   <div>
     <BaseDialog :show-popup="isShowPopupCreateIkp">
-      <BaseDialogPanel class="max-h-[720px] w-[600px] sm:h-[calc(100vh-70px)]">
+      <BaseDialogPanel class="max-h-[720px] w-[600px] sm:h-[calc(100vh-50px)]">
         <BaseDialogHeader title="Buat Instruksi Aduan Baru" />
         <div
-          class="form-input-ikp px-6 pt-3 pb-6"
+          class="form-input-ikp px-6 pt-3 pb-5"
           :class="{ '!pr-0': !isTruncate }"
         >
           <div
@@ -394,7 +394,7 @@ export default {
 
 <style>
 .form-input-ikp {
-  @apply max-h-[600px] w-full overflow-y-auto sm:h-[calc(100vh-200px)];
+  @apply max-h-[600px] w-full overflow-y-auto sm:h-[calc(100vh-180px)];
   scrollbar-color: #e0e0e0 transparent;
   scrollbar-width: thin;
 }
