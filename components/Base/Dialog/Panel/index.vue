@@ -1,5 +1,5 @@
 <template>
-  <div class="h-fit rounded-lg bg-white" :class="customWidth">
+  <div class="rounded-lg bg-white" :class="customWidth">
     <slot />
   </div>
 </template>
