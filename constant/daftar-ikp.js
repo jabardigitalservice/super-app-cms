@@ -95,7 +95,10 @@ export const ikpStatus = Object.freeze({
     statusColor: [
       {
         color: 'light-blue',
-        ikpType: [ikpType.instruksiKewenanganPemprov.props],
+        ikpType: [
+          ikpType.instruksiKewenanganPemprov.props,
+          ikpType.instruksiKewenanganNonPemprov.props,
+        ],
       },
       { color: 'yellow', ikpType: [ikpType.instruksiAduanWarga.props] },
     ],
@@ -172,6 +175,7 @@ export const ikpStatus = Object.freeze({
         color: 'green',
         ikpType: [
           ikpType.instruksiKewenanganPemprov.props,
+          ikpType.instruksiKewenanganNonPemprov.props,
           ikpType.instruksiAduanWarga.props,
         ],
       },

@@ -380,7 +380,7 @@
         </tr>
         <tr>
           <td><strong>Tanggal Laporan Masuk</strong></td>
-          <td>{{ detailComplaint?.sp4n_added_at || '-' }}</td>
+          <td>{{ detailComplaint?.sp4n_created_at || '-' }}</td>
         </tr>
         <tr>
           <td><strong>Tanggal Diinput ke Sapawarga</strong></td>

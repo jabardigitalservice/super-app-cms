@@ -24,7 +24,7 @@
                 type="button"
                 variant="primary"
                 class="!text-[14px] !font-bold"
-                @click="closeModalSuccess()"
+                @click="closeModal()"
               />
             </div>
           </div>
