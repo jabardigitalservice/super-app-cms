@@ -474,7 +474,7 @@ export default {
           if (errors?.sp4n_id) {
             this.setDataDialog({
               ...paramDialog.failed,
-              description: 'ID SP4N tidak ditemukan',
+              description: errors?.sp4n_id,
               subDescription: '',
             })
           }
