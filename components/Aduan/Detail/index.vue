@@ -355,7 +355,7 @@ export default {
         case typeAduan.instruksiKewenanganNonPemprov.props:
           return [
             complaintStatus.coordinated.id,
-            complaintStatus.not_yet_coordinated,
+            complaintStatus.not_yet_coordinated.id,
           ]
         case typeAduan.aduanDialihkanHotlineJabar.props:
           return [complaintStatus.finished.id]
