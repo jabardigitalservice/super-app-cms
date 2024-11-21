@@ -101,7 +101,7 @@ export const actions = {
       disposition: '',
       authority: 'Pemerintah Provinsi Jawa Barat',
     }
-    commit('setDataLocationComplaint', dataOtherComplaint)
+    commit('setDataOtherComplaint', dataOtherComplaint)
   },
 }
 
