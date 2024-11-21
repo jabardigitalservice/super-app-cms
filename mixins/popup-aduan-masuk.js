@@ -465,10 +465,10 @@ export default {
         const { code, errors } = error.response.data
         this.setDataDialog({ ...paramDialog.failed })
         if (code === '4221400') {
-          if (errors?.instruksi) {
+          if (errors?.instruction) {
             this.setDataDialog({
               ...paramDialog.failed,
-              description: errors?.instruksi || '',
+              description: errors?.instruction || '',
             })
           }
           if (errors?.sp4n_id) {
