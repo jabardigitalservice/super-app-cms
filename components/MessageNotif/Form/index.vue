@@ -124,6 +124,7 @@
                 :api-key="`${$config.tinymceApiKey}`"
                 :init="{
                   forced_root_block: '',
+                  paste_as_text: true,
                   menubar: false,
                   selector: 'textarea',
                   branding: false,
@@ -364,8 +365,8 @@ export default {
         // check type modal
         if (Object.keys(this.dataImage).length > 0) {
           await this.$refs.BaseDragAndDropFile.uploadFile()
-          this.$refs.BaseDragAndDropFile.resetDataFile()
         }
+
         this.showConfirmation(typeForm)
       } else {
         this.openWarningInformationDialog()
