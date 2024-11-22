@@ -186,12 +186,13 @@ export default {
         deadline_date: dataComplaint?.deadline_date
           ? new Date(dataComplaint?.deadline_date)
           : '-',
-        status_description: dataComplaint?.status_description || '-',
-        proposed_ikp_narrative: dataComplaint?.proposed_ikp_narrative || '-',
+        status_description: dataComplaint?.status_description || '',
+        proposed_ikp_narrative: dataComplaint?.proposed_ikp_narrative || '',
         opd_id: dataComplaint?.opd_id,
         opd_name: dataComplaint?.opd_name,
         complaint_status_id: dataComplaint?.complaint_status_id,
         urgency_level: dataComplaint?.urgency_level,
+        opd_pemprov_id: dataComplaint?.opd_pemprov_id,
       })
       this.$store.commit('process-complaint/setComplaintSource', {
         complaint_source: dataComplaint?.complaint_source,
@@ -460,7 +461,6 @@ export default {
           indicator_value: '',
           indicator_unit: '',
         })
-        this.$store.commit('popup-complaint/setFieldInput', '')
       } catch (error) {
         const { code, errors } = error.response.data
         this.setDataDialog({ ...paramDialog.failed })
@@ -539,6 +539,8 @@ export default {
     },
     closePopupInformationHandle() {
       this.query.page = 1
+      this.$store.commit('popup-complaint/setFieldInput', '')
+      this.$store.dispatch('process-complaint/clearPayload')
       this.closePopupHandle()
       this.$fetch()
     },
