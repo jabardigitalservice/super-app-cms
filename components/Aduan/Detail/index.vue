@@ -105,11 +105,6 @@
       :show-popup="isShowPopupViewImage"
       @close="isShowPopupViewImage = false"
     />
-    <DialogTrackingSpanLapor
-      :show-popup="isShowPopupDetailStatusComplaint"
-      :data-dialog="dataDialog"
-      @close="isShowPopupDetailStatusComplaint = false"
-    />
     <DialogFollowupHotlineJabar @close-all-modal="$fetch()" />
     <DialogEvidenceFollowupHotline @close-all-modal="$fetch()" />
     <DialogInputText
@@ -139,6 +134,7 @@
     />
     <DialogLoading :show-popup="isLoading" />
     <DialogProcessComplaint
+      v-if="isShowPopupProcessComplaint"
       :data-dialog="dataDialog"
       :show-popup="isShowPopupProcessComplaint"
       @close="isShowPopupProcessComplaint = false"
@@ -161,7 +157,6 @@ import ArrowLeft from '~/assets/icon/arrow-left.svg?inline'
 import DialogViewImage from '~/components/Aduan/DialogViewImage'
 import TabBarDetail from '~/components/Aduan/TabBar/Detail'
 import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
-import DialogTrackingSpanLapor from '~/components/Aduan/Dialog/TrackingSpanLapor'
 import TableComplaintDetail from '~/components/Aduan/Detail/Table/Complaint'
 import { formatDate } from '~/utils'
 import DialogProcessComplaint from '~/components/Aduan/Dialog/ProcessComplaint'
@@ -179,7 +174,6 @@ export default {
   components: {
     DialogViewImage,
     TabBarDetail,
-    DialogTrackingSpanLapor,
     ArrowLeft,
     DialogProcessComplaint,
     TableComplaintDetail,
@@ -422,12 +416,7 @@ export default {
       this.photo.url = 'loading'
       this.photo.url = url
     },
-    showPopupDetailStatusComplaintHandle(detailComplaint) {
-      this.isShowPopupDetailStatusComplaint = true
-      this.dataDialog = {
-        subDescription: detailComplaint.complaint_id,
-      }
-    },
+
     showPopupFollowupHotlineJabar() {
       this.$store.dispatch('popup-complaint/showPopupFollowupHotlineJabar', {
         dataComplaint: this.detailComplaint,

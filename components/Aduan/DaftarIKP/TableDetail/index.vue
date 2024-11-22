@@ -122,7 +122,10 @@ export default {
   },
   async fetch() {
     try {
-      const response = await this.$axios.get(`${ENDPOINT_IKP}/${this.ikpCode}`)
+      const response = await this.$axios.get(
+        `${ENDPOINT_IKP}/${this.ikpCode}`,
+        { params: { complaint_id: this.complaintId } }
+      )
       this.dataDetail = response.data.data
     } catch (error) {
       this.dataDetail = {}

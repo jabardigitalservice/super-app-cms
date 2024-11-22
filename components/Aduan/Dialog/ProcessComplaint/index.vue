@@ -381,7 +381,15 @@ export default {
   },
   mounted() {
     this.$store.dispatch('utilities-complaint/getDataAuthorities')
+    if (this.payload.opd_id) {
+      this.$store.dispatch(
+        'utilities-complaint/getDataDispositions',
+        this.payload.coverage_of_affairs
+      )
+    }
     this.$store.dispatch('utilities-complaint/getDataGovResponsible')
+    this.isShowFieldOPDPemprov = this.payload.opd_pemprov_id
+    this.isShowFieldProposeIkpNarrative = this.payload.proposed_ikp_narrative
   },
   methods: {
     changeSelectValue(value, keyObject) {

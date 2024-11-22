@@ -29,6 +29,21 @@ export const actions = {
       commit('setPayload', payload)
     }
   },
+  clearPayload({ commit }) {
+    const payload = {
+      status_description: '',
+      coverage_of_affairs: null,
+      deadline_date: null,
+      proposed_ikp_narrative: '',
+      urgency_level: null,
+      opd_pic: null,
+      opd_id: null,
+      opd_name: null,
+      complaint_status_id: null,
+      opd_pemprov_id: null,
+    }
+    commit('setPayload', payload)
+  },
 }
 
 export const mutations = {
