@@ -194,7 +194,7 @@ export const complaintStatus = Object.freeze({
   },
   not_yet_instructed: {
     id: 'not_yet_instructed',
-    name: 'Belum Diistruksikan',
+    name: 'Belum Diinstruksikan',
     value: 0,
     statusColor: [
       {
