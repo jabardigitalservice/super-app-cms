@@ -33,7 +33,7 @@
             :label="dialogConfirmation.buttonCancel?.label"
             type="button"
             :variant="dialogConfirmation?.buttonCancel?.variant"
-            @click="closePopupConfirmationHandle()"
+            @click="closePopupConfirmation()"
           />
         </div>
 
@@ -41,7 +41,7 @@
           :label="dialogConfirmation?.buttonSubmit?.label"
           type="button"
           :variant="dialogConfirmation?.buttonSubmit?.variant"
-          @click="submitPopupConfirmationHandle()"
+          @click="submitPopupConfirmation()"
         />
       </template>
     </DialogConfirmationBasic>
@@ -50,7 +50,7 @@
       :dialog-modal="dialogInformmation.dialogModal"
       :is-success="!isError"
       @retry="backToForm()"
-      @close-all-modal="closePopupInformation()"
+      @close-all-modal="closePopup()"
     />
     <DialogLoading :show-popup="isLoading" />
   </div>
@@ -172,16 +172,16 @@ export default {
       }
       this.$store.commit('modals/OPEN', this.dialogConfirmation.nameModal)
     },
-    submitPopupConfirmationHandle() {
+    submitPopupConfirmation() {
       if (this.typeConfirmation === 'submit') {
         this.$store.commit('modals/CLOSEALL')
-        this.saveDataComplaintHandle()
+        this.saveDataComplaint()
       } else {
         // confirmation cancel add complaint
         this.$store.commit('modals/CLOSE', this.dialogConfirmation?.nameModal)
       }
     },
-    async saveDataComplaintHandle() {
+    async saveDataComplaint() {
       this.typeConfirmation = 'information'
       const nameModal = `${this.nameModal}Information`
       const dataDialogSuccess = {
@@ -210,23 +210,20 @@ export default {
 
       this.$store.commit('modals/OPEN', nameModal)
     },
-    closePopupAddComplaintHandle() {
-      this.indexCurrentActive = 1
-      this.$refs.formInformationComplaint.clearFormInformationComplaintHandle()
-      this.$refs.formLocationComplaint.clearFormLocationComplaintHandle()
-      this.$refs.formOtherComplaint.clearFormOtherComplaintHandle()
+    closePopupAddComplaint() {
+      this.closePopup()
       this.$store.commit('add-complaint/setIsError', false)
     },
-    closePopupConfirmationHandle() {
+    closePopupConfirmation() {
       if (this.typeConfirmation === 'submit') {
         this.$store.commit('modals/CLOSE', this.dialogConfirmation?.nameModal)
       } else {
         // confirmation cancel add complaint
         this.$store.commit('modals/CLOSEALL')
-        this.closePopupAddComplaintHandle()
+        this.closePopupAddComplaint()
       }
     },
-    closePopupInformation() {
+    closePopup() {
       this.indexCurrentActive = 1
       this.$store.dispatch('add-complaint/clearDataInformationComplaint')
       this.$store.dispatch('add-complaint/clearDataLocationComplaint')
