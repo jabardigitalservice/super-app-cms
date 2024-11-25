@@ -1,5 +1,5 @@
 <template>
-  <BaseDialogFrame :name="dialogModal?.nameModal">
+  <BaseDialogFrame :name="dialogModal?.nameModal || ''">
     <BaseDialogPanel class="w-[510px]">
       <BaseDialogHeader :title="dialogModal?.title" />
       <BaseDialogDescription
@@ -30,7 +30,14 @@
 export default {
   name: 'DialogConfirmationBasic',
   props: {
-    dialogModal: { type: Object, default: () => ({}) },
+    dialogModal: {
+      type: Object,
+      default: () => ({
+        nameModal: '',
+        descriptionText: '',
+        button: { label: '', variant: '' },
+      }),
+    },
     detailItemModal: { type: Object, default: () => ({}) },
   },
 }
