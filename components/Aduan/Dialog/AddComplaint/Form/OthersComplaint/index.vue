@@ -22,9 +22,8 @@
             "
           />
         </ValidationProvider>
-
         <ValidationProvider
-          v-if="dataOtherComplaint.category_id === 'lainnya'"
+          v-if="isOtherCategory"
           v-slot="{ errors }"
           name="Kategori"
           class="mb-4"
@@ -32,15 +31,14 @@
           tag="div"
         >
           <BaseInputText
-            v-model="dataOtherComplaint.subcategory_id"
+            v-model="otherCategory"
             placeholder="Masukkan Kategori"
             :error-message="errors[0]"
             maxlength="50"
           />
         </ValidationProvider>
-
         <ValidationProvider
-          v-if="dataOtherComplaint.category_id !== 'lainnya'"
+          v-if="!isOtherCategory"
           v-slot="{ errors }"
           name="Sub Kategori"
           rules="requiredSelectForm"
@@ -48,7 +46,7 @@
           tag="div"
         >
           <jds-select
-            v-model="dataOtherComplaint.subcategory_id"
+            v-model="dataOtherComplaint.sub_category_id"
             :disabled="!dataOtherComplaint.category_id"
             name="Sub Kategori"
             label="Sub Kategori"
@@ -56,13 +54,15 @@
             :error-message="errors[0]"
             :options="listSubCategoryComplaint"
             @change="
-              changeSelectForm(dataOtherComplaint.subcategory_id, 'subcategory')
+              changeSelectForm(
+                dataOtherComplaint.sub_category_id,
+                'subcategory'
+              )
             "
           />
         </ValidationProvider>
-
         <ValidationProvider
-          v-if="dataOtherComplaint.subcategory_id.includes('lainnya-terkait')"
+          v-if="isOtherSubcategory"
           v-slot="{ errors }"
           name="Sub Kategori"
           class="mb-4"
@@ -70,7 +70,7 @@
           tag="div"
         >
           <BaseInputText
-            v-model="dataOtherComplaint.subcategory_child_id"
+            v-model="otherSubcategory"
             type="text"
             placeholder="Masukkan Sub Kategori"
             :error-message="errors[0]"
@@ -95,9 +95,6 @@
             placeholder="Pilih Dinas Untuk Disposisi"
             :error-message="errors[0]"
             :options="listDisposition"
-            @change="
-              changeSelectForm(dataOtherComplaint.disposition, 'disposition')
-            "
           />
         </ValidationProvider>
         <jds-input-text
@@ -130,6 +127,10 @@ export default {
       listDataSubCategoryComplaint: [],
       listDataDisposition: [],
       isSubmit: false,
+      isOtherCategory: false,
+      isOtherSubcategory: false,
+      otherCategory: '',
+      otherSubcategory: '',
     }
   },
   computed: {
@@ -172,22 +173,53 @@ export default {
   },
   methods: {
     changeSelectForm(value, typeSelect) {
+      this.isOtherCategory = false
+      this.isOtherSubcategory = false
       if (typeSelect === 'category') {
-        if (this.dataOtherComplaint.category_id !== 'lainnya') {
-          this.$store.dispatch('utilities-complaint/getDataSubCategory', value)
-        }
-        this.resetValueChildCategory()
-      } else if (typeSelect === 'subcategory') {
         this.$store.commit('add-complaint/setDataOtherComplaint', {
           ...this.dataOtherComplaint,
+          category_id: value,
+        })
+        this.isOtherCategory =
+          this.dataOtherComplaint.category_id?.includes('lainnya')
+      }
+
+      if (typeSelect === 'subcategory') {
+        this.$store.commit('add-complaint/setDataOtherComplaint', {
+          ...this.dataOtherComplaint,
+          sub_category_id: value,
+        })
+        this.isOtherSubcategory =
+          this.dataOtherComplaint.sub_category_id?.includes('lainnya-terkait')
+      }
+
+      if (!this.isOtherCategory) {
+        this.$store.dispatch(
+          'utilities-complaint/getDataSubCategory',
+          this.dataOtherComplaint.category_id
+        )
+        this.resetValueChildCategory()
+      }
+
+      if (!this.isOtherSubcategory) {
+        this.otherSubcategory = ''
+        this.$store.commit('add-complaint/setDataOtherComplaint', {
+          ...this.dataOtherComplaint,
+          sub_category_id: '',
           subcategory_child_id: '',
         })
       }
+      this.$refs.formOtherComplaint.reset()
     },
     async inputDataOtherComplaintHandle() {
       this.isSubmit = true
       const isValid = await this.$refs.formOtherComplaint.validate()
       this.$store.commit('add-complaint/setIsValidFormOtherComplaint', isValid)
+      this.$store.commit('add-complaint/setDataOtherComplaint', {
+        ...this.dataOtherComplaint,
+        category_child_id: this.otherCategory,
+        subcategory_child_id: this.otherSubcategory,
+      })
       if (isValid) {
         this.$store.commit('add-complaint/setDataOtherComplaint', {
           ...this.dataOtherComplaint,
@@ -198,14 +230,12 @@ export default {
     clearFormOtherComplaintHandle() {
       this.$store.dispatch('add-complaint/clearDataOtherComplaint')
       this.isSubmit = false
+      this.resetValueChildCategory()
       this.$refs.formOtherComplaint.reset()
     },
     resetValueChildCategory() {
-      this.$store.dispatch('add-complaint/setDataOtherComplaint', {
-        ...this.dataOtherComplaint,
-        subcategory_id: '',
-        subcategory_child_id: '',
-      })
+      this.otherCategory = ''
+      this.otherSubcategory = ''
     },
   },
 }

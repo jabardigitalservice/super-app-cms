@@ -23,7 +23,7 @@
 export default {
   name: 'BaseDialogFrame',
   props: {
-    name: { type: String, required: true },
+    name: { type: String, default: '', required: true },
     closeModalSelf: { type: Boolean, default: true },
     useOpacity: { type: Boolean, default: true },
     isCloseFromOutside: { type: Boolean, default: true },
