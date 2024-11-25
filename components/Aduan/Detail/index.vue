@@ -284,13 +284,10 @@ export default {
         deadline_at_format:
           dataDetailComplaint?.deadline_date &&
           formatDate(dataDetailComplaint?.deadline_date, 'dd/MM/yyyy'),
-        sp4n_created_at:
+        sp4n_created_at_format:
           dataDetailComplaint?.sp4n_created_at &&
-          formatDate(
-            dataDetailComplaint?.sp4n_created_at || '',
-            'dd/MM/yyyy - HH:mm'
-          ),
-        sp4n_added_at:
+          formatDate(dataDetailComplaint?.sp4n_created_at || '', 'dd/MM/yyyy'),
+        sp4n_added_at_format:
           dataDetailComplaint?.sp4n_added_at &&
           formatDate(
             dataDetailComplaint?.sp4n_added_at || '',

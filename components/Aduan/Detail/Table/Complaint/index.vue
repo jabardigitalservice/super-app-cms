@@ -61,8 +61,8 @@
                 }"
               />
               {{
-                detailComplaint?.sp4n_created_at ||
-                detailComplaint?.sp4n_added_at ||
+                detailComplaint?.sp4n_created_at_format ||
+                detailComplaint?.sp4n_added_at_format ||
                 'Belum ada'
               }}
             </div>
@@ -379,11 +379,11 @@
         </tr>
         <tr>
           <td><strong>Tanggal Laporan Masuk</strong></td>
-          <td>{{ detailComplaint?.sp4n_created_at || '-' }}</td>
+          <td>{{ detailComplaint?.sp4n_created_at_format || '-' }}</td>
         </tr>
         <tr>
           <td><strong>Tanggal Diinput ke Sapawarga</strong></td>
-          <td>{{ detailComplaint?.created_at }}</td>
+          <td>{{ detailComplaint?.created_at_format }}</td>
         </tr>
         <tr>
           <td><strong>Nama Lengkap</strong></td>
