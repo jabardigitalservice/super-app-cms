@@ -141,19 +141,18 @@
       <BaseTableDetail
         v-if="
           typeAduan.aduanDialihkanSpanLapor.props === typeAduanPage &&
-          detailComplaint?.diverted_to_span_at &&
-          detailComplaint?.sp4n_created_at
+          detailComplaint?.sp4n_id
         "
         header="Status SPAN Lapor"
         class="mb-4"
       >
         <tr>
-          <td class="w-[180px] px-2">Data Table</td>
+          <td class="w-[180px] px-2">Status SP4N Lapor</td>
           <td class="px-2 py-[6px]">
             <jds-button
               variant="secondary"
               class="!border-green-600 !text-sm !font-medium !text-green-600"
-              @click="showPopupDetailStatusComplaintHandle(detailComplaint)"
+              @click="showPopupTrackingSpan(detailComplaint)"
             >
               Lihat Semua Status
             </jds-button>
@@ -380,7 +379,7 @@
         </tr>
         <tr>
           <td><strong>Tanggal Laporan Masuk</strong></td>
-          <td>{{ detailComplaint?.sp4n_added_at || '-' }}</td>
+          <td>{{ detailComplaint?.sp4n_created_at || '-' }}</td>
         </tr>
         <tr>
           <td><strong>Tanggal Diinput ke Sapawarga</strong></td>
@@ -446,10 +445,17 @@
       </BaseTableDetail>
     </div>
     <DialogViewDocument
+      v-if="isShowPopupViewDocument"
       :show-popup="isShowPopupViewDocument"
       :list-file-document="listFileDocument"
       :list-file-image="listFileImage"
       @close="isShowPopupViewDocument = false"
+    />
+    <DialogTrackingSpanLapor
+      v-if="isShowPopupTrackingSpan"
+      :show-popup="isShowPopupTrackingSpan"
+      :data-dialog="dataDialog"
+      @close="isShowPopupTrackingSpan = false"
     />
   </div>
 </template>
@@ -458,10 +464,11 @@
 import { typeAduan, complaintStatus } from '~/constant/aduan-masuk'
 import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
 import DialogViewDocument from '~/components/Aduan/Dialog/ViewDocument'
+import DialogTrackingSpanLapor from '~/components/Aduan/Dialog/TrackingSpanLapor'
 
 export default {
   name: 'DetailAduanMasuk',
-  components: { DialogViewDocument },
+  components: { DialogViewDocument, DialogTrackingSpanLapor },
   mixins: [popupAduanMasuk],
   props: {
     typeAduanPage: {
@@ -509,6 +516,7 @@ export default {
       listFileDocument: [],
       listFileImage: [],
       isShowPopupViewDocument: false,
+      isShowPopupTrackingSpan: false,
     }
   },
   computed: {
@@ -648,6 +656,12 @@ export default {
         listComplaintType.includes(this.typeAduanPage) &&
         this.findComplaintStatus(this.filterComplaintStatus(listFilter))
       )
+    },
+    showPopupTrackingSpan(detailComplaint) {
+      this.isShowPopupTrackingSpan = true
+      this.dataDialog = {
+        subDescription: detailComplaint.complaint_id,
+      }
     },
   },
 }

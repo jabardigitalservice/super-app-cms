@@ -1,8 +1,8 @@
 <template>
   <div class="rounded-lg border border-gray-300">
     <!-- HEADER -->
-    <div class="bg-[#FFFAE8] px-3 py-4">
-      <div class="flex">
+    <div class="bg-[#FFFAE8] px-2 py-4">
+      <div class="flex w-full">
         <BaseIconSvg
           icon="/icon/default/star.svg"
           :size="20"

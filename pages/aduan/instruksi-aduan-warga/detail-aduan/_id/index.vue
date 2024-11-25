@@ -1,5 +1,5 @@
 <template>
-  <AduanDetail :type-aduan-page="typeAduan.instruksiAduanWarga.props" />
+  <AduanDetail :type-aduan-page="typeAduan.instruksiAduanWarga" />
 </template>
 
 <script>

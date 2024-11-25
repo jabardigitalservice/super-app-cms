@@ -27,11 +27,17 @@
       <div v-else class="p-6">
         <p>No data available</p>
       </div>
-      <BaseDialogFooter
-        label-button="Tutup"
-        :show-cancel-button="false"
-        @close="$emit('close')"
-      />
+      <BaseDialogFooterNew name="footer-teacking-span">
+        <div class="flex w-full justify-center">
+          <jds-button
+            label="Tutup"
+            type="button"
+            variant="primary"
+            class="!text-[14px] !font-bold"
+            @click="$emit('close')"
+          />
+        </div>
+      </BaseDialogFooterNew>
     </BaseDialogPanel>
   </BaseDialog>
 </template>

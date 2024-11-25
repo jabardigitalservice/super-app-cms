@@ -176,6 +176,9 @@ export default {
     }
   },
   async fetch() {
+    this.query.is_prov_responsibility =
+      this.ikpTypePage === ikpType.instruksiKewenanganPemprov.props ||
+      this.ikpTypePage === ikpType.instruksiAduanWarga.props
     try {
       const responseList = await this.$axios.get(ENDPOINT_IKP, {
         params: { ...this.query },
@@ -427,6 +430,7 @@ export default {
       this.$fetch()
     },
     goToPageDetail(id) {
+      console.log(id)
       this.$router.push({
         path: `${this.detailPage}/${id}`,
         query: this.query,

@@ -1,9 +1,15 @@
 <template>
   <div>
     <BaseDialog :show-popup="isShowPopupFollowup">
-      <BaseDialogPanel class="max-h-[750px] w-[600px]">
+      <BaseDialogPanel
+        class="max-h-fit w-[770px] sm:h-[calc(100vh-50px)] lg:w-[800px]"
+        :class="{ 'max-h-[445px]': isFollowup }"
+      >
         <BaseDialogHeader :title="dataDialog.title" />
-        <div class="form-followup-ikp max-h-[630px] overflow-y-auto px-6 pt-2">
+        <div
+          class="form-followup-ikp max-h-fit overflow-y-auto px-6 sm:h-[calc(100vh-150px)]"
+          :class="{ 'max-h-fit': isFollowup }"
+        >
           <div class="grid grid-cols-2">
             <BaseDialogDescription
               description="No.Aduan"
@@ -26,9 +32,20 @@
             <label class="mb-1 text-sm text-gray-800"
               >Narasi Instruksi Aduan</label
             >
-            <p class="text-[14px] leading-[23px] text-gray-900">
+            <p class="text-[14px] leading-[23px] text-gray-900 line-clamp-2">
               {{ dataDialog.proposed_ikp_narrative }}
             </p>
+            <button
+              type="button"
+              class="mt-[6px] text-sm font-bold text-green-600"
+              @click="
+                showPopupIkpNarrative({
+                  narrative: dataDialog.proposed_ikp_narrative,
+                })
+              "
+            >
+              Selengkapnya
+            </button>
           </div>
           <div class="mb-3">
             <label class="mb-1 text-[15px]">Pencarian</label>
@@ -53,9 +70,17 @@
               @click="showPopupCreateIkp()"
             />
           </div>
+          <div v-if="isLoading">
+            <div class="flex h-[300px] flex-col items-center justify-center">
+              <jds-spinner class="mb-4" size="30" />
+              <p class="font-lato text-base font-bold text-green-700">
+                Loading....
+              </p>
+            </div>
+          </div>
           <!-- Show no data found when user searching data IKP -->
           <div
-            v-if="listIkp.length === 0 && search.length > 0 && !isFollowup"
+            v-else-if="listIkp.length === 0 && search.length > 0 && !isFollowup"
             class="mb-6 flex flex-col items-center rounded-lg bg-gray-50 py-[10px] text-gray-900"
           >
             <div
@@ -75,17 +100,19 @@
               Cobalah menggunakan id atau narasi yang berbeda.
             </p>
           </div>
+
           <!-- data IKP -->
           <div
-            v-if="!isFollowup && listIkp.length > 0"
+            v-else-if="!isFollowup && listIkp.length > 0"
             class="mb-6 rounded-lg border border-gray-200"
           >
             <jds-simple-table>
               <thead>
                 <tr>
                   <th class="rounded-tl-lg !bg-green-600">ID IKP</th>
+                  <th class="!bg-green-600">Narasi Instruksi</th>
                   <th colspan="3" class="rounded-tr-lg !bg-green-600">
-                    Narasi Instruksi
+                    Status
                   </th>
                 </tr>
               </thead>
@@ -101,6 +128,16 @@
                     <p class="w-[280px] truncate">
                       {{ itemIkp.narrative }}
                     </p>
+                  </td>
+                  <td>
+                    <div class="flex items-center">
+                      <p
+                        class="h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 text-xs font-semibold"
+                        :class="getColorText(itemIkp?.complaint_status_id)"
+                      >
+                        {{ itemIkp?.status }}
+                      </p>
+                    </div>
                   </td>
                   <td width="73">
                     <BaseTableAction
@@ -123,7 +160,7 @@
               </tbody>
               <tfoot>
                 <tr>
-                  <td colspan="4" class="bg-gray-50 !p-0">
+                  <td colspan="5" class="bg-gray-50 !p-0">
                     <Pagination
                       :pagination="pagination"
                       @next-page="nextPage()"
@@ -138,6 +175,7 @@
           <!-- show list followup process when choose IKP want to followup -->
           <ListFollowupProcess
             v-if="isFollowup"
+            class="mb-6"
             :data-ikp="dataIkp"
             :list-menu-table-action="listMenuTableAction"
             @detail-narrative="showPopupIkpNarrative"
@@ -193,8 +231,9 @@ import ListFollowupProcess from '~/components/Aduan/Dialog/FollowupComplaint/Lis
 import DialogIkpNarrative from '~/components/Aduan/Dialog/IkpNarrative'
 import DialogCreateIkp from '~/components/Aduan/Dialog/CreateIkp'
 import Pagination from '~/components/Aduan/Dialog/FollowupComplaint/Pagination'
-import { typeAduan } from '~/constant/aduan-masuk'
+import { typeAduan, complaintStatus } from '~/constant/aduan-masuk'
 import { ENDPOINT_IKP } from '~/constant/endpoint-api'
+import { formatDate } from '~/utils'
 
 export default {
   name: 'DialogFollowupComplaint',
@@ -236,14 +275,28 @@ export default {
         itemsPerPage: '',
         totalPages: '',
       },
+      is_prov_responsibility: false,
       typeAduan,
+      isLoading: false,
     }
   },
   async fetch() {
+    this.is_prov_responsibility =
+      this.complaintType === typeAduan.instruksiKewenanganPemprov.props
+    this.isLoading = true
     try {
       this.setQuery({ sort_by: 'ikp_code', sort_type: 'ASC' })
+      const today = new Date()
+      const startDate = new Date(today.getTime())
+      startDate.setDate(startDate.getDate() - 89)
       const responseIkp = await this.$axios.get(ENDPOINT_IKP, {
-        params: { ...this.query, is_admin: 1 },
+        params: {
+          ...this.query,
+          is_admin: 1,
+          is_prov_responsibility: this.is_prov_responsibility,
+          start_date: formatDate(startDate, 'yyyy-MM-dd'),
+          end_date: formatDate(today, 'yyyy-MM-dd'),
+        },
       })
       this.listDataIkp = responseIkp.data.data.data
       const pagination = responseIkp.data.data
@@ -255,6 +308,8 @@ export default {
       })
     } catch {
       this.listDataIkp = []
+    } finally {
+      this.isLoading = false
     }
   },
   computed: {
@@ -270,7 +325,11 @@ export default {
     }),
     listIkp() {
       return this.listDataIkp.map((dataIkp) => {
-        return { ...dataIkp, code: dataIkp.ikp_code }
+        return {
+          ...dataIkp,
+          code: dataIkp.ikp_code,
+          status: this.getStatusText(dataIkp.complaint_status_id),
+        }
       })
     },
   },
@@ -301,6 +360,15 @@ export default {
       this.query.page = 1
       this.search = ''
       this.$fetch()
+    },
+    getStatusText(statusId) {
+      if (
+        this.complaintType === typeAduan.instruksiKewenanganNonPemprov.props &&
+        statusId === 'coordinated'
+      ) {
+        return 'Sudah Dikoordinasikan'
+      }
+      return complaintStatus[statusId]?.name
     },
     nextPage() {
       if (this.pagination.currentPage < this.pagination.totalPages) {
@@ -386,6 +454,27 @@ export default {
       }
       this.$emit('submit', payloadFollowup)
       this.$store.commit('followup-complaint/setIsFollowup', false)
+    },
+    getColorText(statusId) {
+      const statusColor = complaintStatus[statusId].statusColor.find(
+        (statusColor) => statusColor.typeAduan.includes(this.complaintType)
+      )
+      switch (statusColor?.color) {
+        case 'yellow':
+          return 'text-[#FF7500]'
+        case 'green':
+          return 'text-green-700'
+        case 'red':
+          return 'text-[#DD5E5E]'
+        case 'light-blue':
+          return 'text-[#1E88E5]'
+        case 'dark-blue':
+          return 'text-blue-gray-500'
+        case 'purple':
+          return 'text-[#691B9A]'
+        default:
+          return 'text-gray-900'
+      }
     },
     setPagination(newPagination) {
       this.pagination = { ...this.pagination, ...newPagination }

@@ -24,7 +24,7 @@
                 type="button"
                 variant="primary"
                 class="!text-[14px] !font-bold"
-                @click="closeModalSuccess()"
+                @click="closeModal()"
               />
             </div>
           </div>
@@ -75,7 +75,6 @@ export default {
     },
     handleRetryButton() {
       this.$emit('retry')
-      this.$store.commit('modals/CLOSE', this.nameModal)
     },
   },
 }

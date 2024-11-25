@@ -81,7 +81,6 @@
 <script>
 import { ikpStatus, ikpType, detailField } from '~/constant/daftar-ikp'
 import { formatDate } from '~/utils'
-import detailInstruksiNonPemprov from '~/data/instruksi-non-pemprov-detail.json'
 import { ENDPOINT_IKP } from '~/constant/endpoint-api'
 
 export default {
@@ -92,6 +91,10 @@ export default {
       default: false,
     },
     ikpCode: {
+      type: String,
+      default: '',
+    },
+    complaintId: {
       type: String,
       default: '',
     },
@@ -118,16 +121,12 @@ export default {
     }
   },
   async fetch() {
-    this.dataDetail = {}
     try {
-      if (this.ikpTypePage === ikpType.instruksiNonPemprov.props) {
-        this.dataDetail = detailInstruksiNonPemprov.data
-      } else {
-        const response = await this.$axios.get(
-          `${ENDPOINT_IKP}/${this.ikpCode}`
-        )
-        this.dataDetail = response.data.data
-      }
+      const response = await this.$axios.get(
+        `${ENDPOINT_IKP}/${this.ikpCode}`,
+        { params: { complaint_id: this.complaintId } }
+      )
+      this.dataDetail = response.data.data
     } catch (error) {
       this.dataDetail = {}
     }
@@ -235,7 +234,11 @@ export default {
     goToDetailComplaint(idComplaint, ikpCode) {
       this.$router.push({
         path: `${this.detailComplaintLink}/${idComplaint}`,
-        query: { ...this.$route.query, fromInstructionPage: true, ikpCode },
+        query: {
+          ...this.$route.query,
+          fromInstructionPage: true,
+          ikpCode,
+        },
       })
       if (this.$route.params.id === idComplaint) {
         this.$emit('select-tab', 'all')

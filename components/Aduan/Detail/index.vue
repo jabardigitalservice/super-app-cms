@@ -86,6 +86,7 @@
               typeAduan.instruksiKewenanganNonPemprov.props
             "
             :ikp-type-page="typeAduanPage.props"
+            :complaint-id="detailComplaint.complaint_id"
             detail-complaint-link="/aduan/instruksi-kewenangan-non-pemprov/detail"
             :ikp-code="ikpCode"
             @select-tab="selectedTab"
@@ -103,11 +104,6 @@
       :list-photo="listPhotoComplaint"
       :show-popup="isShowPopupViewImage"
       @close="isShowPopupViewImage = false"
-    />
-    <DialogTrackingSpanLapor
-      :show-popup="isShowPopupDetailStatusComplaint"
-      :data-dialog="dataDialog"
-      @close="isShowPopupDetailStatusComplaint = false"
     />
     <DialogFollowupHotlineJabar @close-all-modal="$fetch()" />
     <DialogEvidenceFollowupHotline @close-all-modal="$fetch()" />
@@ -138,6 +134,7 @@
     />
     <DialogLoading :show-popup="isLoading" />
     <DialogProcessComplaint
+      v-if="isShowPopupProcessComplaint"
       :data-dialog="dataDialog"
       :show-popup="isShowPopupProcessComplaint"
       @close="isShowPopupProcessComplaint = false"
@@ -160,7 +157,6 @@ import ArrowLeft from '~/assets/icon/arrow-left.svg?inline'
 import DialogViewImage from '~/components/Aduan/DialogViewImage'
 import TabBarDetail from '~/components/Aduan/TabBar/Detail'
 import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
-import DialogTrackingSpanLapor from '~/components/Aduan/Dialog/TrackingSpanLapor'
 import TableComplaintDetail from '~/components/Aduan/Detail/Table/Complaint'
 import { formatDate } from '~/utils'
 import DialogProcessComplaint from '~/components/Aduan/Dialog/ProcessComplaint'
@@ -170,7 +166,7 @@ import DialogEvidenceFollowupHotline from '~/components/Aduan/Dialog/EvidenceFol
 import {
   ENDPOINT_ADUAN,
   ENDPOINT_ADUAN_HOTLINE_JABAR,
-  // ENDPOINT_ADUAN_NON_PEMPROV,
+  ENDPOINT_ADUAN_NON_PEMPROV,
 } from '~/constant/endpoint-api'
 
 export default {
@@ -178,7 +174,6 @@ export default {
   components: {
     DialogViewImage,
     TabBarDetail,
-    DialogTrackingSpanLapor,
     ArrowLeft,
     DialogProcessComplaint,
     TableComplaintDetail,
@@ -354,7 +349,7 @@ export default {
         case typeAduan.instruksiKewenanganNonPemprov.props:
           return [
             complaintStatus.coordinated.id,
-            complaintStatus.not_yet_coordinated,
+            complaintStatus.not_yet_coordinated.id,
           ]
         case typeAduan.aduanDialihkanHotlineJabar.props:
           return [complaintStatus.finished.id]
@@ -376,20 +371,13 @@ export default {
       this.$refs.tabBarDetail.selectedTabIndexHandle(indexTab)
     },
     checkEndpointComplaint() {
-      // switch (this.typeAduanPage.props) {
-      //   case typeAduan.aduanDialihkanHotlineJabar.props:
-      //     return ENDPOINT_ADUAN_HOTLINE_JABAR
-      //   case typeAduan.instruksiKewenanganNonPemprov.props:
-      //     return ENDPOINT_ADUAN_NON_PEMPROV
-      //   default:
-      //     return ENDPOINT_ADUAN
-      // }
-      if (
-        this.typeAduanPage.props === typeAduan.aduanDialihkanHotlineJabar.props
-      ) {
-        return ENDPOINT_ADUAN_HOTLINE_JABAR
-      } else {
-        return ENDPOINT_ADUAN
+      switch (this.typeAduanPage.props) {
+        case typeAduan.aduanDialihkanHotlineJabar.props:
+          return ENDPOINT_ADUAN_HOTLINE_JABAR
+        case typeAduan.instruksiKewenanganNonPemprov.props:
+          return ENDPOINT_ADUAN_NON_PEMPROV
+        default:
+          return ENDPOINT_ADUAN
       }
     },
     checkShowTabIkp() {
@@ -428,12 +416,7 @@ export default {
       this.photo.url = 'loading'
       this.photo.url = url
     },
-    showPopupDetailStatusComplaintHandle(detailComplaint) {
-      this.isShowPopupDetailStatusComplaint = true
-      this.dataDialog = {
-        subDescription: detailComplaint.complaint_id,
-      }
-    },
+
     showPopupFollowupHotlineJabar() {
       this.$store.dispatch('popup-complaint/showPopupFollowupHotlineJabar', {
         dataComplaint: this.detailComplaint,

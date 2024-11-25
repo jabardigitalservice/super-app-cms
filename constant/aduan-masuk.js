@@ -111,7 +111,7 @@ export const typeAduan = {
     label: 'Daftar Instruksi Aduan Non Pemprov',
     link: '/aduan/instruksi-non-pemprov',
     id: 'instruksiNonPemprov',
-    phase: 'coordination',
+    phase: 'sp4n',
   },
 }
 
@@ -194,7 +194,7 @@ export const complaintStatus = Object.freeze({
   },
   not_yet_instructed: {
     id: 'not_yet_instructed',
-    name: 'Belum Diistruksikan',
+    name: 'Belum Diinstruksikan',
     value: 0,
     statusColor: [
       {
@@ -212,11 +212,17 @@ export const complaintStatus = Object.freeze({
     statusColor: [
       {
         color: 'light-blue',
-        typeAduan: [typeAduan.instruksiKewenanganNonPemprov.props],
+        typeAduan: [
+          typeAduan.instruksiKewenanganNonPemprov.props,
+          typeAduan.instruksiNonPemprov.props,
+        ],
       },
     ],
     icon: '-',
-    typeAduan: [typeAduan.instruksiKewenanganNonPemprov.props],
+    typeAduan: [
+      typeAduan.instruksiKewenanganNonPemprov.props,
+      typeAduan.instruksiNonPemprov.props,
+    ],
   },
   coordinated: {
     id: 'coordinated',

@@ -10,8 +10,11 @@ export const state = () => ({
   },
   dataLocationComplaint: {
     city_id: '',
+    city_name: '',
     district_id: '',
+    district_name: '',
     village_id: '',
+    vilage_name: '',
     address_detail: '',
   },
   dataOtherComplaint: {
@@ -98,7 +101,7 @@ export const actions = {
       disposition: '',
       authority: 'Pemerintah Provinsi Jawa Barat',
     }
-    commit('setDataLocationComplaint', dataOtherComplaint)
+    commit('setDataOtherComplaint', dataOtherComplaint)
   },
 }
 

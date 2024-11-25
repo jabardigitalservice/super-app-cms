@@ -63,7 +63,9 @@ export const actions = {
   // handle data opd pemprov penanggung jawab
   async getDataGovResponsible({ commit }) {
     try {
-      const response = await this.$axios.get(`${ENDPOINT_ADUAN}/opds`)
+      const response = await this.$axios.get(`${ENDPOINT_ADUAN}/opds`, {
+        params: { level: 'pemprov' },
+      })
       commit('setListGovResponsible', response.data.data)
     } catch (error) {
       console.error(error)

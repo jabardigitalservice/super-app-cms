@@ -95,7 +95,10 @@ export const ikpStatus = Object.freeze({
     statusColor: [
       {
         color: 'light-blue',
-        ikpType: [ikpType.instruksiKewenanganPemprov.props],
+        ikpType: [
+          ikpType.instruksiKewenanganPemprov.props,
+          ikpType.instruksiKewenanganNonPemprov.props,
+        ],
       },
       { color: 'yellow', ikpType: [ikpType.instruksiAduanWarga.props] },
     ],
@@ -172,6 +175,7 @@ export const ikpStatus = Object.freeze({
         color: 'green',
         ikpType: [
           ikpType.instruksiKewenanganPemprov.props,
+          ikpType.instruksiKewenanganNonPemprov.props,
           ikpType.instruksiAduanWarga.props,
         ],
       },
@@ -233,10 +237,7 @@ export const detailField = {
       {
         name: 'Cakupan Urusan',
         key: 'scope_of_affairs',
-        ikpType: [
-          ikpType.instruksiKewenanganNonPemprov.props,
-          ikpType.instruksiNonPemprov.props,
-        ],
+        ikpType: [ikpType.instruksiKewenanganNonPemprov.props],
       },
       {
         name: 'Instansi Penanggung Jawab',
@@ -249,10 +250,7 @@ export const detailField = {
       {
         name: 'OPD Pemprov Penanggung Jawab',
         key: 'responsible_provincial_government_opd',
-        ikpType: [
-          ikpType.instruksiKewenanganNonPemprov.props,
-          ikpType.instruksiNonPemprov.props,
-        ],
+        ikpType: [ikpType.instruksiKewenanganNonPemprov.props],
       },
       {
         name: 'Perangkat Daerah',
