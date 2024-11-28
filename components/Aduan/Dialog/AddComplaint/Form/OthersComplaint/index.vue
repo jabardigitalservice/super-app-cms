@@ -180,6 +180,12 @@ export default {
           ...this.dataOtherComplaint,
           category_id: value,
         })
+        this.isOtherSubcategory = false
+        this.$store.commit('add-complaint/setDataOtherComplaint', {
+          ...this.dataOtherComplaint,
+          sub_category_id: '',
+          subcategory_child_id: '',
+        })
         this.isOtherCategory =
           this.dataOtherComplaint.category_id?.includes('lainnya')
       }
@@ -201,14 +207,6 @@ export default {
         this.resetValueChildCategory()
       }
 
-      if (!this.isOtherSubcategory) {
-        this.otherSubcategory = ''
-        this.$store.commit('add-complaint/setDataOtherComplaint', {
-          ...this.dataOtherComplaint,
-          sub_category_id: '',
-          subcategory_child_id: '',
-        })
-      }
       this.$refs.formOtherComplaint.reset()
     },
     async inputDataOtherComplaintHandle() {
