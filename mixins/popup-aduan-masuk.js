@@ -538,7 +538,9 @@ export default {
       this.iconPopup = { ...this.iconPopup, ...newIconPopup }
     },
     closePopupInformationHandle() {
-      this.query.page = 1
+      if (!this.$route.params?.id) {
+        this.query.page = 1
+      }
       this.$store.commit('popup-complaint/setFieldInput', '')
       this.$store.dispatch('process-complaint/clearPayload')
       this.closePopupHandle()

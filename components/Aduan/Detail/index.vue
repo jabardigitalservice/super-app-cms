@@ -137,10 +137,21 @@
       v-if="isShowPopupProcessComplaint"
       :data-dialog="dataDialog"
       :show-popup="isShowPopupProcessComplaint"
-      @close="isShowPopupProcessComplaint = false"
+      @close="closePopupHandle()"
+      @submit="submitProcessComplaint"
+      @back-to-form="isShowPopupProcessComplaint = true"
+    />
+    <DialogProcessComplaint
+      v-if="isShowPopupChangeAuthority"
+      :data-dialog="dataDialog"
+      :show-popup="isShowPopupChangeAuthority"
+      @close="closePopupHandle()"
+      @submit="submitProcessComplaint"
     />
     <DialogFollowupComplaint
+      v-if="isPopupFollowupComplaint"
       :data-dialog="dataDialog"
+      :complaint-type="typeAduanPage.props"
       @submit="submitFollowupComplaint"
     />
   </div>
