@@ -75,7 +75,6 @@ export default {
     },
     handleRetryButton() {
       this.$emit('retry')
-      this.$store.commit('modals/CLOSE', this.nameModal)
     },
   },
 }
