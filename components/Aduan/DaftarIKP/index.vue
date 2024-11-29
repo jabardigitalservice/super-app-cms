@@ -73,7 +73,7 @@
           >
             <!-- eslint-disable-next-line vue/valid-v-slot -->
             <template #item.narrative="{ item }">
-              <p class="line-clamp-1">
+              <p class="truncate">
                 {{ item.narrative }}
               </p>
             </template>
@@ -82,7 +82,7 @@
               <div class="flex items-center">
                 <p
                   v-show="item?.complaint_status_id"
-                  class="h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 text-xs font-semibold"
+                  class="h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 !text-[12px] font-semibold"
                   :class="getColorText(item?.complaint_status_id)"
                 >
                   {{ getStatusText(item?.complaint_status_id) }}
@@ -430,7 +430,6 @@ export default {
       this.$fetch()
     },
     goToPageDetail(id) {
-      console.log(id)
       this.$router.push({
         path: `${this.detailPage}/${id}`,
         query: this.query,
@@ -494,12 +493,23 @@ export default {
 }
 </script>
 
-<style scoped>
-.jds-data-table::v-deep td:nth-child(2) {
-  @apply !w-[237px];
-}
-
-.jds-data-table::v-deep td:nth-child(3) {
-  @apply !w-[137px];
+<style lang="scss" scoped>
+.jds-data-table::v-deep {
+  td:nth-child(2) {
+    max-width: 237px;
+  }
+  td:nth-child(3) {
+    max-width: 137px;
+  }
+  td:nth-child(6) {
+    width: 165px;
+  }
+  @media (max-width: 1472px) {
+    td,
+    div,
+    p {
+      font-size: 12px;
+    }
+  }
 }
 </style>
