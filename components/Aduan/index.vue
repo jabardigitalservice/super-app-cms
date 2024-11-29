@@ -942,14 +942,8 @@ export default {
   }
 }
 
-.jds-data-table::v-deep tr th span {
-  @media (max-width: 1472px) {
-    font-size: 14px;
-  }
-}
-
 .jds-data-table::v-deep {
-  tr td,
+  td,
   div {
     @media (max-width: 1472px) {
       font-size: 12px;
@@ -960,14 +954,12 @@ export default {
 // class instruksi kewenangan non pemprov
 .table-instruction-authority-non-gov::v-deep {
   @media (max-width: 1472px) {
-    tr {
-      td:nth-child(5),
-      td:nth-child(6) {
-        width: 115px;
-      }
-      td:nth-child(7) {
-        width: 163px;
-      }
+    td:nth-child(5),
+    td:nth-child(6) {
+      width: 130px;
+    }
+    td:nth-child(7) {
+      width: 163px;
     }
   }
 }
@@ -975,17 +967,15 @@ export default {
 // dialihkan ke span
 .table-diverted-to-span::v-deep {
   @media (max-width: 1472px) {
-    tr {
-      td:nth-child(4),
-      td:nth-child(5) {
-        width: 130px;
-      }
-      td:nth-child(6) {
-        width: 140px;
-      }
-      td:nth-child(7) {
-        width: 100px;
-      }
+    td:nth-child(4),
+    td:nth-child(5) {
+      width: 130px;
+    }
+    td:nth-child(6) {
+      width: 140px;
+    }
+    td:nth-child(7) {
+      width: 100px;
     }
   }
 }
@@ -993,16 +983,14 @@ export default {
 // instruksi kewenangan pemprov
 .table-instruction-authority-gov::v-deep {
   @media (max-width: 1472px) {
-    tr {
-      td:nth-child(3) {
-        width: 204px;
-      }
-      td:nth-child(4) {
-        width: 135px;
-      }
-      td:nth-child(5) {
-        width: 150px;
-      }
+    td:nth-child(3) {
+      width: 204px;
+    }
+    td:nth-child(4) {
+      width: 135px;
+    }
+    td:nth-child(5) {
+      width: 150px;
     }
   }
 }
@@ -1010,39 +998,12 @@ export default {
 // penentu kewenangan
 .table-determining-authority::v-deep {
   @media (max-width: 1472px) {
-    tr {
-      td:nth-child(6) {
-        width: 170px;
-      }
-      td:nth-child(5) {
-        width: 115px;
-      }
+    td:nth-child(6) {
+      width: 170px;
+    }
+    td:nth-child(5) {
+      width: 130px;
     }
   }
 }
 </style>
-<!-- <style scoped>
-.icon-tab rect {
-  @apply !fill-[#008444];
-}
-
-.icon-tab path {
-  @apply stroke-white;
-}
-
-.icon-tab-selected rect {
-  @apply fill-[#f5f5f5];
-}
-
-.icon-tab-selected path {
-  @apply stroke-[#16a75c];
-}
-
-.select-form-complaint::v-deep .jds-input-text__input-wrapper {
-  @apply !w-fit 2xl:!w-[260px];
-}
-
-.select-form-complaint .jds-popover__content {
-  @apply !w-fit 2xl:!w-[260px];
-}
-</style> -->
