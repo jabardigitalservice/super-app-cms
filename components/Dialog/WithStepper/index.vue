@@ -1,9 +1,9 @@
 <template>
   <BaseDialogFrame :name="nameModal">
-    <BaseDialogPanel class="w-[640px]">
+    <BaseDialogPanel class="max-h-fit w-[640px] sm:h-[calc(100vh-50px)]">
       <BaseDialogHeader :title="title" />
       <ProgressStepper
-        class="px-6 pt-4"
+        class="px-6 py-4"
         :index-current-active="indexCurrentActive"
       />
       <slot name="form-complaint" />
