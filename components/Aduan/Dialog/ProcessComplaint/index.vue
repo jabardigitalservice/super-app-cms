@@ -1,11 +1,11 @@
 <template>
   <div>
     <BaseDialogFrame :name="dataDialog?.nameModal">
-      <BaseDialogPanel class="w-[510px]">
+      <BaseDialogPanel class="max-h-[720px] w-[510px] sm:h-[calc(100vh-50px)]">
         <BaseDialogHeader :title="dataDialog.title" />
         <ValidationObserver ref="form">
           <form
-            class="form-process-complaint h-[576px] w-full overflow-auto px-6"
+            class="form-process-complaint max-h-[600px] w-full overflow-auto px-6 sm:h-[calc(100vh-170px)]"
           >
             <h1 class="font-roboto text-base font-bold">Informasi Aduan</h1>
             <div class="mb-4 grid grid-cols-2 gap-x-2">
