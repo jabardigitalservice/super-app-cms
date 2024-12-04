@@ -280,13 +280,13 @@
             <strong class="text-[10px]">Kategori Aduan </strong>
           </td>
           <td>
-            {{ getSubCategoryName(dataCategory) }}
+            {{ getCategoryName() }}
           </td>
         </tr>
-        <tr v-if="detailComplaint?.complaint_category?.id !== 'lainnya'">
+        <tr>
           <td><strong>Sub Kategori Aduan</strong></td>
           <td>
-            {{ getSubCategoryName(dataSubCategory) }}
+            {{ getSubCategoryName() }}
           </td>
         </tr>
         <tr>
@@ -422,13 +422,13 @@
             <strong class="text-[10px]">Kategori Aduan </strong>
           </td>
           <td>
-            {{ getSubCategoryName(dataCategory) }}
+            {{ getCategoryName() }}
           </td>
         </tr>
         <tr v-if="detailComplaint?.complaint_category?.id !== 'lainnya'">
           <td><strong>Sub Kategori Aduan</strong></td>
           <td>
-            {{ getSubCategoryName(dataSubCategory) }}
+            {{ getSubCategoryName() }}
           </td>
         </tr>
         <tr>
@@ -547,30 +547,26 @@ export default {
         return '-'
       }
     },
-
-    getSubCategoryName(dataSubcategory) {
-      // check if detail complaint by key has property object
-      const hasSubcategory =
-        Object.keys(this.detailComplaint) ||
-        Object.keys[this.detailComplaint[dataSubcategory.key]]
-
-      // guard clauses if don't have sub category
-      if (!hasSubcategory) {
-        return '-'
+    getCategoryName() {
+      const category = this.detailComplaint?.complaint_category?.name || '-'
+      if (this.detailComplaint?.complaint_category_child_id) {
+        return `${category} - ${this.detailComplaint?.complaint_category_child?.name}`
+      }
+      return category
+    },
+    getSubCategoryName() {
+      let subCategory = '-'
+      if (this.detailComplaint?.complaint_subcategory?.name) {
+        subCategory = this.detailComplaint?.complaint_subcategory?.name
+        subCategory = subCategory
+          .replace(this.detailComplaint?.complaint_category?.name, ' ')
+          .trim()
       }
 
-      if (
-        this.detailComplaint[dataSubcategory.key]?.id.includes(
-          dataSubcategory.valueSearch
-        ) &&
-        this.detailComplaint[dataSubcategory.subKey]
-      ) {
-        return `${this.detailComplaint[dataSubcategory.key]?.name} - ${
-          this.detailComplaint[dataSubcategory.subKey]?.name
-        }`
+      if (this.detailComplaint?.complaint_subcategory_child_id) {
+        return `${subCategory} - ${this.detailComplaint?.complaint_subcategory_child?.name}`
       }
-
-      return this.detailComplaint[dataSubcategory.key]?.name
+      return subCategory
     },
     getStatusText(statusId) {
       if (
