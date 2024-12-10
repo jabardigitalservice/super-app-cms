@@ -4,6 +4,7 @@
       <BaseButton
         v-on-clickaway="closePopupOverHandle"
         class="h-fit w-full border border-green-600 bg-white py-[4px] px-[16px] text-[14px] font-medium text-green-600"
+        :data-cy="dataCy"
         @click="isShowPopOver = !isShowPopOver"
       >
         <div class="flex items-center justify-between">
@@ -23,10 +24,14 @@
     >
       <div
         v-for="(menuPopOver, index) in listMenuPopOver"
-        :key="index"
+        :key="menuPopOver.value"
         :class="{ 'mb-4': index !== listMenuPopOver.length - 1 }"
       >
-        <button :key="index" @click="$emit(`${menuPopOver.value}`)">
+        <button
+          :key="index"
+          :data-cy="menuPopOver?.dataCy"
+          @click="$emit(`${menuPopOver.value}`)"
+        >
           {{ menuPopOver.menu }}
         </button>
       </div>
@@ -38,15 +43,19 @@ import { directive as onClickaway } from 'vue-clickaway'
 export default {
   name: 'TableAction',
   directives: {
-    onClickaway
+    onClickaway,
   },
   props: {
     listMenuPopOver: {
       type: Array,
-      default: () => ([])
-    }
+      default: () => [],
+    },
+    dataCy: {
+      type: String,
+      default: '',
+    },
   },
-  data () {
+  data() {
     return {
       isShowPopOver: false,
       popoverOptions: {
@@ -54,17 +63,17 @@ export default {
           {
             name: 'offset',
             options: {
-              offset: [0, 6]
-            }
-          }
-        ]
-      }
+              offset: [0, 6],
+            },
+          },
+        ],
+      },
     }
   },
   methods: {
-    closePopupOverHandle () {
+    closePopupOverHandle() {
       this.isShowPopOver = false
-    }
-  }
+    },
+  },
 }
 </script>
