@@ -7,6 +7,7 @@
     <template #default="{ dataTab, indexTab }">
       <button
         :class="{ 'ml-2': indexTab > 0 }"
+        :data-cy="dataTab.dataCy"
         @click="$emit('button-tab', dataTab.id)"
       >
         <BaseTab
@@ -16,16 +17,12 @@
         >
           <div
             class="h-[28px] w-[28px] rounded-full p-1"
-            :class="
-              indexTab === tabIndex ? 'bg-gray-100' : 'bg-green-800'
-            "
+            :class="indexTab === tabIndex ? 'bg-gray-100' : 'bg-green-800'"
           >
             <BaseIconSvg
               :icon="dataTab.icon"
               class="icon-tab-content !h-[14px] !w-[14px] !shadow-lg"
-              :fill-color="
-                indexTab === tabIndex ? '#16A75C' : '#FFFFFF'
-              "
+              :fill-color="indexTab === tabIndex ? '#16A75C' : '#FFFFFF'"
               :class="{
                 'icon-tab-selected': indexTab === tabIndex,
               }"
@@ -49,7 +46,8 @@
                 :class="{
                   '!text-blue-gray-800': indexTab === tabIndex,
                 }"
-              >{{ dataTab.unit }}</span>
+                >{{ dataTab.unit }}</span
+              >
             </p>
           </div>
         </BaseTab>
@@ -64,27 +62,27 @@ export default {
   props: {
     listTab: {
       type: Array,
-      default: () => ([])
+      default: () => [],
     },
     typeAduan: {
       type: String,
-      default: ''
+      default: '',
     },
     tabIndex: {
       type: Number,
-      default: 0
-    }
+      default: 0,
+    },
   },
-  data () {
+  data() {
     return {
-      selectedTabIndex: 0
+      selectedTabIndex: 0,
     }
   },
   methods: {
-    selectedTabHandle (index) {
+    selectedTabHandle(index) {
       this.selectedTabIndex = index
       this.$emit('selected', index)
-    }
-  }
+    },
+  },
 }
 </script>
