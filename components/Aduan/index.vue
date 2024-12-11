@@ -535,7 +535,7 @@ export default {
           unit: convertToUnit(item.value),
           icon: complaintStatus[item.id].icon,
           name: complaintStatus[item.id].name,
-          dataCy: `${this.datacyFormat}__tab--${item.id}`,
+          dataCy: `${this.dataCyFormat}__tab--${item.id}`,
         }
       })
     },
