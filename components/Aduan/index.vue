@@ -313,7 +313,8 @@ export default {
   },
   data() {
     return {
-      menuTableAction: [
+      dataCyFormat: `daftar-${this.typeAduanPage.props}`,
+      dataMenuTableAction: [
         {
           menu: 'Lihat Detail Aduan',
           value: 'detail',
@@ -322,14 +323,12 @@ export default {
         {
           menu: 'Terverifikasi',
           value: 'verify',
-          dataCy: `${this.typeAduanPage.props}__dropdown--verify`,
           complaintType: [typeAduan.aduanMasuk.props],
           complaintStatus: [complaintStatus.unverified.id],
         },
         {
           menu: 'Gagal Diverifikasi',
           value: 'failed',
-          dataCy: `${this.typeAduanPage.props}__dropdown--failed`,
           complaintType: [typeAduan.aduanMasuk.props],
           complaintStatus: [complaintStatus.unverified.id],
         },
@@ -421,7 +420,7 @@ export default {
         new Date(new Date().setFullYear(new Date().getFullYear() - 1)),
         new Date(),
       ],
-      dataCyButtonAction: `${this.typeAduanPage.props}__tab__button-action--total`,
+      dataCyButtonAction: `daftar-${this.typeAduanPage.props}__tab__button-action--total`,
     }
   },
   async fetch() {
@@ -461,6 +460,14 @@ export default {
     }
   },
   computed: {
+    menuTableAction() {
+      return this.dataMenuTableAction.map((menu) => {
+        return {
+          ...menu,
+          dataCy: `${this.dataCyFormat}__dropdown--${menu.value}`,
+        }
+      })
+    },
     listData() {
       return this.listDataComplaint.map((item) => {
         if (
@@ -528,7 +535,7 @@ export default {
           unit: convertToUnit(item.value),
           icon: complaintStatus[item.id].icon,
           name: complaintStatus[item.id].name,
-          dataCy: `${this.typeAduanPage.props}__tab--${item.id}`,
+          dataCy: `${this.datacyFormat}__tab--${item.id}`,
         }
       })
     },
@@ -760,7 +767,7 @@ export default {
     },
     listTabHandle(status) {
       const query = { page: 1, limit: 10 }
-      this.dataCyButtonAction = `${this.typeAduanPage}__tab__button-action--${status}`
+      this.dataCyButtonAction = `${this.dataCyFormat}__tab__button-action--${status}`
       this.deletePropertiesWithPrefix(this.query, 'complaint_status_id[')
       if (status !== 'total') {
         query['complaint_status_id[0]'] = status
