@@ -75,6 +75,11 @@ export default {
           'Verifikasi Aduan Ini'
         ),
       })
+      this.dataDialog.dataCy = {
+        footer: {
+          buttonSubmit: `dialog-confirmation-verification__button--verify-complaint`,
+        },
+      }
       this.isShowPopupConfirmationVerification = true
     },
     showPopupConfirmationComplaint(dataComplaint, typeDialog) {
@@ -275,10 +280,17 @@ export default {
               'Verifikasi Aduan',
               item.subDescription
             ),
-            success: this.setSucessFailedInformationHandle(
-              'Aduan berhasil diverifikasi',
-              true
-            ),
+            success: {
+              ...this.setSucessFailedInformationHandle(
+                'Aduan berhasil diverifikasi',
+                true
+              ),
+              dataCy: {
+                footer: {
+                  buttonSubmit: `dialog-information-success-verification__button--close`,
+                },
+              },
+            },
             failed: this.setSucessFailedInformationHandle(
               'Aduan gagal diverifikasi',
               false

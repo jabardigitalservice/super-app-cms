@@ -16,6 +16,7 @@
         />
       </div>
       <BaseDialogFooter
+        :data-cy="dataDialog.dataCy?.footer"
         :show-cancel-button="dataDialog.showCancelButton"
         :label-button-submit="dataDialog.labelButtonSubmit"
         @close="$emit('close')"
@@ -31,16 +32,16 @@ export default {
   props: {
     showPopup: {
       type: Boolean,
-      default: false
+      default: false,
     },
     dataDialog: {
       type: Object,
-      default: () => ({})
+      default: () => ({}),
     },
     iconPopup: {
       type: Object,
-      default: () => ({})
-    }
-  }
+      default: () => ({}),
+    },
+  },
 }
 </script>
