@@ -85,7 +85,9 @@ export default {
     showPopupConfirmationComplaint(dataComplaint, typeDialog) {
       this.idApi = dataComplaint.id
       this.dataComplaint = dataComplaint
+      let dataCyFormat = ''
       if (typeDialog === 'failedComplaint') {
+        dataCyFormat = 'dialog__confirmation-failed-verification'
         this.typeDialog = 'failedComplaint'
         this.setDataDialog({
           ...this.setDataDialogConfirmation(
@@ -97,6 +99,10 @@ export default {
           labelTextArea: 'Catatan Aduan Gagal Diverifikasi',
           placeholder: 'Detail Aduan tidak lengkap : contoh (foto tidak jelas)',
         })
+        this.dataDialog.dataCy = {
+          fieldTextArea: `${dataCyFormat}__text-area`,
+          buttonSubmit: `${dataCyFormat}__button--confirmation`,
+        }
       }
       if (typeDialog === 'redirectHotlineComplaint') {
         this.typeDialog = 'redirectHotlineComplaint'
@@ -306,10 +312,18 @@ export default {
               'Aduan Gagal Diverifikasi',
               item.subDescription
             ),
-            success: this.setSucessFailedInformationHandle(
-              'Konfirmasi Aduan Gagal Diverifikasi berhasil dilakukan',
-              true
-            ),
+            success: {
+              ...this.setSucessFailedInformationHandle(
+                'Konfirmasi Aduan Gagal Diverifikasi berhasil dilakukan',
+                true
+              ),
+              dataCy: {
+                footer: {
+                  buttonSubmit:
+                    'dialog__information-success-from-failed-verification__button--close',
+                },
+              },
+            },
             failed: this.setSucessFailedInformationHandle(
               'Konfirmasi Aduan Gagal Diverifikasi gagal dilakukan',
               false
