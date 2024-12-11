@@ -8,6 +8,7 @@
         <div class="mr-4">
           <jds-button
             v-show="showCancelButton"
+            :data-cy="dataCy?.buttonCancel"
             :label="labelButtonCancel"
             type="button"
             variant="secondary"
@@ -18,6 +19,7 @@
         </div>
         <div>
           <jds-button
+            :data-cy="dataCy?.buttonSubmit"
             :label="labelButtonSubmit"
             type="button"
             :variant="variant"
@@ -34,45 +36,49 @@
 export default {
   name: 'BaseDialogFooter',
   props: {
+    dataCy: {
+      type: Object,
+      default: () => ({}),
+    },
     labelButtonSubmit: {
       type: String,
-      default: ''
+      default: '',
     },
     showCancelButton: {
       type: Boolean,
-      default: true
+      default: true,
     },
     labelButtonCancel: {
       type: String,
-      default: 'Batalkan'
+      default: 'Batalkan',
     },
     variant: {
       type: String,
-      default: 'primary'
+      default: 'primary',
     },
     isDisabledButtonSubmit: {
       type: Boolean,
-      default: false
+      default: false,
     },
     isDisabledButtonCancel: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   methods: {
-    submitButtonHandle () {
+    submitButtonHandle() {
       if (!this.showCancelButton) {
         this.$emit('close')
       } else {
         this.$emit('submit')
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
 <style scoped>
-  .jds-button::v-deep {
-    @apply disabled:!bg-neutral-300 disabled:!text-neutral-500 disabled:pointer-events-none !text-[14px] !font-bold
-  }
+.jds-button::v-deep {
+  @apply !text-[14px] !font-bold disabled:pointer-events-none disabled:!bg-neutral-300 disabled:!text-neutral-500;
+}
 </style>
