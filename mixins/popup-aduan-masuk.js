@@ -77,7 +77,7 @@ export default {
       })
       this.dataDialog.dataCy = {
         footer: {
-          buttonSubmit: `dialog-confirmation-verification__button--verify-complaint`,
+          buttonSubmit: `dialog__confirmation-verification__button--verify-complaint`,
         },
       }
       this.isShowPopupConfirmationVerification = true
@@ -287,7 +287,8 @@ export default {
               ),
               dataCy: {
                 footer: {
-                  buttonSubmit: `dialog-information-success-verification__button--close`,
+                  buttonSubmit:
+                    'dialog__information-success-from-verification__button--close',
                 },
               },
             },
