@@ -293,6 +293,9 @@ export default {
         deadline_at_format:
           dataDetailComplaint?.deadline_date &&
           formatDate(dataDetailComplaint?.deadline_date, 'dd/MM/yyyy'),
+        ikp_deadline_at_format:
+          dataDetailComplaint?.ikp?.deadline_at &&
+          formatDate(dataDetailComplaint?.ikp?.deadline_at, 'dd/MM/yyyy'),
         sp4n_created_at_format:
           dataDetailComplaint?.sp4n_created_at &&
           formatDate(dataDetailComplaint?.sp4n_created_at || '', 'dd/MM/yyyy'),
