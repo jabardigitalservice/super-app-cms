@@ -123,7 +123,9 @@
           v-if="
             detailComplaint?.complaint_status_id ===
               complaintStatus.postponed.id ||
-            detailComplaint?.complaint_status_id === complaintStatus.review.id
+            detailComplaint?.complaint_status_id ===
+              complaintStatus.review.id ||
+            detailComplaint?.complaint_status_id === complaintStatus.finished.id
           "
         >
           <td><strong>Dokumen Bukti</strong></td>
@@ -511,6 +513,11 @@ export default {
         'http://101.50.0.202:12002/trk/img/lim/Kanomodeltemplate.pdf',
         'https://sample-videos.com/doc/Sample-doc-file-100kb.doc',
         'http://101.50.0.202:12002/trk/img/lim/Detail Sebaran IRBB 1-C1kBe.xlsx',
+        'http://101.50.0.202:12002/trk/img/lim/ICE BREAKING TEBAK WARNA.pptx',
+        'http://101.50.0.202:12002/trk/img/lim/Kanomodeltemplate.pdf',
+        'https://sample-videos.com/doc/Sample-doc-file-100kb.doc',
+        'http://101.50.0.202:12002/trk/img/lim/Detail Sebaran IRBB 1-C1kBe.xlsx',
+        'http://101.50.0.202:12002/trk/img/lim/ICE BREAKING TEBAK WARNA.pptx',
       ],
       listAllFile: [],
       listFileDocument: [],
@@ -637,7 +644,15 @@ export default {
     },
     showPopupViewDocument() {
       this.listAllFile = this.listUrlFile.map((item) => this.getDataFile(item))
-      const listTypeDocument = ['doc', 'docx', 'xls', 'xlsx', 'pdf']
+      const listTypeDocument = [
+        'doc',
+        'docx',
+        'xls',
+        'xlsx',
+        'pdf',
+        'ppt',
+        'pptx',
+      ]
       const listTypeImage = ['png', 'jpg', 'jpeg']
       this.listFileDocument = this.listAllFile.filter((dataDocument) =>
         listTypeDocument.includes(dataDocument.type)
