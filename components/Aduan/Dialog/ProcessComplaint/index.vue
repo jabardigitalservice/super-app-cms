@@ -122,16 +122,16 @@
                 "
                 v-slot="{ errors }"
                 rules="requiredSelectForm"
-                name="OPD Pemprov Penanggungjawab"
+                name="Pemda Penanggungjawab"
                 class="mb-5"
                 tag="div"
               >
                 <jds-select
                   v-model="payload.opd_pemprov_id"
-                  name="OPD Pemprov Penanggungjawab"
-                  label="OPD Pemprov Penanggungjawab"
-                  placeholder="Pilih OPD Pemprov"
-                  helper-text="OPD Pemprov penanggungjawab bertugas untuk memeriksa tindaklanjut aduan di kota/kabupaten atau kementerian/lembaga."
+                  name="Pemda Penanggungjawab"
+                  label="Pemda Penanggungjawab"
+                  placeholder="Pemda Penanggungjawab"
+                  helper-text="Kota/kabupaten penanggungjawab yang bertugas untuk menindaklanjuti aduan"
                   :error-message="errors[0]"
                   :class="{ 'mb-2': errors.length > 0 }"
                   class="!w-full"
@@ -490,7 +490,6 @@ export default {
     },
     async showDialogConfirmation() {
       const isValid = await this.$refs.form.validate()
-      this.$refs.form.reset()
       if (isValid) {
         this.$store.commit('modals/CLOSEALL')
         this.dialogConfirmation = {

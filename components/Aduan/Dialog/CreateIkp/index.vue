@@ -57,16 +57,16 @@
                   <ValidationProvider
                     v-slot="{ errors }"
                     rules="requiredSelectForm"
-                    name="OPD Pemprov Penanggungjawab"
+                    name="Pemda Penanggungjawab"
                     class="pb-3"
                     tag="div"
                   >
                     <jds-select
                       v-model="payload.opd_pemprov_id"
-                      name="OPD Pemprov Penanggungjawab"
-                      label="OPD Pemprov Penanggungjawab"
-                      placeholder="Pilih OPD Pemprov Penanggungjawab"
-                      helper-text="OPD Pemprov penanggungjawab bertugas untuk memeriksa tindaklanjut aduan di kota/kabupaten atau kementerian/lembaga."
+                      name="Pemda Penanggungjawab"
+                      label="Pemda Penanggungjawab"
+                      placeholder="Pilih Pemda Penanggungjawab"
+                      helper-text="Kota/kabupaten penanggungjawab yang bertugas untuk menindaklanjuti aduan"
                       :error-message="errors[0]"
                       disabled
                       :options="listGovResponsible"
