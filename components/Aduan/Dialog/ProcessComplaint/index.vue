@@ -473,7 +473,7 @@ export default {
     },
     disabledDateHandle: function (date) {
       const currentDate = new Date()
-      currentDate.setDate(currentDate.getDate() - 1)
+      currentDate.setDate(currentDate.getDate())
       return date <= currentDate
     },
     showPlaceholderProposedInstruction() {
