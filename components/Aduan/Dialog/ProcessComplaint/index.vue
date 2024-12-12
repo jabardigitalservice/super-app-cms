@@ -461,8 +461,10 @@ export default {
       this.$emit('close')
     },
     changeUrgencyStatus() {
+      const currentDate = new Date()
+      currentDate.setDate(currentDate.getDate() + 1)
       const millisecondDifferent =
-        new Date(this.payload.deadline_date).getTime() - new Date().getTime() // to get diffrent date in millisecond unit
+        new Date(this.payload.deadline_date).getTime() - currentDate.getTime() // to get diffrent date in millisecond unit
       const result = Math.floor(millisecondDifferent / (1000 * 3600 * 24)) + 1 // to get different date with divide different millisecond and mllisecond in 24 hours
       if (result <= 7) {
         this.payload.urgency_level = 'Mendesak'
@@ -473,7 +475,7 @@ export default {
     },
     disabledDateHandle: function (date) {
       const currentDate = new Date()
-      currentDate.setDate(currentDate.getDate() - 1)
+      currentDate.setDate(currentDate.getDate())
       return date <= currentDate
     },
     showPlaceholderProposedInstruction() {
