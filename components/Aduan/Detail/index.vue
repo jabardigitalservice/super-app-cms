@@ -252,8 +252,6 @@ export default {
       detailComplaint: {},
       idTab: '',
       listPhotoComplaint: [],
-      listPhotoEvidence: [],
-      listFileEvidence: [],
       isShowPopupViewImage: false,
       isShowPopupDetailStatusComplaint: false,
       isShowDropdown: false,
@@ -309,8 +307,6 @@ export default {
       this.ikpCode = dataDetailComplaint?.ikp_code
 
       this.listPhotoComplaint = dataDetailComplaint?.photos || []
-      this.listPhotoEvidence = dataDetailComplaint?.evidence?.photos || []
-      this.listFileEvidence = dataDetailComplaint?.evidence?.files || []
     } catch {
       this.detailComplaint = {}
       this.listPhotoComplaint = []
