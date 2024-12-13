@@ -466,7 +466,6 @@ export default {
       if (!this.query.sort_by) {
         this.setQuery({ sort_by: 'updated_at' })
       }
-
       // handle list data complaint
       const responseListComplaint = await this.$axios.get(urlApi, {
         params: { ...this.query, is_admin: 1, phase: this.typeAduanPage.phase },
@@ -581,6 +580,7 @@ export default {
       deep: true,
       immediate: true,
       handler(newQuery) {
+        console.log('Query diubah:', newQuery)
         if (Object.keys(newQuery).length > 0) {
           this.query = { ...newQuery }
           this.query.tabIndex = parseInt(this.query.tabIndex)
@@ -593,6 +593,7 @@ export default {
             ]
           }
         }
+        this.$fetch()
       },
     },
     dateRange() {
@@ -635,7 +636,9 @@ export default {
       )
     }
 
-    this.query = this.addComplaintStatusFilterHandle()
+    if (!this.query?.backPage) {
+      this.query = this.addComplaintStatusFilterHandle()
+    }
   },
   methods: {
     getStyleComplaintType() {
@@ -742,6 +745,7 @@ export default {
         path: `${this.linkPageDetail}/${item.id}`,
         query: this.query,
       })
+      this.$fetch()
     },
     getStatusText(statusId) {
       if (
@@ -818,6 +822,7 @@ export default {
         this.addComplaintStatusFilterHandle()
       }
       this.setQuery(query)
+      console.log(this.query)
       this.isShowPopupDateRange = false
       this.$fetch()
     },

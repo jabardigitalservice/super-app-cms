@@ -438,6 +438,7 @@ export default {
       this.$store.commit('modals/OPEN', 'evidenceFollowupHotline')
     },
     goToBackHandle() {
+      this.$route.query.backPage = true // for control old query on page list
       const { fromInstructionPage, ...newQuery } = this.$route.query
       this.$router.push({
         path:

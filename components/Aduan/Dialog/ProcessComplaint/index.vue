@@ -492,7 +492,9 @@ export default {
     },
     async showDialogConfirmation() {
       const isValid = await this.$refs.form.validate()
+
       if (isValid) {
+        this.$refs.form.reset()
         this.$store.commit('modals/CLOSEALL')
         this.dialogConfirmation = {
           ...this.dataDialog,
