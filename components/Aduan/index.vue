@@ -580,7 +580,6 @@ export default {
       deep: true,
       immediate: true,
       handler(newQuery) {
-        console.log('Query diubah:', newQuery)
         if (Object.keys(newQuery).length > 0) {
           this.query = { ...newQuery }
           this.query.tabIndex = parseInt(this.query.tabIndex)
@@ -615,7 +614,6 @@ export default {
     this.pagination.itemsPerPageOptions = generateItemsPerPageOptions(
       this.pagination.itemsPerPage
     )
-    this.addComplaintStatusFilterHandle()
     await this.$store.dispatch('utilities-complaint/getDataCategory')
     const listCategory = [
       { id: '', name: 'Semua Kategori' },
@@ -636,7 +634,7 @@ export default {
       )
     }
 
-    if (!this.query?.backPage) {
+    if (this.$store.state.backPage === false) {
       this.query = this.addComplaintStatusFilterHandle()
     }
   },
@@ -822,7 +820,6 @@ export default {
         this.addComplaintStatusFilterHandle()
       }
       this.setQuery(query)
-      console.log(this.query)
       this.isShowPopupDateRange = false
       this.$fetch()
     },

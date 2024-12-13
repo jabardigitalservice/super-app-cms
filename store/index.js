@@ -6,6 +6,7 @@ export const state = () => ({
   },
   dataImage: {},
   responseFile: {},
+  backPage: false, // for control old query on page list
 })
 
 export const actions = {
@@ -38,5 +39,8 @@ export const mutations = {
   },
   setResponseFile(state, responseFile) {
     state.responseFile = responseFile
+  },
+  setBackPage(state, backPage) {
+    state.backPage = backPage
   },
 }
