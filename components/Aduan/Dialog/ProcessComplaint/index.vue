@@ -137,10 +137,7 @@
                   class="!w-full"
                   :options="listGovResponsible"
                   @change="
-                    changeSelectValue(
-                      payload.opd_pemprov_id,
-                      'coverage_of_affairs'
-                    )
+                    changeSelectValue(payload.opd_pemprov_id, 'opd_pemprov_id')
                   "
                 />
               </ValidationProvider>
@@ -400,13 +397,26 @@ export default {
           this.isShowFieldProposeIkpNarrative = true
           break
         case 'coverage_of_affairs':
-          this.$store.dispatch('utilities-complaint/getDataDispositions', value)
+          this.$store.dispatch(
+            'utilities-complaint/getDataDispositions',
+            this.payload?.coverage_of_affairs
+          )
           this.isShowFieldOPDPemprov =
             this.payload.coverage_of_affairs ===
             this.coverageOfAffairs.district.id
           this.isShowFieldProposeIkpNarrative =
             this.payload.coverage_of_affairs !==
             this.coverageOfAffairs.institutions.id
+          this.payload = {
+            ...this.payload,
+            opd_id: null,
+            opd_pemprov_id: null,
+            status_description: '',
+            deadline_date: null,
+            urgency_level: null,
+            proposed_ikp_narrative: '',
+          }
+          this.$refs.form.reset()
           break
         default:
           this.paylod = { ...this.payload, [keyObject]: value }

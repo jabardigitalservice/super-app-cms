@@ -105,6 +105,7 @@ export default {
         }
       }
       if (typeDialog === 'redirectHotlineComplaint') {
+        dataCyFormat = 'dialog__confirmation-diverted-to-hotline-jabar'
         this.typeDialog = 'redirectHotlineComplaint'
         this.setDataDialog({
           ...this.setDataDialogConfirmation(
@@ -116,6 +117,10 @@ export default {
           labelTextArea: 'Alasan dialihkan ke Hotline Jabar',
           placeholder: 'Contoh: Aduan terkait kegawat daruratan',
         })
+        this.dataDialog.dataCy = {
+          fieldTextArea: `${dataCyFormat}__text-area`,
+          buttonSubmit: `${dataCyFormat}__button--confirmation`,
+        }
       }
       this.dataDialog.name = this.typeDialog
       this.$store.commit('modals/OPEN', this.typeDialog)
@@ -338,10 +343,18 @@ export default {
               'Aduan Dialihkan ke Hotline Jabar',
               item.subDescription
             ),
-            success: this.setSucessFailedInformationHandle(
-              'Aduan berhasil dialihkan ke Hotline Jabar',
-              true
-            ),
+            success: {
+              ...this.setSucessFailedInformationHandle(
+                'Aduan berhasil dialihkan ke Hotline Jabar',
+                true
+              ),
+              dataCy: {
+                footer: {
+                  buttonSubmit:
+                    'dialog__information-success-from-diverted-to-hotline-jabar__button--close',
+                },
+              },
+            },
             failed: this.setSucessFailedInformationHandle(
               'Aduan gagal dialihkan ke Hotline Jabar',
               false
