@@ -438,7 +438,6 @@ export default {
       this.$store.commit('modals/OPEN', 'evidenceFollowupHotline')
     },
     goToBackHandle() {
-      this.$route.query.backPage = true // for control old query on page list
       const { fromInstructionPage, ...newQuery } = this.$route.query
       this.$router.push({
         path:
@@ -448,6 +447,7 @@ export default {
             : this.$nuxt.context.from.path,
         query: newQuery,
       })
+      this.$store.commit('setBackPage', true) // for control old query on page list
     },
   },
 }
