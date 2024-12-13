@@ -21,7 +21,10 @@
           :file-document="document"
           class="mb-4"
         />
-        <ListImage :list-image="listFileImage" />
+        <ListImage
+          v-if="listFileImage.length > 0"
+          :list-image="listFileImage"
+        />
       </div>
     </BaseDialogPanel>
   </BaseDialog>
