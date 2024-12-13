@@ -119,7 +119,17 @@
           <td><strong>Perubahan Deadline</strong></td>
           <td>{{ detailComplaint?.ikp_deadline_at_format || '-' }}</td>
         </tr>
-        <tr v-if="listEvidenceDocument">
+        <tr
+          v-if="
+            (detailComplaint?.complaint_status_id ===
+              complaintStatus.postponed.id ||
+              detailComplaint?.complaint_status_id ===
+                complaintStatus.review.id ||
+              detailComplaint?.complaint_status_id ===
+                complaintStatus.finished.id) &&
+            listEvidenceDocument
+          "
+        >
           <td><strong>Dokumen Bukti</strong></td>
           <td>
             <jds-button

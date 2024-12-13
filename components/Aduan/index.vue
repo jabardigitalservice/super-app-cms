@@ -450,6 +450,7 @@ export default {
         new Date(),
       ],
       dataCyButtonAction: `daftar-${this.typeAduanPage.props}__tab__button-action--total`,
+      isFilterStatus: false,
     }
   },
   async fetch() {
@@ -462,10 +463,14 @@ export default {
         this.setQuery({ complaint_source: 'sp4n' })
       }
 
+      if (!this.$store.state.backPage && !this.isFilterStatus) {
+        this.query = this.addComplaintStatusFilterHandle()
+      }
       // default sort by updated date
       if (!this.query.sort_by) {
         this.setQuery({ sort_by: 'updated_at' })
       }
+
       // handle list data complaint
       const responseListComplaint = await this.$axios.get(urlApi, {
         params: { ...this.query, is_admin: 1, phase: this.typeAduanPage.phase },
@@ -632,10 +637,6 @@ export default {
         'utilities-complaint/setListNonGovComplaintStatus',
         listNonGovComplaintStatus
       )
-    }
-
-    if (this.$store.state.backPage === false) {
-      this.query = this.addComplaintStatusFilterHandle()
     }
   },
   methods: {
@@ -811,6 +812,7 @@ export default {
       return this.query
     },
     listTabHandle(status) {
+      this.isFilterStatus = true
       const query = { page: 1, limit: 10 }
       this.dataCyButtonAction = `${this.dataCyFormat}__tab__button-action--${status}`
       this.deletePropertiesWithPrefix(this.query, 'complaint_status_id[')
