@@ -248,7 +248,7 @@ export const detailField = {
         ],
       },
       {
-        name: 'OPD Pemprov Penanggung Jawab',
+        name: 'Pemda Penanggung Jawab',
         key: 'responsible_provincial_government_opd',
         ikpType: [ikpType.instruksiKewenanganNonPemprov.props],
       },
