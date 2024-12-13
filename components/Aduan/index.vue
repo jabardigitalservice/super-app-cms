@@ -741,7 +741,6 @@ export default {
       this.$fetch()
     },
     goToPageDetailHandle(item) {
-      console.log(this.query)
       this.$router.push({
         path: `${this.linkPageDetail}/${item.id}`,
         query: this.query,
