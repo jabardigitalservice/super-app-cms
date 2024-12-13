@@ -10,7 +10,9 @@
       @submit="submitFormAddComplaint()"
     >
       <template #form-complaint>
-        <div class="mt-8 max-h-[450px] overflow-y-auto">
+        <div
+          class="form-add-complaint max-h-fit overflow-y-auto sm:h-[calc(100vh-240px)]"
+        >
           <FormInformationComplaint
             v-if="indexCurrentActive === 1"
             ref="formInformationComplaint"
@@ -237,3 +239,17 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.form-add-complaint::-webkit-scrollbar {
+  @apply h-5 w-5;
+}
+
+.form-add-complaint::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+.form-add-complaint::-webkit-scrollbar-thumb {
+  @apply rounded-xl border-[6px] border-solid border-transparent bg-gray-300 bg-clip-content;
+}
+</style>

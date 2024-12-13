@@ -1,10 +1,12 @@
 <template>
   <div>
     <BaseDialogFrame :name="nameModal" @close="closePopup()">
-      <BaseDialogPanel class="w-[520px]">
+      <BaseDialogPanel class="max-h-fit w-[520px] sm:h-[calc(100vh-50px)]">
         <BaseDialogHeader title="Upload Bukti Tindaklanjut" />
         <ValidationObserver ref="form" v-slot="{ invalid }">
-          <form class="w-full px-6 pb-3 pt-4">
+          <form
+            class="max-h-fit w-full overflow-y-auto px-6 pb-3 pt-4 sm:h-[calc(100vh-180px)]"
+          >
             <BaseDragAndDropFile
               ref="dragDropFile"
               height-drag-and-drop="h-[161px]"
@@ -250,5 +252,17 @@ export default {
 <style scoped>
 .form-text-area::v-deep .input-wrapper {
   @apply !h-[85.53px] !bg-white;
+}
+
+form::-webkit-scrollbar {
+  @apply h-5 w-5;
+}
+
+form::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+form::-webkit-scrollbar-thumb {
+  @apply rounded-xl border-[6px] border-solid border-transparent bg-gray-300 bg-clip-content;
 }
 </style>

@@ -1,11 +1,11 @@
 <template>
   <div>
     <BaseDialogFrame :name="dataDialog?.nameModal">
-      <BaseDialogPanel class="w-[510px]">
+      <BaseDialogPanel class="max-h-[720px] w-[510px] sm:h-[calc(100vh-50px)]">
         <BaseDialogHeader :title="dataDialog.title" />
         <ValidationObserver ref="form">
           <form
-            class="form-process-complaint h-[576px] w-full overflow-auto px-6"
+            class="form-process-complaint max-h-[600px] w-full overflow-auto px-6 sm:h-[calc(100vh-170px)]"
           >
             <h1 class="font-roboto text-base font-bold">Informasi Aduan</h1>
             <div class="mb-4 grid grid-cols-2 gap-x-2">
@@ -122,16 +122,16 @@
                 "
                 v-slot="{ errors }"
                 rules="requiredSelectForm"
-                name="OPD Pemprov Penanggungjawab"
+                name="Pemda Penanggungjawab"
                 class="mb-5"
                 tag="div"
               >
                 <jds-select
                   v-model="payload.opd_pemprov_id"
-                  name="OPD Pemprov Penanggungjawab"
-                  label="OPD Pemprov Penanggungjawab"
-                  placeholder="Pilih OPD Pemprov"
-                  helper-text="OPD Pemprov penanggungjawab bertugas untuk memeriksa tindaklanjut aduan di kota/kabupaten atau kementerian/lembaga."
+                  name="Pemda Penanggungjawab"
+                  label="Pemda Penanggungjawab"
+                  placeholder="Pemda Penanggungjawab"
+                  helper-text="Kota/kabupaten penanggungjawab yang bertugas untuk menindaklanjuti aduan"
                   :error-message="errors[0]"
                   :class="{ 'mb-2': errors.length > 0 }"
                   class="!w-full"
