@@ -117,15 +117,9 @@
           "
         >
           <td><strong>Perubahan Deadline</strong></td>
-          <td>{{ detailComplaint?.ikp?.deadline_at || '-' }}</td>
+          <td>{{ detailComplaint?.ikp_deadline_at_format || '-' }}</td>
         </tr>
-        <tr
-          v-if="
-            detailComplaint?.complaint_status_id ===
-              complaintStatus.postponed.id ||
-            detailComplaint?.complaint_status_id === complaintStatus.review.id
-          "
-        >
+        <tr v-if="listEvidenceDocument">
           <td><strong>Dokumen Bukti</strong></td>
           <td>
             <jds-button
@@ -504,14 +498,6 @@ export default {
         valueSearch: 'lainnya-terkait',
       },
       typeAduan,
-      listUrlFile: [
-        'http://101.50.0.202:12002/trk/img/lim/Screenshot 20231009 100616.png',
-        'http://101.50.0.202:12002/trk/img/lim/Screenshot 20231009 100616.png',
-        'http://101.50.0.202:12002/trk/img/lim/photo1696837706 2.jpeg',
-        'http://101.50.0.202:12002/trk/img/lim/Kanomodeltemplate.pdf',
-        'https://sample-videos.com/doc/Sample-doc-file-100kb.doc',
-        'http://101.50.0.202:12002/trk/img/lim/Detail Sebaran IRBB 1-C1kBe.xlsx',
-      ],
       listAllFile: [],
       listFileDocument: [],
       listFileImage: [],
@@ -532,6 +518,9 @@ export default {
         }
       })
       return listTypeAduanStatusAduan
+    },
+    listEvidenceDocument() {
+      return this.detailComplaint.ikp?.evidence
     },
   },
   methods: {
@@ -632,8 +621,18 @@ export default {
       return { name: file, type: fileType, url: dataUrl }
     },
     showPopupViewDocument() {
-      this.listAllFile = this.listUrlFile.map((item) => this.getDataFile(item))
-      const listTypeDocument = ['doc', 'docx', 'xls', 'xlsx', 'pdf']
+      this.listAllFile = this.listEvidenceDocument.map((item) =>
+        this.getDataFile(item)
+      )
+      const listTypeDocument = [
+        'doc',
+        'docx',
+        'xls',
+        'xlsx',
+        'pdf',
+        'ppt',
+        'pptx',
+      ]
       const listTypeImage = ['png', 'jpg', 'jpeg']
       this.listFileDocument = this.listAllFile.filter((dataDocument) =>
         listTypeDocument.includes(dataDocument.type)
