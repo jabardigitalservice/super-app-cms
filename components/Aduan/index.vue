@@ -94,6 +94,7 @@
               :items="listData"
               :loading="$fetchState.pending"
               :pagination="pagination"
+              :class="getStyleComplaintType()"
               @next-page="pageChange"
               @previous-page="pageChange"
               @page-change="pageChange"
@@ -105,7 +106,7 @@
                 <div class="flex items-center">
                   <p
                     v-show="item?.status"
-                    class="h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 text-xs font-semibold"
+                    class="h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 !text-[12px] font-semibold"
                     :class="getColorText(item?.status_id)"
                   >
                     {{ item.status }}
@@ -114,7 +115,18 @@
               </template>
               <!-- eslint-disable-next-line vue/valid-v-slot -->
               <template #item.sp4n_created_at="{ item }">
-                <div class="flex items-center">
+                <div
+                  :class="{
+                    'h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 !text-[12px] font-semibold text-[#FF7500]':
+                      item.sp4n_created_at === 'Belum ada',
+                  }"
+                >
+                  {{ item.sp4n_created_at }}
+                </div>
+                <!--
+                  <div
+                  class="flex items-center"
+                >
                   <p
                     :class="{
                       'h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 text-xs font-semibold text-[#FF7500]':
@@ -124,11 +136,20 @@
                     {{ item.sp4n_created_at }}
                   </p>
                 </div>
+                -->
               </template>
               <!-- eslint-disable-next-line vue/valid-v-slot -->
               <template #item.diverted_to_span_at="{ item }">
-                <div class="flex items-center">
-                  <p
+                <div
+                  :class="{
+                    'h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 !text-[12px] font-semibold text-[#FF7500]':
+                      item.diverted_to_span_at === 'Belum ada',
+                  }"
+                >
+                  {{ item.diverted_to_span_at }}
+                </div>
+                <!-- <div class="flex items-center"> -->
+                <!-- <p
                     :class="{
                       'h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 text-xs font-semibold text-[#FF7500]':
                         item.diverted_to_span_at === 'Belum ada',
@@ -136,20 +157,28 @@
                   >
                     {{ item.diverted_to_span_at }}
                   </p>
-                </div>
+                </div> -->
               </template>
               <!-- eslint-disable-next-line vue/valid-v-slot -->
               <template #item.sp4n_id="{ item }">
-                <div class="flex items-center">
+                <div
+                  :class="{
+                    'h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 !text-[12px] font-semibold text-[#FF7500]':
+                      item.sp4n_id === 'Belum ada',
+                  }"
+                >
+                  {{ item.sp4n_id }}
+                </div>
+                <!-- <div class="flex items-center">
                   <p
                     :class="{
-                      'h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 text-xs font-semibold text-[#FF7500]':
+                      'h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 !text-[12px] font-semibold text-[#FF7500]':
                         item.sp4n_id === 'Belum ada',
                     }"
                   >
                     {{ item.sp4n_id }}
                   </p>
-                </div>
+                </div> -->
               </template>
               <!-- eslint-disable-next-line vue/valid-v-slot -->
               <template #item.action="{ item }">
@@ -609,6 +638,20 @@ export default {
     this.query = this.addComplaintStatusFilterHandle()
   },
   methods: {
+    getStyleComplaintType() {
+      switch (this.typeAduanPage.props) {
+        case typeAduan.penentuanKewenangan.props:
+          return 'table-determining-authority'
+        case typeAduan.aduanDialihkanSpanLapor.props:
+          return 'table-diverted-to-span'
+        case typeAduan.instruksiKewenanganPemprov.props:
+          return 'table-instruction-authority-gov'
+        case typeAduan.instruksiKewenanganNonPemprov.props:
+          return 'table-instruction-authority-non-gov'
+        default:
+          return ''
+      }
+    },
     checkUrlApi() {
       switch (this.typeAduanPage.props) {
         case typeAduan.aduanDialihkanHotlineJabar.props:
@@ -901,28 +944,79 @@ export default {
 }
 </script>
 
-<style scoped>
-.icon-tab rect {
-  @apply !fill-[#008444];
+<style lang="scss" scoped>
+.select-form-complaint::v-deep {
+  .jds-input-text__input-wrapper,
+  .jds-popover__content {
+    width: fit-content;
+    @media (min-width: 1536px) {
+      width: 260px !important;
+    }
+  }
 }
 
-.icon-tab path {
-  @apply stroke-white;
+.jds-data-table::v-deep {
+  td,
+  div {
+    @media (max-width: 1472px) {
+      font-size: 12px;
+    }
+  }
 }
 
-.icon-tab-selected rect {
-  @apply fill-[#f5f5f5];
+// class instruksi kewenangan non pemprov
+.table-instruction-authority-non-gov::v-deep {
+  @media (max-width: 1472px) {
+    td:nth-child(5),
+    td:nth-child(6) {
+      width: 130px;
+    }
+    td:nth-child(7) {
+      width: 163px;
+    }
+  }
 }
 
-.icon-tab-selected path {
-  @apply stroke-[#16a75c];
+// dialihkan ke span
+.table-diverted-to-span::v-deep {
+  @media (max-width: 1472px) {
+    td:nth-child(4),
+    td:nth-child(5) {
+      width: 130px;
+    }
+    td:nth-child(6) {
+      width: 140px;
+    }
+    td:nth-child(7) {
+      width: 100px;
+    }
+  }
 }
 
-.select-form-complaint::v-deep .jds-input-text__input-wrapper {
-  @apply !w-fit 2xl:!w-[260px];
+// instruksi kewenangan pemprov
+.table-instruction-authority-gov::v-deep {
+  @media (max-width: 1472px) {
+    td:nth-child(3) {
+      width: 204px;
+    }
+    td:nth-child(4) {
+      width: 135px;
+    }
+    td:nth-child(5) {
+      width: 150px;
+    }
+  }
 }
 
-.select-form-complaint .jds-popover__content {
-  @apply !w-fit 2xl:!w-[260px];
+// penentu kewenangan
+.table-determining-authority::v-deep {
+  @media (max-width: 1472px) {
+    td:nth-child(6) {
+      width: 170px;
+    }
+    td:nth-child(5) {
+      width: 130px;
+    }
+  }
 }
 </style>
