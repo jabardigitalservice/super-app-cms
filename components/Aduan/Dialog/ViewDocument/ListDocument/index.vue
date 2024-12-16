@@ -7,7 +7,7 @@
         height="32"
         width="25"
         class="flex-shrink-0"
-      >
+      />
       <span class="font-sans-2 ml-3">{{ fileDocument.name }}</span>
     </div>
 
@@ -35,37 +35,35 @@ export default {
   props: {
     fileDocument: {
       type: Object,
-      default: () => ({})
-    }
+      default: () => ({}),
+    },
   },
   methods: {
-    getImageFileType () {
-      if (this.fileDocument.type === 'pdf') {
-        return 'file-pdf.svg'
-      }
-
-      if (
-        this.fileDocument.type === 'doc' ||
-        this.fileDocument.type === 'docx'
-      ) {
-        return 'file-doc.svg'
-      }
-
-      if (
-        this.fileDocument.type === 'xls' ||
-        this.fileDocument.type === 'xlsx'
-      ) {
-        return 'file-excel.svg'
+    getImageFileType() {
+      switch (this.fileDocument.type) {
+        case 'pdf':
+          return 'file-pdf.svg'
+        case 'doc':
+        case 'docx':
+          return 'file-doc.svg'
+        case 'xls':
+        case 'xlsx':
+          return 'file-excel.svg'
+        case 'ppt':
+        case 'pptx':
+          return 'file-ppt.svg'
+        default:
+          return ''
       }
     },
-    downloadFile (url, typeFile) {
+    downloadFile(url, typeFile) {
       if (typeFile === 'pdf') {
         window.open(url, '_blank')
       } else {
         window.location.href = url
       }
-    }
-  }
+    },
+  },
 }
 </script>
 

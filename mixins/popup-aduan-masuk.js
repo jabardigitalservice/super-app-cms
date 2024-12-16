@@ -75,12 +75,19 @@ export default {
           'Verifikasi Aduan Ini'
         ),
       })
+      this.dataDialog.dataCy = {
+        footer: {
+          buttonSubmit: `dialog__confirmation-verification__button--verify-complaint`,
+        },
+      }
       this.isShowPopupConfirmationVerification = true
     },
     showPopupConfirmationComplaint(dataComplaint, typeDialog) {
       this.idApi = dataComplaint.id
       this.dataComplaint = dataComplaint
+      let dataCyFormat = ''
       if (typeDialog === 'failedComplaint') {
+        dataCyFormat = 'dialog__confirmation-failed-verification'
         this.typeDialog = 'failedComplaint'
         this.setDataDialog({
           ...this.setDataDialogConfirmation(
@@ -92,8 +99,13 @@ export default {
           labelTextArea: 'Catatan Aduan Gagal Diverifikasi',
           placeholder: 'Detail Aduan tidak lengkap : contoh (foto tidak jelas)',
         })
+        this.dataDialog.dataCy = {
+          fieldTextArea: `${dataCyFormat}__text-area`,
+          buttonSubmit: `${dataCyFormat}__button--confirmation`,
+        }
       }
       if (typeDialog === 'redirectHotlineComplaint') {
+        dataCyFormat = 'dialog__confirmation-diverted-to-hotline-jabar'
         this.typeDialog = 'redirectHotlineComplaint'
         this.setDataDialog({
           ...this.setDataDialogConfirmation(
@@ -105,6 +117,10 @@ export default {
           labelTextArea: 'Alasan dialihkan ke Hotline Jabar',
           placeholder: 'Contoh: Aduan terkait kegawat daruratan',
         })
+        this.dataDialog.dataCy = {
+          fieldTextArea: `${dataCyFormat}__text-area`,
+          buttonSubmit: `${dataCyFormat}__button--confirmation`,
+        }
       }
       this.dataDialog.name = this.typeDialog
       this.$store.commit('modals/OPEN', this.typeDialog)
@@ -275,10 +291,18 @@ export default {
               'Verifikasi Aduan',
               item.subDescription
             ),
-            success: this.setSucessFailedInformationHandle(
-              'Aduan berhasil diverifikasi',
-              true
-            ),
+            success: {
+              ...this.setSucessFailedInformationHandle(
+                'Aduan berhasil diverifikasi',
+                true
+              ),
+              dataCy: {
+                footer: {
+                  buttonSubmit:
+                    'dialog__information-success-from-verification__button--close',
+                },
+              },
+            },
             failed: this.setSucessFailedInformationHandle(
               'Aduan gagal diverifikasi',
               false
@@ -293,10 +317,18 @@ export default {
               'Aduan Gagal Diverifikasi',
               item.subDescription
             ),
-            success: this.setSucessFailedInformationHandle(
-              'Konfirmasi Aduan Gagal Diverifikasi berhasil dilakukan',
-              true
-            ),
+            success: {
+              ...this.setSucessFailedInformationHandle(
+                'Konfirmasi Aduan Gagal Diverifikasi berhasil dilakukan',
+                true
+              ),
+              dataCy: {
+                footer: {
+                  buttonSubmit:
+                    'dialog__information-success-from-failed-verification__button--close',
+                },
+              },
+            },
             failed: this.setSucessFailedInformationHandle(
               'Konfirmasi Aduan Gagal Diverifikasi gagal dilakukan',
               false
@@ -311,10 +343,18 @@ export default {
               'Aduan Dialihkan ke Hotline Jabar',
               item.subDescription
             ),
-            success: this.setSucessFailedInformationHandle(
-              'Aduan berhasil dialihkan ke Hotline Jabar',
-              true
-            ),
+            success: {
+              ...this.setSucessFailedInformationHandle(
+                'Aduan berhasil dialihkan ke Hotline Jabar',
+                true
+              ),
+              dataCy: {
+                footer: {
+                  buttonSubmit:
+                    'dialog__information-success-from-diverted-to-hotline-jabar__button--close',
+                },
+              },
+            },
             failed: this.setSucessFailedInformationHandle(
               'Aduan gagal dialihkan ke Hotline Jabar',
               false
@@ -538,7 +578,9 @@ export default {
       this.iconPopup = { ...this.iconPopup, ...newIconPopup }
     },
     closePopupInformationHandle() {
-      this.query.page = 1
+      if (!this.$route.params?.id) {
+        this.query.page = 1
+      }
       this.$store.commit('popup-complaint/setFieldInput', '')
       this.$store.dispatch('process-complaint/clearPayload')
       this.closePopupHandle()

@@ -17,6 +17,7 @@
           >
             <BaseTextArea
               v-model="fieldTextArea"
+              :data-cy="dataDialog.dataCy.fieldTextArea"
               :placeholder="dataDialog.placeholder"
               :label="dataDialog.labelTextArea"
               class="text-area"
@@ -34,6 +35,7 @@
         >
           <template #button-right>
             <jds-button
+              :data-cy="dataDialog.dataCy.buttonSubmit"
               :label="dataDialog.labelButtonSubmit"
               type="button"
               variant="primary"

@@ -7,6 +7,7 @@
       :class="{ 'mb-[2px] !border-red-600': errorMessage }"
     >
       <textarea
+        :data-cy="dataCy"
         :value="value"
         class="h-full w-full resize-none bg-transparent font-lato placeholder:text-sm placeholder:text-gray-600 focus:outline-none"
         v-bind="$attrs"
@@ -42,6 +43,10 @@ export default {
       default: '',
     },
     errorMessage: {
+      type: String,
+      default: '',
+    },
+    dataCy: {
       type: String,
       default: '',
     },

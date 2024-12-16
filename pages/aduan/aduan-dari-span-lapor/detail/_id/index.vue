@@ -1,8 +1,5 @@
 <template>
-  <AduanDetail
-    :type-aduan-page="typeAduan.aduanDariSpanLapor"
-    :list-button="listButtonDetail"
-  />
+  <AduanDetail :type-aduan-page="typeAduan.aduanDariSpanLapor" />
 </template>
 
 <script>

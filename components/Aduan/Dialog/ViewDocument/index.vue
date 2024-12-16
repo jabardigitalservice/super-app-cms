@@ -1,7 +1,7 @@
 <template>
   <BaseDialog :show-popup="showPopup">
-    <BaseDialogPanel class="max-h-[332px] w-[640px] overflow-y-auto">
-      <BaseDialogHeader title="Dokumen Bukti" class="mb-4 flex justify-between">
+    <BaseDialogPanel class="max-h-[393px] w-[640px] px-3 pb-8">
+      <BaseDialogHeader title="Dokumen Bukti" class="flex justify-between">
         <h1 class="font-roboto text-[21px] font-bold text-green-800">
           Dokumen Bukti
         </h1>
@@ -14,14 +14,17 @@
         </button>
       </BaseDialogHeader>
 
-      <div class="px-6 pt-2 pb-8">
+      <div class="layout-content max-h-[337px] overflow-y-auto px-3 pt-4">
         <ListDocument
           v-for="(document, index) in listFileDocument"
           :key="index"
           :file-document="document"
           class="mb-4"
         />
-        <ListImage :list-image="listFileImage" />
+        <ListImage
+          v-if="listFileImage.length > 0"
+          :list-image="listFileImage"
+        />
       </div>
     </BaseDialogPanel>
   </BaseDialog>
@@ -35,21 +38,35 @@ export default {
   name: 'DialogViewDocument',
   components: {
     ListDocument,
-    ListImage
+    ListImage,
   },
   props: {
     showPopup: {
       type: Boolean,
-      default: false
+      default: false,
     },
     listFileDocument: {
       type: Array,
-      default: () => ([])
+      default: () => [],
     },
     listFileImage: {
       type: Array,
-      default: () => ([])
-    }
-  }
+      default: () => [],
+    },
+  },
 }
 </script>
+
+<style scoped>
+.layout-content::-webkit-scrollbar {
+  @apply h-5 w-5;
+}
+
+.layout-content::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+.layout-content::-webkit-scrollbar-thumb {
+  @apply rounded-xl border-[6px] border-solid border-transparent bg-gray-300 bg-clip-content;
+}
+</style>
