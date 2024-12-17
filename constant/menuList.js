@@ -86,6 +86,7 @@ const aduanMenu = {
   showTitleMenuForRoles: [
     'admin',
     'admin:aduan-team-1',
+    'admin:aduan-team-hotline',
     'admin:aduan-team-2',
     'admin:aduan-team-3',
     'admin:aduan-team-opd',

@@ -8,6 +8,7 @@ export default function ({ $role, route, redirect, $auth, $unleash }) {
         { role: 'admin:mraj_officer', link: '/ticket-museum' }, // link path for redirect first login
         { role: 'tahura_officer', link: '/tahura/dashboard' },
         { role: 'admin:aduan-team-1', link: '/aduan/dashboard' },
+        { role: 'admin:aduan-team-hotline', link: '/aduan/dashboard' },
         { role: 'admin:aduan-team-2', link: '/aduan/dashboard' },
         { role: 'admin:aduan-team-3', link: '/aduan/penginputan-ikp' },
         { role: 'admin:aduan-team-opd', link: '/aduan/instruksi-aduan-warga' },
