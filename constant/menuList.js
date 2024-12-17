@@ -106,7 +106,11 @@ const aduanMenu = {
       name: 'Daftar Aduan Hotline Jabar',
       path: '/aduan/aduan-hotline-jabar',
       arrow: false,
-      showMenuAndAccessForRoles: ['admin', 'admin:aduan-team-hotline'],
+      showMenuAndAccessForRoles: [
+        'admin',
+        'admin:aduan-team-hotline',
+        'admin:aduan-team-1',
+      ],
       icon: 'phone.svg',
       unleashVariable: 'SAPAWARGA-CMS__ADUAN--ADUAN-HOTLINE-JABAR',
     },
