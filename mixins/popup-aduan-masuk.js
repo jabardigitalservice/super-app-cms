@@ -161,6 +161,7 @@ export default {
     showPopupProcessComplaintHandle(dataComplaint) {
       this.idApi = dataComplaint.id
       this.typeDialog = 'processComplaint'
+      const dataCyFormat = 'dialog__form-process-complaint'
       this.isFormatDate = false
       this.setDataDialog({
         ...this.setDataDialogConfirmation(
@@ -172,7 +173,14 @@ export default {
         createdDate: dataComplaint.created_at_api,
         nameModal: this.typeDialog,
       })
-
+      this.dataDialog.dataCy = {
+        fieldTextArea: `${dataCyFormat}__text-area`,
+        fieldSelect: `${dataCyFormat}__select`,
+        fieldSelectOptions: `${dataCyFormat}__select-dropdown`,
+        footer: {
+          buttonSubmit: `${dataCyFormat}__button-submit`,
+        },
+      }
       this.$store.commit('process-complaint/setComplaintSource', {
         complaint_source: dataComplaint?.complaint_source,
       })
