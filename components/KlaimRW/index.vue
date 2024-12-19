@@ -252,7 +252,7 @@ export default {
       this.isLoadingDetailData = true
       try {
         const response = await this.$axios.get(`/user/rw/${item.id}`)
-        const { data } = response?.data
+        const { data } = response.data
         this.detailData = {
           dataKtp: data?.dataKtp,
           dataDomicile: {
