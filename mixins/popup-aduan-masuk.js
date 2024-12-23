@@ -178,7 +178,7 @@ export default {
         fieldSelect: `${dataCyFormat}__select`,
         fieldSelectOptions: `${dataCyFormat}__select-dropdown`,
         footer: {
-          buttonSubmit: `${dataCyFormat}__button-submit`,
+          buttonSubmit: `${dataCyFormat}__button--process-complaint`,
         },
       }
       this.$store.commit('process-complaint/setComplaintSource', {
