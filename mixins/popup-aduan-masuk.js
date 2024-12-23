@@ -411,10 +411,18 @@ export default {
           dialogTitle,
           dataComplaint.subDescription
         ),
-        success: this.setSucessFailedInformationHandle(
-          `${dialogTitle} berhasil dilakukan`,
-          true
-        ),
+        success: {
+          ...this.setSucessFailedInformationHandle(
+            `${dialogTitle} berhasil dilakukan`,
+            true
+          ),
+          dataCy: {
+            footer: {
+              buttonSubmit:
+                'dialog__information-success-from-process-complaint__button--close',
+            },
+          },
+        },
         failed: this.setSucessFailedInformationHandle(
           `${dialogTitle} gagal dilakukan`,
           false
