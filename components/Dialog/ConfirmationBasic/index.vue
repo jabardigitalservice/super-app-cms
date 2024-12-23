@@ -14,6 +14,7 @@
         <template #button-right>
           <jds-button
             :label="dialogModal?.button.label"
+            :data-cy="dialogModal.button.dataCy"
             type="button"
             :variant="dialogModal?.button.variant"
             @click="$emit('confirmation-button')"

@@ -535,6 +535,7 @@ export default {
           button: {
             label: 'Ya, lanjutkan',
             variant: 'primary',
+            dataCy: `dialog__confirmation-process-complaint__button--confirmation`,
           },
           nameModal: 'dialogConfirmationComplaintProcess',
         }

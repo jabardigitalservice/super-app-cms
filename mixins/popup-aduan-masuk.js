@@ -178,7 +178,7 @@ export default {
         fieldSelect: `${dataCyFormat}__select`,
         fieldSelectOptions: `${dataCyFormat}__select-dropdown`,
         footer: {
-          buttonSubmit: `${dataCyFormat}__button-submit`,
+          buttonSubmit: `${dataCyFormat}__button--process-complaint`,
         },
       }
       this.$store.commit('process-complaint/setComplaintSource', {
@@ -411,10 +411,18 @@ export default {
           dialogTitle,
           dataComplaint.subDescription
         ),
-        success: this.setSucessFailedInformationHandle(
-          `${dialogTitle} berhasil dilakukan`,
-          true
-        ),
+        success: {
+          ...this.setSucessFailedInformationHandle(
+            `${dialogTitle} berhasil dilakukan`,
+            true
+          ),
+          dataCy: {
+            footer: {
+              buttonSubmit:
+                'dialog__information-success-from-process-complaint__button--close',
+            },
+          },
+        },
         failed: this.setSucessFailedInformationHandle(
           `${dialogTitle} gagal dilakukan`,
           false
