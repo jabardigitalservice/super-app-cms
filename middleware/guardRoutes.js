@@ -24,6 +24,17 @@ export default function ({ $role, route, redirect, $auth, $unleash }) {
           link: '/aduan/instruksi-aduan-warga',
         },
       ]
+      const adminComplaintRoute = [
+        'admin:aduan-team-hotline',
+        'admin:aduan-team-2',
+        'admin:aduan-team-3',
+        'admin:aduan-team-opd',
+        'admin:aduan-user-management',
+      ]
+
+      if (adminComplaintRoute.every((item) => $role.includes(item))) {
+        return redirect('/aduan/aduan-masuk')
+      }
 
       role.forEach((item) => {
         if ($role.includes(item.role) && !$role.includes('admin')) {
