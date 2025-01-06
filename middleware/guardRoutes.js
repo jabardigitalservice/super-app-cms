@@ -32,7 +32,10 @@ export default function ({ $role, route, redirect, $auth, $unleash }) {
         'admin:aduan-user-management',
       ]
 
-      if (adminComplaintRoute.every((item) => $role.includes(item))) {
+      const isAdminComplaintRoute = adminComplaintRoute.every((item) =>
+        $role.includes(item)
+      ) // check admin aduan
+      if (isAdminComplaintRoute) {
         return redirect('/aduan/aduan-masuk')
       }
 
