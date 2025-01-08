@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="border-b py-3 font-roboto font-bold uppercase text-white"
-  >
+  <div class="border-b py-3 font-roboto font-bold uppercase text-white">
     {{ title }}
   </div>
 </template>
@@ -12,8 +10,8 @@ export default {
   props: {
     title: {
       type: String,
-      default: ''
-    }
-  }
+      default: '',
+    },
+  },
 }
 </script>
