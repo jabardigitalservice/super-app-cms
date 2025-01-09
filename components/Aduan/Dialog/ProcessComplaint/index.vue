@@ -48,6 +48,7 @@
               tag="div"
             >
               <jds-select
+                id="complaint-status"
                 v-model="payload.complaint_status_id"
                 name="Status Aduan"
                 label="Status Aduan"
@@ -80,6 +81,7 @@
                 tag="div"
               >
                 <jds-select
+                  id="coverage-of-affairs"
                   v-model="payload.coverage_of_affairs"
                   name="Cakupan Urusan"
                   label="Cakupan Urusan"
@@ -104,6 +106,7 @@
                 tag="div"
               >
                 <jds-select
+                  id="opd-name"
                   v-model="payload.opd_id"
                   name="Nama Instansi"
                   label="Nama Instansi"
@@ -116,10 +119,7 @@
                 />
               </ValidationProvider>
               <ValidationProvider
-                v-if="
-                  payload.complaint_status_id ===
-                    complaintStatus.diverted_to_span.id && isShowFieldOPDPemprov
-                "
+                v-if="isShowFieldOPDPemprov"
                 v-slot="{ errors }"
                 rules="requiredSelectForm"
                 name="Pemda Penanggungjawab"
@@ -127,6 +127,7 @@
                 tag="div"
               >
                 <jds-select
+                  id="local-gov-responsible"
                   v-model="payload.opd_pemprov_id"
                   name="Pemda Penanggungjawab"
                   label="Pemda Penanggungjawab"
@@ -241,6 +242,7 @@
             >
               <BaseTextArea
                 v-model="payload.status_description"
+                :data-cy="`${dataDialog.dataCy.fieldTextArea}--complaint-status-note`"
                 placeholder="Masukkan keterangan disini"
                 label="Keterangan Status Aduan"
                 class="text-area"
@@ -255,6 +257,7 @@
           </form>
         </ValidationObserver>
         <BaseDialogFooter
+          :data-cy="dataDialog.dataCy.footer"
           :show-cancel-button="true"
           :label-button-submit="dataDialog.labelButtonSubmit"
           @close="closePopupProcessComplaint()"
@@ -387,6 +390,25 @@ export default {
     this.$store.dispatch('utilities-complaint/getDataGovResponsible')
     this.isShowFieldOPDPemprov = this.payload.opd_pemprov_id
     this.isShowFieldProposeIkpNarrative = this.payload.proposed_ikp_narrative
+
+    const selectForm = document.querySelectorAll('div.jds-popover[id]')
+    selectForm.forEach((selectItem) => {
+      const selectInput = selectItem.querySelector(`#${selectItem.id} input`)
+      selectInput.setAttribute(
+        'data-cy',
+        `${this.dataDialog.dataCy.fieldSelect}--${selectItem.id}`
+      )
+    })
+
+    const selectOptionComplaintStatus = document.querySelectorAll(
+      '#complaint-status li'
+    )
+    selectOptionComplaintStatus.forEach((selectOption, index) => {
+      selectOption.setAttribute(
+        'data-cy',
+        `${this.dataDialog.dataCy.fieldSelectOptions}-complaint-status--${this.listComplaintStatus[index].value}`
+      )
+    })
   },
   methods: {
     changeSelectValue(value, keyObject) {
@@ -407,6 +429,7 @@ export default {
           this.isShowFieldProposeIkpNarrative =
             this.payload.coverage_of_affairs !==
             this.coverageOfAffairs.institutions.id
+
           this.payload = {
             ...this.payload,
             opd_id: null,
@@ -512,6 +535,7 @@ export default {
           button: {
             label: 'Ya, lanjutkan',
             variant: 'primary',
+            dataCy: `dialog__confirmation-process-complaint__button--confirmation`,
           },
           nameModal: 'dialogConfirmationComplaintProcess',
         }

@@ -13,6 +13,7 @@ export default function ({ $role, route, redirect, $auth, $unleash }) {
           link: '/aduan/aduan-hotline-jabar',
         },
         { role: 'admin:aduan-team-2', link: '/aduan/penentuan-kewenangan' },
+
         {
           role: 'admin:aduan-team-3',
           link: '/aduan/instruksi-kewenangan-pemprov',

@@ -2,31 +2,34 @@
   <div class="sticky top-0 flex h-screen flex-col">
     <SidebarHeader class="px-6 py-7" />
     <div class="sidebar-content overflow-y-auto px-4">
-      <div v-for="(menuList, index) in menu" :key="index" class="mb-3">
+      <template v-for="(menuList, index) in menu">
         <SidebarTitleMenu
-          v-show="
+          v-if="
             menuList?.showTitleMenuForRoles?.some((value) =>
               $role.includes(value)
             ) && isUnleashEnabled(menuList.unleashVariable)
           "
+          :key="`title-${index}`"
+          class="mb-3"
           :title="menuList.titleMenu"
         />
-        <div class="flex flex-col gap-2">
-          <SidebarItem
-            v-for="menuSidebar in menuList.menu"
-            v-show="
-              menuSidebar?.showMenuAndAccessForRoles?.some((value) =>
-                $role.includes(value)
-              ) && isUnleashEnabled(menuSidebar.unleashVariable)
-            "
-            :key="menuSidebar.path"
-            :label="menuSidebar.name"
-            :is-show-arrow="menuSidebar.arrow"
-            :link="menuSidebar.path"
-            :icon="menuSidebar.icon"
-          />
+        <div :key="`child-${index}`" class="flex flex-col gap-2">
+          <template v-for="menuSidebar in menuList.menu">
+            <SidebarItem
+              v-if="
+                menuSidebar?.showMenuAndAccessForRoles?.some((value) =>
+                  $role.includes(value)
+                ) && isUnleashEnabled(menuSidebar.unleashVariable)
+              "
+              :key="menuSidebar.path"
+              :label="menuSidebar.name"
+              :is-show-arrow="menuSidebar.arrow"
+              :link="menuSidebar.path"
+              :icon="menuSidebar.icon"
+            />
+          </template>
         </div>
-      </div>
+      </template>
     </div>
     <SidebarFooter :name-user="profileName" />
   </div>
