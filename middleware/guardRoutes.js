@@ -13,7 +13,11 @@ export default function ({ $role, route, redirect, $auth, $unleash }) {
           link: '/aduan/aduan-hotline-jabar',
         },
         { role: 'admin:aduan-team-2', link: '/aduan/penentuan-kewenangan' },
-        { role: 'admin:aduan-team-3', link: '/aduan/penginputan-ikp' },
+
+        {
+          role: 'admin:aduan-team-3',
+          link: '/aduan/instruksi-kewenangan-pemprov',
+        },
         { role: 'admin:aduan-team-opd', link: '/aduan/instruksi-aduan-warga' },
         { role: 'admin:tms', link: '/sribaduga/daftar-pesanan' },
         {
@@ -21,6 +25,20 @@ export default function ({ $role, route, redirect, $auth, $unleash }) {
           link: '/aduan/instruksi-aduan-warga',
         },
       ]
+      const adminComplaintRoute = [
+        'admin:aduan-team-hotline',
+        'admin:aduan-team-2',
+        'admin:aduan-team-3',
+        'admin:aduan-team-opd',
+        'admin:aduan-user-management',
+      ]
+
+      const isAdminComplaintRoute = adminComplaintRoute.every((item) =>
+        $role.includes(item)
+      ) // check admin aduan
+      if (isAdminComplaintRoute) {
+        return redirect('/aduan/aduan-masuk')
+      }
 
       role.forEach((item) => {
         if ($role.includes(item.role) && !$role.includes('admin')) {
