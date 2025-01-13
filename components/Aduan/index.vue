@@ -411,7 +411,6 @@ export default {
       listStatisticComplaint: [],
       listDataNonGovComplaintStatus: [], // list status complaint for non government
       isShowPopupDateRange: false,
-      oldComplaintCategoryId: null,
       complaintSource,
       dateRange: [
         new Date(new Date().setFullYear(new Date().getFullYear() - 1)),
