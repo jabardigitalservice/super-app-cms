@@ -1,48 +1,75 @@
 <template>
-  <div class="flex items-center justify-between bg-white px-4 py-3">
-    <div class="flex items-center text-sm text-gray-700">
+  <div
+    class="flex items-center justify-between border border-t-[#069550] bg-[#fafafa] px-3 py-1 text-[#424242]"
+  >
+    <div class="flex items-center text-sm">
       <span>Tampilkan</span>
       <select
         v-model="paginationPerPage"
-        class="mx-2 rounded border-gray-300 focus:border-emerald-500 focus:ring-emerald-500"
+        class="mx-2 flex w-[50px] rounded border-gray-300 py-2 font-bold focus:border-emerald-500 focus:ring-emerald-500"
         @change="handlePerPageChange"
       >
-        <option v-for="size in perPageOptions" :key="size" :value="size">
+        <option
+          v-for="size in perPageOptions"
+          :key="size"
+          :value="size"
+          class="font-bold"
+        >
           {{ size }}
         </option>
       </select>
-      <span>Item dari total {{ totalItems }}</span>
+      <span>
+        Item dari total <span class="font-bold"> {{ totalItems }}</span>
+      </span>
     </div>
 
     <div class="flex items-center space-x-4">
-      <div class="flex items-center text-sm text-gray-700">
+      <div class="flex items-center text-sm">
         <span>Halaman</span>
         <select
           v-model="paginationCurrentPage"
-          class="mx-2 rounded border-gray-300 focus:border-emerald-500 focus:ring-emerald-500"
+          class="mx-2 w-[50px] rounded border-gray-300 py-2 font-bold focus:border-emerald-500 focus:ring-emerald-500"
           @change="handlePageChange"
         >
           <option v-for="page in totalPages" :key="page" :value="page">
             {{ page }}
           </option>
         </select>
-        <span>dari {{ totalPages }}</span>
+        <span>
+          dari <span class="font-bold">{{ totalPages }}</span>
+        </span>
       </div>
 
       <div class="flex space-x-1">
         <button
-          class="rounded p-1 hover:bg-gray-100"
+          class="w-[40px] rounded border-r p-1 hover:bg-gray-100"
+          :class="{
+            'cursor-not-allowed': currentPage === 1,
+          }"
           :disabled="currentPage === 1"
           @click="handlePreviousPage"
         >
-          <span class="text-gray-500">◀</span>
+          <BaseIconSvg
+            icon="/icon/arrow-left.svg"
+            :size="16"
+            class="mt-[2px]"
+            :fill-color="currentPage === 1 ? '#BDBDBD' : '#069550'"
+          />
         </button>
         <button
-          class="rounded p-1 hover:bg-gray-100"
+          class="w-[40px] rounded p-1 hover:bg-gray-100"
+          :class="{
+            'cursor-not-allowed': currentPage === totalPages,
+          }"
           :disabled="currentPage === totalPages"
           @click="handleNextPage"
         >
-          <span class="text-gray-500">▶</span>
+          <BaseIconSvg
+            icon="/icon/arrow-right.svg"
+            :size="16"
+            class="mt-[2px]"
+            :fill-color="currentPage === totalPages ? '#BDBDBD' : '#069550'"
+          />
         </button>
       </div>
     </div>
@@ -82,11 +109,11 @@ export default {
     },
   },
   watch: {
-    currentPage(newVal) {
-      this.paginationCurrentPage = newVal
+    currentPage(page) {
+      this.paginationCurrentPage = page
     },
-    perPage(newVal) {
-      this.paginationPerPage = newVal
+    perPage(page) {
+      this.paginationPerPage = page
     },
   },
   methods: {
