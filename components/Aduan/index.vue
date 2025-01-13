@@ -31,14 +31,6 @@
               <p class="ml-2 flex-shrink-0 text-[14px] text-blue-gray-700">
                 Filter :
               </p>
-              <!-- <jds-select
-                v-model="query.complaint_category_id"
-                placeholder="Kategori Aduan"
-                :options="listCategory"
-                class="select-form-complaint !mx-2 flex-shrink-0"
-                filterable
-                @change="filterCategoryHandle"
-              /> -->
 
               <BaseSelectSearch
                 v-model="query.complaint_category_id"
@@ -926,7 +918,6 @@ export default {
 .select-form-complaint::v-deep {
   .jds-input-text__input-wrapper,
   .jds-popover__content {
-    // width: fit-content
     @media (min-width: 1536px) {
       width: 260px !important;
     }
