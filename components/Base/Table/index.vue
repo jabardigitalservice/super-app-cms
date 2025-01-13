@@ -141,12 +141,13 @@ export default {
   methods: {
     handleSort(key) {
       if (this.sortKey === key) {
-        this.sortOrder =
-          this.sortOrder === null
-            ? 'asc'
-            : this.sortOrder === 'asc'
-            ? 'desc'
-            : null
+        if (this.sortOrder === 'asc') {
+          this.sortOrder = 'desc'
+        } else if (this.sortOrder === 'desc') {
+          this.sortOrder = null
+        } else {
+          this.sortOrder = 'asc'
+        }
       } else {
         this.sortKey = key
         this.sortOrder = 'asc'

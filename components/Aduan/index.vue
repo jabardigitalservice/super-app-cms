@@ -118,20 +118,6 @@
               >
                 {{ item.sp4n_created_at }}
               </div>
-              <!--
-                  <div
-                  class="flex items-center"
-                >
-                  <p
-                    :class="{
-                      'h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 text-xs font-semibold text-[#FF7500]':
-                        item.sp4n_created_at === 'Belum ada',
-                    }"
-                  >
-                    {{ item.sp4n_created_at }}
-                  </p>
-                </div>
-                -->
             </template>
             <!-- eslint-disable-next-line vue/valid-v-slot -->
             <template #diverted_to_span_at="{ item }">
@@ -143,16 +129,6 @@
               >
                 {{ item.diverted_to_span_at }}
               </div>
-              <!-- <div class="flex items-center"> -->
-              <!-- <p
-                    :class="{
-                      'h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 text-xs font-semibold text-[#FF7500]':
-                        item.diverted_to_span_at === 'Belum ada',
-                    }"
-                  >
-                    {{ item.diverted_to_span_at }}
-                  </p>
-                </div> -->
             </template>
             <!-- eslint-disable-next-line vue/valid-v-slot -->
             <template #sp4n_id="{ item }">
@@ -164,16 +140,6 @@
               >
                 {{ item.sp4n_id }}
               </div>
-              <!-- <div class="flex items-center">
-                  <p
-                    :class="{
-                      'h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 !text-[12px] font-semibold text-[#FF7500]':
-                        item.sp4n_id === 'Belum ada',
-                    }"
-                  >
-                    {{ item.sp4n_id }}
-                  </p>
-                </div> -->
             </template>
             <!-- eslint-disable-next-line vue/valid-v-slot -->
             <template #action="{ item }">
