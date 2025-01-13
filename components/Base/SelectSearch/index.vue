@@ -1,10 +1,16 @@
 <template>
-  <div class="relative w-full">
+  <div class="relative">
     <button
-      class="w-full rounded-md border border-gray-300 bg-white px-4 py-2 text-left shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      class="rounded-lg border border-gray-400 bg-white px-4 py-2 text-left focus:border-[#FEC802]"
       @click="toggleDropdown"
     >
-      {{ placeholder }}
+      <span v-if="selectedOption">
+        {{ selectedOption.label }}
+      </span>
+      <span v-else class="text-[#757575]">
+        {{ placeholder }}
+      </span>
+
       <span
         class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"
       >
@@ -25,11 +31,26 @@
       <div class="px-3 py-2">
         <input
           v-model="searchQuery"
-          class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm leading-5 text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Search option..."
+          class="rounded-md border border-gray-300 px-3 py-2 text-sm leading-5 text-gray-900 placeholder-gray-500"
+          placeholder="Cari data..."
           @input="filterOptions"
         />
       </div>
+      <ul
+        class="max-h-60 overflow-auto py-1 text-base leading-6 focus:outline-none sm:text-sm sm:leading-5"
+      >
+        <li
+          v-for="option in filteredOptions"
+          :key="option.value"
+          class="cursor-pointer py-2 pl-3 pr-9 font-normal text-gray-900 hover:bg-gray-100 hover:font-bold hover:text-[#039550]"
+          :class="{
+            '!font-bold text-[#039550]': option.value === selectedOption?.value,
+          }"
+          @click="selectOption(option)"
+        >
+          {{ option.label }}
+        </li>
+      </ul>
     </div>
   </div>
 </template>
@@ -38,6 +59,10 @@
 export default {
   name: 'BaseSelectSearch',
   props: {
+    options: {
+      type: Array,
+      required: true,
+    },
     value: {
       type: String,
       default: '',
@@ -51,16 +76,45 @@ export default {
     return {
       isOpen: false,
       searchQuery: '',
+      filteredOptions: [],
     }
   },
-
+  computed: {
+    selectedOption() {
+      return this.options.find((option) => option.value === this.value)
+    },
+  },
+  watch: {
+    options: {
+      immediate: true,
+      handler() {
+        this.filterOptions()
+      },
+    },
+  },
+  mounted() {
+    document.addEventListener('click', this.handleClickOutside)
+  },
+  beforeDestroy() {
+    document.removeEventListener('click', this.handleClickOutside)
+  },
   methods: {
     toggleDropdown() {
       this.isOpen = !this.isOpen
-      if (this.isOpen) {
-        this.$nextTick(() => {
-          this.$el.querySelector('input').focus()
-        })
+    },
+    selectOption(option) {
+      this.$emit('change', option.value)
+      this.isOpen = false
+    },
+    filterOptions() {
+      const query = this.searchQuery.toLowerCase()
+      this.filteredOptions = this.options.filter((option) =>
+        option.label.toLowerCase().includes(query)
+      )
+    },
+    handleClickOutside(event) {
+      if (!this.$el.contains(event.target)) {
+        this.isOpen = false
       }
     },
   },

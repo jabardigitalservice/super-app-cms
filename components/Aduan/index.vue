@@ -31,20 +31,21 @@
               <p class="ml-2 flex-shrink-0 text-[14px] text-blue-gray-700">
                 Filter :
               </p>
-              <jds-select
+              <!-- <jds-select
                 v-model="query.complaint_category_id"
-                :value="query.complaint_category_id"
                 placeholder="Kategori Aduan"
                 :options="listCategory"
                 class="select-form-complaint !mx-2 flex-shrink-0"
                 filterable
                 @change="filterCategoryHandle"
-              />
+              /> -->
 
               <BaseSelectSearch
-                v-model="selectedCategory"
-                :options="categories"
+                v-model="query.complaint_category_id"
+                class="select-form-complaint !mx-2 flex-shrink-0"
+                :options="listCategory"
                 placeholder="Kategori Aduan"
+                @change="filterCategoryHandle"
               />
               <date-picker
                 ref="datepicker"
@@ -426,25 +427,6 @@ export default {
       ],
       dataCyButtonAction: `daftar-${this.typeAduanPage.props}__tab__button-action--total`,
       isFilterStatus: false,
-      selectedCategory: '',
-      categories: [
-        { value: 'all', label: 'Semua Kategori' },
-        { value: 'agama', label: 'Agama' },
-        { value: 'aplikasi', label: 'Aplikasi Pemerintah' },
-        { value: 'bantuan', label: 'Bantuan Sosial' },
-        { value: 'ekonomi', label: 'Ekonomi Dan Keuangan' },
-        { value: 'energi', label: 'Energi Dan Sumber Daya Alam' },
-        { value: 'infrastruktur', label: 'Infrastruktur' },
-        { value: 'kependudukan', label: 'Kependudukan' },
-        { value: 'kesehatan', label: 'Kesehatan' },
-        { value: 'gender', label: 'Kesetaraan Gender Dan Sosial Inklusif' },
-        { value: 'ketenagakerjaan', label: 'Ketenagakerjaan' },
-        {
-          value: 'ketertiban',
-          label: 'Ketenteraman Ketertiban Umum Dan Pelindungan Masyarakat',
-        },
-        { value: 'korupsi', label: 'Korupsi Kolusi Dan Nepotisme' },
-      ],
     }
   },
   async fetch() {
@@ -716,31 +698,10 @@ export default {
       this.$fetch()
     },
     filterCategoryHandle(value) {
-      // this.setQuery({
-      //   complaint_category_id: null,
-      //   'complaint_category_id[0]': null,
-      // })
-
       this.query.page = 1
-      // if (value) {
-      //   this.query['complaint_category_id[0]'] = value
-      // }
 
-      if (value || value === '') {
-        console.log('ada value', value)
-        this.query.complaint_category_id = value
-        this.query['complaint_category_id[0]'] = value
-        this.oldComplaintCategoryId = value
-      } else if (value === undefined) {
-        console.log('tidak ada value', value, this.oldComplaintCategoryId)
-        this.query.complaint_category_id = this.oldComplaintCategoryId
-        this.query['complaint_category_id[0]'] = this.oldComplaintCategoryId
-
-        console.log(
-          this.query.complaint_category_id,
-          this.query['complaint_category_id[0]']
-        )
-      }
+      this.query.complaint_category_id = value
+      this.query['complaint_category_id[0]'] = value
 
       this.$fetch()
     },
