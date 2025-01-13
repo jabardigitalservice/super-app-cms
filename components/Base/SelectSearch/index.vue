@@ -81,7 +81,7 @@ export default {
     },
     placeholder: {
       type: String,
-      default: 'Pilih kategori...',
+      default: '',
     },
   },
   data() {
