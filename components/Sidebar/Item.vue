@@ -12,7 +12,9 @@
         fill-color="#FFFFFF"
         class="mr-3 flex-shrink-0"
       />
-      <label class="font-lato text-[13px] text-white line-clamp-2">
+      <label
+        class="cursor-pointer font-lato text-[13px] text-white line-clamp-2"
+      >
         {{ label }}
       </label>
     </div>

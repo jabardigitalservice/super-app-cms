@@ -7,9 +7,17 @@ export default function ({ $role, route, redirect, $auth, $unleash }) {
       const role = [
         { role: 'admin:mraj_officer', link: '/ticket-museum' }, // link path for redirect first login
         { role: 'tahura_officer', link: '/tahura/dashboard' },
-        { role: 'admin:aduan-team-1', link: '/aduan/dashboard' },
-        { role: 'admin:aduan-team-2', link: '/aduan/dashboard' },
-        { role: 'admin:aduan-team-3', link: '/aduan/penginputan-ikp' },
+        { role: 'admin:aduan-team-1', link: '/aduan/aduan-masuk' },
+        {
+          role: 'admin:aduan-team-hotline',
+          link: '/aduan/aduan-hotline-jabar',
+        },
+        { role: 'admin:aduan-team-2', link: '/aduan/penentuan-kewenangan' },
+
+        {
+          role: 'admin:aduan-team-3',
+          link: '/aduan/instruksi-kewenangan-pemprov',
+        },
         { role: 'admin:aduan-team-opd', link: '/aduan/instruksi-aduan-warga' },
         { role: 'admin:tms', link: '/sribaduga/daftar-pesanan' },
         {
@@ -17,6 +25,20 @@ export default function ({ $role, route, redirect, $auth, $unleash }) {
           link: '/aduan/instruksi-aduan-warga',
         },
       ]
+      const adminComplaintRoute = [
+        'admin:aduan-team-hotline',
+        'admin:aduan-team-2',
+        'admin:aduan-team-3',
+        'admin:aduan-team-opd',
+        'admin:aduan-user-management',
+      ]
+
+      const isAdminComplaintRoute = adminComplaintRoute.every((item) =>
+        $role.includes(item)
+      ) // check admin aduan
+      if (isAdminComplaintRoute) {
+        return redirect('/aduan/aduan-masuk')
+      }
 
       role.forEach((item) => {
         if ($role.includes(item.role) && !$role.includes('admin')) {

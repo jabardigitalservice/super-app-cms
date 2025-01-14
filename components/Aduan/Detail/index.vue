@@ -252,8 +252,6 @@ export default {
       detailComplaint: {},
       idTab: '',
       listPhotoComplaint: [],
-      listPhotoEvidence: [],
-      listFileEvidence: [],
       isShowPopupViewImage: false,
       isShowPopupDetailStatusComplaint: false,
       isShowDropdown: false,
@@ -295,6 +293,9 @@ export default {
         deadline_at_format:
           dataDetailComplaint?.deadline_date &&
           formatDate(dataDetailComplaint?.deadline_date, 'dd/MM/yyyy'),
+        ikp_deadline_at_format:
+          dataDetailComplaint?.ikp?.deadline_at &&
+          formatDate(dataDetailComplaint?.ikp?.deadline_at, 'dd/MM/yyyy'),
         sp4n_created_at_format:
           dataDetailComplaint?.sp4n_created_at &&
           formatDate(dataDetailComplaint?.sp4n_created_at || '', 'dd/MM/yyyy'),
@@ -309,8 +310,6 @@ export default {
       this.ikpCode = dataDetailComplaint?.ikp_code
 
       this.listPhotoComplaint = dataDetailComplaint?.photos || []
-      this.listPhotoEvidence = dataDetailComplaint?.evidence?.photos || []
-      this.listFileEvidence = dataDetailComplaint?.evidence?.files || []
     } catch {
       this.detailComplaint = {}
       this.listPhotoComplaint = []
@@ -448,6 +447,7 @@ export default {
             : this.$nuxt.context.from.path,
         query: newQuery,
       })
+      this.$store.commit('setBackPage', true) // for control old query on page list
     },
   },
 }

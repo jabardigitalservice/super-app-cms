@@ -7,24 +7,29 @@
         :sub-description="dataDialog.subDescription"
         class="p-6"
       />
-      <BaseDialogFooter :label-button-submit="dataDialog.labelButtonSubmit" :label-button-cancel="dataDialog.labelButtonCancel" @close="$emit('close')" @submit="$emit('submit',dataDialog)" />
+      <BaseDialogFooter
+        :data-cy="dataDialog.dataCy?.footer"
+        :label-button-submit="dataDialog.labelButtonSubmit"
+        :label-button-cancel="dataDialog.labelButtonCancel"
+        @close="$emit('close')"
+        @submit="$emit('submit', dataDialog)"
+      />
     </BaseDialogPanel>
   </BaseDialog>
 </template>
 
 <script>
-
 export default {
   name: 'DialogConfirmation',
   props: {
     showPopup: {
       type: Boolean,
-      default: false
+      default: false,
     },
     dataDialog: {
       type: Object,
-      default: () => ({})
-    }
-  }
+      default: () => ({}),
+    },
+  },
 }
 </script>

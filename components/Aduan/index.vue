@@ -31,11 +31,12 @@
               <p class="ml-2 flex-shrink-0 text-[14px] text-blue-gray-700">
                 Filter :
               </p>
-              <jds-select
+
+              <BaseSelectSearch
                 v-model="query.complaint_category_id"
-                placeholder="Kategori Aduan"
-                :options="listCategory"
                 class="select-form-complaint !mx-2 flex-shrink-0"
+                :options="listCategory"
+                placeholder="Kategori Aduan"
                 @change="filterCategoryHandle"
               />
               <date-picker
@@ -88,107 +89,104 @@
               @click="showPopupAddComplaint()"
             />
           </div>
-          <div>
-            <JdsDataTable
-              :headers="checkTypeHeaderAduan(typeAduanPage.props)"
-              :items="listData"
-              :loading="$fetchState.pending"
-              :pagination="pagination"
-              @next-page="pageChange"
-              @previous-page="pageChange"
-              @page-change="pageChange"
-              @per-page-change="perPageChange"
-              @change:sort="sortChange"
-            >
-              <!-- eslint-disable-next-line vue/valid-v-slot -->
-              <template #item.status="{ item }">
-                <div class="flex items-center">
-                  <p
-                    v-show="item?.status"
-                    class="h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 text-xs font-semibold"
-                    :class="getColorText(item?.status_id)"
-                  >
-                    {{ item.status }}
-                  </p>
-                </div>
-              </template>
-              <!-- eslint-disable-next-line vue/valid-v-slot -->
-              <template #item.sp4n_created_at="{ item }">
-                <div class="flex items-center">
-                  <p
-                    :class="{
-                      'h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 text-xs font-semibold text-[#FF7500]':
-                        item.sp4n_created_at === 'Belum ada',
-                    }"
-                  >
-                    {{ item.sp4n_created_at }}
-                  </p>
-                </div>
-              </template>
-              <!-- eslint-disable-next-line vue/valid-v-slot -->
-              <template #item.diverted_to_span_at="{ item }">
-                <div class="flex items-center">
-                  <p
-                    :class="{
-                      'h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 text-xs font-semibold text-[#FF7500]':
-                        item.diverted_to_span_at === 'Belum ada',
-                    }"
-                  >
-                    {{ item.diverted_to_span_at }}
-                  </p>
-                </div>
-              </template>
-              <!-- eslint-disable-next-line vue/valid-v-slot -->
-              <template #item.sp4n_id="{ item }">
-                <div class="flex items-center">
-                  <p
-                    :class="{
-                      'h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 text-xs font-semibold text-[#FF7500]':
-                        item.sp4n_id === 'Belum ada',
-                    }"
-                  >
-                    {{ item.sp4n_id }}
-                  </p>
-                </div>
-              </template>
-              <!-- eslint-disable-next-line vue/valid-v-slot -->
-              <template #item.action="{ item }">
-                <BaseTableAction
-                  :list-menu-pop-over="menuTableActionHandle(item?.status_id)"
-                  @detail="goToPageDetailHandle(item)"
-                  @verify="
-                    showPopupConfirmationVerificationComplaintHandle(item)
-                  "
-                  @failed="
-                    showPopupConfirmationComplaint(item, 'failedComplaint')
-                  "
-                  @redirect-hotline-jabar="
-                    showPopupConfirmationComplaint(
-                      item,
-                      'redirectHotlineComplaint'
-                    )
-                  "
-                  @followup-hotline-jabar="
-                    $store.dispatch(
-                      'popup-complaint/showPopupFollowupHotlineJabar',
-                      {
-                        dataComplaint: item,
-                        dialogName: 'followupHotlineJabar',
-                      }
-                    )
-                  "
-                  @evidence-followup-hotline="
-                    showPopupEvidenceFollowupHotline(item)
-                  "
-                  @add-span="showPopupInputIdSpanHandle(item)"
-                  @process-complaint="showPopupProcessComplaintHandle(item)"
-                  @change-authority="showPopupChangeAuthority(item)"
-                  @followup-complaint="showPopupFollowupComplaint(item)"
-                  @create-instruction="showPopupCreateInstruction(item)"
-                />
-              </template>
-            </JdsDataTable>
-          </div>
+
+          <BaseTable
+            :headers="checkTypeHeaderAduan(typeAduanPage.props)"
+            :items="listData"
+            :loading="$fetchState.pending"
+            :skeleton-row-count="pagination.itemsPerPage"
+            @sort="sortChange"
+          >
+            <!-- eslint-disable-next-line vue/valid-v-slot -->
+            <template #status="{ item }">
+              <div class="flex items-center">
+                <p
+                  v-show="item?.status"
+                  class="h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 !text-sm font-semibold"
+                  :class="getColorText(item?.status_id)"
+                >
+                  {{ item.status }}
+                </p>
+              </div>
+            </template>
+            <!-- eslint-disable-next-line vue/valid-v-slot -->
+            <template #sp4n_created_at="{ item }">
+              <div
+                :class="{
+                  'h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 !text-sm font-semibold text-[#FF7500]':
+                    item.sp4n_created_at === 'Belum ada',
+                }"
+              >
+                {{ item.sp4n_created_at }}
+              </div>
+            </template>
+            <!-- eslint-disable-next-line vue/valid-v-slot -->
+            <template #diverted_to_span_at="{ item }">
+              <div
+                :class="{
+                  'h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 !text-sm font-semibold text-[#FF7500]':
+                    item.diverted_to_span_at === 'Belum ada',
+                }"
+              >
+                {{ item.diverted_to_span_at }}
+              </div>
+            </template>
+            <!-- eslint-disable-next-line vue/valid-v-slot -->
+            <template #sp4n_id="{ item }">
+              <div
+                :class="{
+                  'h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 !text-sm font-semibold text-[#FF7500]':
+                    item.sp4n_id === 'Belum ada',
+                }"
+              >
+                {{ item.sp4n_id }}
+              </div>
+            </template>
+            <!-- eslint-disable-next-line vue/valid-v-slot -->
+            <template #action="{ item }">
+              <BaseTableAction
+                :list-menu-pop-over="menuTableActionHandle(item?.status_id)"
+                :data-cy="dataCyButtonAction"
+                @detail="goToPageDetailHandle(item)"
+                @verify="showPopupConfirmationVerificationComplaintHandle(item)"
+                @failed="
+                  showPopupConfirmationComplaint(item, 'failedComplaint')
+                "
+                @redirect-hotline-jabar="
+                  showPopupConfirmationComplaint(
+                    item,
+                    'redirectHotlineComplaint'
+                  )
+                "
+                @followup-hotline-jabar="
+                  $store.dispatch(
+                    'popup-complaint/showPopupFollowupHotlineJabar',
+                    {
+                      dataComplaint: item,
+                      dialogName: 'followupHotlineJabar',
+                    }
+                  )
+                "
+                @evidence-followup-hotline="
+                  showPopupEvidenceFollowupHotline(item)
+                "
+                @add-span="showPopupInputIdSpanHandle(item)"
+                @process-complaint="showPopupProcessComplaintHandle(item)"
+                @change-authority="showPopupChangeAuthority(item)"
+                @followup-complaint="showPopupFollowupComplaint(item)"
+                @create-instruction="showPopupCreateInstruction(item)"
+              />
+            </template>
+          </BaseTable>
+
+          <BaseTablePagination
+            :current-page="pagination.currentPage"
+            :per-page="pagination.itemsPerPage"
+            :total-items="pagination.totalRows"
+            :per-page-options="pagination.perPageOptions"
+            @update:currentPage="pageChange"
+            @update:perPage="perPageChange"
+          />
         </BaseTabPanel>
       </template>
     </BaseTabGroup>
@@ -250,32 +248,32 @@
 
 <script>
 import debounce from 'lodash.debounce'
-import DialogFollowupHotlineJabar from '~/components/Aduan/Dialog/FollowupHotlineJabar'
+import 'vue2-datepicker/index.css'
 import DialogEvidenceFollowupHotline from '~/components/Aduan/Dialog/EvidenceFollowupHotline'
 import DialogFollowupComplaint from '~/components/Aduan/Dialog/FollowupComplaint'
 import DialogAddIdSpan from '~/components/Aduan/Dialog/AddIdSpan'
-import {
-  formatDate,
-  generateItemsPerPageOptions,
-  formatNumberToUnit,
-  convertToUnit,
-  resetQueryParamsUrl,
-  formatedStringDate,
-} from '~/utils'
-import 'vue2-datepicker/index.css'
-import TabBarList from '~/components/Aduan/TabBar/List'
 import DialogAddComplaint from '~/components/Aduan/Dialog/AddComplaint'
+import DialogFollowupHotlineJabar from '~/components/Aduan/Dialog/FollowupHotlineJabar'
 import DialogProcessComplaint from '~/components/Aduan/Dialog/ProcessComplaint'
+import TabBarList from '~/components/Aduan/TabBar/List'
+import {
+  convertToUnit,
+  formatDate,
+  formatedStringDate,
+  formatNumberToUnit,
+  generateItemsPerPageOptions,
+  resetQueryParamsUrl,
+} from '~/utils'
 
 import {
-  complaintHeader,
-  complaintStatus,
   complaintDivertedToSpanHeader,
   complaintFromSpanHeader,
+  complaintHeader,
+  complaintSource,
+  complaintStatus,
   determiningAuthorityHeader,
   nonGovernmentAuthorityHeader,
   typeAduan,
-  complaintSource,
 } from '~/constant/aduan-masuk'
 
 import {
@@ -313,7 +311,8 @@ export default {
   },
   data() {
     return {
-      menuTableAction: [
+      dataCyFormat: `daftar-${this.typeAduanPage.props}`,
+      dataMenuTableAction: [
         {
           menu: 'Lihat Detail Aduan',
           value: 'detail',
@@ -390,7 +389,6 @@ export default {
         totalRows: 10,
         itemsPerPage: 10,
         itemsPerPageOptions: [],
-        disabled: true,
       },
       query: {
         limit: 10,
@@ -419,6 +417,8 @@ export default {
         new Date(new Date().setFullYear(new Date().getFullYear() - 1)),
         new Date(),
       ],
+      dataCyButtonAction: `daftar-${this.typeAduanPage.props}__tab__button-action--total`,
+      isFilterStatus: false,
     }
   },
   async fetch() {
@@ -431,6 +431,9 @@ export default {
         this.setQuery({ complaint_source: 'sp4n' })
       }
 
+      if (!this.$store.state.backPage && !this.isFilterStatus) {
+        this.query = this.addComplaintStatusFilterHandle()
+      }
       // default sort by updated date
       if (!this.query.sort_by) {
         this.setQuery({ sort_by: 'updated_at' })
@@ -458,6 +461,14 @@ export default {
     }
   },
   computed: {
+    menuTableAction() {
+      return this.dataMenuTableAction.map((menu) => {
+        return {
+          ...menu,
+          dataCy: `${this.dataCyFormat}__dropdown--${menu.value}`,
+        }
+      })
+    },
     listData() {
       return this.listDataComplaint.map((item) => {
         if (
@@ -525,6 +536,7 @@ export default {
           unit: convertToUnit(item.value),
           icon: complaintStatus[item.id].icon,
           name: complaintStatus[item.id].name,
+          dataCy: `${this.dataCyFormat}__tab--${item.id}`,
         }
       })
     },
@@ -553,6 +565,7 @@ export default {
             ]
           }
         }
+        this.$fetch()
       },
     },
     dateRange() {
@@ -574,7 +587,6 @@ export default {
     this.pagination.itemsPerPageOptions = generateItemsPerPageOptions(
       this.pagination.itemsPerPage
     )
-    this.addComplaintStatusFilterHandle()
     await this.$store.dispatch('utilities-complaint/getDataCategory')
     const listCategory = [
       { id: '', name: 'Semua Kategori' },
@@ -594,10 +606,22 @@ export default {
         listNonGovComplaintStatus
       )
     }
-
-    this.query = this.addComplaintStatusFilterHandle()
   },
   methods: {
+    getStyleComplaintType() {
+      switch (this.typeAduanPage.props) {
+        case typeAduan.penentuanKewenangan.props:
+          return 'table-determining-authority'
+        case typeAduan.aduanDialihkanSpanLapor.props:
+          return 'table-diverted-to-span'
+        case typeAduan.instruksiKewenanganPemprov.props:
+          return 'table-instruction-authority-gov'
+        case typeAduan.instruksiKewenanganNonPemprov.props:
+          return 'table-instruction-authority-non-gov'
+        default:
+          return ''
+      }
+    },
     checkUrlApi() {
       switch (this.typeAduanPage.props) {
         case typeAduan.aduanDialihkanHotlineJabar.props:
@@ -648,16 +672,16 @@ export default {
       }
       this.query.page = 1
     },
+
     sortChange(value) {
-      const key = Object.keys(value)[0]
-      if (key && value[key] !== 'no-sort') {
-        if (key === 'created_at_format') {
+      if (value.key && value.order !== null) {
+        if (value.key === 'created_at_format') {
           this.query.sort_by = 'created_at'
         } else {
-          this.query.sort_by = key
+          this.query.sort_by = value.key
         }
 
-        this.query.sort_type = value[key]
+        this.query.sort_type = value.order
       } else {
         const { sort_by: sortBy, sort_type: sortType, ...newQuery } = this.query // menghilangkan atribut sort by dan sort type
         this.query = newQuery
@@ -666,16 +690,14 @@ export default {
       this.$fetch()
     },
     filterCategoryHandle(value) {
-      this.setQuery({
-        complaint_category_id: null,
-        'complaint_category_id[0]': null,
-      })
       this.query.page = 1
-      if (value) {
-        this.query['complaint_category_id[0]'] = value
-      }
+
+      this.query.complaint_category_id = value
+      this.query['complaint_category_id[0]'] = value
+
       this.$fetch()
     },
+
     filterNonGovComplaintStatusHandle(value) {
       this.query.page = 1
       if (value) {
@@ -688,6 +710,7 @@ export default {
         path: `${this.linkPageDetail}/${item.id}`,
         query: this.query,
       })
+      this.$fetch()
     },
     getStatusText(statusId) {
       if (
@@ -755,7 +778,9 @@ export default {
       return this.query
     },
     listTabHandle(status) {
+      this.isFilterStatus = true
       const query = { page: 1, limit: 10 }
+      this.dataCyButtonAction = `${this.dataCyFormat}__tab__button-action--${status}`
       this.deletePropertiesWithPrefix(this.query, 'complaint_status_id[')
       if (status !== 'total') {
         query['complaint_status_id[0]'] = status
@@ -889,28 +914,78 @@ export default {
 }
 </script>
 
-<style scoped>
-.icon-tab rect {
-  @apply !fill-[#008444];
+<style lang="scss" scoped>
+.select-form-complaint::v-deep {
+  .jds-input-text__input-wrapper,
+  .jds-popover__content {
+    @media (min-width: 1536px) {
+      width: 260px !important;
+    }
+  }
 }
 
-.icon-tab path {
-  @apply stroke-white;
+.jds-data-table::v-deep {
+  td,
+  div {
+    @media (max-width: 1472px) {
+      font-size: 12px;
+    }
+  }
 }
 
-.icon-tab-selected rect {
-  @apply fill-[#f5f5f5];
+// class instruksi kewenangan non pemprov
+.table-instruction-authority-non-gov::v-deep {
+  @media (max-width: 1472px) {
+    td:nth-child(5),
+    td:nth-child(6) {
+      width: 130px;
+    }
+    td:nth-child(7) {
+      width: 163px;
+    }
+  }
 }
 
-.icon-tab-selected path {
-  @apply stroke-[#16a75c];
+// dialihkan ke span
+.table-diverted-to-span::v-deep {
+  @media (max-width: 1472px) {
+    td:nth-child(4),
+    td:nth-child(5) {
+      width: 130px;
+    }
+    td:nth-child(6) {
+      width: 140px;
+    }
+    td:nth-child(7) {
+      width: 100px;
+    }
+  }
 }
 
-.select-form-complaint::v-deep .jds-input-text__input-wrapper {
-  @apply !w-fit 2xl:!w-[260px];
+// instruksi kewenangan pemprov
+.table-instruction-authority-gov::v-deep {
+  @media (max-width: 1472px) {
+    td:nth-child(3) {
+      width: 204px;
+    }
+    td:nth-child(4) {
+      width: 135px;
+    }
+    td:nth-child(5) {
+      width: 150px;
+    }
+  }
 }
 
-.select-form-complaint .jds-popover__content {
-  @apply !w-fit 2xl:!w-[260px];
+// penentu kewenangan
+.table-determining-authority::v-deep {
+  @media (max-width: 1472px) {
+    td:nth-child(6) {
+      width: 170px;
+    }
+    td:nth-child(5) {
+      width: 130px;
+    }
+  }
 }
 </style>

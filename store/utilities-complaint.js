@@ -52,9 +52,17 @@ export const actions = {
   // handle data nama instansi
   async getDataDispositions({ commit }, authority) {
     try {
-      const response = await this.$axios.get(`${ENDPOINT_ADUAN}/dispositions`, {
-        params: { authority },
-      })
+      let response = ''
+      if (authority !== 'Pemerintah Kabupaten/Kota') {
+        response = await this.$axios.get(`${ENDPOINT_ADUAN}/dispositions`, {
+          params: { authority },
+        })
+      } else {
+        response = await this.$axios.get(`${ENDPOINT_ADUAN}/opds`, {
+          params: { level: 'pemprov' },
+        })
+      }
+
       commit('setListDispositions', response.data.data)
     } catch (error) {
       console.error(error)
@@ -63,8 +71,8 @@ export const actions = {
   // handle data opd pemprov penanggung jawab
   async getDataGovResponsible({ commit }) {
     try {
-      const response = await this.$axios.get(`${ENDPOINT_ADUAN}/opds`, {
-        params: { level: 'pemprov' },
+      const response = await this.$axios.get(`${ENDPOINT_ADUAN}/dispositions`, {
+        params: { authority: 'Pemerintah Kabupaten/Kota' },
       })
       commit('setListGovResponsible', response.data.data)
     } catch (error) {
