@@ -31,11 +31,12 @@
               <p class="ml-2 flex-shrink-0 text-[14px] text-blue-gray-700">
                 Filter :
               </p>
-              <jds-select
+
+              <BaseSelectSearch
                 v-model="query.complaint_category_id"
-                placeholder="Kategori Aduan"
-                :options="listCategory"
                 class="select-form-complaint !mx-2 flex-shrink-0"
+                :options="listCategory"
+                placeholder="Kategori Aduan"
                 @change="filterCategoryHandle"
               />
               <date-picker
@@ -688,16 +689,14 @@ export default {
       this.$fetch()
     },
     filterCategoryHandle(value) {
-      this.setQuery({
-        complaint_category_id: null,
-        'complaint_category_id[0]': null,
-      })
       this.query.page = 1
-      if (value) {
-        this.query['complaint_category_id[0]'] = value
-      }
+
+      this.query.complaint_category_id = value
+      this.query['complaint_category_id[0]'] = value
+
       this.$fetch()
     },
+
     filterNonGovComplaintStatusHandle(value) {
       this.query.page = 1
       if (value) {
@@ -918,7 +917,6 @@ export default {
 .select-form-complaint::v-deep {
   .jds-input-text__input-wrapper,
   .jds-popover__content {
-    width: fit-content;
     @media (min-width: 1536px) {
       width: 260px !important;
     }
