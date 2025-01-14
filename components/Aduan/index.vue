@@ -213,16 +213,15 @@
       @close="closePopupHandle()"
       @submit="submitPopupComplaintHandle"
     />
-    <DialogInputText
-      :data-dialog="dataDialog"
-      :show-popup="isShowPopupInputIdSpan"
-      @close="closePopupHandle()"
-      @submit="submitInputIdSpanHandle"
-    />
     <DialogAddComplaint
       v-if="isShowPopupAddComplaint"
       name-modal="addComplaint"
       @close="closePopupAddComplaint()"
+    />
+    <DialogAddIdSpan
+      :data-dialog="dataDialog"
+      name-modal="formAddIdSpan"
+      @submit="submitInputIdSpanHandle"
     />
     <DialogProcessComplaint
       v-if="isShowPopupProcessComplaint"
@@ -254,6 +253,7 @@ import debounce from 'lodash.debounce'
 import DialogFollowupHotlineJabar from '~/components/Aduan/Dialog/FollowupHotlineJabar'
 import DialogEvidenceFollowupHotline from '~/components/Aduan/Dialog/EvidenceFollowupHotline'
 import DialogFollowupComplaint from '~/components/Aduan/Dialog/FollowupComplaint'
+import DialogAddIdSpan from '~/components/Aduan/Dialog/AddIdSpan'
 import {
   formatDate,
   generateItemsPerPageOptions,
@@ -294,6 +294,7 @@ export default {
     DialogFollowupComplaint,
     DialogFollowupHotlineJabar,
     DialogEvidenceFollowupHotline,
+    DialogAddIdSpan,
   },
   mixins: [popupAduanMasuk],
   props: {
@@ -483,7 +484,7 @@ export default {
             'dd/MM/yyyy HH:mm'
           ),
           sp4n_created_at: item.sp4n_created_at
-            ? formatDate(item.sp4n_created_at || '', 'dd/MM/yyyy HH:mm')
+            ? formatDate(item.sp4n_created_at || '', 'dd/MM/yyyy')
             : 'Belum ada',
           complaint_source_name: item?.complaint_source?.name || '-',
           complaint_source_id: item?.complaint_source?.id,
