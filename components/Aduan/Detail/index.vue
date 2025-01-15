@@ -93,8 +93,6 @@
           />
           <AduanDetailTableEvidenceFollowup
             v-else-if="idTab === 'bukti-tindak-lanjut'"
-            :list-photo="listPhotoEvidence"
-            :list-file="listFileEvidence"
             :detail-complaint="detailComplaint"
           />
         </BaseTabPanel>

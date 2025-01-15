@@ -80,14 +80,6 @@ export default {
       type: Object,
       default: () => ({}),
     },
-    listPhoto: {
-      type: Array,
-      default: () => [],
-    },
-    listFile: {
-      type: Array,
-      default: () => [],
-    },
   },
   data() {
     return {
@@ -95,9 +87,12 @@ export default {
       downloadFile,
     }
   },
-  methods: {
-    getFile(dataUrl) {
-      return { type: dataUrl.split('.')[1], url: dataUrl }
+  computed: {
+    listPhoto() {
+      return this.detailComplaint?.evidence?.photos || []
+    },
+    listFile() {
+      return this.detailComplaint?.evidence?.files || []
     },
   },
 }
