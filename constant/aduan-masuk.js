@@ -12,11 +12,12 @@ complaintDivertedToSpanHeader.splice(
   4,
   1,
   { key: 'sp4n_created_at', text: 'Tanggal Diinput SP4N', sortable: true },
-  {
-    key: 'diverted_to_span_at',
-    text: 'Tanggal Verifikasi SP4N',
-    sortable: true,
-  },
+  // TO DO : kolomnya minta di hide dulu karena beLum bisa mendapatkan data tanggal verifikasi SP4N dari api SP4N
+  // {
+  //   key: 'diverted_to_span_at',
+  //   text: 'Tanggal Verifikasi SP4N',
+  //   sortable: true,
+  // },
   { key: 'sp4n_id', text: 'ID SP4N' }
 )
 
