@@ -145,18 +145,10 @@ export default {
       this.typeDialog = 'addIdSpan'
       this.dataComplaint = dataComplaint
       this.setDataDialog({
-        ...this.setDataDialogConfirmation(
-          'Tambahkan ID SP4N Lapor',
-          'No.Aduan',
-          dataComplaint.complaint_id,
-          'Tambahkan'
-        ),
-        labelInput: 'ID SP4N Lapor',
-        placeholder: 'Masukkan ID SP4N Lapor',
-        dataRules: 'numeric',
-        maxLength: 10,
+        description: 'No. Aduan',
+        subDescription: dataComplaint.complaint_id,
       })
-      this.isShowPopupInputIdSpan = true
+      this.$store.commit('modals/OPEN', 'formAddIdSpan')
     },
     showPopupProcessComplaintHandle(dataComplaint) {
       this.idApi = dataComplaint.id
@@ -375,7 +367,7 @@ export default {
     },
 
     submitInputIdSpanHandle(item) {
-      this.isShowPopupInputIdSpan = false
+      this.$store.commit('modals/CLOSEALL')
       let dataDialogInformation = {}
       dataDialogInformation = {
         ...this.setDataDialogInformation('ID SP4N Lapor', item.subDescription),
@@ -391,7 +383,8 @@ export default {
       this.integrationPopupHandle(
         dataDialogInformation,
         {
-          sp4n_id: item.valueText,
+          sp4n_id: item.payload.sp4n_id,
+          sp4n_created_at: item.payload.sp4n_created_at,
           complaint_number: this.dataComplaint.complaint_id,
         },
         'add-sp4n'
