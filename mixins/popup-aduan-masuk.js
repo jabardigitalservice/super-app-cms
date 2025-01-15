@@ -145,7 +145,7 @@ export default {
       this.typeDialog = 'addIdSpan'
       this.dataComplaint = dataComplaint
       this.setDataDialog({
-        description: 'No.Aduan',
+        description: 'No. Aduan',
         subDescription: dataComplaint.complaint_id,
       })
       this.$store.commit('modals/OPEN', 'formAddIdSpan')
