@@ -68,12 +68,6 @@
                 />
               </template>
             </BaseDialogFooterNew>
-            <!-- <BaseDialogFooter
-            label-button-submit="Tambahkan"
-            :is-disabled-button-submit="invalid"
-            @close="closePopupHandle()"
-            @submit="submitDialogInputTextHandle"
-          /> -->
           </form>
         </ValidationObserver>
       </BaseDialogPanel>
@@ -84,7 +78,6 @@
       @cancel="backToForm()"
     />
   </div>
-  <!-- </BaseDialog> -->
 </template>
 
 <script>
@@ -112,16 +105,6 @@ export default {
       dialogConfirmation: {},
     }
   },
-  // computed: {
-  //   fieldInputText: {
-  //     get() {
-  //       return this.$store.state['popup-complaint'].fieldInput
-  //     },
-  //     set(value) {
-  //       this.$store.commit('popup-complaint/setFieldInput', value)
-  //     },
-  //   },
-  // },
   methods: {
     disabledDate: function (date) {
       const currentDate = new Date()
