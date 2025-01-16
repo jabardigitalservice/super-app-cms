@@ -37,6 +37,7 @@
                 class="select-form-complaint !mx-2 flex-shrink-0"
                 :options="listCategory"
                 placeholder="Kategori Aduan"
+                filterable
                 @change="filterCategoryHandle"
               />
               <date-picker
@@ -183,6 +184,7 @@
             :current-page="pagination.currentPage"
             :per-page="pagination.itemsPerPage"
             :total-items="pagination.totalRows"
+            :total-pages="pagination.totalPage"
             :per-page-options="pagination.perPageOptions"
             @update:currentPage="pageChange"
             @update:perPage="perPageChange"
@@ -388,6 +390,7 @@ export default {
         currentPage: 1,
         totalRows: 10,
         itemsPerPage: 10,
+        totalPage: 1,
         itemsPerPageOptions: [],
       },
       query: {
@@ -452,6 +455,7 @@ export default {
         this.pagination.disabled = true
       }
 
+      this.pagination.totalPage = data?.total_pages || 1
       this.pagination.currentPage = data?.page || 1
       this.pagination.totalRows = data?.total_data || 0
       this.pagination.itemsPerPage = data?.page_size || this.query.limit
