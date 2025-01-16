@@ -60,25 +60,21 @@
             </div>
           </div>
 
-          <JdsDataTable
+          <BaseTable
             :headers="headerDaftarIkp"
-            :loading="$fetchState.pending"
             :items="listData"
-            :pagination="pagination"
-            @next-page="pageChange"
-            @previous-page="pageChange"
-            @page-change="pageChange"
-            @per-page-change="perPageChange"
-            @change:sort="sortChange"
+            :loading="$fetchState.pending"
+            :skeleton-row-count="pagination.itemsPerPage"
+            @sort="sortChange"
           >
             <!-- eslint-disable-next-line vue/valid-v-slot -->
-            <template #item.narrative="{ item }">
-              <p class="truncate">
+            <template #narrative="{ item }">
+              <p class="w-[300px] truncate">
                 {{ item.narrative }}
               </p>
             </template>
             <!-- eslint-disable-next-line vue/valid-v-slot -->
-            <template #item.complaint_status_id="{ item }">
+            <template #complaint_status_id="{ item }">
               <div class="flex items-center">
                 <p
                   v-show="item?.complaint_status_id"
@@ -90,7 +86,7 @@
               </div>
             </template>
             <!-- eslint-disable-next-line vue/valid-v-slot -->
-            <template #item.action="{ item }">
+            <template #action="{ item }">
               <BaseTableAction
                 :list-menu-pop-over="
                   filterTableAction(item?.complaint_status_id)
@@ -99,7 +95,17 @@
                 @app-trk="goToAppTrk()"
               />
             </template>
-          </JdsDataTable>
+          </BaseTable>
+
+          <BaseTablePagination
+            :current-page="pagination.currentPage"
+            :per-page="pagination.itemsPerPage"
+            :total-items="pagination.totalRows"
+            :total-pages="pagination.totalPage"
+            :per-page-options="pagination.perPageOptions"
+            @update:currentPage="pageChange"
+            @update:perPage="perPageChange"
+          />
         </BaseTabPanel>
       </template>
     </BaseTabGroup>
@@ -154,6 +160,7 @@ export default {
         totalRows: 5,
         itemsPerPage: 5,
         itemsPerPageOptions: [],
+        totalPage: 1,
         disabled: true,
       },
       query: {
@@ -191,6 +198,7 @@ export default {
       }
       this.pagination.currentPage = responseList.data?.meta?.current_page || 1
       this.pagination.totalRows = responseList.data?.meta?.total_count || 0
+      this.pagination.totalPage = responseList.data?.meta?.total_page || 1
       this.pagination.itemsPerPage =
         responseList.data?.meta?.per_page || this.query.limit
       this.getCount()

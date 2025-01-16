@@ -4,20 +4,16 @@
   >
     <div class="flex items-center text-sm">
       <span>Tampilkan</span>
-      <select
+
+      <BaseSelectSearch
         v-model="paginationPerPage"
-        class="mx-2 flex w-[50px] rounded border-gray-300 py-2 font-bold focus:border-emerald-500 focus:ring-emerald-500"
+        class="mx-2 flex w-[70px] rounded border-gray-300 py-2 font-bold focus:border-emerald-500 focus:ring-emerald-500"
+        width-button="70px"
+        width-option="70px"
+        :options="perPageOptions"
         @change="handlePerPageChange"
-      >
-        <option
-          v-for="size in perPageOptions"
-          :key="size"
-          :value="size"
-          class="font-bold"
-        >
-          {{ size }}
-        </option>
-      </select>
+      />
+
       <span>
         Item dari total <span class="font-bold"> {{ totalItems }}</span>
       </span>
@@ -26,15 +22,17 @@
     <div class="flex items-center space-x-4">
       <div class="flex items-center text-sm">
         <span>Halaman</span>
-        <select
+
+        <BaseSelectSearch
           v-model="paginationCurrentPage"
-          class="mx-2 w-[50px] rounded border-gray-300 py-2 font-bold focus:border-emerald-500 focus:ring-emerald-500"
+          class="!mx-2 flex-shrink-0"
+          width-button="65px"
+          width-option="120px"
+          :options="getOptionsPages"
+          filterable
           @change="handlePageChange"
-        >
-          <option v-for="page in totalPages" :key="page" :value="page">
-            {{ page }}
-          </option>
-        </select>
+        />
+
         <span>
           dari <span class="font-bold">{{ totalPages }}</span>
         </span>
@@ -44,31 +42,33 @@
         <button
           class="w-[40px] rounded border-r p-1 hover:bg-gray-100"
           :class="{
-            'cursor-not-allowed': currentPage === 1,
+            'cursor-not-allowed': paginationCurrentPage === 1,
           }"
-          :disabled="currentPage === 1"
+          :disabled="paginationCurrentPage === 1"
           @click="handlePreviousPage"
         >
           <BaseIconSvg
             icon="/icon/arrow-left.svg"
             :size="16"
             class="mt-[2px]"
-            :fill-color="currentPage === 1 ? '#BDBDBD' : '#069550'"
+            :fill-color="paginationCurrentPage === 1 ? '#BDBDBD' : '#069550'"
           />
         </button>
         <button
           class="w-[40px] rounded p-1 hover:bg-gray-100"
           :class="{
-            'cursor-not-allowed': currentPage === totalPages,
+            'cursor-not-allowed': paginationCurrentPage === totalPages,
           }"
-          :disabled="currentPage === totalPages"
+          :disabled="paginationCurrentPage === totalPages"
           @click="handleNextPage"
         >
           <BaseIconSvg
             icon="/icon/arrow-right.svg"
             :size="16"
             class="mt-[2px]"
-            :fill-color="currentPage === totalPages ? '#BDBDBD' : '#069550'"
+            :fill-color="
+              paginationCurrentPage === totalPages ? '#BDBDBD' : '#069550'
+            "
           />
         </button>
       </div>
@@ -92,9 +92,30 @@ export default {
       type: Number,
       required: true,
     },
+    totalPages: {
+      type: Number,
+      required: true,
+    },
     perPageOptions: {
       type: Array,
-      default: () => [10, 25, 50, 100],
+      default: () => [
+        {
+          value: 10,
+          label: '10',
+        },
+        {
+          value: 25,
+          label: '25',
+        },
+        {
+          value: 50,
+          label: '50',
+        },
+        {
+          value: 100,
+          label: '100',
+        },
+      ],
     },
   },
   data() {
@@ -104,8 +125,13 @@ export default {
     }
   },
   computed: {
-    totalPages() {
-      return Math.ceil(this.totalItems / this.perPage)
+    getOptionsPages() {
+      const options = []
+      for (let i = 1; i <= this.totalPages; i++) {
+        options.push({ value: i, label: `${i}` })
+      }
+
+      return options
     },
   },
   watch: {
@@ -117,22 +143,24 @@ export default {
     },
   },
   methods: {
-    handlePageChange() {
+    handlePageChange(value) {
+      this.paginationCurrentPage = value
       this.$emit('update:currentPage', this.paginationCurrentPage)
     },
-    handlePerPageChange() {
+    handlePerPageChange(value) {
+      this.paginationPerPage = value
       this.$emit('update:perPage', this.paginationPerPage)
     },
     handlePreviousPage() {
       if (this.paginationCurrentPage > 1) {
-        this.paginationCurrentPage--
-        this.handlePageChange()
+        const newPage = this.paginationCurrentPage - 1
+        this.handlePageChange(newPage)
       }
     },
     handleNextPage() {
       if (this.paginationCurrentPage < this.totalPages) {
-        this.paginationCurrentPage++
-        this.handlePageChange()
+        const newPage = this.paginationCurrentPage + 1
+        this.handlePageChange(newPage)
       }
     },
   },

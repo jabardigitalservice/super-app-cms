@@ -1,7 +1,9 @@
 <template>
-  <div class="relative min-w-[260px]">
+  <div class="relative inline-block text-left">
     <button
-      class="w-full rounded-md border border-gray-500 bg-white px-3 py-1 text-left focus:border-[#FEC802] focus:outline-none focus:ring-1 focus:ring-[#039550]"
+      ref="dropdownButton"
+      :style="{ width: widthButton }"
+      class="rounded-md border border-gray-500 bg-white px-3 py-1 text-left focus:border-[#FEC802] focus:outline-none focus:ring-1 focus:ring-[#039550]"
       @click="toggleDropdown"
     >
       <span v-if="selectedOption">
@@ -26,9 +28,11 @@
 
     <div
       v-if="isOpen"
-      class="absolute z-10 mt-1 w-full rounded-md bg-white shadow-lg"
+      ref="dropdownOpen"
+      class="fixed z-50 rounded-md border bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+      :style="dropdownStyles"
     >
-      <div class="relative w-full px-3 py-2">
+      <div v-if="filterable" class="relative w-full px-3 py-2">
         <div class="absolute inset-y-0 left-0 ml-2 flex items-center pl-3">
           <BaseIconSvg
             icon="/icon/search.svg"
@@ -38,8 +42,8 @@
         </div>
         <input
           v-model="searchQuery"
-          class="w-full rounded-md border border-gray-300 px-3 py-2 pl-8 text-sm text-gray-900 placeholder-gray-500 focus:border-[#FEC802] focus:outline-none focus:ring-1 focus:ring-[#039550]"
-          placeholder="Cari data..."
+          class="w-full rounded-lg border border-gray-300 px-3 py-2 pl-8 text-sm text-gray-900 placeholder-gray-500 focus:border-[#FEC802] focus:outline-none focus:ring-1 focus:ring-[#039550]"
+          placeholder=""
           @input="filterOptions"
         />
       </div>
@@ -76,12 +80,24 @@ export default {
       required: true,
     },
     value: {
-      type: String,
+      type: [String, Number],
       default: '',
     },
     placeholder: {
       type: String,
       default: '',
+    },
+    filterable: {
+      type: Boolean,
+      default: false,
+    },
+    widthButton: {
+      type: String,
+      default: '260px',
+    },
+    widthOption: {
+      type: String,
+      default: '260px',
     },
   },
   data() {
@@ -89,11 +105,14 @@ export default {
       isOpen: false,
       searchQuery: '',
       filteredOptions: [],
+      dropdownStyles: {},
     }
   },
   computed: {
     selectedOption() {
-      return this.options.find((option) => option.value === this.value)
+      return this.options.find(
+        (option) => String(option.value) === String(this.value)
+      )
     },
   },
   watch: {
@@ -105,14 +124,21 @@ export default {
     },
   },
   mounted() {
+    window.addEventListener('scroll', this.handleScroll, true)
     document.addEventListener('click', this.handleClickOutside)
   },
   beforeDestroy() {
     document.removeEventListener('click', this.handleClickOutside)
+    window.removeEventListener('scroll', this.handleScroll, true)
   },
   methods: {
     toggleDropdown() {
       this.isOpen = !this.isOpen
+      if (this.isOpen) {
+        this.$nextTick(() => {
+          this.calculateDropdownPosition()
+        })
+      }
     },
     selectOption(option) {
       this.$emit('change', option.value)
@@ -127,6 +153,40 @@ export default {
     handleClickOutside(event) {
       if (!this.$el.contains(event.target)) {
         this.isOpen = false
+      }
+    },
+    calculateDropdownPosition() {
+      const button = this.$refs.dropdownButton.getBoundingClientRect()
+      const viewportHeight = window.innerHeight
+
+      const maxDropdownHeight = Math.min(viewportHeight * 0.4, 300)
+      const dropdownHeight = Math.min(
+        maxDropdownHeight,
+        this.filteredOptions.length * 40
+      )
+
+      const minDropdownHeight = 120
+      const finalDropdownHeight = Math.max(dropdownHeight, minDropdownHeight)
+
+      let top = button.bottom
+      const left = button.left
+
+      if (button.bottom + finalDropdownHeight > viewportHeight) {
+        top = button.top - finalDropdownHeight
+      }
+
+      this.dropdownStyles = {
+        width: this.widthOption,
+        position: 'fixed',
+        top: `${top}px`,
+        left: `${left}px`,
+        maxHeight: `${finalDropdownHeight}px`,
+        overflow: 'auto',
+      }
+    },
+    handleScroll() {
+      if (this.isOpen) {
+        this.calculateDropdownPosition()
       }
     },
   },
