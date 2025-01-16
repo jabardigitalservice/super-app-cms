@@ -9,3 +9,4 @@
 title:
 project: Sapawarga
 participants:
+screenshot:
