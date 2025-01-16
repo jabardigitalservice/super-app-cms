@@ -44,18 +44,16 @@
               @click="showPopupFormAccount(modalNameAddAccount)"
             />
           </div>
-          <JdsDataTable
+
+          <BaseTable
             :headers="managementAccountComplaintHeader"
             :items="listData"
-            :pagination="pagination"
-            @next-page="pageChange"
-            @previous-page="pageChange"
-            @page-change="pageChange"
-            @per-page-change="perPageChange"
-            @change:sort="sortChange"
+            :loading="$fetchState.pending"
+            :skeleton-row-count="pagination.itemsPerPage"
+            @sort="sortChange"
           >
             <!-- eslint-disable-next-line vue/valid-v-slot -->
-            <template #item.status_name="{ item }">
+            <template #status_name="{ item }">
               <div class="flex items-center">
                 <p
                   v-show="item?.status_id"
@@ -67,7 +65,7 @@
               </div>
             </template>
             <!-- eslint-disable-next-line vue/valid-v-slot -->
-            <template #item.action="{ item }">
+            <template #action="{ item }">
               <BaseTableAction
                 :list-menu-pop-over="filterTableAction(item?.status_id)"
                 @detail-account="goToPageDetail(item.id)"
@@ -81,7 +79,17 @@
                 @resend-email="showPopupFormAccount(modalNameResendEmail, item)"
               />
             </template>
-          </JdsDataTable>
+          </BaseTable>
+
+          <BaseTablePagination
+            :current-page="pagination.currentPage"
+            :per-page="pagination.itemsPerPage"
+            :total-items="pagination.totalRows"
+            :total-pages="pagination.totalPage"
+            :per-page-options="pagination.perPageOptions"
+            @update:currentPage="pageChange"
+            @update:perPage="perPageChange"
+          />
         </BaseTabPanel>
       </template>
     </BaseTabGroup>
@@ -166,6 +174,7 @@ export default {
         totalRows: 5,
         itemsPerPage: 5,
         itemsPerPageOptions: [],
+        totalPage: 1,
         disabled: true,
       },
       query: {
@@ -200,11 +209,13 @@ export default {
         }
       )
       this.listDataManagementAccount = responseDataManagementAccount.data?.data
+
       this.pagination = {
         currentPage: responseDataManagementAccount.data.meta?.current_page || 1,
         totalRows: responseDataManagementAccount.data.meta?.total_count || 0,
         itemsPerPage:
           responseDataManagementAccount.data.meta?.per_page || this.query.limit,
+        totalPage: responseDataManagementAccount.data.meta?.total_page || 1,
       }
 
       // get data role
