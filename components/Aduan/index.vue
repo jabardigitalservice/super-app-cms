@@ -67,7 +67,7 @@
                   />
                 </template>
               </date-picker>
-              <jds-select
+              <!-- <jds-select
                 v-if="
                   typeAduanPage.props ===
                   typeAduan.instruksiKewenanganNonPemprov.props
@@ -77,7 +77,7 @@
                 :options="listNonGovComplaintStatus"
                 class="select-form-complaint ml-2 flex-shrink-0"
                 @change="filterNonGovComplaintStatusHandle"
-              />
+              /> -->
             </div>
 
             <jds-button
@@ -251,10 +251,10 @@
 <script>
 import debounce from 'lodash.debounce'
 import 'vue2-datepicker/index.css'
+import DialogAddComplaint from '~/components/Aduan/Dialog/AddComplaint'
+import DialogAddIdSpan from '~/components/Aduan/Dialog/AddIdSpan'
 import DialogEvidenceFollowupHotline from '~/components/Aduan/Dialog/EvidenceFollowupHotline'
 import DialogFollowupComplaint from '~/components/Aduan/Dialog/FollowupComplaint'
-import DialogAddIdSpan from '~/components/Aduan/Dialog/AddIdSpan'
-import DialogAddComplaint from '~/components/Aduan/Dialog/AddComplaint'
 import DialogFollowupHotlineJabar from '~/components/Aduan/Dialog/FollowupHotlineJabar'
 import DialogProcessComplaint from '~/components/Aduan/Dialog/ProcessComplaint'
 import TabBarList from '~/components/Aduan/TabBar/List'
@@ -766,18 +766,17 @@ export default {
       return total
     },
     addComplaintStatusFilterHandle() {
-      if (
-        this.typeAduanPage.props !==
-        typeAduan.instruksiKewenanganNonPemprov.props
-      ) {
-        const listValueStatusComplaint =
-          this.getStatusComplaintByComplaintType()
-        for (let i = 0; i < listValueStatusComplaint.length; i++) {
-          this.setQuery({
-            [`complaint_status_id[${i}]`]: listValueStatusComplaint[i].id,
-          })
-        }
+      // if (
+      //   this.typeAduanPage.props !==
+      //   typeAduan.instruksiKewenanganNonPemprov.props
+      // ) {
+      const listValueStatusComplaint = this.getStatusComplaintByComplaintType()
+      for (let i = 0; i < listValueStatusComplaint.length; i++) {
+        this.setQuery({
+          [`complaint_status_id[${i}]`]: listValueStatusComplaint[i].id,
+        })
       }
+      // }
 
       return this.query
     },
@@ -864,9 +863,7 @@ export default {
 
       this.deletePropertiesWithPrefix(queryCount, 'complaint_status_id[')
       if (
-        this.typeAduan.aduanDariSpanLapor.props === this.typeAduanPage.props ||
-        typeAduan.instruksiKewenanganNonPemprov.props ===
-          this.typeAduanPage.props
+        this.typeAduan.aduanDariSpanLapor.props === this.typeAduanPage.props
       ) {
         complaintStatus.total.value = this.pagination.totalRows
       } else {
