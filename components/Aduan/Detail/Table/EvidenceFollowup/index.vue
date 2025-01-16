@@ -6,11 +6,11 @@
     <BaseTableDetail header="Keterangan" class="mb-4">
       <tr>
         <td width="460px">Keterangan Tindaklanjut</td>
-        <td>{{ detailComplaint?.evidence?.description || '-' }}</td>
+        <td>{{ evidence.description || '-' }}</td>
       </tr>
     </BaseTableDetail>
     <BaseTableDetail
-      v-if="detailComplaint?.evidence"
+      v-if="listPhoto.length > 0 || listFile.length > 0"
       header="Bukti Foto dan Dokumen"
     >
       <tr v-if="listPhoto.length > 0" class="table-file-image-title">
@@ -76,17 +76,9 @@ export default {
       type: String,
       default: '',
     },
-    detailComplaint: {
+    evidence: {
       type: Object,
       default: () => ({}),
-    },
-    listPhoto: {
-      type: Array,
-      default: () => [],
-    },
-    listFile: {
-      type: Array,
-      default: () => [],
     },
   },
   data() {
@@ -95,9 +87,12 @@ export default {
       downloadFile,
     }
   },
-  methods: {
-    getFile(dataUrl) {
-      return { type: dataUrl.split('.')[1], url: dataUrl }
+  computed: {
+    listPhoto() {
+      return this.evidence?.photos || []
+    },
+    listFile() {
+      return this.evidence?.files || []
     },
   },
 }

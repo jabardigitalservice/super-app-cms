@@ -92,10 +92,10 @@
             @select-tab="selectedTab"
           />
           <AduanDetailTableEvidenceFollowup
-            v-else-if="idTab === 'bukti-tindak-lanjut'"
-            :list-photo="listPhotoEvidence"
-            :list-file="listFileEvidence"
-            :detail-complaint="detailComplaint"
+            v-else-if="
+              idTab === 'bukti-tindak-lanjut' && detailComplaint?.evidence
+            "
+            :evidence="detailComplaint?.evidence"
           />
         </BaseTabPanel>
       </template>
