@@ -12,7 +12,7 @@ complaintDivertedToSpanHeader.splice(
   4,
   1,
   { key: 'sp4n_created_at', text: 'Tanggal Diinput SP4N', sortable: true },
-  // TO DO : kolomnya minta di hide dulu karena beLum bisa mendapatkan data tanggal verifikasi SP4N dari api SP4N
+  // TO DO :The column is requested to be hidden first because we cannot get the SP4N verification date data from the SP4N api
   // {
   //   key: 'diverted_to_span_at',
   //   text: 'Tanggal Verifikasi SP4N',
