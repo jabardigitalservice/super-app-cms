@@ -78,28 +78,6 @@
               </p>
             </div>
           </div>
-          <!-- Show no data found when user searching data IKP -->
-          <div
-            v-else-if="listIkp.length === 0 && search.length > 0 && !isFollowup"
-            class="mb-6 flex flex-col items-center rounded-lg bg-gray-50 py-[10px] text-gray-900"
-          >
-            <div
-              class="mb-1 flex h-20 w-20 items-center justify-center rounded-full bg-white"
-            >
-              <img
-                src="~/assets/icon/data-not-found.svg"
-                alt="data-not-found"
-                width="80"
-                height="80"
-              />
-            </div>
-            <h1 class="text-sm font-bold">
-              Tidak dapat menemukan Instruksi Aduan
-            </h1>
-            <p class="text-sm">
-              Cobalah menggunakan id atau narasi yang berbeda.
-            </p>
-          </div>
 
           <!-- data IKP -->
           <div
@@ -172,6 +150,32 @@
               </tfoot>
             </jds-simple-table>
           </div>
+
+          <!-- Show no data found when user searching data IKP -->
+          <div
+            v-else-if="
+              (listIkp.length === 0 || search.length > 0) && !isFollowup
+            "
+            class="mb-6 flex flex-col items-center rounded-lg bg-gray-50 py-[10px] text-gray-900"
+          >
+            <div
+              class="mb-1 flex h-20 w-20 items-center justify-center rounded-full bg-white"
+            >
+              <img
+                src="~/assets/icon/data-not-found.svg"
+                alt="data-not-found"
+                width="80"
+                height="80"
+              />
+            </div>
+            <h1 class="text-sm font-bold">
+              Tidak dapat menemukan Instruksi Aduan
+            </h1>
+            <p class="text-sm">
+              Cobalah menggunakan id atau narasi yang berbeda.
+            </p>
+          </div>
+
           <!-- show list followup process when choose IKP want to followup -->
           <ListFollowupProcess
             v-if="isFollowup"
@@ -227,11 +231,11 @@
 import debounce from 'lodash.debounce'
 import { mapGetters } from 'vuex'
 import AlertInformation from '~/components/Aduan/Alert/Information'
-import ListFollowupProcess from '~/components/Aduan/Dialog/FollowupComplaint/ListFollowupProcess'
-import DialogIkpNarrative from '~/components/Aduan/Dialog/IkpNarrative'
 import DialogCreateIkp from '~/components/Aduan/Dialog/CreateIkp'
+import ListFollowupProcess from '~/components/Aduan/Dialog/FollowupComplaint/ListFollowupProcess'
 import Pagination from '~/components/Aduan/Dialog/FollowupComplaint/Pagination'
-import { typeAduan, complaintStatus } from '~/constant/aduan-masuk'
+import DialogIkpNarrative from '~/components/Aduan/Dialog/IkpNarrative'
+import { complaintStatus, typeAduan } from '~/constant/aduan-masuk'
 import { ENDPOINT_IKP } from '~/constant/endpoint-api'
 import { formatDate } from '~/utils'
 
