@@ -57,6 +57,39 @@ export default {
           dataCyFormat: 'dialog__confirmation-verification',
         },
       },
+      dialogDataPopupComplaintHandle: {
+        verificationComplaint: {
+          title: 'Verifikasi Aduan',
+          description: '',
+          successMessage: 'Aduan berhasil diverifikasi',
+          successButtonText:
+            'dialog__information-success-from-verification__button--close',
+          failedMessage: 'Aduan gagal diverifikasi',
+          statusId: 'verified',
+          pathApi: 'change-status',
+        },
+        failedComplaint: {
+          title: 'Aduan Gagal Diverifikasi',
+          description: '',
+          successMessage:
+            'Konfirmasi Aduan Gagal Diverifikasi berhasil dilakukan',
+          successButtonText:
+            'dialog__information-success-from-failed-verification__button--close',
+          failedMessage: 'Konfirmasi Aduan Gagal Diverifikasi gagal dilakukan',
+          statusId: 'failed',
+          pathApi: 'change-status',
+        },
+        redirectHotlineComplaint: {
+          title: 'Aduan Dialihkan ke Hotline Jabar',
+          description: '',
+          successMessage: 'Aduan berhasil dialihkan ke Hotline Jabar',
+          successButtonText:
+            'dialog__information-success-from-diverted-to-hotline-jabar__button--close',
+          failedMessage: 'Aduan gagal dialihkan ke Hotline Jabar',
+          statusId: '',
+          pathApi: 'redirected-to-hotline-jabar',
+        },
+      },
     }
   },
   computed: {
@@ -131,7 +164,6 @@ export default {
     },
     showPopupConfirmationRedirectHotline(dataComplaint) {
       this.idApi = dataComplaint.id
-      // this.typeDialog = 'redirectHotlineComplaint'
       this.typeDialog = this.listDialogConfirmation.redirectHotlineComplaint.id
 
       this.setDataDialog({
@@ -287,90 +319,51 @@ export default {
       })
       this.$store.commit('followup-complaint/setIsShowPopup', true)
     },
+
     submitPopupComplaintHandle(item) {
       let dataDialogInformation = {}
       let paramRequest = { complaint_status_note: item?.note }
       let pathApi = 'change-status'
+
+      const createDialogData = (dialogType) => {
+        const dialog = this.dialogDataPopupComplaintHandle[dialogType]
+        return {
+          ...this.setDataDialogInformation(dialog.title, item.subDescription),
+          success: {
+            ...this.setSucessFailedInformationHandle(
+              dialog.successMessage,
+              true
+            ),
+            dataCy: { footer: { buttonSubmit: dialog.successButtonText } },
+          },
+          failed: this.setSucessFailedInformationHandle(
+            dialog.failedMessage,
+            false
+          ),
+        }
+      }
+
       switch (this.typeDialog) {
         case 'verificationComplaint':
-          this.isShowPopupConfirmationVerification = false
-          dataDialogInformation = {
-            ...this.setDataDialogInformation(
-              'Verifikasi Aduan',
-              item.subDescription
-            ),
-            success: {
-              ...this.setSucessFailedInformationHandle(
-                'Aduan berhasil diverifikasi',
-                true
-              ),
-              dataCy: {
-                footer: {
-                  buttonSubmit:
-                    'dialog__information-success-from-verification__button--close',
-                },
-              },
-            },
-            failed: this.setSucessFailedInformationHandle(
-              'Aduan gagal diverifikasi',
-              false
-            ),
-          }
-          paramRequest.complaint_status_id = 'verified'
+          dataDialogInformation = createDialogData('verificationComplaint')
+          paramRequest.complaint_status_id =
+            this.dialogDataPopupComplaintHandle.verificationComplaint.statusId
           break
         case 'failedComplaint':
           this.$store.commit('modals/CLOSEALL')
-          dataDialogInformation = {
-            ...this.setDataDialogInformation(
-              'Aduan Gagal Diverifikasi',
-              item.subDescription
-            ),
-            success: {
-              ...this.setSucessFailedInformationHandle(
-                'Konfirmasi Aduan Gagal Diverifikasi berhasil dilakukan',
-                true
-              ),
-              dataCy: {
-                footer: {
-                  buttonSubmit:
-                    'dialog__information-success-from-failed-verification__button--close',
-                },
-              },
-            },
-            failed: this.setSucessFailedInformationHandle(
-              'Konfirmasi Aduan Gagal Diverifikasi gagal dilakukan',
-              false
-            ),
-          }
-          paramRequest.complaint_status_id = 'failed'
+          dataDialogInformation = createDialogData('failedComplaint')
+          paramRequest.complaint_status_id =
+            this.dialogDataPopupComplaintHandle.failedComplaint.statusId
           break
         case 'redirectHotlineComplaint':
           this.$store.commit('modals/CLOSEALL')
-          dataDialogInformation = {
-            ...this.setDataDialogInformation(
-              'Aduan Dialihkan ke Hotline Jabar',
-              item.subDescription
-            ),
-            success: {
-              ...this.setSucessFailedInformationHandle(
-                'Aduan berhasil dialihkan ke Hotline Jabar',
-                true
-              ),
-              dataCy: {
-                footer: {
-                  buttonSubmit:
-                    'dialog__information-success-from-diverted-to-hotline-jabar__button--close',
-                },
-              },
-            },
-            failed: this.setSucessFailedInformationHandle(
-              'Aduan gagal dialihkan ke Hotline Jabar',
-              false
-            ),
-          }
+          dataDialogInformation = createDialogData('redirectHotlineComplaint')
           paramRequest = { directed_to_hotline_jabar_note: item?.note }
-          pathApi = 'redirected-to-hotline-jabar'
+          pathApi =
+            this.dialogDataPopupComplaintHandle.redirectHotlineComplaint.pathApi
+          break
       }
+
       this.integrationPopupHandle(dataDialogInformation, paramRequest, pathApi)
     },
 
@@ -435,7 +428,6 @@ export default {
         'determine-authority'
       )
     },
-
     submitFollowupComplaint(payload) {
       this.$store.commit('modals/CLOSEALL')
       let dataDialogInformation = {}
