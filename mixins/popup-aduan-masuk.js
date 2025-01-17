@@ -431,29 +431,25 @@ export default {
     submitFollowupComplaint(payload) {
       this.$store.commit('modals/CLOSEALL')
       let dataDialogInformation = {}
-      const dialogDescriptionSucceess =
-        this.typeDialog === 'createInstruction'
-          ? 'Instruksi Anda berhasil dibuat'
-          : 'Tindaklanjuti aduan Anda berhasil diproses'
 
-      const dialogDescriptionFailed =
-        this.typeDialog === 'createInstruction'
-          ? 'Instruksi Anda gagal dibuat'
-          : 'Tindaklanjuti aduan Anda gagal diproses'
+      let successMessage = ''
+      let failedMessage = ''
+
+      if (this.typeDialog === 'createInstruction') {
+        successMessage = 'Instruksi Anda berhasil dibuat'
+        failedMessage = 'Instruksi Anda gagal dibuat'
+      } else {
+        successMessage = 'Tindaklanjuti aduan Anda berhasil diproses'
+        failedMessage = 'Tindaklanjuti aduan Anda gagal diproses'
+      }
 
       dataDialogInformation = {
         ...this.setDataDialogInformation(
           this.dataDialog.title,
           payload.ikp_code
         ),
-        success: this.setSucessFailedInformationHandle(
-          dialogDescriptionSucceess,
-          true
-        ),
-        failed: this.setSucessFailedInformationHandle(
-          dialogDescriptionFailed,
-          false
-        ),
+        success: this.setSucessFailedInformationHandle(successMessage, true),
+        failed: this.setSucessFailedInformationHandle(failedMessage, false),
       }
       this.integrationPopupHandle(dataDialogInformation, payload, 'follow-up')
     },
