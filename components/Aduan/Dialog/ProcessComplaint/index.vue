@@ -660,12 +660,4 @@ export default {
 .form-process-complaint .form-select-search {
   @apply !w-[462px];
 }
-
-.form-process-complaint .form-select-search span {
-  @apply text-sm !text-gray-600;
-}
-
-.form-process-complaint .form-select-search--error button {
-  @apply rounded-lg border border-red-600;
-}
 </style>
