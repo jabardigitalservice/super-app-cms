@@ -36,6 +36,20 @@ export default {
       typeDialog: '',
       idApi: '',
       complaintStatus,
+      dialogConfig: {
+        failedComplaint: {
+          title: 'Konfirmasi Gagal Diverifikasi',
+          labelTextArea: 'Catatan Aduan Gagal Diverifikasi',
+          placeholder: 'Detail Aduan tidak lengkap : contoh (foto tidak jelas)',
+          dataCyFormat: 'dialog__confirmation-failed-verification',
+        },
+        redirectHotlineComplaint: {
+          title: 'Konfirmasi Dialihkan ke Hotline Jabar',
+          labelTextArea: 'Alasan dialihkan ke Hotline Jabar',
+          placeholder: 'Contoh: Aduan terkait kegawat daruratan',
+          dataCyFormat: 'dialog__confirmation-diverted-to-hotline-jabar',
+        },
+      },
     }
   },
   computed: {
@@ -85,43 +99,26 @@ export default {
     showPopupConfirmationComplaint(dataComplaint, typeDialog) {
       this.idApi = dataComplaint.id
       this.dataComplaint = dataComplaint
-      let dataCyFormat = ''
-      if (typeDialog === 'failedComplaint') {
-        dataCyFormat = 'dialog__confirmation-failed-verification'
-        this.typeDialog = 'failedComplaint'
-        this.setDataDialog({
-          ...this.setDataDialogConfirmation(
-            'Konfirmasi Gagal Diverifikasi',
-            'No.Aduan',
-            dataComplaint.complaint_id,
-            'Konfirmasi'
-          ),
-          labelTextArea: 'Catatan Aduan Gagal Diverifikasi',
-          placeholder: 'Detail Aduan tidak lengkap : contoh (foto tidak jelas)',
-        })
-        this.dataDialog.dataCy = {
-          fieldTextArea: `${dataCyFormat}__text-area`,
-          buttonSubmit: `${dataCyFormat}__button--confirmation`,
-        }
+      this.typeDialog = typeDialog
+
+      const config = this.dialogConfig[typeDialog]
+
+      this.setDataDialog({
+        ...this.setDataDialogConfirmation(
+          config.title,
+          'No.Aduan',
+          dataComplaint.complaint_id,
+          'Konfirmasi'
+        ),
+        labelTextArea: config.labelTextArea,
+        placeholder: config.placeholder,
+      })
+
+      this.dataDialog.dataCy = {
+        fieldTextArea: `${config.dataCyFormat}__text-area`,
+        buttonSubmit: `${config.dataCyFormat}__button--confirmation`,
       }
-      if (typeDialog === 'redirectHotlineComplaint') {
-        dataCyFormat = 'dialog__confirmation-diverted-to-hotline-jabar'
-        this.typeDialog = 'redirectHotlineComplaint'
-        this.setDataDialog({
-          ...this.setDataDialogConfirmation(
-            'Konfirmasi Dialihkan ke Hotline Jabar',
-            'No.Aduan',
-            dataComplaint.complaint_id,
-            'Konfirmasi'
-          ),
-          labelTextArea: 'Alasan dialihkan ke Hotline Jabar',
-          placeholder: 'Contoh: Aduan terkait kegawat daruratan',
-        })
-        this.dataDialog.dataCy = {
-          fieldTextArea: `${dataCyFormat}__text-area`,
-          buttonSubmit: `${dataCyFormat}__button--confirmation`,
-        }
-      }
+
       this.dataDialog.name = this.typeDialog
       this.$store.commit('modals/OPEN', this.typeDialog)
     },
@@ -489,52 +486,62 @@ export default {
       this.dataDialog.title = paramDialog.title
       this.dataDialog.subDescription = paramDialog.subDescription
       this.isLoading = true
-      const complaintType =
-        this.$store.state['followup-complaint'].complaintType
-      const endpointApi =
-        complaintType === typeAduan.instruksiKewenanganNonPemprov.props
-          ? ENDPOINT_ADUAN_NON_PEMPROV
-          : ENDPOINT_ADUAN
-      const urlApi = `${endpointApi}/${this.idApi}/${pathApi}`
+
+      const urlApi = this.getApiEndpoint(pathApi)
 
       try {
         await this.$axios.patch(urlApi, {
           ...paramsInputRequest,
           user_id: this.$auth?.user?.identifier,
         })
-        this.setDataDialog({ ...paramDialog.success })
-        this.setIconPopup({ name: 'check-mark-circle', fill: '#069550' })
-        this.$store.commit('followup-complaint/setIsCreateIkp', false)
-        this.$store.commit('create-ikp/setPayload', {
-          description: '',
-          indicator_value: '',
-          indicator_unit: '',
-        })
-      } catch (error) {
-        const { code, errors } = error.response.data
-        this.setDataDialog({ ...paramDialog.failed })
-        if (code === '4221400') {
-          if (errors?.instruction) {
-            this.setDataDialog({
-              ...paramDialog.failed,
-              description: errors?.instruction || '',
-            })
-          }
-          if (errors?.sp4n_id) {
-            this.setDataDialog({
-              ...paramDialog.failed,
-              description: errors?.sp4n_id,
-              subDescription: '',
-            })
-          }
-        }
 
-        this.setIconPopup({ name: 'times-circle', fill: '#EF5350' })
+        this.handleSuccessResponse(paramDialog)
+      } catch (error) {
+        this.handleErrorResponse(error, paramDialog)
       } finally {
         this.isLoading = false
       }
       this.isShowPopupInformation = true
       this.$store.commit('followup-complaint/setComplaintType', '')
+    },
+    getApiEndpoint(pathApi) {
+      const complaintType =
+        this.$store.state['followup-complaint'].complaintType
+      const endpointApi =
+        complaintType === typeAduan.instruksiKewenanganNonPemprov.props
+          ? ENDPOINT_ADUAN_NON_PEMPROV
+          : ENDPOINT_ADUAN
+      return `${endpointApi}/${this.idApi}/${pathApi}`
+    },
+    handleSuccessResponse(paramDialog) {
+      this.setDataDialog({ ...paramDialog.success })
+      this.setIconPopup({ name: 'check-mark-circle', fill: '#069550' })
+      this.$store.commit('followup-complaint/setIsCreateIkp', false)
+      this.$store.commit('create-ikp/setPayload', {
+        description: '',
+        indicator_value: '',
+        indicator_unit: '',
+      })
+    },
+    handleErrorResponse(error, paramDialog) {
+      const { code, errors } = error.response.data
+      this.setDataDialog({ ...paramDialog.failed })
+      if (code === '4221400') {
+        if (errors?.instruction) {
+          this.setDataDialog({
+            ...paramDialog.failed,
+            description: errors?.instruction || '',
+          })
+        }
+        if (errors?.sp4n_id) {
+          this.setDataDialog({
+            ...paramDialog.failed,
+            description: errors?.sp4n_id,
+            subDescription: '',
+          })
+        }
+      }
+      this.setIconPopup({ name: 'times-circle', fill: '#EF5350' })
     },
     submitRetryHandle() {
       this.isShowPopupInformation = false
