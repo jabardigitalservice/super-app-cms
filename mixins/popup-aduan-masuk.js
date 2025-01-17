@@ -60,7 +60,6 @@ export default {
       dialogDataPopupComplaintHandle: {
         verificationComplaint: {
           title: 'Verifikasi Aduan',
-          description: '',
           successMessage: 'Aduan berhasil diverifikasi',
           successButtonText:
             'dialog__information-success-from-verification__button--close',
@@ -70,7 +69,6 @@ export default {
         },
         failedComplaint: {
           title: 'Aduan Gagal Diverifikasi',
-          description: '',
           successMessage:
             'Konfirmasi Aduan Gagal Diverifikasi berhasil dilakukan',
           successButtonText:
@@ -81,7 +79,6 @@ export default {
         },
         redirectHotlineComplaint: {
           title: 'Aduan Dialihkan ke Hotline Jabar',
-          description: '',
           successMessage: 'Aduan berhasil dialihkan ke Hotline Jabar',
           successButtonText:
             'dialog__information-success-from-diverted-to-hotline-jabar__button--close',
