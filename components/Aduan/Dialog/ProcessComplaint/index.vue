@@ -4,7 +4,8 @@
       <BaseDialogPanel class="max-h-[720px] w-[510px] sm:h-[calc(100vh-50px)]">
         <BaseDialogHeader :title="dataDialog.title" />
         <ValidationObserver ref="form">
-          <form
+          <!-- START FORM -->
+          <div
             class="form-process-complaint max-h-[600px] w-full overflow-auto px-6 sm:h-[calc(100vh-170px)]"
           >
             <h1 class="font-roboto text-base font-bold">Informasi Aduan</h1>
@@ -105,18 +106,21 @@
                 class="mb-5"
                 tag="div"
               >
-                <jds-select
-                  id="opd-name"
+                <label class="mt-5 mb-1 text-[15px] text-gray-800"
+                  >Nama Instansi</label
+                >
+                <BaseSelectSearch
                   v-model="payload.opd_id"
                   name="Nama Instansi"
-                  label="Nama Instansi"
-                  placeholder="Pilih Nama Instansi"
-                  :error-message="errors[0]"
                   :options="listDisposition"
-                  :class="{ 'mb-2': errors.length > 0 }"
-                  class="!w-full"
-                  @change="changeSelectValue(payload.opd_id, 'opd_id')"
+                  placeholder="Pilih Nama Instansi"
+                  class="form-select-search"
+                  :class="{
+                    'form-select-search--error mb-2': errors.length > 0,
+                  }"
+                  @change="(val) => changeSelectValue(val, 'opd_id')"
                 />
+                <small class="text-red-600">{{ errors[0] }}</small>
               </ValidationProvider>
               <ValidationProvider
                 v-if="isShowFieldOPDPemprov"
@@ -126,21 +130,25 @@
                 class="mb-5"
                 tag="div"
               >
-                <jds-select
-                  id="local-gov-responsible"
+                <label class="mt-5 mb-1 text-[15px] text-gray-800"
+                  >Pemda Penanggungjawab</label
+                >
+                <p class="text-[13px] text-gray-700">
+                  Kota/kabupaten penanggungjawab yang bertugas untuk
+                  menindaklanjuti aduan
+                </p>
+                <BaseSelectSearch
                   v-model="payload.opd_pemprov_id"
                   name="Pemda Penanggungjawab"
-                  label="Pemda Penanggungjawab"
-                  placeholder="Pemda Penanggungjawab"
-                  helper-text="Kota/kabupaten penanggungjawab yang bertugas untuk menindaklanjuti aduan"
-                  :error-message="errors[0]"
-                  :class="{ 'mb-2': errors.length > 0 }"
-                  class="!w-full"
                   :options="listGovResponsible"
-                  @change="
-                    changeSelectValue(payload.opd_pemprov_id, 'opd_pemprov_id')
-                  "
+                  placeholder="Pilih Pemda Penanggungjawab"
+                  class="form-select-search"
+                  :class="{
+                    'form-select-search--error mb-2': errors.length > 0,
+                  }"
+                  @change="(val) => changeSelectValue(val, 'opd_pemprov_id')"
                 />
+                <small class="text-red-600">{{ errors[0] }}</small>
               </ValidationProvider>
               <ValidationProvider
                 v-if="isShowFieldProposeIkpNarrative"
@@ -254,15 +262,27 @@
                 Tersisa {{ 255 - payload.status_description.length }} karakter
               </p>
             </ValidationProvider>
-          </form>
+          </div>
+          <!-- END FORM -->
+          <BaseDialogFooterNew @cancel="closePopupProcessComplaint()">
+            <template #button-right>
+              <jds-button
+                :label="dataDialog.labelButtonSubmit"
+                type="button"
+                variant="primary"
+                class="!text-[14px] !font-bold"
+                @click.prevent="showDialogConfirmation()"
+              />
+            </template>
+          </BaseDialogFooterNew>
         </ValidationObserver>
-        <BaseDialogFooter
+        <!-- <BaseDialogFooterNew
           :data-cy="dataDialog.dataCy.footer"
           :show-cancel-button="true"
           :label-button-submit="dataDialog.labelButtonSubmit"
           @close="closePopupProcessComplaint()"
           @submit="showDialogConfirmation()"
-        />
+        /> -->
       </BaseDialogPanel>
     </BaseDialogFrame>
     <DialogConfirmationBasic
@@ -381,6 +401,7 @@ export default {
   },
   mounted() {
     this.$store.dispatch('utilities-complaint/getDataAuthorities')
+    // condition field select on form change authority
     if (this.payload.opd_id) {
       this.$store.dispatch(
         'utilities-complaint/getDataDispositions',
@@ -425,7 +446,9 @@ export default {
           )
           this.isShowFieldOPDPemprov =
             this.payload.coverage_of_affairs ===
-            this.coverageOfAffairs.district.id
+              this.coverageOfAffairs.district.id &&
+            this.payload.complaint_status_id ===
+              complaintStatus.diverted_to_span.id
           this.isShowFieldProposeIkpNarrative =
             this.payload.coverage_of_affairs !==
             this.coverageOfAffairs.institutions.id
@@ -434,15 +457,15 @@ export default {
             ...this.payload,
             opd_id: null,
             opd_pemprov_id: null,
-            status_description: '',
-            deadline_date: null,
-            urgency_level: null,
             proposed_ikp_narrative: '',
           }
+          this.$store.commit('process-complaint/setPayload', {
+            ...this.payload,
+          })
           this.$refs.form.reset()
           break
         default:
-          this.paylod = { ...this.payload, [keyObject]: value }
+          this.payload = { ...this.payload, [keyObject]: value }
           this.$store.commit('process-complaint/setPayload', {
             ...this.payload,
           })
@@ -483,7 +506,6 @@ export default {
         opd_name: null,
         opd_pemprov_id: null,
       }
-      this.listDataDisposition = [{ label: '', value: '' }]
       this.$store.commit('process-complaint/setPayload', { ...this.payload })
     },
     closePopupProcessComplaint() {
@@ -521,7 +543,7 @@ export default {
     },
     backToForm() {
       this.$store.commit('modals/CLOSEALL')
-      this.$emit('back-to-form')
+      this.$store.commit('modals/OPEN', this.dataDialog?.nameModal)
     },
     async showDialogConfirmation() {
       const isValid = await this.$refs.form.validate()
@@ -633,5 +655,17 @@ export default {
 
 .form-process-complaint .mx-datepicker .mx-input {
   @apply !bg-white;
+}
+
+.form-process-complaint .form-select-search {
+  @apply !w-[462px];
+}
+
+.form-process-complaint .form-select-search span {
+  @apply text-sm !text-gray-600;
+}
+
+.form-process-complaint .form-select-search--error button {
+  @apply rounded-lg border border-red-600;
 }
 </style>
