@@ -36,18 +36,25 @@ export default {
       typeDialog: '',
       idApi: '',
       complaintStatus,
-      dialogConfig: {
+      listDialogConfirmation: {
         failedComplaint: {
+          id: 'failedComplaint',
           title: 'Konfirmasi Gagal Diverifikasi',
           labelTextArea: 'Catatan Aduan Gagal Diverifikasi',
           placeholder: 'Detail Aduan tidak lengkap : contoh (foto tidak jelas)',
           dataCyFormat: 'dialog__confirmation-failed-verification',
         },
         redirectHotlineComplaint: {
+          id: 'redirectHotlineComplaint',
           title: 'Konfirmasi Dialihkan ke Hotline Jabar',
           labelTextArea: 'Alasan dialihkan ke Hotline Jabar',
           placeholder: 'Contoh: Aduan terkait kegawat daruratan',
           dataCyFormat: 'dialog__confirmation-diverted-to-hotline-jabar',
+        },
+        verificationComplaint: {
+          id: 'verificationComplaint',
+          title: 'Konfirmasi Verifikasi Aduan',
+          dataCyFormat: 'dialog__confirmation-verification',
         },
       },
     }
@@ -80,10 +87,10 @@ export default {
     },
     showPopupConfirmationVerificationComplaintHandle(dataComplaint) {
       this.idApi = dataComplaint.id
-      this.typeDialog = 'verificationComplaint'
+      this.typeDialog = this.listDialogConfirmation.verificationComplaint.id
       this.setDataDialog({
         ...this.setDataDialogConfirmation(
-          'Konfirmasi Verifikasi Aduan',
+          this.listDialogConfirmation.verificationComplaint.title,
           'Apakah Anda yakin ingin mengkonfirmasi aduan ini?',
           dataComplaint.complaint_id,
           'Verifikasi Aduan Ini'
@@ -91,7 +98,7 @@ export default {
       })
       this.dataDialog.dataCy = {
         footer: {
-          buttonSubmit: `dialog__confirmation-verification__button--verify-complaint`,
+          buttonSubmit: `${this.listDialogConfirmation.verificationComplaint.dataCyFormat}__button--verify-complaint`,
         },
       }
       this.isShowPopupConfirmationVerification = true
@@ -101,7 +108,7 @@ export default {
       this.dataComplaint = dataComplaint
       this.typeDialog = typeDialog
 
-      const config = this.dialogConfig[typeDialog]
+      const config = this.listDialogConfirmation[typeDialog]
 
       this.setDataDialog({
         ...this.setDataDialogConfirmation(
@@ -124,16 +131,20 @@ export default {
     },
     showPopupConfirmationRedirectHotline(dataComplaint) {
       this.idApi = dataComplaint.id
-      this.typeDialog = 'redirectHotlineComplaint'
+      // this.typeDialog = 'redirectHotlineComplaint'
+      this.typeDialog = this.listDialogConfirmation.redirectHotlineComplaint.id
+
       this.setDataDialog({
         ...this.setDataDialogConfirmation(
-          'Konfirmasi Dialihkan ke Hotline Jabar',
+          this.listDialogConfirmation.redirectHotlineComplaint.title,
           'No.Aduan',
           dataComplaint.complaint_id,
           'Konfirmasi'
         ),
-        labelTextArea: 'Alasan dialihkan ke Hotline Jabar',
-        placeholder: 'Contoh: Aduan terkait kegawat daruratan',
+        labelTextArea:
+          this.listDialogConfirmation.redirectHotlineComplaint.labelTextArea,
+        placeholder:
+          this.listDialogConfirmation.redirectHotlineComplaint.placeholder,
       })
       this.isShowPopupConfirmationFailedVerification = true
     },
