@@ -67,7 +67,7 @@
                   />
                 </template>
               </date-picker>
-              <jds-select
+              <!-- <jds-select
                 v-if="
                   typeAduanPage.props ===
                   typeAduan.instruksiKewenanganNonPemprov.props
@@ -77,7 +77,7 @@
                 :options="listNonGovComplaintStatus"
                 class="select-form-complaint ml-2 flex-shrink-0"
                 @change="filterNonGovComplaintStatusHandle"
-              />
+              /> -->
             </div>
 
             <jds-button
@@ -251,10 +251,10 @@
 <script>
 import debounce from 'lodash.debounce'
 import 'vue2-datepicker/index.css'
+import DialogAddComplaint from '~/components/Aduan/Dialog/AddComplaint'
+import DialogAddIdSpan from '~/components/Aduan/Dialog/AddIdSpan'
 import DialogEvidenceFollowupHotline from '~/components/Aduan/Dialog/EvidenceFollowupHotline'
 import DialogFollowupComplaint from '~/components/Aduan/Dialog/FollowupComplaint'
-import DialogAddIdSpan from '~/components/Aduan/Dialog/AddIdSpan'
-import DialogAddComplaint from '~/components/Aduan/Dialog/AddComplaint'
 import DialogFollowupHotlineJabar from '~/components/Aduan/Dialog/FollowupHotlineJabar'
 import DialogProcessComplaint from '~/components/Aduan/Dialog/ProcessComplaint'
 import TabBarList from '~/components/Aduan/TabBar/List'
@@ -521,17 +521,17 @@ export default {
         }
       )
     },
-    listNonGovComplaintStatus() {
-      // list status complaint for non government
-      return this.$store.state[
-        'utilities-complaint'
-      ].listNonGovComplaintStatus.map((item) => {
-        return {
-          value: item.id || '',
-          label: item.name,
-        }
-      })
-    },
+    // listNonGovComplaintStatus() {
+    //   // list status complaint for non government
+    //   return this.$store.state[
+    //     'utilities-complaint'
+    //   ].listNonGovComplaintStatus.map((item) => {
+    //     return {
+    //       value: item.id || '',
+    //       label: item.name,
+    //     }
+    //   })
+    // },
     listStatistic() {
       return this.listStatisticComplaint.map((item) => {
         return {
@@ -597,19 +597,19 @@ export default {
       ...this.$store.state['utilities-complaint'].listCategory,
     ]
     this.$store.commit('utilities-complaint/setListCategory', listCategory)
-    if (
-      this.typeAduanPage.props === typeAduan.instruksiKewenanganNonPemprov.props
-    ) {
-      await this.$store.dispatch('utilities-complaint/getNonGovComplaintStatus')
-      const listNonGovComplaintStatus = [
-        { id: '', name: 'Semua Status Aduan' },
-        ...this.$store.state['utilities-complaint'].listNonGovComplaintStatus,
-      ]
-      this.$store.commit(
-        'utilities-complaint/setListNonGovComplaintStatus',
-        listNonGovComplaintStatus
-      )
-    }
+    // if (
+    //   this.typeAduanPage.props === typeAduan.instruksiKewenanganNonPemprov.props
+    // ) {
+    //   await this.$store.dispatch('utilities-complaint/getNonGovComplaintStatus')
+    //   const listNonGovComplaintStatus = [
+    //     { id: '', name: 'Semua Status Aduan' },
+    //     ...this.$store.state['utilities-complaint'].listNonGovComplaintStatus,
+    //   ]
+    //   this.$store.commit(
+    //     'utilities-complaint/setListNonGovComplaintStatus',
+    //     listNonGovComplaintStatus
+    //   )
+    // }
   },
   methods: {
     getStyleComplaintType() {
@@ -766,12 +766,14 @@ export default {
       return total
     },
     addComplaintStatusFilterHandle() {
+      console.log('check non pemprov')
       if (
         this.typeAduanPage.props !==
         typeAduan.instruksiKewenanganNonPemprov.props
       ) {
         const listValueStatusComplaint =
           this.getStatusComplaintByComplaintType()
+        console.log(listValueStatusComplaint, 'check non pemprov')
         for (let i = 0; i < listValueStatusComplaint.length; i++) {
           this.setQuery({
             [`complaint_status_id[${i}]`]: listValueStatusComplaint[i].id,
@@ -779,6 +781,7 @@ export default {
         }
       }
 
+      console.log(this.query, 'check non pemprov')
       return this.query
     },
     listTabHandle(status) {
@@ -863,12 +866,21 @@ export default {
       }
 
       this.deletePropertiesWithPrefix(queryCount, 'complaint_status_id[')
+      // if (
+      //   this.typeAduan.aduanDariSpanLapor.props === this.typeAduanPage.props ||
+      //   typeAduan.instruksiKewenanganNonPemprov.props ===
+      //     this.typeAduanPage.props
+      // )
+
       if (
-        this.typeAduan.aduanDariSpanLapor.props === this.typeAduanPage.props ||
-        typeAduan.instruksiKewenanganNonPemprov.props ===
-          this.typeAduanPage.props
+        this.typeAduan.aduanDariSpanLapor.props === this.typeAduanPage.props
       ) {
         complaintStatus.total.value = this.pagination.totalRows
+      } else if (
+        typeAduan.instruksiKewenanganNonPemprov.props ===
+        this.typeAduanPage.props
+      ) {
+        console.log('ini non pemprov')
       } else {
         try {
           // handle data statistic complaint
