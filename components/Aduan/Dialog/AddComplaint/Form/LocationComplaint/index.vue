@@ -1,7 +1,8 @@
 <template>
   <div>
     <ValidationObserver ref="formLocationComplaint">
-      <form class="form-add-complaint px-6 pb-6 pt-4">
+      <!-- START FORM -->
+      <div class="form-add-complaint px-6 pb-6 pt-4">
         <h1 class="mb-2 font-roboto text-base font-bold">Lokasi Aduan</h1>
         <ValidationProvider
           v-slot="{ errors }"
@@ -10,15 +11,19 @@
           class="mb-4"
           tag="div"
         >
-          <jds-select
+          <label class="mb-1 text-[15px] text-gray-800">Kota/Kabupaten</label>
+          <BaseSelectSearch
             v-model="dataLocationComplaint.city_id"
             name="Kota/Kabupaten"
-            label="Kota/Kabupaten"
-            placeholder="Pilih Kota/Kabupaten"
-            :error-message="errors[0]"
             :options="listCity"
-            @change="changeSelectForm(dataLocationComplaint.city_id, 'city')"
+            placeholder="Pilih Kota/Kabupaten"
+            class="form-select-search"
+            :class="{
+              'form-select-search--error mb-2': errors.length > 0,
+            }"
+            @change="(val) => changeSelectForm(val, 'city_id')"
           />
+          <small class="text-red-600">{{ errors[0] }}</small>
         </ValidationProvider>
         <ValidationProvider
           v-slot="{ errors }"
@@ -27,18 +32,19 @@
           class="mb-4"
           tag="div"
         >
-          <jds-select
+          <label class="mt-5 mb-1 text-[15px] text-gray-800">Kecamatan</label>
+          <BaseSelectSearch
             v-model="dataLocationComplaint.district_id"
-            :disabled="!dataLocationComplaint.city_id"
             name="Kecamatan"
-            label="Kecamatan"
-            placeholder="Pilih Kecamatan"
-            :error-message="errors[0]"
             :options="listDistrict"
-            @change="
-              changeSelectForm(dataLocationComplaint.district_id, 'district')
-            "
+            placeholder="Pilih Kecamatan"
+            class="form-select-search"
+            :class="{
+              'form-select-search--error mb-2': errors.length > 0,
+            }"
+            @change="(val) => changeSelectForm(val, 'district_id')"
           />
+          <small class="text-red-600">{{ errors[0] }}</small>
         </ValidationProvider>
         <ValidationProvider
           v-slot="{ errors }"
@@ -47,18 +53,19 @@
           class="mb-4"
           tag="div"
         >
-          <jds-select
+          <label class="mb-1 text-[15px] text-gray-800">Kelurahan</label>
+          <BaseSelectSearch
             v-model="dataLocationComplaint.village_id"
-            :disabled="!dataLocationComplaint.district_id"
             name="Kelurahan"
-            label="Kelurahan"
-            placeholder="Pilih Kelurahan"
-            :error-message="errors[0]"
             :options="listVillage"
-            @change="
-              changeSelectForm(dataLocationComplaint.village_id, 'village')
-            "
+            placeholder="Pilih Kelurahan"
+            class="form-select-search"
+            :class="{
+              'form-select-search--error mb-2': errors.length > 0,
+            }"
+            @change="(val) => changeSelectForm(val, 'village_id')"
           />
+          <small class="text-red-600">{{ errors[0] }}</small>
         </ValidationProvider>
         <ValidationProvider
           v-slot="{ errors }"
@@ -80,7 +87,8 @@
           Tersisa
           {{ 255 - addressDetail.length }} karakter
         </p>
-      </form>
+      </div>
+      <!-- END FORM -->
     </ValidationObserver>
   </div>
 </template>
@@ -138,10 +146,14 @@ export default {
     this.$store.dispatch('utilities-complaint/getDataCity')
   },
   methods: {
-    changeSelectForm(value, typeSelect) {
-      if (typeSelect === 'city') {
+    changeSelectForm(value, keyObject) {
+      this.dataLocationComplaint[keyObject] = value
+      this.$store.commit('add-complaint/setDataLocationComplaint', {
+        ...this.dataLocationComplaint,
+      })
+      if (keyObject === 'city_id') {
         this.$store.dispatch('utilities-complaint/getDataDistrict', value)
-      } else if (typeSelect === 'district') {
+      } else if (keyObject === 'district_id') {
         this.$store.dispatch('utilities-complaint/getDataVillage', value)
       }
     },

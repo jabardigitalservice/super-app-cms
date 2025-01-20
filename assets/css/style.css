@@ -172,3 +172,11 @@
 .jds-popover__content {
   z-index: 10 !important;
 }
+
+.form-select-search span {
+  @apply text-sm !text-gray-600;
+}
+
+.form-select-search--error button {
+  @apply rounded-lg border border-red-600;
+}
