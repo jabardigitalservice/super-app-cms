@@ -284,18 +284,16 @@ export default {
       }
     }, 500),
   },
-  created() {
+  mounted() {
+    this.pagination.itemsPerPageOptions = generateItemsPerPageOptions(
+      this.pagination.itemsPerPage
+    )
+    // it will be used during the migration process.
     this.query = {
       ...this.query,
       start_date: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
       end_date: formatDate(this.dateRange[1], 'yyyy-MM-dd'),
     }
-    // this.$fetch()
-  },
-  mounted() {
-    this.pagination.itemsPerPageOptions = generateItemsPerPageOptions(
-      this.pagination.itemsPerPage
-    )
   },
   methods: {
     normalizeText(text) {
