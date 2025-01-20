@@ -276,13 +276,6 @@
             </template>
           </BaseDialogFooterNew>
         </ValidationObserver>
-        <!-- <BaseDialogFooterNew
-          :data-cy="dataDialog.dataCy.footer"
-          :show-cancel-button="true"
-          :label-button-submit="dataDialog.labelButtonSubmit"
-          @close="closePopupProcessComplaint()"
-          @submit="showDialogConfirmation()"
-        /> -->
       </BaseDialogPanel>
     </BaseDialogFrame>
     <DialogConfirmationBasic
