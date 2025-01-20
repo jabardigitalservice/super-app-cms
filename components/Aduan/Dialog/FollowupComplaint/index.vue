@@ -233,7 +233,8 @@ import DialogCreateIkp from '~/components/Aduan/Dialog/CreateIkp'
 import Pagination from '~/components/Aduan/Dialog/FollowupComplaint/Pagination'
 import { typeAduan, complaintStatus } from '~/constant/aduan-masuk'
 import { ENDPOINT_IKP } from '~/constant/endpoint-api'
-import { formatDate } from '~/utils'
+// TODO : it will be used when the data migration process is complete
+// import { formatDate } from '~/utils'
 
 export default {
   name: 'DialogFollowupComplaint',
@@ -286,16 +287,19 @@ export default {
     this.isLoading = true
     try {
       this.setQuery({ sort_by: 'ikp_code', sort_type: 'ASC' })
-      const today = new Date()
-      const startDate = new Date(today.getTime())
-      startDate.setDate(startDate.getDate() - 89)
+      // TODO : it will be used when the data migration process is complete.
+      // const today = new Date()
+      // const startDate = new Date(today.getTime())
+      // startDate.setDate(startDate.getDate() - 89)
       const responseIkp = await this.$axios.get(ENDPOINT_IKP, {
         params: {
           ...this.query,
           is_admin: 1,
           is_prov_responsibility: this.is_prov_responsibility,
-          start_date: formatDate(startDate, 'yyyy-MM-dd'),
-          end_date: formatDate(today, 'yyyy-MM-dd'),
+          status: 'not-yet-coordination', // it will be used during the migration process.
+          // TODO : it will be used when the data migration process is complete
+          // start_date: formatDate(startDate, 'yyyy-MM-dd'),
+          // end_date: formatDate(today, 'yyyy-MM-dd'),
         },
       })
       this.listDataIkp = responseIkp.data.data.data
