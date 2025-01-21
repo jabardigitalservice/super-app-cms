@@ -794,6 +794,8 @@ export default {
       } else {
         this.addComplaintStatusFilterHandle()
       }
+
+      console.log(status)
       this.setQuery(query)
       this.isShowPopupDateRange = false
       this.$fetch()
@@ -880,7 +882,32 @@ export default {
         typeAduan.instruksiKewenanganNonPemprov.props ===
         this.typeAduanPage.props
       ) {
-        console.log('ini non pemprov')
+        try {
+          // handle data statistic complaint
+
+          const urlApi = this.checkUrlApi()
+          const responseListStatisticComplaint = await this.$axios.get(
+            `${urlApi}/statistics`,
+            {
+              params: queryCount,
+            }
+          )
+          const listDataStatisticComplaint =
+            responseListStatisticComplaint.data.data
+          const listComplaintStatus = this.getStatusComplaintByComplaintType()
+          this.listStatisticComplaint = listComplaintStatus.map(
+            (complaintStatus) => {
+              const dataStatistic = listDataStatisticComplaint.find(
+                (statisticComplaint) =>
+                  statisticComplaint.id === complaintStatus.id
+              )
+              return { ...complaintStatus, value: dataStatistic?.value || 0 }
+            }
+          )
+          complaintStatus.total.value = this.getTotalStatistic()
+        } catch (error) {
+          console.error(error)
+        }
       } else {
         try {
           // handle data statistic complaint
