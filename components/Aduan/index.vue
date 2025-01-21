@@ -67,17 +67,6 @@
                   />
                 </template>
               </date-picker>
-              <!-- <jds-select
-                v-if="
-                  typeAduanPage.props ===
-                  typeAduan.instruksiKewenanganNonPemprov.props
-                "
-                v-model="query.complaint_status_id"
-                placeholder="Status"
-                :options="listNonGovComplaintStatus"
-                class="select-form-complaint ml-2 flex-shrink-0"
-                @change="filterNonGovComplaintStatusHandle"
-              /> -->
             </div>
 
             <jds-button
@@ -675,14 +664,6 @@ export default {
       this.query.complaint_category_id = value
       this.query['complaint_category_id[0]'] = value
 
-      this.$fetch()
-    },
-
-    filterNonGovComplaintStatusHandle(status) {
-      this.query.page = 1
-      if (status) {
-        this.query.complaint_status_id = status
-      }
       this.$fetch()
     },
 
