@@ -413,7 +413,6 @@ export default {
       isShowPopupAddComplaint: false,
       listValueStatusComplaint: [],
       listStatisticComplaint: [],
-      listDataNonGovComplaintStatus: [], // list status complaint for non government
       isShowPopupDateRange: false,
       complaintSource,
       dateRange: [
@@ -486,7 +485,7 @@ export default {
         return {
           ...item,
           category: item.complaint_category.name,
-          status: this.getStatusText(item.complaint_status_id),
+          status: this.getStatusTextAndIcon(item.complaint_status_id),
           created_at_format: formatDate(item.created_at, 'dd/MM/yyyy HH:mm'),
           created_at_api: item.created_at,
           status_id: item.complaint_status_id,
@@ -521,25 +520,15 @@ export default {
         }
       )
     },
-    // listNonGovComplaintStatus() {
-    //   // list status complaint for non government
-    //   return this.$store.state[
-    //     'utilities-complaint'
-    //   ].listNonGovComplaintStatus.map((item) => {
-    //     return {
-    //       value: item.id || '',
-    //       label: item.name,
-    //     }
-    //   })
-    // },
+
     listStatistic() {
       return this.listStatisticComplaint.map((item) => {
         return {
           ...complaintStatus[item.id],
           value: formatNumberToUnit(item.value),
           unit: convertToUnit(item.value),
-          icon: complaintStatus[item.id].icon,
-          name: complaintStatus[item.id].name,
+          icon: this.getStatusTextAndIcon(complaintStatus[item.id].id, 'icon'),
+          name: this.getStatusTextAndIcon(complaintStatus[item.id].id),
           dataCy: `${this.dataCyFormat}__tab--${item.id}`,
         }
       })
@@ -597,19 +586,6 @@ export default {
       ...this.$store.state['utilities-complaint'].listCategory,
     ]
     this.$store.commit('utilities-complaint/setListCategory', listCategory)
-    // if (
-    //   this.typeAduanPage.props === typeAduan.instruksiKewenanganNonPemprov.props
-    // ) {
-    //   await this.$store.dispatch('utilities-complaint/getNonGovComplaintStatus')
-    //   const listNonGovComplaintStatus = [
-    //     { id: '', name: 'Semua Status Aduan' },
-    //     ...this.$store.state['utilities-complaint'].listNonGovComplaintStatus,
-    //   ]
-    //   this.$store.commit(
-    //     'utilities-complaint/setListNonGovComplaintStatus',
-    //     listNonGovComplaintStatus
-    //   )
-    // }
   },
   methods: {
     getStyleComplaintType() {
@@ -702,13 +678,14 @@ export default {
       this.$fetch()
     },
 
-    filterNonGovComplaintStatusHandle(value) {
+    filterNonGovComplaintStatusHandle(status) {
       this.query.page = 1
-      if (value) {
-        this.query.complaint_status_id = value
+      if (status) {
+        this.query.complaint_status_id = status
       }
       this.$fetch()
     },
+
     goToPageDetailHandle(item) {
       this.$router.push({
         path: `${this.linkPageDetail}/${item.id}`,
@@ -716,15 +693,20 @@ export default {
       })
       this.$fetch()
     },
-    getStatusText(statusId) {
+    getStatusTextAndIcon(statusId, type = 'text') {
       if (
         this.typeAduanPage.props ===
           typeAduan.instruksiKewenanganNonPemprov.props &&
         statusId === 'coordinated'
       ) {
-        return 'Sudah Dikoordinasikan'
+        return type === 'text'
+          ? 'Sudah Dikoordinasikan'
+          : '/icon/icon-aduan/complaint-status/complaint-finished-icon.svg'
+      } else {
+        return type === 'text'
+          ? complaintStatus[statusId]?.name
+          : complaintStatus[statusId]?.icon
       }
-      return complaintStatus[statusId]?.name
     },
     getColorText(statusId) {
       const statusColor = complaintStatus[statusId].statusColor.find(
@@ -766,36 +748,36 @@ export default {
       return total
     },
     addComplaintStatusFilterHandle() {
-      console.log('check non pemprov')
-      if (
-        this.typeAduanPage.props !==
-        typeAduan.instruksiKewenanganNonPemprov.props
-      ) {
-        const listValueStatusComplaint =
-          this.getStatusComplaintByComplaintType()
-        console.log(listValueStatusComplaint, 'check non pemprov')
-        for (let i = 0; i < listValueStatusComplaint.length; i++) {
-          this.setQuery({
-            [`complaint_status_id[${i}]`]: listValueStatusComplaint[i].id,
-          })
-        }
+      const listValueStatusComplaint = this.getStatusComplaintByComplaintType()
+
+      for (let i = 0; i < listValueStatusComplaint.length; i++) {
+        this.setQuery({
+          [`complaint_status_id[${i}]`]: listValueStatusComplaint[i].id,
+        })
       }
 
-      console.log(this.query, 'check non pemprov')
       return this.query
     },
     listTabHandle(status) {
       this.isFilterStatus = true
       const query = { page: 1, limit: 10 }
       this.dataCyButtonAction = `${this.dataCyFormat}__tab__button-action--${status}`
-      this.deletePropertiesWithPrefix(this.query, 'complaint_status_id[')
+
+      this.deletePropertiesWithPrefix(this.query, 'complaint_status_id')
+
       if (status !== 'total') {
-        query['complaint_status_id[0]'] = status
+        if (
+          this.typeAduanPage.props ===
+          typeAduan.instruksiKewenanganNonPemprov.props
+        ) {
+          this.query.complaint_status_id = status
+        } else {
+          query['complaint_status_id[0]'] = status
+        }
       } else {
         this.addComplaintStatusFilterHandle()
       }
 
-      console.log(status)
       this.setQuery(query)
       this.isShowPopupDateRange = false
       this.$fetch()
@@ -867,51 +849,15 @@ export default {
         phase: this.typeAduanPage.phase,
       }
 
-      this.deletePropertiesWithPrefix(queryCount, 'complaint_status_id[')
-      // if (
-      //   this.typeAduan.aduanDariSpanLapor.props === this.typeAduanPage.props ||
-      //   typeAduan.instruksiKewenanganNonPemprov.props ===
-      //     this.typeAduanPage.props
-      // )
+      this.deletePropertiesWithPrefix(queryCount, 'complaint_status_id')
 
       if (
         this.typeAduan.aduanDariSpanLapor.props === this.typeAduanPage.props
       ) {
         complaintStatus.total.value = this.pagination.totalRows
-      } else if (
-        typeAduan.instruksiKewenanganNonPemprov.props ===
-        this.typeAduanPage.props
-      ) {
-        try {
-          // handle data statistic complaint
-
-          const urlApi = this.checkUrlApi()
-          const responseListStatisticComplaint = await this.$axios.get(
-            `${urlApi}/statistics`,
-            {
-              params: queryCount,
-            }
-          )
-          const listDataStatisticComplaint =
-            responseListStatisticComplaint.data.data
-          const listComplaintStatus = this.getStatusComplaintByComplaintType()
-          this.listStatisticComplaint = listComplaintStatus.map(
-            (complaintStatus) => {
-              const dataStatistic = listDataStatisticComplaint.find(
-                (statisticComplaint) =>
-                  statisticComplaint.id === complaintStatus.id
-              )
-              return { ...complaintStatus, value: dataStatistic?.value || 0 }
-            }
-          )
-          complaintStatus.total.value = this.getTotalStatistic()
-        } catch (error) {
-          console.error(error)
-        }
       } else {
         try {
           // handle data statistic complaint
-
           const urlApi = this.checkUrlApi()
           const responseListStatisticComplaint = await this.$axios.get(
             `${urlApi}/statistics`,
@@ -921,7 +867,9 @@ export default {
           )
           const listDataStatisticComplaint =
             responseListStatisticComplaint.data.data
+
           const listComplaintStatus = this.getStatusComplaintByComplaintType()
+
           this.listStatisticComplaint = listComplaintStatus.map(
             (complaintStatus) => {
               const dataStatistic = listDataStatisticComplaint.find(
@@ -931,6 +879,7 @@ export default {
               return { ...complaintStatus, value: dataStatistic?.value || 0 }
             }
           )
+
           complaintStatus.total.value = this.getTotalStatistic()
         } catch (error) {
           console.error(error)
