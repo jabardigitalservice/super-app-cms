@@ -3,57 +3,67 @@
     <h1 class="mb-4 font-roboto text-[16px] font-bold text-blue-gray-800">
       Bukti Tindaklanjut
     </h1>
-    <BaseTableDetail header="Keterangan" class="mb-4">
-      <tr>
-        <td width="460px">Keterangan Tindaklanjut</td>
-        <td>{{ evidence.description || '-' }}</td>
-      </tr>
-    </BaseTableDetail>
-    <BaseTableDetail
-      v-if="listPhoto.length > 0 || listFile.length > 0"
-      header="Bukti Foto dan Dokumen"
-    >
-      <tr v-if="listPhoto.length > 0" class="table-file-image-title">
-        <td class="px-2" colspan="2">
-          <strong>Foto</strong>
-        </td>
-      </tr>
-      <tr v-if="listPhoto.length > 0" class="table-file-image-content">
-        <td width="460px">Terlampir {{ listPhoto?.length }} foto</td>
-        <td class="px-2 py-[6px]">
-          <jds-button
-            variant="secondary"
-            class="w-[100px] !border-green-600 !text-sm !font-medium !text-green-600 disabled:cursor-not-allowed disabled:opacity-50"
-            :disabled="listPhoto?.length === 0"
-            @click="isShowPopupViewImage = true"
+
+    <BaseLoading v-if="isLoading" />
+
+    <template v-else>
+      <BaseTableDetail header="Keterangan" class="mb-4">
+        <tr>
+          <td width="460px">Keterangan Tindaklanjut</td>
+          <td>{{ evidence.description || '-' }}</td>
+        </tr>
+      </BaseTableDetail>
+      <BaseTableDetail
+        v-if="listPhoto.length > 0 || listFile.length > 0"
+        header="Bukti Foto dan Dokumen"
+      >
+        <tr v-if="listPhoto.length > 0" class="table-file-image-title">
+          <td class="px-2" colspan="2">
+            <strong>Foto</strong>
+          </td>
+        </tr>
+        <tr v-if="listPhoto.length > 0" class="table-file-image-content">
+          <td width="460px">Terlampir {{ listPhoto?.length }} foto</td>
+          <td class="px-2 py-[6px]">
+            <jds-button
+              variant="secondary"
+              class="w-[100px] !border-green-600 !text-sm !font-medium !text-green-600 disabled:cursor-not-allowed disabled:opacity-50"
+              :disabled="listPhoto?.length === 0"
+              @click="isShowPopupViewImage = true"
+            >
+              Lihat Foto
+            </jds-button>
+          </td>
+        </tr>
+        <tr>
+          <td
+            v-if="listFile.length > 0"
+            class="table-file-image-title px-2"
+            colspan="2"
           >
-            Lihat Foto
-          </jds-button>
-        </td>
-      </tr>
-      <tr>
-        <td
-          v-if="listFile.length > 0"
-          class="table-file-image-title px-2"
-          colspan="2"
+            <strong>Dokumen</strong>
+          </td>
+        </tr>
+        <tr
+          v-for="file in listFile"
+          :key="file"
+          class="table-file-image-content"
         >
-          <strong>Dokumen</strong>
-        </td>
-      </tr>
-      <tr v-for="file in listFile" :key="file" class="table-file-image-content">
-        <td width="460px">{{ file?.name || '-' }}</td>
-        <td class="px-2 py-[6px]">
-          <jds-button
-            variant="secondary"
-            class="w-[138px] !border-green-600 !text-sm !font-medium !text-green-600 disabled:cursor-not-allowed disabled:opacity-50"
-            :disabled="listFile.length === 0"
-            @click="downloadFile(file.url, file.type)"
-          >
-            Unduh Dokumen
-          </jds-button>
-        </td>
-      </tr>
-    </BaseTableDetail>
+          <td width="460px">{{ file?.name || '-' }}</td>
+          <td class="px-2 py-[6px]">
+            <jds-button
+              variant="secondary"
+              class="w-[138px] !border-green-600 !text-sm !font-medium !text-green-600 disabled:cursor-not-allowed disabled:opacity-50"
+              :disabled="listFile.length === 0"
+              @click="downloadFile(file.url, file.type)"
+            >
+              Unduh Dokumen
+            </jds-button>
+          </td>
+        </tr>
+      </BaseTableDetail>
+    </template>
+
     <DialogViewImage
       :list-photo="listPhoto"
       :show-popup="isShowPopupViewImage"
@@ -63,8 +73,8 @@
 </template>
 
 <script>
-import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
 import DialogViewImage from '~/components/Aduan/DialogViewImage'
+import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
 import { downloadFile } from '~/utils'
 
 export default {
@@ -79,6 +89,10 @@ export default {
     evidence: {
       type: Object,
       default: () => ({}),
+    },
+    isLoading: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {

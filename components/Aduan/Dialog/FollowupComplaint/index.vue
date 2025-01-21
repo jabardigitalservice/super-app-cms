@@ -70,108 +70,109 @@
               @click="showPopupCreateIkp()"
             />
           </div>
-          <div v-if="isLoading">
-            <div class="flex h-[300px] flex-col items-center justify-center">
-              <jds-spinner class="mb-4" size="30" />
-              <p class="font-lato text-base font-bold text-green-700">
-                Loading....
+
+          <BaseLoading v-if="isLoading" />
+
+          <template v-else>
+            <!-- data IKP -->
+            <div
+              v-if="!isFollowup && listIkp.length > 0"
+              class="mb-6 rounded-lg border border-gray-200"
+            >
+              <jds-simple-table>
+                <thead>
+                  <tr>
+                    <th class="rounded-tl-lg !bg-green-600">ID IKP</th>
+                    <th class="!bg-green-600">Narasi Instruksi</th>
+                    <th colspan="3" class="rounded-tr-lg !bg-green-600">
+                      Status
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="(itemIkp, index) in listIkp"
+                    :key="`tbody-${index}`"
+                  >
+                    <td
+                      :class="{ 'rounded-bl-lg': index === listIkp.length - 1 }"
+                      width="66"
+                    >
+                      <strong>{{ itemIkp.ikp_code }}</strong>
+                    </td>
+                    <td width="280">
+                      <p class="w-[280px] truncate">
+                        {{ itemIkp.narrative }}
+                      </p>
+                    </td>
+                    <td>
+                      <div class="flex items-center">
+                        <p
+                          class="h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 text-xs font-semibold"
+                          :class="getColorText(itemIkp?.complaint_status_id)"
+                        >
+                          {{ itemIkp?.status }}
+                        </p>
+                      </div>
+                    </td>
+                    <td width="73">
+                      <BaseTableAction
+                        :list-menu-pop-over="listMenuTableAction"
+                        @detail-narrative="showPopupIkpNarrative(itemIkp)"
+                      />
+                    </td>
+                    <td
+                      width="63"
+                      :class="{ 'rounded-br-lg': index === listIkp.length - 1 }"
+                    >
+                      <jds-button
+                        label="Pilih"
+                        variant="primary"
+                        class="!h-[30px] !w-[51px] !px-0 !py-0 !text-[14px] font-bold"
+                        @click="chooseDataFollowupProcess(itemIkp)"
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td colspan="5" class="bg-gray-50 !p-0">
+                      <Pagination
+                        :pagination="pagination"
+                        @next-page="nextPage()"
+                        @previous-page="previousPage()"
+                        @per-page-change="pageChanges"
+                      />
+                    </td>
+                  </tr>
+                </tfoot>
+              </jds-simple-table>
+            </div>
+
+            <!-- Show no data found when user searching data IKP -->
+            <div
+              v-else-if="listIkp.length === 0 && !isFollowup"
+              class="mb-6 flex flex-col items-center rounded-lg bg-gray-50 py-[10px] text-gray-900"
+            >
+              <div
+                class="mb-1 flex h-20 w-20 items-center justify-center rounded-full bg-white"
+              >
+                <img
+                  src="~/assets/icon/data-not-found.svg"
+                  alt="data-not-found"
+                  width="80"
+                  height="80"
+                />
+              </div>
+              <h1 class="text-sm font-bold">
+                Tidak dapat menemukan Instruksi Aduan
+              </h1>
+              <p class="text-sm">
+                Cobalah menggunakan id atau narasi yang berbeda.
               </p>
             </div>
-          </div>
-          <!-- Show no data found when user searching data IKP -->
-          <div
-            v-else-if="listIkp.length === 0 && search.length > 0 && !isFollowup"
-            class="mb-6 flex flex-col items-center rounded-lg bg-gray-50 py-[10px] text-gray-900"
-          >
-            <div
-              class="mb-1 flex h-20 w-20 items-center justify-center rounded-full bg-white"
-            >
-              <img
-                src="~/assets/icon/data-not-found.svg"
-                alt="data-not-found"
-                width="80"
-                height="80"
-              />
-            </div>
-            <h1 class="text-sm font-bold">
-              Tidak dapat menemukan Instruksi Aduan
-            </h1>
-            <p class="text-sm">
-              Cobalah menggunakan id atau narasi yang berbeda.
-            </p>
-          </div>
+          </template>
 
-          <!-- data IKP -->
-          <div
-            v-else-if="!isFollowup && listIkp.length > 0"
-            class="mb-6 rounded-lg border border-gray-200"
-          >
-            <jds-simple-table>
-              <thead>
-                <tr>
-                  <th class="rounded-tl-lg !bg-green-600">ID IKP</th>
-                  <th class="!bg-green-600">Narasi Instruksi</th>
-                  <th colspan="3" class="rounded-tr-lg !bg-green-600">
-                    Status
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(itemIkp, index) in listIkp" :key="index">
-                  <td
-                    :class="{ 'rounded-bl-lg': index === listIkp.length - 1 }"
-                    width="66"
-                  >
-                    <strong>{{ itemIkp.ikp_code }}</strong>
-                  </td>
-                  <td width="280">
-                    <p class="w-[280px] truncate">
-                      {{ itemIkp.narrative }}
-                    </p>
-                  </td>
-                  <td>
-                    <div class="flex items-center">
-                      <p
-                        class="h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 text-xs font-semibold"
-                        :class="getColorText(itemIkp?.complaint_status_id)"
-                      >
-                        {{ itemIkp?.status }}
-                      </p>
-                    </div>
-                  </td>
-                  <td width="73">
-                    <BaseTableAction
-                      :list-menu-pop-over="listMenuTableAction"
-                      @detail-narrative="showPopupIkpNarrative(itemIkp)"
-                    />
-                  </td>
-                  <td
-                    width="63"
-                    :class="{ 'rounded-br-lg': index === listIkp.length - 1 }"
-                  >
-                    <jds-button
-                      label="Pilih"
-                      variant="primary"
-                      class="!h-[30px] !w-[51px] !px-0 !py-0 !text-[14px] font-bold"
-                      @click="chooseDataFollowupProcess(itemIkp)"
-                    />
-                  </td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <td colspan="5" class="bg-gray-50 !p-0">
-                    <Pagination
-                      :pagination="pagination"
-                      @next-page="nextPage()"
-                      @previous-page="previousPage()"
-                      @per-page-change="pageChanges"
-                    />
-                  </td>
-                </tr>
-              </tfoot>
-            </jds-simple-table>
-          </div>
           <!-- show list followup process when choose IKP want to followup -->
           <ListFollowupProcess
             v-if="isFollowup"
@@ -227,11 +228,11 @@
 import debounce from 'lodash.debounce'
 import { mapGetters } from 'vuex'
 import AlertInformation from '~/components/Aduan/Alert/Information'
-import ListFollowupProcess from '~/components/Aduan/Dialog/FollowupComplaint/ListFollowupProcess'
-import DialogIkpNarrative from '~/components/Aduan/Dialog/IkpNarrative'
 import DialogCreateIkp from '~/components/Aduan/Dialog/CreateIkp'
+import ListFollowupProcess from '~/components/Aduan/Dialog/FollowupComplaint/ListFollowupProcess'
 import Pagination from '~/components/Aduan/Dialog/FollowupComplaint/Pagination'
-import { typeAduan, complaintStatus } from '~/constant/aduan-masuk'
+import DialogIkpNarrative from '~/components/Aduan/Dialog/IkpNarrative'
+import { complaintStatus, typeAduan } from '~/constant/aduan-masuk'
 import { ENDPOINT_IKP } from '~/constant/endpoint-api'
 import { formatDate } from '~/utils'
 
