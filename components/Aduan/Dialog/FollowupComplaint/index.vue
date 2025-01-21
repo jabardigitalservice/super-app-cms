@@ -90,7 +90,10 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(itemIkp, index) in listIkp" :key="index">
+                  <tr
+                    v-for="(itemIkp, index) in listIkp"
+                    :key="`tbody-${index}`"
+                  >
                     <td
                       :class="{ 'rounded-bl-lg': index === listIkp.length - 1 }"
                       width="66"
