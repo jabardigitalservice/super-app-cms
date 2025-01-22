@@ -106,11 +106,7 @@
             placeholder="Pilih Dinas Untuk Disposisi"
             width-button="100%"
             width-option="592px"
-<<<<<<< HEAD
             filterable
-=======
-            fiterable
->>>>>>> e144043a6519a45f369c6abbfbe06974d2e1a2a8
             class="select-search"
             :class="{
               'select-search--error mb-2': errors.length > 0,
