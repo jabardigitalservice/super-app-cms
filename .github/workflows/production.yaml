@@ -6,7 +6,7 @@ on:
       - 'v*'
 
 jobs:
-  docker:
+  build-push-deploy-production:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
