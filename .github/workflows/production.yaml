@@ -2,60 +2,77 @@ name: Jabar Super Apps Web Admin Production
 
 on:
   push:
-    branches: [main]
+    tags:
+      - 'v*'
 
 jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
-        # Configure Docker with Credentials
+      # Add Vault Authentication step with Token - Simplified secrets
+      - name: HashiCorp Vault Authentication
+        uses: hashicorp/vault-action@v3
+        with:
+          url: ${{ secrets.VAULT_ADDR }}
+          token: ${{ secrets.VAULT_TOKEN }}
+          secrets: |
+            secret/data/kv-superapp-production/web-admin secrets | .;  
+
+      # Configure Docker with Credentials
       - name: Configure Docker
         run: |
           docker login ${{ secrets.REGISTRY_URL }} -u ${{ secrets.REGISTRY_USERNAME }} -p '${{ secrets.REGISTRY_PASSWORD }}'
-        # Set version tag using SHA Hash (short)
+
+      # Set version dari git tag (hapus prefix 'v')
       - name: Set version tag
         id: vars
-        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+        run: |
+          # Extract version from git tag (remove 'v' prefix)
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "version=$VERSION" >> $GITHUB_ENV
+          echo "Using version: $VERSION"
 
-        # Build the Docker image
+      # Build the Docker image
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
           context: .
           file: Dockerfile
           push: true
-          tags: ${{ secrets.SERVICE_IMAGENAME }}:${{ env.sha_short }}
+          tags: |
+            ${{ secrets.SERVICE_IMAGENAME }}:${{ env.version }}
+            ${{ secrets.SERVICE_IMAGENAME }}:latest
           build-args: |
-            KEYCLOCK_CLIENT_ID=${{ secrets.KEYCLOCK_CLIENT_ID_PROD }}
-            KEYCLOCK_ENDPOINT=${{ secrets.KEYCLOCK_ENDPOINT_PROD }}
-            KEYCLOCK_BASE_URL=${{ secrets.KEYCLOCK_BASE_URL_PROD}}
-            GOOGLE_ANALYTICS_ID=${{secrets.GOOGLE_ANALYTICS_ID_PRODUCTION}}
-            APPLICATION_ID_NEW_RELIC=${{secrets.APPLICATION_ID_NEW_RELIC_PRODUCTION}}
-            LICENSE_KEY_NEW_RELIC_ACCOUNT=${{secrets.LICENSE_KEY_NEW_RELIC_ACCOUNT}}
-            ACCOUNT_ID_NEW_RELIC=${{secrets.ACCOUNT_ID_NEW_RELIC}}
-            NEW_RELIC_APP_NAME=${{secrets.NEW_RELIC_APP_NAME}}
-            NEW_RELIC_LICENSE_KEY=${{secrets.NEW_RELIC_LICENSE_KEY}}
-            TINYMCE_API_KEY=${{secrets.TINYMCE_API_KEY}}
-            GOOGLE_MAPS_API_KEY=${{secrets.GOOGLE_MAPS_API_KEY}}
-            URL_TABLEAU_JABARPROV=${{secrets.URL_TABLEAU_JABARPROV}}
-            URL_DASHBOARD_TAHURA=${{secrets.URL_DASHBOARD_TAHURA}}
-            USERNAME_TABLEAU=${{secrets.USERNAME_TABLEAU}}
-            URL_GET_TOKEN_TABLEAU=${{secrets.URL_GET_TOKEN_TABLEAU}}
-            UNLEASH_URL=${{secrets.UNLEASH_URL}}
-            UNLEASH_TOKEN=${{secrets.UNLEASH_TOKEN_PRODUCTION}}
-            URL_MAIN_SERVICE=${{secrets.URL_MAIN_SERVICE_PROD}}
-            EXPIRY_FORGOT_PASSWORD_LINK=${{secrets.EXPIRY_FORGOT_PASSWORD_LINK}}
-            EXPIRY_INVITATION_LINK=${{secrets.EXPIRY_INVITATION_LINK}}
-            NODE_ENV=${{secrets.PROD_NODE_ENV}}
+            KEYCLOCK_CLIENT_ID=${{ env.KEYCLOCK_CLIENT_ID_PROD }}
+            KEYCLOCK_ENDPOINT=${{ env.KEYCLOCK_ENDPOINT_PROD }}
+            KEYCLOCK_BASE_URL=${{ env.KEYCLOCK_BASE_URL_PROD}}
+            GOOGLE_ANALYTICS_ID=${{ env.GOOGLE_ANALYTICS_ID_PRODUCTION }}
+            APPLICATION_ID_NEW_RELIC=${{ env.APPLICATION_ID_NEW_RELIC_PRODUCTION }}
+            LICENSE_KEY_NEW_RELIC_ACCOUNT=${{ env.LICENSE_KEY_NEW_RELIC_ACCOUNT }}
+            ACCOUNT_ID_NEW_RELIC=${{ env.ACCOUNT_ID_NEW_RELIC }}
+            NEW_RELIC_APP_NAME=${{ env.NEW_RELIC_APP_NAME }}
+            NEW_RELIC_LICENSE_KEY=${{ env.NEW_RELIC_LICENSE_KEY }}
+            TINYMCE_API_KEY=${{ env.TINYMCE_API_KEY }}
+            GOOGLE_MAPS_API_KEY=${{ env.GOOGLE_MAPS_API_KEY }}
+            URL_TABLEAU_JABARPROV=${{ env.URL_TABLEAU_JABARPROV }}
+            URL_DASHBOARD_TAHURA=${{ env.URL_DASHBOARD_TAHURA }}
+            USERNAME_TABLEAU=${{ env.USERNAME_TABLEAU }}
+            URL_GET_TOKEN_TABLEAU=${{ env.URL_GET_TOKEN_TABLEAU }}
+            UNLEASH_URL=${{ env.UNLEASH_URL }}
+            UNLEASH_TOKEN=${{ env.UNLEASH_TOKEN_PRODUCTION }}
+            URL_MAIN_SERVICE=${{ env.URL_MAIN_SERVICE_PROD }}
+            EXPIRY_FORGOT_PASSWORD_LINK=${{ env.EXPIRY_FORGOT_PASSWORD_LINK }}
+            EXPIRY_INVITATION_LINK=${{ env.EXPIRY_INVITATION_LINK }}
+            NODE_ENV=${{ env.PROD_NODE_ENV }}
       ## GitOps
       - name: GitOps ArgoCD Setup
         run: |
@@ -63,18 +80,53 @@ jobs:
           chmod 600 /tmp/gitlab-deploy-ssh-key
           export GIT_SSH_COMMAND="ssh -i /tmp/gitlab-deploy-ssh-key -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
           git clone ${{ secrets.GITLAB_ARGOCD_REPOSITORY }}
+
       - name: GitOps ArgoCD Update Image Tag
         uses: mikefarah/yq@master
         with:
-          cmd: yq -i '.spec.template.spec.containers[0].image = "${{ secrets.SERVICE_IMAGENAME }}:${{ env.sha_short }}"' 'jds-terraform-gke/k8s/superapp/production/web-admin/deployment.yaml'
+          cmd: yq -i '.spec.template.spec.containers[0].image = "${{ secrets.SERVICE_IMAGENAME }}:${{ env.version }}"' 'jds-terraform-gke/k8s/superapp/production/web-admin/deployment.yaml'
 
       - name: GitOps ArgoCD Create Branch, Commit, Push
+        id: create_mr
         run: |
           export GIT_SSH_COMMAND="ssh -i /tmp/gitlab-deploy-ssh-key -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
           cd jds-terraform-gke/k8s/superapp/production/web-admin
           git config user.email "github-action@github.com"
           git config user.name "Github Action"
-          git checkout -b superapp-web-admin-release-${{ env.sha_short }}-production
-          git add deployment.yaml
-          git commit -m "[release]: Superapp Web Admin ${{ env.sha_short }} to production"
-          git push origin superapp-web-admin-release-${{ env.sha_short }}-production -o merge_request.description="# Overview \n\n - Superapp Web Admin Release ${{ env.sha_short }} to production \n\n ## Evidence \n\n - title: Release Web Admin ${{ env.sha_short }} to production \n - project: Jabar Super Apps \n - participants:  " -o merge_request.create
+
+          BRANCH_NAME="release-web-admin-${{ env.version }}"
+          git checkout -b $BRANCH_NAME
+          git add .
+          git commit -m "[Release] Web Admin v${{ env.version }} to production"
+          git push origin $BRANCH_NAME
+          
+          # Create MR dengan version yang sesuai
+          MR_RESPONSE=$(curl --header "PRIVATE-TOKEN: ${{ secrets.GITLAB_API_TOKEN }}" \
+            --data "source_branch=$BRANCH_NAME" \
+            --data "target_branch=master" \
+            --data "title=[Release] Web Admin v${{ env.version }} to production" \
+            --data "description=# Release Web Admin v${{ env.version }} \n\n## Overview \n - Version: ${{ env.version }} \n - Environment: Production \n\n## Changes \n - Updating image to version ${{ env.version }}" \
+            "https://gitlab.com/api/v4/projects/${{ secrets.GITLAB_PROJECT_ID }}/merge_requests" )
+          
+          MR_URL=$(echo $MR_RESPONSE | jq -r '.web_url')
+          echo "mr_url=$MR_URL" >> $GITHUB_OUTPUT
+
+      - uses: appleboy/telegram-action@master
+        name: Send release notif to telegram
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          format: html
+          message: |
+            🚀 <b>New Release to Production</b>
+            
+            Version: <code>v${{ env.version }}</code>
+            Released by: <b>${{ github.actor }}</b>
+            
+            <b>GitHub Release:</b> https://github.com/${{ github.repository }}/releases/tag/v${{ env.version }}
+            
+            <b>Merge Request:</b> ${{ steps.create_mr.outputs.mr_url }}
+            
+            ⚠️ Please review and merge the deployment MR @feriahmd
+      
+            -----------------------------------
