@@ -18,25 +18,52 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # Add Vault Authentication step with Token - Simplified secrets
+      # Install Vault CLI
+      - name: Install Vault CLI
+        run: |
+          wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
+          echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+          sudo apt update && sudo apt install vault
+
       - name: HashiCorp Vault Authentication
+        id: vault-auth
         uses: hashicorp/vault-action@v3
-        id: vault
-        continue-on-error: true  # Add this temporarily for debugging
+        with:
+          url: ${{ secrets.VAULT_ADDR }}
+          token: ${{ secrets.VAULT_TOKEN }}
+          method: token
+
+      # Debug step to check secret structure
+      - name: Check Secret Structure
+        if: always()
+        run: |
+          # Set VAULT_ADDR and VAULT_TOKEN
+          export VAULT_ADDR=${{ secrets.VAULT_ADDR }}
+          export VAULT_TOKEN=${{ secrets.VAULT_TOKEN }}
+          
+          echo "Checking Vault CLI version..."
+          vault version
+          
+          echo "Checking secret structure..."
+          vault kv get -format=json kv-superapp-service-production/web-admin || echo "Failed to get secret"
+          
+          echo "Checking secret metadata..."
+          vault kv metadata get kv-superapp-service-production/web-admin || echo "Failed to get metadata"
+          
+          echo "Listing available secrets..."
+          vault kv list kv-superapp-service-production/ || echo "Failed to list secrets"
+
+      # Continue with your original Vault secrets step
+      - name: Get Vault Secrets
+        uses: hashicorp/vault-action@v3
         with:
           url: ${{ secrets.VAULT_ADDR }}
           token: ${{ secrets.VAULT_TOKEN }}
           method: token
           secrets: |
-            kv-superapp-service-production/data/web-admin data.data | .;
+            kv-superapp-service-production/web-admin DATA | .;
           exportEnv: true
           tlsSkipVerify: false
-
-      - name: Debug Vault Step
-        if: steps.vault.outcome == 'failure'
-        run: |
-          echo "Vault step failed"
-          echo "Error: ${{ steps.vault.outputs.error }}"
 
 
       # Configure Docker with Credentials
