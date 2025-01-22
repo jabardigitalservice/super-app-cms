@@ -203,7 +203,7 @@ export const complaintStatus = Object.freeze({
         typeAduan: [typeAduan.instruksiKewenanganNonPemprov.props],
       },
     ],
-    icon: '-',
+    icon: '/icon/icon-aduan/complaint-status/complaint-coordinated-icon.svg',
     typeAduan: [typeAduan.instruksiKewenanganNonPemprov.props],
   },
   not_yet_coordinated: {
@@ -219,7 +219,7 @@ export const complaintStatus = Object.freeze({
         ],
       },
     ],
-    icon: '-',
+    icon: '/icon/icon-aduan/complaint-status/complaint-followup-icon.svg',
     typeAduan: [
       typeAduan.instruksiKewenanganNonPemprov.props,
       typeAduan.instruksiNonPemprov.props,
@@ -239,13 +239,17 @@ export const complaintStatus = Object.freeze({
       },
       {
         color: 'yellow',
-        typeAduan: [typeAduan.instruksiKewenanganPemprov.props],
+        typeAduan: [
+          typeAduan.instruksiKewenanganPemprov.props,
+          typeAduan.instruksiKewenanganNonPemprov.props,
+        ],
       },
     ],
     icon: '/icon/icon-aduan/complaint-status/complaint-coordinated-icon.svg',
     typeAduan: [
       typeAduan.penentuanKewenangan.props,
       typeAduan.instruksiKewenanganPemprov.props,
+      typeAduan.instruksiKewenanganNonPemprov.props,
     ],
   },
   diverted_to_span: {
