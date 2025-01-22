@@ -112,7 +112,7 @@ jobs:
             --data "source_branch=$BRANCH_NAME" \
             --data "target_branch=master" \
             --data "title=[Release] Web Admin v${{ env.version }} to production" \
-            --data "description=# Release Web Admin v${{ env.version }} \n\n## Overview \n - Version: ${{ env.version }} \n - Environment: Production \n\n## Changes \n - Updating image to version ${{ env.version }}" \
+            --data "description=## Evidence\n\n* **Title:** [Release] Web Admin v${{ env.version }} to production\n* **Project:** Sapawarga\n* **Participants:**\n* **Screenshot:**" \
             "https://gitlab.com/api/v4/projects/${{ secrets.GITLAB_PROJECT_ID }}/merge_requests" )
           
           MR_URL=$(echo $MR_RESPONSE | jq -r '.web_url')
@@ -125,7 +125,7 @@ jobs:
           token: ${{ secrets.TELEGRAM_TOKEN }}
           format: html
           message: |
-            🚀 <b>New Release to Production</b>
+            🚀 <b>Superapp Web Admin New Release to Production</b>
             
             Version: <code>v${{ env.version }}</code>
             Released by: <b>${{ github.actor }}</b>
