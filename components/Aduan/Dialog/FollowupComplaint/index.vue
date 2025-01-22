@@ -304,6 +304,9 @@ export default {
       })
       this.listDataIkp = responseIkp.data.data.data
       const pagination = responseIkp.data.data
+      if (pagination.total_data < 5) {
+        pagination.page_size = pagination.total_data
+      }
       this.setPagination({
         currentPage: pagination?.page || 1,
         totalRows: pagination?.total_data || 0,
