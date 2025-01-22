@@ -65,7 +65,6 @@ jobs:
           exportEnv: true
           tlsSkipVerify: false
 
-
       # Configure Docker with Credentials
       - name: Configure Docker
         run: |
