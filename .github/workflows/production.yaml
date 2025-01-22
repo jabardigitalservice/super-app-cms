@@ -26,27 +26,27 @@ jobs:
           token: ${{ secrets.VAULT_TOKEN }}
           method: token
           secrets: |
-            secret/data/kv-superapp-service-production/web-admin/KEYCLOCK_CLIENT_ID_PROD:KEYCLOCK_CLIENT_ID_PROD
-            secret/data/kv-superapp-service-production/web-admin/KEYCLOCK_ENDPOINT_PROD:KEYCLOCK_ENDPOINT_PROD
-            secret/data/kv-superapp-service-production/web-admin/KEYCLOCK_BASE_URL_PROD:KEYCLOCK_BASE_URL_PROD
-            secret/data/kv-superapp-service-production/web-admin/GOOGLE_ANALYTICS_ID_PRODUCTION:GOOGLE_ANALYTICS_ID_PRODUCTION
-            secret/data/kv-superapp-service-production/web-admin/APPLICATION_ID_NEW_RELIC_PRODUCTION:APPLICATION_ID_NEW_RELIC_PRODUCTION
-            secret/data/kv-superapp-service-production/web-admin/LICENSE_KEY_NEW_RELIC_ACCOUNT:LICENSE_KEY_NEW_RELIC_ACCOUNT
-            secret/data/kv-superapp-service-production/web-admin/ACCOUNT_ID_NEW_RELIC:ACCOUNT_ID_NEW_RELIC
-            secret/data/kv-superapp-service-production/web-admin/NEW_RELIC_APP_NAME:NEW_RELIC_APP_NAME
-            secret/data/kv-superapp-service-production/web-admin/NEW_RELIC_LICENSE_KEY:NEW_RELIC_LICENSE_KEY
-            secret/data/kv-superapp-service-production/web-admin/TINYMCE_API_KEY:TINYMCE_API_KEY
-            secret/data/kv-superapp-service-production/web-admin/GOOGLE_MAPS_API_KEY:GOOGLE_MAPS_API_KEY
-            secret/data/kv-superapp-service-production/web-admin/URL_TABLEAU_JABARPROV:URL_TABLEAU_JABARPROV
-            secret/data/kv-superapp-service-production/web-admin/URL_DASHBOARD_TAHURA:URL_DASHBOARD_TAHURA
-            secret/data/kv-superapp-service-production/web-admin/USERNAME_TABLEAU:USERNAME_TABLEAU
-            secret/data/kv-superapp-service-production/web-admin/URL_GET_TOKEN_TABLEAU:URL_GET_TOKEN_TABLEAU
-            secret/data/kv-superapp-service-production/web-admin/UNLEASH_URL:UNLEASH_URL
-            secret/data/kv-superapp-service-production/web-admin/UNLEASH_TOKEN_PRODUCTION:UNLEASH_TOKEN_PRODUCTION
-            secret/data/kv-superapp-service-production/web-admin/URL_MAIN_SERVICE_PROD:URL_MAIN_SERVICE_PROD
-            secret/data/kv-superapp-service-production/web-admin/EXPIRY_FORGOT_PASSWORD_LINK:EXPIRY_FORGOT_PASSWORD_LINK
-            secret/data/kv-superapp-service-production/web-admin/EXPIRY_INVITATION_LINK:EXPIRY_INVITATION_LINK
-            secret/data/kv-superapp-service-production/web-admin/PROD_NODE_ENV:PROD_NODE_ENV
+            secret/data/kv-superapp-service-production/web-admin KEYCLOCK_CLIENT_ID_PROD | KEYCLOCK_CLIENT_ID_PROD ;
+            secret/data/kv-superapp-service-production/web-admin KEYCLOCK_ENDPOINT_PROD | KEYCLOCK_ENDPOINT_PROD ;
+            secret/data/kv-superapp-service-production/web-admin KEYCLOCK_BASE_URL_PROD | KEYCLOCK_BASE_URL_PROD ;
+            secret/data/kv-superapp-service-production/web-admin GOOGLE_ANALYTICS_ID_PRODUCTION | GOOGLE_ANALYTICS_ID_PRODUCTION;
+            secret/data/kv-superapp-service-production/web-admin APPLICATION_ID_NEW_RELIC_PRODUCTION | APPLICATION_ID_NEW_RELIC_PRODUCTION ; 
+            secret/data/kv-superapp-service-production/web-admin LICENSE_KEY_NEW_RELIC_ACCOUNT | LICENSE_KEY_NEW_RELIC_ACCOUNT ;
+            secret/data/kv-superapp-service-production/web-admin ACCOUNT_ID_NEW_RELIC | ACCOUNT_ID_NEW_RELIC ;
+            secret/data/kv-superapp-service-production/web-admin NEW_RELIC_APP_NAME | NEW_RELIC_APP_NAME ;
+            secret/data/kv-superapp-service-production/web-admin NEW_RELIC_LICENSE_KEY | NEW_RELIC_LICENSE_KEY ;
+            secret/data/kv-superapp-service-production/web-admin TINYMCE_API_KEY | TINYMCE_API_KEY ;
+            secret/data/kv-superapp-service-production/web-admin GOOGLE_MAPS_API_KEY | GOOGLE_MAPS_API_KEY ;
+            secret/data/kv-superapp-service-production/web-admin URL_TABLEAU_JABARPROV | URL_TABLEAU_JABARPROV ;
+            secret/data/kv-superapp-service-production/web-admin URL_DASHBOARD_TAHURA | URL_DASHBOARD_TAHURA ;
+            secret/data/kv-superapp-service-production/web-admin USERNAME_TABLEAU | USERNAME_TABLEAU ;
+            secret/data/kv-superapp-service-production/web-admin URL_GET_TOKEN_TABLEAU | URL_GET_TOKEN_TABLEAU ;
+            secret/data/kv-superapp-service-production/web-admin UNLEASH_URL | UNLEASH_URL ;
+            secret/data/kv-superapp-service-production/web-admin UNLEASH_TOKEN_PRODUCTION | UNLEASH_TOKEN_PRODUCTION ;
+            secret/data/kv-superapp-service-production/web-admin URL_MAIN_SERVICE_PROD | URL_MAIN_SERVICE_PROD ;
+            secret/data/kv-superapp-service-production/web-admin EXPIRY_FORGOT_PASSWORD_LINK | EXPIRY_FORGOT_PASSWORD_LINK ;
+            secret/data/kv-superapp-service-production/web-admin EXPIRY_INVITATION_LINK | EXPIRY_INVITATION_LINK ;
+            secret/data/kv-superapp-service-production/web-admin PROD_NODE_ENV | PROD_NODE_ENV
           exportEnv: true
           tlsSkipVerify: false
 
