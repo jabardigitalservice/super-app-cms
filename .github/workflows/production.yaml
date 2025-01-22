@@ -44,11 +44,11 @@ jobs:
           echo "Checking Vault CLI version..."
           vault version
           
-          echo "Checking secret structure..."
-          vault kv get -format=json kv-superapp-service-production/web-admin || echo "Failed to get secret"
+          # echo "Checking secret structure..."
+          # vault kv get -format=json kv-superapp-service-production/web-admin || echo "Failed to get secret"
           
-          echo "Checking secret metadata..."
-          vault kv metadata get kv-superapp-service-production/web-admin || echo "Failed to get metadata"
+          # echo "Checking secret metadata..."
+          # vault kv metadata get kv-superapp-service-production/web-admin || echo "Failed to get metadata"
           
           echo "Listing available secrets..."
           vault kv list kv-superapp-service-production/ || echo "Failed to list secrets"
@@ -61,7 +61,7 @@ jobs:
           token: ${{ secrets.VAULT_TOKEN }}
           method: token
           secrets: |
-            kv-superapp-service-production/web-admin DATA | .;
+            kv-superapp-service-production/data/web-admin data | DATA;
           exportEnv: true
           tlsSkipVerify: false
 
