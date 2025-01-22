@@ -21,29 +21,23 @@ jobs:
       # Add Vault Authentication step with Token - Simplified secrets
       - name: HashiCorp Vault Authentication
         uses: hashicorp/vault-action@v3
+        id: vault
+        continue-on-error: true  # Add this temporarily for debugging
         with:
           url: ${{ secrets.VAULT_ADDR }}
           token: ${{ secrets.VAULT_TOKEN }}
           method: token
           secrets: |
-            kv-superapp-service-production/data/web-admin data | .data;
+            kv-superapp-service-production/data/web-admin data.data | .;
           exportEnv: true
           tlsSkipVerify: false
 
-      # Debug Vault Secrets
-      - name: Debug Vault Secrets
-        if: always()
-        run: env | grep "VAULT"
-
-      - name: Debug Vault CLI
-        if: always()
+      - name: Debug Vault Step
+        if: steps.vault.outcome == 'failure'
         run: |
-          echo "Testing Vault CLI"
-          vault kv get -mount="kv-superapp-service-production" web-admin
+          echo "Vault step failed"
+          echo "Error: ${{ steps.vault.outputs.error }}"
 
-      - name: Log Vault Secrets
-        if: always()
-        run: echo "Vault secrets successfully retrieved."
 
       # Configure Docker with Credentials
       - name: Configure Docker
