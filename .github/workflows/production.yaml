@@ -26,11 +26,24 @@ jobs:
           token: ${{ secrets.VAULT_TOKEN }}
           method: token
           secrets: |
-            kv-superapp-service-production/data/web-admin data.data | .
+            kv-superapp-service-production/data/web-admin data | .data;
           exportEnv: true
           tlsSkipVerify: false
+
+      # Debug Vault Secrets
       - name: Debug Vault Secrets
-        run: echo ${{ env }}
+        if: always()
+        run: env | grep "VAULT"
+
+      - name: Debug Vault CLI
+        if: always()
+        run: |
+          echo "Testing Vault CLI"
+          vault kv get -mount="kv-superapp-service-production" web-admin
+
+      - name: Log Vault Secrets
+        if: always()
+        run: echo "Vault secrets successfully retrieved."
 
       # Configure Docker with Credentials
       - name: Configure Docker
