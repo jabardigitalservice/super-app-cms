@@ -24,8 +24,11 @@ jobs:
         with:
           url: ${{ secrets.VAULT_ADDR }}
           token: ${{ secrets.VAULT_TOKEN }}
+          method: token
           secrets: |
-            secret/data/kv-superapp-service-production/web-admin secrets | .;  
+            secret/data/kv-superapp-service-production/web-admin secrets | .;
+          exportEnv: true
+          tlsSkipVerify: false
 
       # Configure Docker with Credentials
       - name: Configure Docker
