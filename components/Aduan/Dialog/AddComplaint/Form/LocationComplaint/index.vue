@@ -11,15 +11,20 @@
           class="mb-4"
           tag="div"
         >
-          <label class="mb-1 text-[15px] text-gray-800">Kota/Kabupaten</label>
+          <div>
+            <label class="mb-1 text-[15px] text-gray-800">Kota/Kabupaten</label>
+          </div>
           <BaseSelectSearch
             v-model="dataLocationComplaint.city_id"
             name="Kota/Kabupaten"
             :options="listCity"
             placeholder="Pilih Kota/Kabupaten"
-            class="form-select-search"
+            width-button="100%"
+            width-option="592px"
+            filterable
+            class="select-search"
             :class="{
-              'form-select-search--error mb-2': errors.length > 0,
+              'select-search--error mb-2': errors.length > 0,
             }"
             @change="(val) => changeSelectForm(val, 'city_id')"
           />
@@ -32,15 +37,20 @@
           class="mb-4"
           tag="div"
         >
-          <label class="mt-5 mb-1 text-[15px] text-gray-800">Kecamatan</label>
+          <div>
+            <label class="mt-5 mb-1 text-[15px] text-gray-800">Kecamatan</label>
+          </div>
           <BaseSelectSearch
             v-model="dataLocationComplaint.district_id"
             name="Kecamatan"
             :options="listDistrict"
             placeholder="Pilih Kecamatan"
-            class="form-select-search"
+            width-button="100%"
+            width-option="592px"
+            filterable
+            class="select-search"
             :class="{
-              'form-select-search--error mb-2': errors.length > 0,
+              'select-search--error mb-1': errors.length > 0,
             }"
             @change="(val) => changeSelectForm(val, 'district_id')"
           />
@@ -53,15 +63,20 @@
           class="mb-4"
           tag="div"
         >
-          <label class="mb-1 text-[15px] text-gray-800">Kelurahan</label>
+          <div>
+            <label class="mb-1 text-[15px] text-gray-800">Kelurahan</label>
+          </div>
           <BaseSelectSearch
             v-model="dataLocationComplaint.village_id"
             name="Kelurahan"
             :options="listVillage"
             placeholder="Pilih Kelurahan"
-            class="form-select-search"
+            class="select-search"
+            width-button="100%"
+            width-option="592px"
+            filterable
             :class="{
-              'form-select-search--error mb-2': errors.length > 0,
+              'select-search--error mb-1': errors.length > 0,
             }"
             @change="(val) => changeSelectForm(val, 'village_id')"
           />
