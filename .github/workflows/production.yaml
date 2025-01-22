@@ -18,52 +18,20 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # Install Vault CLI
-      - name: Install Vault CLI
+      # Install Vault and get secrets
+      - name: Get Vault Secrets
         run: |
+          # Install Vault CLI
           wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
           echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
           sudo apt update && sudo apt install vault
 
-      - name: HashiCorp Vault Authentication
-        id: vault-auth
-        uses: hashicorp/vault-action@v3
-        with:
-          url: ${{ secrets.VAULT_ADDR }}
-          token: ${{ secrets.VAULT_TOKEN }}
-          method: token
-
-      # Debug step to check secret structure
-      - name: Check Secret Structure
-        if: always()
-        run: |
-          # Set VAULT_ADDR and VAULT_TOKEN
+          # Set Vault environment variables
           export VAULT_ADDR=${{ secrets.VAULT_ADDR }}
           export VAULT_TOKEN=${{ secrets.VAULT_TOKEN }}
-          
-          echo "Checking Vault CLI version..."
-          vault version
-          
-          # echo "Checking secret structure..."
-          # vault kv get -format=json kv-superapp-service-production/web-admin || echo "Failed to get secret"
-          
-          # echo "Checking secret metadata..."
-          # vault kv metadata get kv-superapp-service-production/web-admin || echo "Failed to get metadata"
-          
-          echo "Listing available secrets..."
-          vault kv list kv-superapp-service-production/ || echo "Failed to list secrets"
 
-      # Continue with your original Vault secrets step
-      - name: Get Vault Secrets
-        uses: hashicorp/vault-action@v3
-        with:
-          url: ${{ secrets.VAULT_ADDR }}
-          token: ${{ secrets.VAULT_TOKEN }}
-          method: token
-          secrets: |
-            kv-superapp-service-production/data/web-admin data | DATA;
-          exportEnv: true
-          tlsSkipVerify: false
+          # Get secrets and export them as environment variables
+          vault kv get -format=json kv-superapp-service-production/web-admin | jq -r '.data.data | to_entries | .[] | "export \(.key)=\(.value)"' >> $GITHUB_ENV
 
       # Configure Docker with Credentials
       - name: Configure Docker
@@ -111,6 +79,7 @@ jobs:
             EXPIRY_FORGOT_PASSWORD_LINK=${{ env.EXPIRY_FORGOT_PASSWORD_LINK }}
             EXPIRY_INVITATION_LINK=${{ env.EXPIRY_INVITATION_LINK }}
             NODE_ENV=${{ env.PROD_NODE_ENV }}
+
       ## GitOps
       - name: GitOps ArgoCD Setup
         run: |
@@ -166,5 +135,3 @@ jobs:
             <b>Merge Request:</b> ${{ steps.create_mr.outputs.mr_url }}
             
             ⚠️ Please review and merge the deployment MR @feriahmd
-      
-            -----------------------------------
