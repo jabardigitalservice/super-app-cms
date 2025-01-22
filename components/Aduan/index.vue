@@ -731,11 +731,11 @@ export default {
     addComplaintStatusFilterHandle() {
       const listValueStatusComplaint = this.getStatusComplaintByComplaintType()
 
-      for (let i = 0; i < listValueStatusComplaint.length; i++) {
-        this.setQuery({
-          [`complaint_status_id[${i}]`]: listValueStatusComplaint[i].id,
+      listValueStatusComplaint.map((item, index) => {
+        return this.setQuery({
+          [`complaint_status_id[${index}]`]: item.id,
         })
-      }
+      })
 
       return this.query
     },
