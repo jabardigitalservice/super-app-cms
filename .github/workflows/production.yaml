@@ -25,7 +25,7 @@ jobs:
           url: ${{ secrets.VAULT_ADDR }}
           token: ${{ secrets.VAULT_TOKEN }}
           secrets: |
-            secret/data/kv-superapp-production/web-admin secrets | .;  
+            secret/data/kv-superapp-service-production/web-admin secrets | .;  
 
       # Configure Docker with Credentials
       - name: Configure Docker
