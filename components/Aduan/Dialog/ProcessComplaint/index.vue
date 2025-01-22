@@ -106,9 +106,9 @@
                 tag="div"
               >
                 <div>
-                  <label class="mt-5 mb-1 text-[15px] text-gray-800"
-                    >Nama Instansi</label
-                  >
+                  <label class="mt-5 mb-1 text-[15px] text-gray-800">
+                    Nama Instansi
+                  </label>
                 </div>
                 <BaseSelectSearch
                   v-model="payload.opd_id"
@@ -135,9 +135,9 @@
                 tag="div"
               >
                 <div>
-                  <label class="mt-5 mb-1 text-[15px] text-gray-800"
-                    >Pemda Penanggungjawab</label
-                  >
+                  <label class="mt-5 mb-1 text-[15px] text-gray-800">
+                    Pemda Penanggungjawab
+                  </label>
                 </div>
                 <p class="text-[13px] text-gray-700">
                   Kota/kabupaten penanggungjawab yang bertugas untuk
