@@ -11,15 +11,20 @@
           class="mb-4"
           tag="div"
         >
-          <label class="mb-1 text-[15px] text-gray-800">Kategori</label>
+          <div>
+            <label class="mb-1 text-[15px] text-gray-800">Kategori</label>
+          </div>
           <BaseSelectSearch
             v-model="dataOtherComplaint.category_id"
             name="Kategori"
             :options="listCategoryComplaint"
             placeholder="Pilih Kategori"
-            class="form-select-search"
+            width-button="100%"
+            width-option="592px"
+            filterable
+            class="select-search"
             :class="{
-              'form-select-search--error mb-2': errors.length > 0,
+              'select-search--error mb-2': errors.length > 0,
             }"
             @change="(val) => changeSelectForm(val, 'category_id')"
           />
@@ -55,9 +60,12 @@
             name="Sub Kategori"
             :options="listSubCategoryComplaint"
             placeholder="Pilih Sub Kategori"
-            class="form-select-search"
+            width-button="100%"
+            width-option="592px"
+            filterable
+            class="select-search"
             :class="{
-              'form-select-search--error mb-2': errors.length > 0,
+              'select-search--error mb-2': errors.length > 0,
             }"
             @change="(val) => changeSelectForm(val, 'sub_category_id')"
           />
@@ -96,9 +104,12 @@
             name="Disposisi"
             :options="listDisposition"
             placeholder="Pilih Dinas Untuk Disposisi"
-            class="form-select-search"
+            width-button="100%"
+            width-option="592px"
+            filterable
+            class="select-search"
             :class="{
-              'form-select-search--error mb-2': errors.length > 0,
+              'select-search--error mb-2': errors.length > 0,
             }"
             @change="(val) => changeSelectForm(val, 'disposition')"
           />

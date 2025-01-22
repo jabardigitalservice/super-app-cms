@@ -146,7 +146,7 @@
 }
 
 .layout-content::-webkit-scrollbar-thumb {
-  @apply rounded-xl border-[6px] border-solid border-transparent bg-red-400 bg-clip-content;
+  @apply rounded-xl border-[6px] border-solid border-transparent bg-gray-300 bg-clip-content;
 }
 /* for filterable style
 .form-add-complaint .jds-options__filter .jds-input-text__input-wrapper{
@@ -173,10 +173,13 @@
   z-index: 10 !important;
 }
 
-.form-select-search span {
-  @apply text-sm !text-gray-600;
+.select-search span {
+  @apply text-sm;
 }
 
-.form-select-search--error button {
-  @apply rounded-lg border border-red-600;
+.select-search {
+  @apply !w-full
+}
+.select-search--error button {
+  @apply border border-red-600;
 }
