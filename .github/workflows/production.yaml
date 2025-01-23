@@ -18,22 +18,6 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # Install Vault and get secrets
-      - name: Get Vault Secrets
-        run: |
-          # Install Vault CLI
-          wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
-          echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
-          sudo apt update && sudo apt install vault
-
-          # Set Vault environment variables
-          export VAULT_ADDR=${{ secrets.VAULT_ADDR }}
-          export VAULT_TOKEN=${{ secrets.VAULT_TOKEN }}
-
-          # Get secrets and format them for build-args
-          echo "BUILD_ARGS<<EOF" >> $GITHUB_ENV
-          vault kv get -format=json kv-superapp-service-production/web-admin | jq -r '.data.data | to_entries[] | "\(.key)=\(.value)"' >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
 
       # Configure Docker with Credentials
       - name: Configure Docker
@@ -44,23 +28,68 @@ jobs:
       - name: Set version tag
         id: vars
         run: |
-          # Extract version from git tag (remove 'v' prefix)
           VERSION=${GITHUB_REF#refs/tags/v}
           echo "version=$VERSION" >> $GITHUB_ENV
           echo "Using version: $VERSION"
 
-      # Build the Docker image
+      - name: Vault Authentication
+        uses: hashicorp/vault-action@v2
+        with:
+          url: ${{ secrets.VAULT_ADDR }}
+          token: ${{ secrets.VAULT_TOKEN }}
+          method: token
+          secrets: |
+            secret/data/kv-superapp-service-production/web-admin KEYCLOCK_CLIENT_ID ;
+            secret/data/kv-superapp-service-production/web-admin KEYCLOCK_ENDPOINT ;
+            secret/data/kv-superapp-service-production/web-admin KEYCLOCK_BASE_URL ;
+            secret/data/kv-superapp-service-production/web-admin GOOGLE_ANALYTICS_ID ;
+            secret/data/kv-superapp-service-production/web-admin APPLICATION_ID_NEW_RELIC ;
+            secret/data/kv-superapp-service-production/web-admin LICENSE_KEY_NEW_RELIC_ACCOUNT ;
+            secret/data/kv-superapp-service-production/web-admin ACCOUNT_ID_NEW_RELIC ;
+            secret/data/kv-superapp-service-production/web-admin NEW_RELIC_APP_NAME ;
+            secret/data/kv-superapp-service-production/web-admin NEW_RELIC_LICENSE_KEY ;
+            secret/data/kv-superapp-service-production/web-admin TINYMCE_API_KEY ;
+            secret/data/kv-superapp-service-production/web-admin GOOGLE_MAPS_API_KEY ;
+            secret/data/kv-superapp-service-production/web-admin URL_TABLEAU_JABARPROV ;
+            secret/data/kv-superapp-service-production/web-admin URL_DASHBOARD_TAHURA ;
+            secret/data/kv-superapp-service-production/web-admin USERNAME_TABLEAU ;
+            secret/data/kv-superapp-service-production/web-admin URL_GET_TOKEN_TABLEAU ;
+            secret/data/kv-superapp-service-production/web-admin UNLEASH_URL ;
+            secret/data/kv-superapp-service-production/web-admin UNLEASH_TOKEN ;
+            secret/data/kv-superapp-service-production/web-admin URL_MAIN_SERVICE ;
+            secret/data/kv-superapp-service-production/web-admin EXPIRY_FORGOT_PASSWORD_LINK ;
+            secret/data/kv-superapp-service-production/web-admin EXPIRY_INVITATION_LINK ;
+            secret/data/kv-superapp-service-production/web-admin NODE_ENV
+
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
           context: .
           file: Dockerfile
           push: true
-          tags: |
-            ${{ secrets.SERVICE_IMAGENAME }}:${{ env.version }}
-            ${{ secrets.SERVICE_IMAGENAME }}:latest
+          tags: ${{ secrets.SERVICE_IMAGENAME }}:${{ env.version }}
           build-args: |
-            ${{ env.BUILD_ARGS }}
+            KEYCLOCK_CLIENT_ID=${{ env.KEYCLOCK_CLIENT_ID }}
+            KEYCLOCK_ENDPOINT=${{ env.KEYCLOCK_ENDPOINT }}
+            KEYCLOCK_BASE_URL=${{ env.KEYCLOCK_BASE_URL }}
+            GOOGLE_ANALYTICS_ID=${{ env.GOOGLE_ANALYTICS_ID }}
+            APPLICATION_ID_NEW_RELIC=${{ env.APPLICATION_ID_NEW_RELIC }}
+            LICENSE_KEY_NEW_RELIC_ACCOUNT=${{ env.LICENSE_KEY_NEW_RELIC_ACCOUNT }}
+            ACCOUNT_ID_NEW_RELIC=${{ env.ACCOUNT_ID_NEW_RELIC }}
+            NEW_RELIC_APP_NAME=${{ env.NEW_RELIC_APP_NAME }}
+            NEW_RELIC_LICENSE_KEY=${{ env.NEW_RELIC_LICENSE_KEY }}
+            TINYMCE_API_KEY=${{ env.TINYMCE_API_KEY }}
+            GOOGLE_MAPS_API_KEY=${{ env.GOOGLE_MAPS_API_KEY }}
+            URL_TABLEAU_JABARPROV=${{ env.URL_TABLEAU_JABARPROV }}
+            URL_DASHBOARD_TAHURA=${{ env.URL_DASHBOARD_TAHURA }}
+            USERNAME_TABLEAU=${{ env.USERNAME_TABLEAU }}
+            URL_GET_TOKEN_TABLEAU=${{ env.URL_GET_TOKEN_TABLEAU }}
+            UNLEASH_URL=${{ env.UNLEASH_URL }}
+            UNLEASH_TOKEN=${{ env.UNLEASH_TOKEN }}
+            URL_MAIN_SERVICE=${{ env.URL_MAIN_SERVICE }}
+            EXPIRY_FORGOT_PASSWORD_LINK=${{ env.EXPIRY_FORGOT_PASSWORD_LINK }}
+            EXPIRY_INVITATION_LINK=${{ env.EXPIRY_INVITATION_LINK }}
+            NODE_ENV=${{ env.NODE_ENV }}
 
       ## GitOps
       - name: GitOps ArgoCD Setup
