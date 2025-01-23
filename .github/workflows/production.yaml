@@ -138,20 +138,20 @@ jobs:
           MR_URL=$(echo $MR_RESPONSE | jq -r '.web_url')
           echo "mr_url=$MR_URL" >> $GITHUB_OUTPUT
 
-      # - uses: appleboy/telegram-action@master
-      #   name: Send release notif to telegram
-      #   with:
-      #     to: ${{ secrets.TELEGRAM_TO }}
-      #     token: ${{ secrets.TELEGRAM_TOKEN }}
-      #     format: html
-      #     message: |
-      #       🚀 <b>Superapp Web Admin New Release to Production</b>
+      - uses: appleboy/telegram-action@master
+        name: Send release notif to telegram
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          format: html
+          message: |
+            🚀 <b>Superapp Web Admin New Release to Production</b>
             
-      #       Version: <code>v${{ env.version }}</code>
-      #       Released by: <b>${{ github.actor }}</b>
+            Version: <code>v${{ env.version }}</code>
+            Released by: <b>${{ github.actor }}</b>
             
-      #       <b>GitHub Release:</b> https://github.com/${{ github.repository }}/releases/tag/v${{ env.version }}
+            <b>GitHub Release:</b> https://github.com/${{ github.repository }}/releases/tag/v${{ env.version }}
             
-      #       <b>Merge Request:</b> ${{ steps.create_mr.outputs.mr_url }}
+            <b>Merge Request:</b> ${{ steps.create_mr.outputs.mr_url }}
             
-      #       ⚠️ Please review and merge the deployment MR @feriahmd
+            ⚠️ Please review and merge the deployment MR @feriahmd
