@@ -116,7 +116,7 @@ jobs:
           BRANCH_NAME="release-web-admin-${{ env.version }}"
           git checkout -b $BRANCH_NAME
           git add .
-          git commit -m "[Release] Web Admin v${{ env.version }} to production"
+          git commit -m "[Release] Superapp Web Admin v${{ env.version }} to production"
           git push origin $BRANCH_NAME
           
           # Create MR Gitlab
