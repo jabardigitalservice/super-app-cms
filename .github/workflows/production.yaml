@@ -31,7 +31,9 @@ jobs:
           export VAULT_TOKEN=${{ secrets.VAULT_TOKEN }}
 
           # Get secrets and format them for build-args
-          echo "BUILD_ARGS=$(vault kv get -format=json kv-superapp-service-production/web-admin | jq -r '.data.data | to_entries | map("\(.key)=\(.value)") | join("\n")' | sed 's/^/          /')" >> $GITHUB_ENV
+          echo "BUILD_ARGS<<EOF" >> $GITHUB_ENV
+          vault kv get -format=json kv-superapp-service-production/web-admin | jq -r '.data.data | to_entries[] | "--build-arg \(.key)=\(.value)"' >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
 
       # Configure Docker with Credentials
       - name: Configure Docker
@@ -57,7 +59,8 @@ jobs:
           tags: |
             ${{ secrets.SERVICE_IMAGENAME }}:${{ env.version }}
             ${{ secrets.SERVICE_IMAGENAME }}:latest
-          build-args: ${{ env.BUILD_ARGS }}
+          build-args: |
+            ${{ env.BUILD_ARGS }}
 
       ## GitOps
       - name: GitOps ArgoCD Setup
@@ -90,9 +93,17 @@ jobs:
           MR_RESPONSE=$(curl --header "PRIVATE-TOKEN: ${{ secrets.GITLAB_API_TOKEN }}" \
             --data-urlencode "source_branch=$BRANCH_NAME" \
             --data-urlencode "target_branch=master" \
-            --data-urlencode "title=[Release] Web Admin v${{ env.version }} to production" \
-            --data-urlencode "description=## Evidence\n\n* **Title:** [Release] Web Admin v${{ env.version }} to production\n* **Project:** Sapawarga\n* **Participants:**\n* **Screenshot:**" \
-            "https://gitlab.com/api/v4/projects/${{ secrets.GITLAB_PROJECT_ID }}/merge_requests")
+            --data-urlencode "title=[Release] Superapp Web Admin v${{ env.version }} to production" \
+            --data-urlencode "description=# Overview
+
+              - Web Admin Release v${{ env.version }} to production
+
+              ## Evidence
+
+              - title: Release Superapp Web Admin v${{ env.version }} to production
+              - project: Sapawarga
+              - participants: " \
+                          "https://gitlab.com/api/v4/projects/${{ secrets.GITLAB_PROJECT_ID }}/merge_requests")
 
           MR_URL=$(echo $MR_RESPONSE | jq -r '.web_url')
           echo "mr_url=$MR_URL" >> $GITHUB_OUTPUT
