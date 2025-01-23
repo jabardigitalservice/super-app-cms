@@ -32,7 +32,7 @@ jobs:
 
           # Get secrets and format them for build-args
           echo "BUILD_ARGS<<EOF" >> $GITHUB_ENV
-          vault kv get -format=json kv-superapp-service-production/web-admin | jq -r '.data.data | to_entries[] | select(.key != null and .value != null) | "ARG \(.key)=\(.value)\nENV \(.key)=\(.value)"' >> $GITHUB_ENV
+          vault kv get -format=json kv-superapp-service-production/web-admin | jq -r '.data.data | to_entries[] | "\(.key)=\(.value)"' >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
       # Configure Docker with Credentials
