@@ -30,8 +30,8 @@ jobs:
           export VAULT_ADDR=${{ secrets.VAULT_ADDR }}
           export VAULT_TOKEN=${{ secrets.VAULT_TOKEN }}
 
-          # Get secrets and export them as environment variables
-          vault kv get -format=json kv-superapp-service-production/web-admin | jq -r '.data.data | to_entries | .[] | "export \(.key)=\(.value)"' >> $GITHUB_ENV
+          # Get secrets and format them for build-args
+          echo "BUILD_ARGS=$(vault kv get -format=json kv-superapp-service-production/web-admin | jq -r '.data.data | to_entries | map("\(.key)=\(.value)") | join("\n")' | sed 's/^/          /')" >> $GITHUB_ENV
 
       # Configure Docker with Credentials
       - name: Configure Docker
@@ -57,28 +57,7 @@ jobs:
           tags: |
             ${{ secrets.SERVICE_IMAGENAME }}:${{ env.version }}
             ${{ secrets.SERVICE_IMAGENAME }}:latest
-          build-args: |
-            KEYCLOCK_CLIENT_ID=${{ env.KEYCLOCK_CLIENT_ID_PROD }}
-            KEYCLOCK_ENDPOINT=${{ env.KEYCLOCK_ENDPOINT_PROD }}
-            KEYCLOCK_BASE_URL=${{ env.KEYCLOCK_BASE_URL_PROD}}
-            GOOGLE_ANALYTICS_ID=${{ env.GOOGLE_ANALYTICS_ID_PRODUCTION }}
-            APPLICATION_ID_NEW_RELIC=${{ env.APPLICATION_ID_NEW_RELIC_PRODUCTION }}
-            LICENSE_KEY_NEW_RELIC_ACCOUNT=${{ env.LICENSE_KEY_NEW_RELIC_ACCOUNT }}
-            ACCOUNT_ID_NEW_RELIC=${{ env.ACCOUNT_ID_NEW_RELIC }}
-            NEW_RELIC_APP_NAME=${{ env.NEW_RELIC_APP_NAME }}
-            NEW_RELIC_LICENSE_KEY=${{ env.NEW_RELIC_LICENSE_KEY }}
-            TINYMCE_API_KEY=${{ env.TINYMCE_API_KEY }}
-            GOOGLE_MAPS_API_KEY=${{ env.GOOGLE_MAPS_API_KEY }}
-            URL_TABLEAU_JABARPROV=${{ env.URL_TABLEAU_JABARPROV }}
-            URL_DASHBOARD_TAHURA=${{ env.URL_DASHBOARD_TAHURA }}
-            USERNAME_TABLEAU=${{ env.USERNAME_TABLEAU }}
-            URL_GET_TOKEN_TABLEAU=${{ env.URL_GET_TOKEN_TABLEAU }}
-            UNLEASH_URL=${{ env.UNLEASH_URL }}
-            UNLEASH_TOKEN=${{ env.UNLEASH_TOKEN_PRODUCTION }}
-            URL_MAIN_SERVICE=${{ env.URL_MAIN_SERVICE_PROD }}
-            EXPIRY_FORGOT_PASSWORD_LINK=${{ env.EXPIRY_FORGOT_PASSWORD_LINK }}
-            EXPIRY_INVITATION_LINK=${{ env.EXPIRY_INVITATION_LINK }}
-            NODE_ENV=${{ env.PROD_NODE_ENV }}
+          build-args: ${{ env.BUILD_ARGS }}
 
       ## GitOps
       - name: GitOps ArgoCD Setup
@@ -107,14 +86,14 @@ jobs:
           git commit -m "[Release] Web Admin v${{ env.version }} to production"
           git push origin $BRANCH_NAME
           
-          # Create MR dengan version yang sesuai
+          # Create MR Gitlab
           MR_RESPONSE=$(curl --header "PRIVATE-TOKEN: ${{ secrets.GITLAB_API_TOKEN }}" \
-            --data "source_branch=$BRANCH_NAME" \
-            --data "target_branch=master" \
-            --data "title=[Release] Web Admin v${{ env.version }} to production" \
-            --data "description=## Evidence\n\n* **Title:** [Release] Web Admin v${{ env.version }} to production\n* **Project:** Sapawarga\n* **Participants:**\n* **Screenshot:**" \
-            "https://gitlab.com/api/v4/projects/${{ secrets.GITLAB_PROJECT_ID }}/merge_requests" )
-          
+            --data-urlencode "source_branch=$BRANCH_NAME" \
+            --data-urlencode "target_branch=master" \
+            --data-urlencode "title=[Release] Web Admin v${{ env.version }} to production" \
+            --data-urlencode "description=## Evidence\n\n* **Title:** [Release] Web Admin v${{ env.version }} to production\n* **Project:** Sapawarga\n* **Participants:**\n* **Screenshot:**" \
+            "https://gitlab.com/api/v4/projects/${{ secrets.GITLAB_PROJECT_ID }}/merge_requests")
+
           MR_URL=$(echo $MR_RESPONSE | jq -r '.web_url')
           echo "mr_url=$MR_URL" >> $GITHUB_OUTPUT
 
