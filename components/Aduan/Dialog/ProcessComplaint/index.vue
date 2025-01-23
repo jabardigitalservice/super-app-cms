@@ -6,7 +6,7 @@
         <ValidationObserver ref="form">
           <!-- START FORM -->
           <div
-            class="form-process-complaint max-h-[600px] w-full overflow-auto px-6 sm:h-[calc(100vh-170px)]"
+            class="form-process-complaint layout-content max-h-[600px] w-full overflow-auto pl-6 pr-3 sm:h-[calc(100vh-170px)]"
           >
             <h1 class="font-roboto text-base font-bold">Informasi Aduan</h1>
             <div class="mb-4 grid grid-cols-2 gap-x-2">
@@ -72,7 +72,6 @@
             <!-- SHOW FIELD STATUS COORDINATED & DIVERTED TO SPAN -->
             <div
               v-if="payload.complaint_status_id !== complaintStatus.rejected.id"
-              class="mb-4"
             >
               <ValidationProvider
                 v-slot="{ errors }"
@@ -106,17 +105,22 @@
                 class="mb-5"
                 tag="div"
               >
-                <label class="mt-5 mb-1 text-[15px] text-gray-800"
-                  >Nama Instansi</label
-                >
+                <div>
+                  <label class="mt-5 mb-1 text-[15px] text-gray-800">
+                    Nama Instansi
+                  </label>
+                </div>
                 <BaseSelectSearch
                   v-model="payload.opd_id"
                   name="Nama Instansi"
                   :options="listDisposition"
                   placeholder="Pilih Nama Instansi"
-                  class="form-select-search"
+                  filterable
+                  width-button="100%"
+                  width-option="462px"
+                  class="select-search"
                   :class="{
-                    'form-select-search--error mb-2': errors.length > 0,
+                    'select-search--error mb-2': errors.length > 0,
                   }"
                   @change="(val) => changeSelectValue(val, 'opd_id')"
                 />
@@ -127,12 +131,14 @@
                 v-slot="{ errors }"
                 rules="requiredSelectForm"
                 name="Pemda Penanggungjawab"
-                class="mb-5"
+                class="mb-5 w-full"
                 tag="div"
               >
-                <label class="mt-5 mb-1 text-[15px] text-gray-800"
-                  >Pemda Penanggungjawab</label
-                >
+                <div>
+                  <label class="mt-5 mb-1 text-[15px] text-gray-800">
+                    Pemda Penanggungjawab
+                  </label>
+                </div>
                 <p class="text-[13px] text-gray-700">
                   Kota/kabupaten penanggungjawab yang bertugas untuk
                   menindaklanjuti aduan
@@ -142,9 +148,12 @@
                   name="Pemda Penanggungjawab"
                   :options="listGovResponsible"
                   placeholder="Pilih Pemda Penanggungjawab"
-                  class="form-select-search"
+                  filterable
+                  width-button="100%"
+                  width-option="462px"
+                  class="select-search"
                   :class="{
-                    'form-select-search--error mb-2': errors.length > 0,
+                    'select-search--error mb-2': errors.length > 0,
                   }"
                   @change="(val) => changeSelectValue(val, 'opd_pemprov_id')"
                 />
@@ -174,7 +183,7 @@
               <AlertMessage
                 v-if="isShowFieldProposeIkpNarrative"
                 message="Usulan Narasi akan digunakan untuk Instruksi Khusus Pimpinan."
-                class="mb-5 !w-[462px]"
+                class="mb-5 !w-full"
               />
               <ValidationProvider
                 v-slot="{ errors }"
@@ -197,7 +206,7 @@
               </ValidationProvider>
               <AlertMessage
                 message="Keterangan status aduan ini akan disampaikan ke pelapor."
-                class="mb-5 !w-[462px]"
+                class="mb-5 !w-full"
               />
               <h1 class="mb-2 font-roboto text-base font-bold">Lainnya</h1>
               <div class="mb-4 grid grid-cols-2 gap-x-2">
@@ -245,7 +254,7 @@
               v-slot="{ errors }"
               rules="required"
               name="Keterangan Status Aduan"
-              class="mb-2"
+              class="mb-2 pr-3"
               tag="div"
             >
               <BaseTextArea
@@ -576,55 +585,47 @@ export default {
 }
 </script>
 
-<style>
-.form-process-complaint::-webkit-scrollbar {
-  @apply h-5 w-5;
-}
-
-.form-process-complaint::-webkit-scrollbar-track {
-  @apply bg-transparent;
-}
-
-.form-process-complaint::-webkit-scrollbar-thumb {
-  @apply rounded-xl border-[6px] border-solid border-transparent bg-gray-300 bg-clip-content;
-}
-
-.form-process-complaint .jds-options__option-list li {
+<style scoped>
+.form-process-complaint::v-deep .jds-options__option-list li {
   @apply !h-fit;
 }
 
-.form-process-complaint .jds-select .jds-input-text__input-wrapper {
+.form-process-complaint::v-deep .jds-select .jds-input-text__input-wrapper {
   @apply !w-[462px] !bg-white;
 }
 
-.form-process-complaint .jds-select--disabled .jds-input-text__input-wrapper {
+.form-process-complaint::v-deep
+  .jds-select--disabled
+  .jds-input-text__input-wrapper {
   @apply !bg-gray-200;
 }
 
-.form-process-complaint
+.form-process-complaint::v-deep
   .jds-select--disabled
   .jds-input-text__input-wrapper
   input {
   @apply !text-gray-600;
 }
 
-.form-process-complaint .text-area .input-wrapper {
-  @apply !h-[83px] !w-[462px] !bg-white;
+.form-process-complaint::v-deep .text-area .input-wrapper {
+  @apply !h-[83px] !w-full !bg-white;
 }
 
-.form-process-complaint .mx-datepicker.mx-datepicker--error .mx-input-wrapper {
+.form-process-complaint::v-deep
+  .mx-datepicker.mx-datepicker--error
+  .mx-input-wrapper {
   @apply !bg-red-400;
 }
 
-.form-process-complaint .mx-datepicker .mx-input {
+.form-process-complaint::v-deep .mx-datepicker .mx-input {
   @apply !border-gray-500 !bg-gray-50 placeholder:!font-lato placeholder:!text-sm placeholder:!text-gray-800;
 }
 
-.form-process-complaint .mx-datepicker.mx-datepicker--error .mx-input {
+.form-process-complaint::v-deep .mx-datepicker.mx-datepicker--error .mx-input {
   @apply !border-red-600;
 }
 
-.form-process-complaint .jds-select__options {
+.form-process-complaint::v-deep .jds-select__options {
   @apply !max-h-[500px] !overflow-y-auto;
   scrollbar-color: #e0e0e0 transparent;
   scrollbar-width: thin;
@@ -648,9 +649,5 @@ export default {
 
 .form-process-complaint .mx-datepicker .mx-input {
   @apply !bg-white;
-}
-
-.form-process-complaint .form-select-search {
-  @apply !w-[462px];
 }
 </style>
