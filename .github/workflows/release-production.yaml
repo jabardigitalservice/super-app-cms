@@ -1,4 +1,4 @@
-name: Jabar Super Apps Web Admin Production
+name: 🚀 Jabar Super Apps Web Admin Release Production 🚀
 
 on:
   push:
@@ -9,30 +9,30 @@ jobs:
   build-push-deploy-production:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: 📝 Checkout 
         uses: actions/checkout@v4
 
-      - name: Set up QEMU
+      - name: 🔄 Set up QEMU
         uses: docker/setup-qemu-action@v3
 
-      - name: Set up Docker Buildx
+      - name: 🛠️ Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
 
       # Configure Docker with Credentials
-      - name: Configure Docker
+      - name: 🐳 Configure Docker
         run: |
           docker login ${{ secrets.REGISTRY_URL }} -u ${{ secrets.REGISTRY_USERNAME }} -p '${{ secrets.REGISTRY_PASSWORD }}'
 
       # Set version dari git tag (hapus prefix 'v')
-      - name: Set version tag
+      - name: 🏷️ Set version tag
         id: vars
         run: |
           VERSION=${GITHUB_REF#refs/tags/v}
           echo "version=$VERSION" >> $GITHUB_ENV
           echo "Using version: $VERSION"
 
-      - name: Vault Authentication
+      - name: 🔐 Vault Authentication
         uses: hashicorp/vault-action@v2
         with:
           url: ${{ secrets.VAULT_ADDR }}
@@ -62,7 +62,7 @@ jobs:
             kv-superapp-service-production/data/web-admin EXPIRY_INVITATION_LINK | EXPIRY_INVITATION_LINK ;
             kv-superapp-service-production/data/web-admin NODE_ENV | NODE_ENV
 
-      - name: Build and push
+      - name: 🔨 Build and Push 📦
         uses: docker/build-push-action@v4
         with:
           context: .
@@ -93,19 +93,19 @@ jobs:
             NODE_ENV=${{ env.NODE_ENV }}
 
       ## GitOps
-      - name: GitOps ArgoCD Setup
+      - name: ⚙️ GitOps ArgoCD Setup
         run: |
           echo "${{ secrets.GITLAB_ARGOCD_KEY }}" > /tmp/gitlab-deploy-ssh-key
           chmod 600 /tmp/gitlab-deploy-ssh-key
           export GIT_SSH_COMMAND="ssh -i /tmp/gitlab-deploy-ssh-key -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
           git clone ${{ secrets.GITLAB_ARGOCD_REPOSITORY }}
 
-      - name: GitOps ArgoCD Update Image Tag
+      - name: 🔄 GitOps ArgoCD Update Image Tag
         uses: mikefarah/yq@master
         with:
           cmd: yq -i '.spec.template.spec.containers[0].image = "${{ secrets.SERVICE_IMAGENAME }}:${{ env.version }}"' 'jds-terraform-gke/k8s/superapp/production/web-admin/deployment.yaml'
 
-      - name: GitOps ArgoCD Create Branch, Commit, Push
+      - name: 🚀 GitOps ArgoCD Create MR & Release to Production 🚀
         id: create_mr
         run: |
           export GIT_SSH_COMMAND="ssh -i /tmp/gitlab-deploy-ssh-key -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
@@ -138,8 +138,8 @@ jobs:
           MR_URL=$(echo $MR_RESPONSE | jq -r '.web_url')
           echo "mr_url=$MR_URL" >> $GITHUB_OUTPUT
 
-      - uses: appleboy/telegram-action@master
-        name: Send release notif to telegram
+      - name: 📣 Send Release Notification to Telegram 📣
+        uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
