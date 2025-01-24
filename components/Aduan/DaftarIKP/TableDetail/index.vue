@@ -4,84 +4,90 @@
       Detail Instruksi Aduan
     </h1>
     <div class="table-content">
-      <BaseTableDetail
-        v-for="keysField in Object.keys(fieldDetail)"
-        :key="keysField"
-        :header="fieldDetail[keysField].title"
-        class="mb-4"
-      >
-        <tr v-for="field in fieldDetail[keysField].field" :key="field.name">
-          <td
-            class="text-lato text-[14px]"
-            :width="
-              ikpTypePage === ikpType.instruksiKewenanganNonPemprov.props ||
-              ikpTypePage === ikpType.instruksiNonPemprov.props
-                ? '244px'
-                : '164px'
-            "
-          >
-            <strong>{{ field.name }} </strong>
-          </td>
-          <td
-            v-if="field.key === 'narrative'"
-            v-html="formatingInstructionalNarrative()"
-          />
-          <td v-else-if="field.key === 'complaint_status_id'">
-            <div class="flex items-center">
-              <div
-                v-if="dataDetail?.complaint_status_id"
-                :class="[
-                  ' mr-2 h-2 w-2 rounded-full',
-                  getStatusColorHandle(dataDetail?.complaint_status_id),
-                ]"
-              />
+      <template v-if="loading">
+        <BaseLoading />
+      </template>
 
-              {{ getStatusText(dataDetail?.complaint_status_id) }}
-            </div>
-          </td>
-          <td
-            v-else-if="
-              field.key === 'created_at' || field.key === 'deadline_at'
-            "
-          >
-            {{ formatDate(dataDetail[field.key] || '') || '-' }}
-          </td>
-          <td v-else>{{ dataDetail[field.key] || '' || '-' }}</td>
-        </tr>
-      </BaseTableDetail>
-      <div
-        v-if="dataDetail?.complaints?.length > 0 && showDaftarAduan"
-        class="rounded-lg border border-gray-200"
-      >
-        <jds-data-table
-          :headers="filterHeaderTableComplaint()"
-          :items="dataDetail?.complaints"
-          class="default-table"
-          :class="{
-            'non-government-table':
-              ikpTypePage === ikpType.instruksiKewenanganNonPemprov.props ||
-              ikpTypePage === ikpType.instruksiNonPemprov.props,
-          }"
+      <template v-else>
+        <BaseTableDetail
+          v-for="keysField in Object.keys(fieldDetail)"
+          :key="keysField"
+          :header="fieldDetail[keysField].title"
+          class="mb-4"
         >
-          <!-- eslint-disable-next-line vue/valid-v-slot -->
-          <template #item.action="{ item }">
-            <BaseButton
-              class="w-full border border-green-700 !py-[6px] !px-[10px] text-green-700 hover:bg-green-50"
-              @click="goToDetailComplaint(item.id, item.ikp_code)"
+          <tr v-for="field in fieldDetail[keysField].field" :key="field.name">
+            <td
+              class="text-lato text-[14px]"
+              :width="
+                ikpTypePage === ikpType.instruksiKewenanganNonPemprov.props ||
+                ikpTypePage === ikpType.instruksiNonPemprov.props
+                  ? '244px'
+                  : '164px'
+              "
             >
-              Lihat Detail Aduan
-            </BaseButton>
-          </template>
-        </jds-data-table>
-      </div>
+              <strong>{{ field.name }} </strong>
+            </td>
+            <td
+              v-if="field.key === 'narrative'"
+              v-html="formatingInstructionalNarrative()"
+            />
+            <td v-else-if="field.key === 'complaint_status_id'">
+              <div class="flex items-center">
+                <div
+                  v-if="dataDetail?.complaint_status_id"
+                  :class="[
+                    ' mr-2 h-2 w-2 rounded-full',
+                    getStatusColorHandle(dataDetail?.complaint_status_id),
+                  ]"
+                />
+
+                {{ getStatusText(dataDetail?.complaint_status_id) }}
+              </div>
+            </td>
+            <td
+              v-else-if="
+                field.key === 'created_at' || field.key === 'deadline_at'
+              "
+            >
+              {{ formatDate(dataDetail[field.key] || '') || '-' }}
+            </td>
+            <td v-else>{{ dataDetail[field.key] || '' || '-' }}</td>
+          </tr>
+        </BaseTableDetail>
+        <div
+          v-if="dataDetail?.complaints?.length > 0 && showDaftarAduan"
+          class="rounded-lg border border-gray-200"
+        >
+          <jds-data-table
+            :headers="filterHeaderTableComplaint()"
+            :items="dataDetail?.complaints"
+            class="default-table"
+            :class="{
+              'non-government-table':
+                ikpTypePage === ikpType.instruksiKewenanganNonPemprov.props ||
+                ikpTypePage === ikpType.instruksiNonPemprov.props,
+            }"
+          >
+            <!-- eslint-disable-next-line vue/valid-v-slot -->
+            <template #item.action="{ item }">
+              <BaseButton
+                class="w-full border border-green-700 !py-[6px] !px-[10px] text-green-700 hover:bg-green-50"
+                @click="goToDetailComplaint(item.id, item.ikp_code)"
+              >
+                Lihat Detail Aduan
+              </BaseButton>
+            </template>
+          </jds-data-table>
+        </div>
+      </template>
     </div>
   </div>
 </template>
 
 <script>
-import { ikpStatus, ikpType, detailField } from '~/constant/daftar-ikp'
-import { formatDate } from '~/utils'
+import { detailField, ikpStatus, ikpType } from '~/constant/daftar-ikp'
 import { ENDPOINT_IKP } from '~/constant/endpoint-api'
+import { formatDate } from '~/utils'
 
 export default {
   name: 'DaftarIKPTableDetail',
@@ -118,9 +124,11 @@ export default {
       ikpType,
       fieldDetail: {},
       formatDate,
+      loading: false,
     }
   },
   async fetch() {
+    this.loading = true
     try {
       const response = await this.$axios.get(
         `${ENDPOINT_IKP}/${this.ikpCode}`,
@@ -129,6 +137,8 @@ export default {
       this.dataDetail = response.data.data
     } catch (error) {
       this.dataDetail = {}
+    } finally {
+      this.loading = false
     }
   },
   computed: {
