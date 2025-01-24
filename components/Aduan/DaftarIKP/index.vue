@@ -174,7 +174,9 @@ export default {
       isShowPopupDate: false,
       isShowPopupDateRange: false,
       dateRange: [
-        new Date(new Date().setFullYear(new Date().getFullYear() - 1)),
+        // TODO : it will be used when the data migration process is complete
+        // new Date(new Date().setFullYear(new Date().getFullYear()-1)),
+        new Date(new Date().setDate(1)),
         new Date(),
       ],
       headerDaftarIkp,
@@ -286,6 +288,12 @@ export default {
     this.pagination.itemsPerPageOptions = generateItemsPerPageOptions(
       this.pagination.itemsPerPage
     )
+    // it will be used during the migration process.
+    this.query = {
+      ...this.query,
+      start_date: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
+      end_date: formatDate(this.dateRange[1], 'yyyy-MM-dd'),
+    }
   },
   methods: {
     normalizeText(text) {
