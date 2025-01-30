@@ -31,11 +31,13 @@
               <p class="ml-2 flex-shrink-0 text-[14px] text-blue-gray-700">
                 Filter :
               </p>
-              <jds-select
+
+              <BaseSelectSearch
                 v-model="query.complaint_category_id"
-                placeholder="Kategori Aduan"
-                :options="listCategory"
                 class="select-form-complaint !mx-2 flex-shrink-0"
+                :options="listCategory"
+                placeholder="Kategori Aduan"
+                filterable
                 @change="filterCategoryHandle"
               />
               <date-picker
@@ -65,17 +67,6 @@
                   />
                 </template>
               </date-picker>
-              <jds-select
-                v-if="
-                  typeAduanPage.props ===
-                  typeAduan.instruksiKewenanganNonPemprov.props
-                "
-                v-model="query.complaint_status_id"
-                placeholder="Status"
-                :options="listNonGovComplaintStatus"
-                class="select-form-complaint ml-2 flex-shrink-0"
-                @change="filterNonGovComplaintStatusHandle"
-              />
             </div>
 
             <jds-button
@@ -88,137 +79,105 @@
               @click="showPopupAddComplaint()"
             />
           </div>
-          <div>
-            <JdsDataTable
-              :headers="checkTypeHeaderAduan(typeAduanPage.props)"
-              :items="listData"
-              :loading="$fetchState.pending"
-              :pagination="pagination"
-              :class="getStyleComplaintType()"
-              @next-page="pageChange"
-              @previous-page="pageChange"
-              @page-change="pageChange"
-              @per-page-change="perPageChange"
-              @change:sort="sortChange"
-            >
-              <!-- eslint-disable-next-line vue/valid-v-slot -->
-              <template #item.status="{ item }">
-                <div class="flex items-center">
-                  <p
-                    v-show="item?.status"
-                    class="h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 !text-[12px] font-semibold"
-                    :class="getColorText(item?.status_id)"
-                  >
-                    {{ item.status }}
-                  </p>
-                </div>
-              </template>
-              <!-- eslint-disable-next-line vue/valid-v-slot -->
-              <template #item.sp4n_created_at="{ item }">
-                <div
-                  :class="{
-                    'h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 !text-[12px] font-semibold text-[#FF7500]':
-                      item.sp4n_created_at === 'Belum ada',
-                  }"
+
+          <BaseTable
+            :headers="checkTypeHeaderAduan(typeAduanPage.props)"
+            :items="listData"
+            :loading="$fetchState.pending"
+            :skeleton-row-count="pagination.itemsPerPage"
+            @sort="sortChange"
+          >
+            <!-- eslint-disable-next-line vue/valid-v-slot -->
+            <template #status="{ item }">
+              <div class="flex items-center">
+                <p
+                  v-show="item?.status"
+                  class="h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 !text-sm font-semibold"
+                  :class="getColorText(item?.status_id)"
                 >
-                  {{ item.sp4n_created_at }}
-                </div>
-                <!--
-                  <div
-                  class="flex items-center"
-                >
-                  <p
-                    :class="{
-                      'h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 text-xs font-semibold text-[#FF7500]':
-                        item.sp4n_created_at === 'Belum ada',
-                    }"
-                  >
-                    {{ item.sp4n_created_at }}
-                  </p>
-                </div>
-                -->
-              </template>
-              <!-- eslint-disable-next-line vue/valid-v-slot -->
-              <template #item.diverted_to_span_at="{ item }">
-                <div
-                  :class="{
-                    'h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 !text-[12px] font-semibold text-[#FF7500]':
-                      item.diverted_to_span_at === 'Belum ada',
-                  }"
-                >
-                  {{ item.diverted_to_span_at }}
-                </div>
-                <!-- <div class="flex items-center"> -->
-                <!-- <p
-                    :class="{
-                      'h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 text-xs font-semibold text-[#FF7500]':
-                        item.diverted_to_span_at === 'Belum ada',
-                    }"
-                  >
-                    {{ item.diverted_to_span_at }}
-                  </p>
-                </div> -->
-              </template>
-              <!-- eslint-disable-next-line vue/valid-v-slot -->
-              <template #item.sp4n_id="{ item }">
-                <div
-                  :class="{
-                    'h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 !text-[12px] font-semibold text-[#FF7500]':
-                      item.sp4n_id === 'Belum ada',
-                  }"
-                >
-                  {{ item.sp4n_id }}
-                </div>
-                <!-- <div class="flex items-center">
-                  <p
-                    :class="{
-                      'h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 !text-[12px] font-semibold text-[#FF7500]':
-                        item.sp4n_id === 'Belum ada',
-                    }"
-                  >
-                    {{ item.sp4n_id }}
-                  </p>
-                </div> -->
-              </template>
-              <!-- eslint-disable-next-line vue/valid-v-slot -->
-              <template #item.action="{ item }">
-                <BaseTableAction
-                  :list-menu-pop-over="menuTableActionHandle(item?.status_id)"
-                  :data-cy="dataCyButtonAction"
-                  @detail="goToPageDetailHandle(item)"
-                  @verify="
-                    showPopupConfirmationVerificationComplaintHandle(item)
-                  "
-                  @failed="
-                    showPopupConfirmationComplaint(item, 'failedComplaint')
-                  "
-                  @redirect-hotline-jabar="
-                    showPopupConfirmationComplaint(
-                      item,
-                      'redirectHotlineComplaint'
-                    )
-                  "
-                  @followup-hotline-jabar="
-                    $store.dispatch(
-                      'popup-complaint/showPopupFollowupHotlineJabar',
-                      {
-                        dataComplaint: item,
-                        dialogName: 'followupHotlineJabar',
-                      }
-                    )
-                  "
-                  @evidence-followup-hotline="
-                    showPopupEvidenceFollowupHotline(item)
-                  "
-                  @add-span="showPopupInputIdSpanHandle(item)"
-                  @process-complaint="showPopupProcessComplaintHandle(item)"
-                  @change-authority="showPopupChangeAuthority(item)"
-                  @followup-complaint="showPopupFollowupComplaint(item)"
-                  @create-instruction="showPopupCreateInstruction(item)"
-                />
-              </template>
-            </JdsDataTable>
-          </div>
+                  {{ item.status }}
+                </p>
+              </div>
+            </template>
+            <!-- eslint-disable-next-line vue/valid-v-slot -->
+            <template #sp4n_created_at="{ item }">
+              <div
+                :class="{
+                  'h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 !text-sm font-semibold text-[#FF7500]':
+                    item.sp4n_created_at === 'Belum ada',
+                }"
+              >
+                {{ item.sp4n_created_at }}
+              </div>
+            </template>
+            <!-- eslint-disable-next-line vue/valid-v-slot -->
+            <template #diverted_to_span_at="{ item }">
+              <div
+                :class="{
+                  'h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 !text-sm font-semibold text-[#FF7500]':
+                    item.diverted_to_span_at === 'Belum ada',
+                }"
+              >
+                {{ item.diverted_to_span_at }}
+              </div>
+            </template>
+            <!-- eslint-disable-next-line vue/valid-v-slot -->
+            <template #sp4n_id="{ item }">
+              <div
+                :class="{
+                  'h-fit w-fit rounded-[32px] bg-gray-100 px-[10px] py-1 !text-sm font-semibold text-[#FF7500]':
+                    item.sp4n_id === 'Belum ada',
+                }"
+              >
+                {{ item.sp4n_id }}
+              </div>
+            </template>
+            <!-- eslint-disable-next-line vue/valid-v-slot -->
+            <template #action="{ item }">
+              <BaseTableAction
+                :list-menu-pop-over="menuTableActionHandle(item?.status_id)"
+                :data-cy="dataCyButtonAction"
+                @detail="goToPageDetailHandle(item)"
+                @verify="showPopupConfirmationVerificationComplaintHandle(item)"
+                @failed="
+                  showPopupConfirmationComplaint(item, 'failedComplaint')
+                "
+                @redirect-hotline-jabar="
+                  showPopupConfirmationComplaint(
+                    item,
+                    'redirectHotlineComplaint'
+                  )
+                "
+                @followup-hotline-jabar="
+                  $store.dispatch(
+                    'popup-complaint/showPopupFollowupHotlineJabar',
+                    {
+                      dataComplaint: item,
+                      dialogName: 'followupHotlineJabar',
+                    }
+                  )
+                "
+                @evidence-followup-hotline="
+                  showPopupEvidenceFollowupHotline(item)
+                "
+                @add-span="showPopupInputIdSpanHandle(item)"
+                @process-complaint="showPopupProcessComplaintHandle(item)"
+                @change-authority="showPopupChangeAuthority(item)"
+                @followup-complaint="showPopupFollowupComplaint(item)"
+                @create-instruction="showPopupCreateInstruction(item)"
+              />
+            </template>
+          </BaseTable>
+
+          <BaseTablePagination
+            :current-page="pagination.currentPage"
+            :per-page="pagination.itemsPerPage"
+            :total-items="pagination.totalRows"
+            :total-pages="pagination.totalPage"
+            :per-page-options="pagination.perPageOptions"
+            @update:currentPage="pageChange"
+            @update:perPage="perPageChange"
+          />
         </BaseTabPanel>
       </template>
     </BaseTabGroup>
@@ -243,16 +202,15 @@
       @close="closePopupHandle()"
       @submit="submitPopupComplaintHandle"
     />
-    <DialogInputText
-      :data-dialog="dataDialog"
-      :show-popup="isShowPopupInputIdSpan"
-      @close="closePopupHandle()"
-      @submit="submitInputIdSpanHandle"
-    />
     <DialogAddComplaint
       v-if="isShowPopupAddComplaint"
       name-modal="addComplaint"
       @close="closePopupAddComplaint()"
+    />
+    <DialogAddIdSpan
+      :data-dialog="dataDialog"
+      name-modal="formAddIdSpan"
+      @submit="submitInputIdSpanHandle"
     />
     <DialogProcessComplaint
       v-if="isShowPopupProcessComplaint"
@@ -281,31 +239,32 @@
 
 <script>
 import debounce from 'lodash.debounce'
-import DialogFollowupHotlineJabar from '~/components/Aduan/Dialog/FollowupHotlineJabar'
+import 'vue2-datepicker/index.css'
+import DialogAddComplaint from '~/components/Aduan/Dialog/AddComplaint'
+import DialogAddIdSpan from '~/components/Aduan/Dialog/AddIdSpan'
 import DialogEvidenceFollowupHotline from '~/components/Aduan/Dialog/EvidenceFollowupHotline'
 import DialogFollowupComplaint from '~/components/Aduan/Dialog/FollowupComplaint'
-import {
-  formatDate,
-  generateItemsPerPageOptions,
-  formatNumberToUnit,
-  convertToUnit,
-  resetQueryParamsUrl,
-  formatedStringDate,
-} from '~/utils'
-import 'vue2-datepicker/index.css'
-import TabBarList from '~/components/Aduan/TabBar/List'
-import DialogAddComplaint from '~/components/Aduan/Dialog/AddComplaint'
+import DialogFollowupHotlineJabar from '~/components/Aduan/Dialog/FollowupHotlineJabar'
 import DialogProcessComplaint from '~/components/Aduan/Dialog/ProcessComplaint'
+import TabBarList from '~/components/Aduan/TabBar/List'
+import {
+  convertToUnit,
+  formatDate,
+  formatedStringDate,
+  formatNumberToUnit,
+  generateItemsPerPageOptions,
+  resetQueryParamsUrl,
+} from '~/utils'
 
 import {
-  complaintHeader,
-  complaintStatus,
   complaintDivertedToSpanHeader,
   complaintFromSpanHeader,
+  complaintHeader,
+  complaintSource,
+  complaintStatus,
   determiningAuthorityHeader,
   nonGovernmentAuthorityHeader,
   typeAduan,
-  complaintSource,
 } from '~/constant/aduan-masuk'
 
 import {
@@ -324,6 +283,7 @@ export default {
     DialogFollowupComplaint,
     DialogFollowupHotlineJabar,
     DialogEvidenceFollowupHotline,
+    DialogAddIdSpan,
   },
   mixins: [popupAduanMasuk],
   props: {
@@ -419,8 +379,8 @@ export default {
         currentPage: 1,
         totalRows: 10,
         itemsPerPage: 10,
+        totalPage: 1,
         itemsPerPageOptions: [],
-        disabled: true,
       },
       query: {
         limit: 10,
@@ -442,7 +402,6 @@ export default {
       isShowPopupAddComplaint: false,
       listValueStatusComplaint: [],
       listStatisticComplaint: [],
-      listDataNonGovComplaintStatus: [], // list status complaint for non government
       isShowPopupDateRange: false,
       complaintSource,
       dateRange: [
@@ -484,6 +443,7 @@ export default {
         this.pagination.disabled = true
       }
 
+      this.pagination.totalPage = data?.total_pages || 1
       this.pagination.currentPage = data?.page || 1
       this.pagination.totalRows = data?.total_data || 0
       this.pagination.itemsPerPage = data?.page_size || this.query.limit
@@ -514,7 +474,7 @@ export default {
         return {
           ...item,
           category: item.complaint_category.name,
-          status: this.getStatusText(item.complaint_status_id),
+          status: this.getStatusTextAndIcon(item.complaint_status_id),
           created_at_format: formatDate(item.created_at, 'dd/MM/yyyy HH:mm'),
           created_at_api: item.created_at,
           status_id: item.complaint_status_id,
@@ -527,7 +487,7 @@ export default {
             'dd/MM/yyyy HH:mm'
           ),
           sp4n_created_at: item.sp4n_created_at
-            ? formatDate(item.sp4n_created_at || '', 'dd/MM/yyyy HH:mm')
+            ? formatDate(item.sp4n_created_at || '', 'dd/MM/yyyy')
             : 'Belum ada',
           complaint_source_name: item?.complaint_source?.name || '-',
           complaint_source_id: item?.complaint_source?.id,
@@ -549,25 +509,15 @@ export default {
         }
       )
     },
-    listNonGovComplaintStatus() {
-      // list status complaint for non government
-      return this.$store.state[
-        'utilities-complaint'
-      ].listNonGovComplaintStatus.map((item) => {
-        return {
-          value: item.id || '',
-          label: item.name,
-        }
-      })
-    },
+
     listStatistic() {
       return this.listStatisticComplaint.map((item) => {
         return {
           ...complaintStatus[item.id],
           value: formatNumberToUnit(item.value),
           unit: convertToUnit(item.value),
-          icon: complaintStatus[item.id].icon,
-          name: complaintStatus[item.id].name,
+          icon: this.getStatusTextAndIcon(complaintStatus[item.id].id, 'icon'),
+          name: this.getStatusTextAndIcon(complaintStatus[item.id].id),
           dataCy: `${this.dataCyFormat}__tab--${item.id}`,
         }
       })
@@ -625,19 +575,6 @@ export default {
       ...this.$store.state['utilities-complaint'].listCategory,
     ]
     this.$store.commit('utilities-complaint/setListCategory', listCategory)
-    if (
-      this.typeAduanPage.props === typeAduan.instruksiKewenanganNonPemprov.props
-    ) {
-      await this.$store.dispatch('utilities-complaint/getNonGovComplaintStatus')
-      const listNonGovComplaintStatus = [
-        { id: '', name: 'Semua Status Aduan' },
-        ...this.$store.state['utilities-complaint'].listNonGovComplaintStatus,
-      ]
-      this.$store.commit(
-        'utilities-complaint/setListNonGovComplaintStatus',
-        listNonGovComplaintStatus
-      )
-    }
   },
   methods: {
     getStyleComplaintType() {
@@ -704,16 +641,16 @@ export default {
       }
       this.query.page = 1
     },
+
     sortChange(value) {
-      const key = Object.keys(value)[0]
-      if (key && value[key] !== 'no-sort') {
-        if (key === 'created_at_format') {
+      if (value.key && value.order !== null) {
+        if (value.key === 'created_at_format') {
           this.query.sort_by = 'created_at'
         } else {
-          this.query.sort_by = key
+          this.query.sort_by = value.key
         }
 
-        this.query.sort_type = value[key]
+        this.query.sort_type = value.order
       } else {
         const { sort_by: sortBy, sort_type: sortType, ...newQuery } = this.query // menghilangkan atribut sort by dan sort type
         this.query = newQuery
@@ -722,23 +659,14 @@ export default {
       this.$fetch()
     },
     filterCategoryHandle(value) {
-      this.setQuery({
-        complaint_category_id: null,
-        'complaint_category_id[0]': null,
-      })
       this.query.page = 1
-      if (value) {
-        this.query['complaint_category_id[0]'] = value
-      }
+
+      this.query.complaint_category_id = value
+      this.query['complaint_category_id[0]'] = value
+
       this.$fetch()
     },
-    filterNonGovComplaintStatusHandle(value) {
-      this.query.page = 1
-      if (value) {
-        this.query.complaint_status_id = value
-      }
-      this.$fetch()
-    },
+
     goToPageDetailHandle(item) {
       this.$router.push({
         path: `${this.linkPageDetail}/${item.id}`,
@@ -746,15 +674,20 @@ export default {
       })
       this.$fetch()
     },
-    getStatusText(statusId) {
+    getStatusTextAndIcon(statusId, type = 'text') {
       if (
         this.typeAduanPage.props ===
           typeAduan.instruksiKewenanganNonPemprov.props &&
         statusId === 'coordinated'
       ) {
-        return 'Sudah Dikoordinasikan'
+        return type === 'text'
+          ? 'Sudah Dikoordinasikan'
+          : '/icon/icon-aduan/complaint-status/complaint-finished-icon.svg'
+      } else {
+        return type === 'text'
+          ? complaintStatus[statusId]?.name
+          : complaintStatus[statusId]?.icon
       }
-      return complaintStatus[statusId]?.name
     },
     getColorText(statusId) {
       const statusColor = complaintStatus[statusId].statusColor.find(
@@ -796,18 +729,13 @@ export default {
       return total
     },
     addComplaintStatusFilterHandle() {
-      if (
-        this.typeAduanPage.props !==
-        typeAduan.instruksiKewenanganNonPemprov.props
-      ) {
-        const listValueStatusComplaint =
-          this.getStatusComplaintByComplaintType()
-        for (let i = 0; i < listValueStatusComplaint.length; i++) {
-          this.setQuery({
-            [`complaint_status_id[${i}]`]: listValueStatusComplaint[i].id,
-          })
-        }
-      }
+      const listValueStatusComplaint = this.getStatusComplaintByComplaintType()
+
+      listValueStatusComplaint.map((item, index) => {
+        return this.setQuery({
+          [`complaint_status_id[${index}]`]: item.id,
+        })
+      })
 
       return this.query
     },
@@ -815,12 +743,22 @@ export default {
       this.isFilterStatus = true
       const query = { page: 1, limit: 10 }
       this.dataCyButtonAction = `${this.dataCyFormat}__tab__button-action--${status}`
-      this.deletePropertiesWithPrefix(this.query, 'complaint_status_id[')
+
+      this.deletePropertiesWithPrefix(this.query, 'complaint_status_id')
+
       if (status !== 'total') {
-        query['complaint_status_id[0]'] = status
+        if (
+          this.typeAduanPage.props ===
+          typeAduan.instruksiKewenanganNonPemprov.props
+        ) {
+          this.query.complaint_status_id = status
+        } else {
+          query['complaint_status_id[0]'] = status
+        }
       } else {
         this.addComplaintStatusFilterHandle()
       }
+
       this.setQuery(query)
       this.isShowPopupDateRange = false
       this.$fetch()
@@ -892,17 +830,15 @@ export default {
         phase: this.typeAduanPage.phase,
       }
 
-      this.deletePropertiesWithPrefix(queryCount, 'complaint_status_id[')
+      this.deletePropertiesWithPrefix(queryCount, 'complaint_status_id')
+
       if (
-        this.typeAduan.aduanDariSpanLapor.props === this.typeAduanPage.props ||
-        typeAduan.instruksiKewenanganNonPemprov.props ===
-          this.typeAduanPage.props
+        this.typeAduan.aduanDariSpanLapor.props === this.typeAduanPage.props
       ) {
         complaintStatus.total.value = this.pagination.totalRows
       } else {
         try {
           // handle data statistic complaint
-
           const urlApi = this.checkUrlApi()
           const responseListStatisticComplaint = await this.$axios.get(
             `${urlApi}/statistics`,
@@ -912,7 +848,9 @@ export default {
           )
           const listDataStatisticComplaint =
             responseListStatisticComplaint.data.data
+
           const listComplaintStatus = this.getStatusComplaintByComplaintType()
+
           this.listStatisticComplaint = listComplaintStatus.map(
             (complaintStatus) => {
               const dataStatistic = listDataStatisticComplaint.find(
@@ -922,6 +860,7 @@ export default {
               return { ...complaintStatus, value: dataStatistic?.value || 0 }
             }
           )
+
           complaintStatus.total.value = this.getTotalStatistic()
         } catch (error) {
           console.error(error)
@@ -952,7 +891,6 @@ export default {
 .select-form-complaint::v-deep {
   .jds-input-text__input-wrapper,
   .jds-popover__content {
-    width: fit-content;
     @media (min-width: 1536px) {
       width: 260px !important;
     }

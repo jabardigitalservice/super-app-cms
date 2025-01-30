@@ -11,7 +11,7 @@
     >
       <template #form-complaint>
         <div
-          class="form-add-complaint max-h-fit overflow-y-auto sm:h-[calc(100vh-240px)]"
+          class="form-add-complaint max-h-fit w-full overflow-y-auto sm:h-[calc(100vh-240px)]"
         >
           <FormInformationComplaint
             v-if="indexCurrentActive === 1"

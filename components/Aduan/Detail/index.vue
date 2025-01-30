@@ -65,6 +65,7 @@
         <TabBarDetail
           ref="tabBarDetail"
           :list-tab="listTab"
+          :is-loading="loading"
           @button-tab="selectedTab"
         />
       </template>
@@ -77,6 +78,7 @@
             :detail-complaint="detailComplaint"
             :list-photo="listPhotoComplaint"
             :type-aduan-page="typeAduanPage.props"
+            :is-loading="loading"
             @button-image="isShowPopupViewImage = true"
           />
           <AduanDaftarIKPTableDetail
@@ -92,10 +94,11 @@
             @select-tab="selectedTab"
           />
           <AduanDetailTableEvidenceFollowup
-            v-else-if="idTab === 'bukti-tindak-lanjut'"
-            :list-photo="listPhotoEvidence"
-            :list-file="listFileEvidence"
-            :detail-complaint="detailComplaint"
+            v-else-if="
+              idTab === 'bukti-tindak-lanjut' && detailComplaint?.evidence
+            "
+            :is-loading="loading"
+            :evidence="detailComplaint?.evidence"
           />
         </BaseTabPanel>
       </template>
@@ -158,27 +161,27 @@
 </template>
 
 <script>
-import {
-  complaintStatus,
-  typeAduan,
-  complaintButtonDetail,
-  complaintSource,
-} from '~/constant/aduan-masuk'
 import ArrowLeft from '~/assets/icon/arrow-left.svg?inline'
-import DialogViewImage from '~/components/Aduan/DialogViewImage'
-import TabBarDetail from '~/components/Aduan/TabBar/Detail'
-import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
 import TableComplaintDetail from '~/components/Aduan/Detail/Table/Complaint'
-import { formatDate } from '~/utils'
-import DialogProcessComplaint from '~/components/Aduan/Dialog/ProcessComplaint'
+import DialogEvidenceFollowupHotline from '~/components/Aduan/Dialog/EvidenceFollowupHotline'
 import DialogFollowupComplaint from '~/components/Aduan/Dialog/FollowupComplaint'
 import DialogFollowupHotlineJabar from '~/components/Aduan/Dialog/FollowupHotlineJabar'
-import DialogEvidenceFollowupHotline from '~/components/Aduan/Dialog/EvidenceFollowupHotline'
+import DialogProcessComplaint from '~/components/Aduan/Dialog/ProcessComplaint'
+import DialogViewImage from '~/components/Aduan/DialogViewImage'
+import TabBarDetail from '~/components/Aduan/TabBar/Detail'
+import {
+  complaintButtonDetail,
+  complaintSource,
+  complaintStatus,
+  typeAduan,
+} from '~/constant/aduan-masuk'
 import {
   ENDPOINT_ADUAN,
   ENDPOINT_ADUAN_HOTLINE_JABAR,
   ENDPOINT_ADUAN_NON_PEMPROV,
 } from '~/constant/endpoint-api'
+import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
+import { formatDate } from '~/utils'
 
 export default {
   name: 'DetailAduan',
@@ -258,9 +261,11 @@ export default {
       ikpCode: '',
       typeAduan,
       complaintStatus,
+      loading: false,
     }
   },
   async fetch() {
+    this.loading = true
     try {
       const endpoint = this.checkEndpointComplaint()
       const response = await this.$axios.get(
@@ -313,6 +318,8 @@ export default {
     } catch {
       this.detailComplaint = {}
       this.listPhotoComplaint = []
+    } finally {
+      this.loading = false
     }
   },
   computed: {

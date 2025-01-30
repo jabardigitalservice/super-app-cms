@@ -1,7 +1,8 @@
 <template>
   <div>
     <ValidationObserver ref="formOtherComplaint">
-      <form class="form-add-complaint px-6 pb-6 pt-4">
+      <!-- START FORM -->
+      <div class="form-add-complaint px-6 pb-6 pt-4">
         <h1 class="mb-2 font-roboto text-base font-bold">Kategori Aduan</h1>
         <ValidationProvider
           v-slot="{ errors }"
@@ -10,17 +11,24 @@
           class="mb-4"
           tag="div"
         >
-          <jds-select
+          <div>
+            <label class="mb-1 text-[15px] text-gray-800">Kategori</label>
+          </div>
+          <BaseSelectSearch
             v-model="dataOtherComplaint.category_id"
             name="Kategori"
-            label="Kategori"
-            placeholder="Pilih Kategori"
-            :error-message="errors[0]"
             :options="listCategoryComplaint"
-            @change="
-              changeSelectForm(dataOtherComplaint.category_id, 'category')
-            "
+            placeholder="Pilih Kategori"
+            filterable
+            width-button="100%"
+            width-option="592px"
+            class="select-search"
+            :class="{
+              'select-search--error mb-2': errors.length > 0,
+            }"
+            @change="(val) => changeSelectForm(val, 'category_id')"
           />
+          <small class="text-red-600">{{ errors[0] }}</small>
         </ValidationProvider>
         <ValidationProvider
           v-if="isOtherCategory"
@@ -45,21 +53,25 @@
           class="mb-4"
           tag="div"
         >
-          <jds-select
+          <div>
+            <label class="mb-1 text-[15px] text-gray-800">Sub Kategori</label>
+          </div>
+          <BaseSelectSearch
             v-model="dataOtherComplaint.sub_category_id"
             :disabled="!dataOtherComplaint.category_id"
             name="Sub Kategori"
-            label="Sub Kategori"
-            placeholder="Pilih Sub Kategori"
-            :error-message="errors[0]"
+            filterable
+            width-button="100%"
+            width-option="592px"
             :options="listSubCategoryComplaint"
-            @change="
-              changeSelectForm(
-                dataOtherComplaint.sub_category_id,
-                'subcategory'
-              )
-            "
+            placeholder="Pilih Sub Kategori"
+            class="select-search"
+            :class="{
+              'select-search--error mb-2': errors.length > 0,
+            }"
+            @change="(val) => changeSelectForm(val, 'sub_category_id')"
           />
+          <small class="text-red-600">{{ errors[0] }}</small>
         </ValidationProvider>
         <ValidationProvider
           v-if="isOtherSubcategory"
@@ -88,14 +100,24 @@
           class="mb-4"
           tag="div"
         >
-          <jds-select
+          <div>
+            <label class="mb-1 text-[15px] text-gray-800">Disposisi</label>
+          </div>
+          <BaseSelectSearch
             v-model="dataOtherComplaint.disposition"
             name="Disposisi"
-            label="Disposisi"
-            placeholder="Pilih Dinas Untuk Disposisi"
-            :error-message="errors[0]"
+            filterable
+            width-button="100%"
+            width-option="592px"
             :options="listDisposition"
+            placeholder="Pilih Dinas Untuk Disposisi"
+            class="select-search"
+            :class="{
+              'select-search--error mb-2': errors.length > 0,
+            }"
+            @change="(val) => changeSelectForm(val, 'disposition')"
           />
+          <small class="text-red-600">{{ errors[0] }}</small>
         </ValidationProvider>
         <jds-input-text
           v-model="dataOtherComplaint.authority"
@@ -104,7 +126,8 @@
           disabled
           class="!w-full"
         />
-      </form>
+      </div>
+      <!-- END FORM -->
     </ValidationObserver>
   </div>
 </template>
@@ -172,14 +195,14 @@ export default {
     )
   },
   methods: {
-    changeSelectForm(value, typeSelect) {
+    changeSelectForm(value, keyObject) {
       this.isOtherCategory = false
       this.isOtherSubcategory = false
-      if (typeSelect === 'category') {
-        this.$store.commit('add-complaint/setDataOtherComplaint', {
-          ...this.dataOtherComplaint,
-          category_id: value,
-        })
+      this.dataOtherComplaint[keyObject] = value
+      this.$store.commit('add-complaint/setDataOtherComplaint', {
+        ...this.dataOtherComplaint,
+      })
+      if (keyObject === 'category_id') {
         this.isOtherSubcategory = false
         this.$store.commit('add-complaint/setDataOtherComplaint', {
           ...this.dataOtherComplaint,
@@ -190,11 +213,7 @@ export default {
           this.dataOtherComplaint.category_id?.includes('lainnya')
       }
 
-      if (typeSelect === 'subcategory') {
-        this.$store.commit('add-complaint/setDataOtherComplaint', {
-          ...this.dataOtherComplaint,
-          sub_category_id: value,
-        })
+      if (keyObject === 'sub_category_id') {
         this.isOtherSubcategory =
           this.dataOtherComplaint.sub_category_id?.includes('lainnya-terkait')
       }

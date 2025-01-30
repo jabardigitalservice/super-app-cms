@@ -8,7 +8,7 @@
             type="button"
             variant="secondary"
             class="!text-[14px] !font-bold"
-            @click="handleCancelButton()"
+            @click.prevent="handleCancelButton()"
           />
         </div>
         <slot name="button-right" />

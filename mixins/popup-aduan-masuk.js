@@ -36,6 +36,57 @@ export default {
       typeDialog: '',
       idApi: '',
       complaintStatus,
+      listDialogConfirmation: {
+        failedComplaint: {
+          id: 'failedComplaint',
+          title: 'Konfirmasi Gagal Diverifikasi',
+          labelTextArea: 'Catatan Aduan Gagal Diverifikasi',
+          placeholder: 'Detail Aduan tidak lengkap : contoh (foto tidak jelas)',
+          dataCyFormat: 'dialog__confirmation-failed-verification',
+        },
+        redirectHotlineComplaint: {
+          id: 'redirectHotlineComplaint',
+          title: 'Konfirmasi Dialihkan ke Hotline Jabar',
+          labelTextArea: 'Alasan dialihkan ke Hotline Jabar',
+          placeholder: 'Contoh: Aduan terkait kegawat daruratan',
+          dataCyFormat: 'dialog__confirmation-diverted-to-hotline-jabar',
+        },
+        verificationComplaint: {
+          id: 'verificationComplaint',
+          title: 'Konfirmasi Verifikasi Aduan',
+          dataCyFormat: 'dialog__confirmation-verification',
+        },
+      },
+      dialogDataPopupComplaintHandle: {
+        verificationComplaint: {
+          title: 'Verifikasi Aduan',
+          successMessage: 'Aduan berhasil diverifikasi',
+          successButtonText:
+            'dialog__information-success-from-verification__button--close',
+          failedMessage: 'Aduan gagal diverifikasi',
+          statusId: 'verified',
+          pathApi: 'change-status',
+        },
+        failedComplaint: {
+          title: 'Aduan Gagal Diverifikasi',
+          successMessage:
+            'Konfirmasi Aduan Gagal Diverifikasi berhasil dilakukan',
+          successButtonText:
+            'dialog__information-success-from-failed-verification__button--close',
+          failedMessage: 'Konfirmasi Aduan Gagal Diverifikasi gagal dilakukan',
+          statusId: 'failed',
+          pathApi: 'change-status',
+        },
+        redirectHotlineComplaint: {
+          title: 'Aduan Dialihkan ke Hotline Jabar',
+          successMessage: 'Aduan berhasil dialihkan ke Hotline Jabar',
+          successButtonText:
+            'dialog__information-success-from-diverted-to-hotline-jabar__button--close',
+          failedMessage: 'Aduan gagal dialihkan ke Hotline Jabar',
+          statusId: '',
+          pathApi: 'redirected-to-hotline-jabar',
+        },
+      },
     }
   },
   computed: {
@@ -66,10 +117,10 @@ export default {
     },
     showPopupConfirmationVerificationComplaintHandle(dataComplaint) {
       this.idApi = dataComplaint.id
-      this.typeDialog = 'verificationComplaint'
+      this.typeDialog = this.listDialogConfirmation.verificationComplaint.id
       this.setDataDialog({
         ...this.setDataDialogConfirmation(
-          'Konfirmasi Verifikasi Aduan',
+          this.listDialogConfirmation.verificationComplaint.title,
           'Apakah Anda yakin ingin mengkonfirmasi aduan ini?',
           dataComplaint.complaint_id,
           'Verifikasi Aduan Ini'
@@ -77,7 +128,7 @@ export default {
       })
       this.dataDialog.dataCy = {
         footer: {
-          buttonSubmit: `dialog__confirmation-verification__button--verify-complaint`,
+          buttonSubmit: `${this.listDialogConfirmation.verificationComplaint.dataCyFormat}__button--verify-complaint`,
         },
       }
       this.isShowPopupConfirmationVerification = true
@@ -85,58 +136,44 @@ export default {
     showPopupConfirmationComplaint(dataComplaint, typeDialog) {
       this.idApi = dataComplaint.id
       this.dataComplaint = dataComplaint
-      let dataCyFormat = ''
-      if (typeDialog === 'failedComplaint') {
-        dataCyFormat = 'dialog__confirmation-failed-verification'
-        this.typeDialog = 'failedComplaint'
-        this.setDataDialog({
-          ...this.setDataDialogConfirmation(
-            'Konfirmasi Gagal Diverifikasi',
-            'No.Aduan',
-            dataComplaint.complaint_id,
-            'Konfirmasi'
-          ),
-          labelTextArea: 'Catatan Aduan Gagal Diverifikasi',
-          placeholder: 'Detail Aduan tidak lengkap : contoh (foto tidak jelas)',
-        })
-        this.dataDialog.dataCy = {
-          fieldTextArea: `${dataCyFormat}__text-area`,
-          buttonSubmit: `${dataCyFormat}__button--confirmation`,
-        }
+      this.typeDialog = typeDialog
+
+      const config = this.listDialogConfirmation[typeDialog]
+
+      this.setDataDialog({
+        ...this.setDataDialogConfirmation(
+          config.title,
+          'No.Aduan',
+          dataComplaint.complaint_id,
+          'Konfirmasi'
+        ),
+        labelTextArea: config.labelTextArea,
+        placeholder: config.placeholder,
+      })
+
+      this.dataDialog.dataCy = {
+        fieldTextArea: `${config.dataCyFormat}__text-area`,
+        buttonSubmit: `${config.dataCyFormat}__button--confirmation`,
       }
-      if (typeDialog === 'redirectHotlineComplaint') {
-        dataCyFormat = 'dialog__confirmation-diverted-to-hotline-jabar'
-        this.typeDialog = 'redirectHotlineComplaint'
-        this.setDataDialog({
-          ...this.setDataDialogConfirmation(
-            'Konfirmasi Dialihkan ke Hotline Jabar',
-            'No.Aduan',
-            dataComplaint.complaint_id,
-            'Konfirmasi'
-          ),
-          labelTextArea: 'Alasan dialihkan ke Hotline Jabar',
-          placeholder: 'Contoh: Aduan terkait kegawat daruratan',
-        })
-        this.dataDialog.dataCy = {
-          fieldTextArea: `${dataCyFormat}__text-area`,
-          buttonSubmit: `${dataCyFormat}__button--confirmation`,
-        }
-      }
+
       this.dataDialog.name = this.typeDialog
       this.$store.commit('modals/OPEN', this.typeDialog)
     },
     showPopupConfirmationRedirectHotline(dataComplaint) {
       this.idApi = dataComplaint.id
-      this.typeDialog = 'redirectHotlineComplaint'
+      this.typeDialog = this.listDialogConfirmation.redirectHotlineComplaint.id
+
       this.setDataDialog({
         ...this.setDataDialogConfirmation(
-          'Konfirmasi Dialihkan ke Hotline Jabar',
+          this.listDialogConfirmation.redirectHotlineComplaint.title,
           'No.Aduan',
           dataComplaint.complaint_id,
           'Konfirmasi'
         ),
-        labelTextArea: 'Alasan dialihkan ke Hotline Jabar',
-        placeholder: 'Contoh: Aduan terkait kegawat daruratan',
+        labelTextArea:
+          this.listDialogConfirmation.redirectHotlineComplaint.labelTextArea,
+        placeholder:
+          this.listDialogConfirmation.redirectHotlineComplaint.placeholder,
       })
       this.isShowPopupConfirmationFailedVerification = true
     },
@@ -145,18 +182,10 @@ export default {
       this.typeDialog = 'addIdSpan'
       this.dataComplaint = dataComplaint
       this.setDataDialog({
-        ...this.setDataDialogConfirmation(
-          'Tambahkan ID SP4N Lapor',
-          'No.Aduan',
-          dataComplaint.complaint_id,
-          'Tambahkan'
-        ),
-        labelInput: 'ID SP4N Lapor',
-        placeholder: 'Masukkan ID SP4N Lapor',
-        dataRules: 'numeric',
-        maxLength: 10,
+        description: 'No. Aduan',
+        subDescription: dataComplaint.complaint_id,
       })
-      this.isShowPopupInputIdSpan = true
+      this.$store.commit('modals/OPEN', 'formAddIdSpan')
     },
     showPopupProcessComplaintHandle(dataComplaint) {
       this.idApi = dataComplaint.id
@@ -287,95 +316,56 @@ export default {
       })
       this.$store.commit('followup-complaint/setIsShowPopup', true)
     },
+
     submitPopupComplaintHandle(item) {
       let dataDialogInformation = {}
       let paramRequest = { complaint_status_note: item?.note }
       let pathApi = 'change-status'
+
+      const createDialogData = (dialogType) => {
+        const dialog = this.dialogDataPopupComplaintHandle[dialogType]
+        return {
+          ...this.setDataDialogInformation(dialog.title, item.subDescription),
+          success: {
+            ...this.setSucessFailedInformationHandle(
+              dialog.successMessage,
+              true
+            ),
+            dataCy: { footer: { buttonSubmit: dialog.successButtonText } },
+          },
+          failed: this.setSucessFailedInformationHandle(
+            dialog.failedMessage,
+            false
+          ),
+        }
+      }
+
       switch (this.typeDialog) {
         case 'verificationComplaint':
-          this.isShowPopupConfirmationVerification = false
-          dataDialogInformation = {
-            ...this.setDataDialogInformation(
-              'Verifikasi Aduan',
-              item.subDescription
-            ),
-            success: {
-              ...this.setSucessFailedInformationHandle(
-                'Aduan berhasil diverifikasi',
-                true
-              ),
-              dataCy: {
-                footer: {
-                  buttonSubmit:
-                    'dialog__information-success-from-verification__button--close',
-                },
-              },
-            },
-            failed: this.setSucessFailedInformationHandle(
-              'Aduan gagal diverifikasi',
-              false
-            ),
-          }
-          paramRequest.complaint_status_id = 'verified'
+          dataDialogInformation = createDialogData('verificationComplaint')
+          paramRequest.complaint_status_id =
+            this.dialogDataPopupComplaintHandle.verificationComplaint.statusId
           break
         case 'failedComplaint':
           this.$store.commit('modals/CLOSEALL')
-          dataDialogInformation = {
-            ...this.setDataDialogInformation(
-              'Aduan Gagal Diverifikasi',
-              item.subDescription
-            ),
-            success: {
-              ...this.setSucessFailedInformationHandle(
-                'Konfirmasi Aduan Gagal Diverifikasi berhasil dilakukan',
-                true
-              ),
-              dataCy: {
-                footer: {
-                  buttonSubmit:
-                    'dialog__information-success-from-failed-verification__button--close',
-                },
-              },
-            },
-            failed: this.setSucessFailedInformationHandle(
-              'Konfirmasi Aduan Gagal Diverifikasi gagal dilakukan',
-              false
-            ),
-          }
-          paramRequest.complaint_status_id = 'failed'
+          dataDialogInformation = createDialogData('failedComplaint')
+          paramRequest.complaint_status_id =
+            this.dialogDataPopupComplaintHandle.failedComplaint.statusId
           break
         case 'redirectHotlineComplaint':
           this.$store.commit('modals/CLOSEALL')
-          dataDialogInformation = {
-            ...this.setDataDialogInformation(
-              'Aduan Dialihkan ke Hotline Jabar',
-              item.subDescription
-            ),
-            success: {
-              ...this.setSucessFailedInformationHandle(
-                'Aduan berhasil dialihkan ke Hotline Jabar',
-                true
-              ),
-              dataCy: {
-                footer: {
-                  buttonSubmit:
-                    'dialog__information-success-from-diverted-to-hotline-jabar__button--close',
-                },
-              },
-            },
-            failed: this.setSucessFailedInformationHandle(
-              'Aduan gagal dialihkan ke Hotline Jabar',
-              false
-            ),
-          }
+          dataDialogInformation = createDialogData('redirectHotlineComplaint')
           paramRequest = { directed_to_hotline_jabar_note: item?.note }
-          pathApi = 'redirected-to-hotline-jabar'
+          pathApi =
+            this.dialogDataPopupComplaintHandle.redirectHotlineComplaint.pathApi
+          break
       }
+
       this.integrationPopupHandle(dataDialogInformation, paramRequest, pathApi)
     },
 
     submitInputIdSpanHandle(item) {
-      this.isShowPopupInputIdSpan = false
+      this.$store.commit('modals/CLOSEALL')
       let dataDialogInformation = {}
       dataDialogInformation = {
         ...this.setDataDialogInformation('ID SP4N Lapor', item.subDescription),
@@ -391,7 +381,8 @@ export default {
       this.integrationPopupHandle(
         dataDialogInformation,
         {
-          sp4n_id: item.valueText,
+          sp4n_id: item.payload.sp4n_id,
+          sp4n_created_at: item.payload.sp4n_created_at,
           complaint_number: this.dataComplaint.complaint_id,
         },
         'add-sp4n'
@@ -434,33 +425,28 @@ export default {
         'determine-authority'
       )
     },
-
     submitFollowupComplaint(payload) {
       this.$store.commit('modals/CLOSEALL')
       let dataDialogInformation = {}
-      const dialogDescriptionSucceess =
-        this.typeDialog === 'createInstruction'
-          ? 'Instruksi Anda berhasil dibuat'
-          : 'Tindaklanjuti aduan Anda berhasil diproses'
 
-      const dialogDescriptionFailed =
-        this.typeDialog === 'createInstruction'
-          ? 'Instruksi Anda gagal dibuat'
-          : 'Tindaklanjuti aduan Anda gagal diproses'
+      let successMessage = ''
+      let failedMessage = ''
+
+      if (this.typeDialog === 'createInstruction') {
+        successMessage = 'Instruksi Anda berhasil dibuat'
+        failedMessage = 'Instruksi Anda gagal dibuat'
+      } else {
+        successMessage = 'Tindaklanjuti aduan Anda berhasil diproses'
+        failedMessage = 'Tindaklanjuti aduan Anda gagal diproses'
+      }
 
       dataDialogInformation = {
         ...this.setDataDialogInformation(
           this.dataDialog.title,
           payload.ikp_code
         ),
-        success: this.setSucessFailedInformationHandle(
-          dialogDescriptionSucceess,
-          true
-        ),
-        failed: this.setSucessFailedInformationHandle(
-          dialogDescriptionFailed,
-          false
-        ),
+        success: this.setSucessFailedInformationHandle(successMessage, true),
+        failed: this.setSucessFailedInformationHandle(failedMessage, false),
       }
       this.integrationPopupHandle(dataDialogInformation, payload, 'follow-up')
     },
@@ -496,52 +482,62 @@ export default {
       this.dataDialog.title = paramDialog.title
       this.dataDialog.subDescription = paramDialog.subDescription
       this.isLoading = true
-      const complaintType =
-        this.$store.state['followup-complaint'].complaintType
-      const endpointApi =
-        complaintType === typeAduan.instruksiKewenanganNonPemprov.props
-          ? ENDPOINT_ADUAN_NON_PEMPROV
-          : ENDPOINT_ADUAN
-      const urlApi = `${endpointApi}/${this.idApi}/${pathApi}`
+
+      const urlApi = this.getApiEndpoint(pathApi)
 
       try {
         await this.$axios.patch(urlApi, {
           ...paramsInputRequest,
           user_id: this.$auth?.user?.identifier,
         })
-        this.setDataDialog({ ...paramDialog.success })
-        this.setIconPopup({ name: 'check-mark-circle', fill: '#069550' })
-        this.$store.commit('followup-complaint/setIsCreateIkp', false)
-        this.$store.commit('create-ikp/setPayload', {
-          description: '',
-          indicator_value: '',
-          indicator_unit: '',
-        })
-      } catch (error) {
-        const { code, errors } = error.response.data
-        this.setDataDialog({ ...paramDialog.failed })
-        if (code === '4221400') {
-          if (errors?.instruction) {
-            this.setDataDialog({
-              ...paramDialog.failed,
-              description: errors?.instruction || '',
-            })
-          }
-          if (errors?.sp4n_id) {
-            this.setDataDialog({
-              ...paramDialog.failed,
-              description: errors?.sp4n_id,
-              subDescription: '',
-            })
-          }
-        }
 
-        this.setIconPopup({ name: 'times-circle', fill: '#EF5350' })
+        this.handleSuccessResponse(paramDialog)
+      } catch (error) {
+        this.handleErrorResponse(error, paramDialog)
       } finally {
         this.isLoading = false
       }
       this.isShowPopupInformation = true
       this.$store.commit('followup-complaint/setComplaintType', '')
+    },
+    getApiEndpoint(pathApi) {
+      const complaintType =
+        this.$store.state['followup-complaint'].complaintType
+      const endpointApi =
+        complaintType === typeAduan.instruksiKewenanganNonPemprov.props
+          ? ENDPOINT_ADUAN_NON_PEMPROV
+          : ENDPOINT_ADUAN
+      return `${endpointApi}/${this.idApi}/${pathApi}`
+    },
+    handleSuccessResponse(paramDialog) {
+      this.setDataDialog({ ...paramDialog.success })
+      this.setIconPopup({ name: 'check-mark-circle', fill: '#069550' })
+      this.$store.commit('followup-complaint/setIsCreateIkp', false)
+      this.$store.commit('create-ikp/setPayload', {
+        description: '',
+        indicator_value: '',
+        indicator_unit: '',
+      })
+    },
+    handleErrorResponse(error, paramDialog) {
+      const { code, errors } = error.response.data
+      this.setDataDialog({ ...paramDialog.failed })
+      if (code === '4221400') {
+        if (errors?.instruction) {
+          this.setDataDialog({
+            ...paramDialog.failed,
+            description: errors?.instruction || '',
+          })
+        }
+        if (errors?.sp4n_id) {
+          this.setDataDialog({
+            ...paramDialog.failed,
+            description: errors?.sp4n_id,
+            subDescription: '',
+          })
+        }
+      }
+      this.setIconPopup({ name: 'times-circle', fill: '#EF5350' })
     },
     submitRetryHandle() {
       this.isShowPopupInformation = false
