@@ -160,7 +160,7 @@
                 @evidence-followup-hotline="
                   showPopupEvidenceFollowupHotline(item)
                 "
-                @add-span="showPopupInputIdSpanHandle(item)"
+                @add-id-span="showPopupInputIdSpanHandle(item)"
                 @process-complaint="showPopupProcessComplaintHandle(item)"
                 @change-authority="showPopupChangeAuthority(item)"
                 @followup-complaint="showPopupFollowupComplaint(item)"
@@ -341,9 +341,15 @@ export default {
         },
         {
           menu: 'Tambahkan ID SP4N Lapor',
-          value: 'add-span',
+          value: 'add-id-span',
           complaintType: [typeAduan.aduanDialihkanSpanLapor.props],
           complaintStatus: ['no-id-span'],
+        },
+        {
+          menu: 'Ubah ID SP4N Lapor',
+          value: 'edit-id-span',
+          complaintType: [typeAduan.aduanDialihkanSpanLapor.props],
+          complaintStatus: [complaintStatus.diverted_to_span.id],
         },
         {
           menu: 'Proses Aduan',
