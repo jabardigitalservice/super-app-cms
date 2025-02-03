@@ -177,15 +177,32 @@ export default {
       })
       this.isShowPopupConfirmationFailedVerification = true
     },
-    showPopupInputIdSpanHandle(dataComplaint) {
+    showPopupInputIdSpanHandle(dataComplaint, dialogName) {
       this.idApi = dataComplaint.id
       this.typeDialog = 'addIdSpan'
       this.dataComplaint = dataComplaint
       this.setDataDialog({
         description: 'No. Aduan',
         subDescription: dataComplaint.complaint_id,
+        nameModal: dialogName,
+        title: 'Tambahkan ID SP4N Lapor',
+        labelButtonSubmit: 'Tambahkan',
       })
-      this.$store.commit('modals/OPEN', 'formAddIdSpan')
+
+      // show form edit id span
+      if (dialogName === 'formEditIdSpan') {
+        this.typeDialog = 'editIdSpan'
+        this.setDataDialog({
+          title: 'Ubah ID SP4N Lapor',
+          labelButtonSubmit: 'Ubah Data',
+        })
+        this.$store.commit('id-span/setPayload', {
+          sp4n_id: dataComplaint.sp4n_id,
+          sp4n_created_at: new Date(dataComplaint?.deadline_date),
+        })
+      }
+
+      this.$store.commit('modals/OPEN', dialogName)
     },
     showPopupProcessComplaintHandle(dataComplaint) {
       this.idApi = dataComplaint.id
@@ -367,6 +384,8 @@ export default {
     submitInputIdSpanHandle(item) {
       this.$store.commit('modals/CLOSEALL')
       let dataDialogInformation = {}
+
+      // information add id span
       dataDialogInformation = {
         ...this.setDataDialogInformation('ID SP4N Lapor', item.subDescription),
         success: this.setSucessFailedInformationHandle(
@@ -377,6 +396,18 @@ export default {
           'ID SP4N Lapor gagal ditambah',
           false
         ),
+      }
+
+      // information edit id span
+      if (this.typeDialog === 'editIdSpan') {
+        dataDialogInformation.success = this.setSucessFailedInformationHandle(
+          'ID SP4N Lapor berhasil diubah',
+          true
+        )
+        dataDialogInformation.failed = this.setSucessFailedInformationHandle(
+          'ID SP4N Lapor gagal diubah',
+          false
+        )
       }
       this.integrationPopupHandle(
         dataDialogInformation,
