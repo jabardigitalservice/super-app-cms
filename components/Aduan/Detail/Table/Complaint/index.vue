@@ -262,7 +262,7 @@
           </tr>
           <tr>
             <td><strong>Jenis Aduan</strong></td>
-            <td>{{ showComplaintType()}}</td>
+            <td>{{ showComplaintType() }}</td>
           </tr>
           <tr>
             <td colspan="2">
@@ -633,13 +633,18 @@ export default {
           return false
       }
     },
-    showComplaintType(){
+    showComplaintType() {
+      // show complaint type : public, public-anonim or private
       let complaintType = ''
-      if(this.detailComplaint?.type){
-        complaintType = this.detailComplaint?.type==='public' ? 'publik' : 'rahasia'
+      if (this.detailComplaint?.type) {
+        complaintType =
+          this.detailComplaint?.type === 'public' ? 'publik' : 'rahasia'
       }
 
-      if(this.detailComplaint.is_anonymous && this.detailComplaint?.type==='public'){
+      if (
+        this.detailComplaint.is_anonymous &&
+        this.detailComplaint?.type === 'public'
+      ) {
         return `${complaintType} - anomin`
       }
 
