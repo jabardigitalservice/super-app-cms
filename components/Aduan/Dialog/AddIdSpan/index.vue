@@ -2,7 +2,7 @@
   <div>
     <BaseDialogFrame :name="nameModal">
       <BaseDialogPanel>
-        <BaseDialogHeader title="Tambahkan ID SP4N Lapor" />
+        <BaseDialogHeader :title="dataDialog.title" />
         <ValidationObserver ref="form" v-slot="{ invalid }">
           <form>
             <div class="px-6 pb-3">
@@ -57,10 +57,10 @@
                 </ValidationProvider>
               </div>
             </div>
-            <BaseDialogFooterNew name="formAddIdSpan" @cancel="clearForm()">
+            <BaseDialogFooterNew :name="nameModal" @cancel="clearForm()">
               <template #button-right>
                 <jds-button
-                  label="Tambahkan"
+                  :label="dataDialog.labelButtonSubmit"
                   type="button"
                   variant="primary"
                   :disabled="invalid"
@@ -86,24 +86,33 @@ export default {
   name: 'DialogInputTextArea',
   components: { ValidationProvider, ValidationObserver },
   props: {
-    showPopup: {
-      type: Boolean,
-      default: false,
-    },
     dataDialog: {
       type: Object,
       default: () => ({}),
     },
+    nameModal: {
+      type: String,
+      default: '',
+    },
   },
   data() {
     return {
-      payload: {
-        sp4n_id: '',
-        sp4n_created_at: '',
-      },
-      nameModal: 'formAddIdSpan',
+      // payload: {
+      //   sp4n_id: '',
+      //   sp4n_created_at: '',
+      // },
       dialogConfirmation: {},
     }
+  },
+  computed: {
+    payload: {
+      get() {
+        return { ...this.$store.state['id-span'].payload }
+      },
+      set(value) {
+        this.$store.commit('id-span/setPayload', value)
+      },
+    },
   },
   methods: {
     disabledDate: function (date) {
@@ -120,6 +129,7 @@ export default {
       const isValid = await this.$refs.form.validate()
       if (isValid) {
         this.$store.commit('modals/CLOSEALL')
+        // dialog confirmation add id span
         const dataDialog = {
           title: 'Tambahkan ID SP4N Lapor',
           nameModal: `${this.nameModal}Confirmation`,
@@ -129,6 +139,13 @@ export default {
             label: 'Ya, lanjutkan',
             variant: 'primary',
           },
+        }
+
+        // dialog confirmation edit id span
+        if (this.nameModal === 'formEditIdSpan') {
+          dataDialog.title = 'Ubah ID SP4N Lapor'
+          dataDialog.descriptionText =
+            'Apakah anda yakin ingin mengubah ID SP4N Lapor tersebut?'
         }
         this.dialogConfirmation = dataDialog
         this.$store.commit('modals/OPEN', dataDialog.nameModal)
