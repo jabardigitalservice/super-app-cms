@@ -97,10 +97,6 @@ export default {
   },
   data() {
     return {
-      // payload: {
-      //   sp4n_id: '',
-      //   sp4n_created_at: '',
-      // },
       dialogConfirmation: {},
     }
   },
@@ -141,7 +137,7 @@ export default {
           },
         }
 
-        // dialog confirmation edit id span
+        // dialog confirmation edit i
         if (this.nameModal === 'formEditIdSpan') {
           dataDialog.title = 'Ubah ID SP4N Lapor'
           dataDialog.descriptionText =
@@ -164,10 +160,10 @@ export default {
       this.$store.commit('modals/OPEN', this.nameModal)
     },
     clearForm() {
-      this.payload = {
+      this.$store.commit('id-span/setPayload', {
         sp4n_created_at: '',
         sp4n_id: '',
-      }
+      })
     },
   },
 }
