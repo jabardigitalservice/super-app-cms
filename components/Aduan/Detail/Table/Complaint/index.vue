@@ -260,26 +260,6 @@
             <td><strong>Email</strong></td>
             <td>{{ detailComplaint?.user_email || '-' }}</td>
           </tr>
-          <tr
-            v-if="typeAduanPage === typeAduan.aduanDialihkanHotlineJabar.props"
-          >
-            <td><strong>Sosial Media</strong></td>
-            <td>{{ detailComplaint?.social_media_link || '-' }}</td>
-          </tr>
-          <tr
-            v-if="typeAduanPage !== typeAduan.aduanDialihkanHotlineJabar.props"
-          >
-            <td><strong>Jenis Media Sosial</strong></td>
-            <td>{{ detailComplaint?.social_media?.name || '-' }}</td>
-          </tr>
-          <tr
-            v-if="typeAduanPage !== typeAduan.aduanDialihkanHotlineJabar.props"
-          >
-            <td>
-              <strong>Link Akun Media Sosial</strong>
-            </td>
-            <td>{{ detailComplaint?.social_media_link || '-' }}</td>
-          </tr>
           <tr>
             <td colspan="2">
               <strong>Titik Lokasi Pelapor</strong>
@@ -310,7 +290,7 @@
             <td>
               {{ getSubCategoryName() }}
             </td>
-          </td>
+          </tr>
           <tr>
             <td><strong>Judul Aduan</strong></td>
             <td>{{ detailComplaint?.title || '-' }}</td>
@@ -485,10 +465,10 @@
 </template>
 
 <script>
-import DialogTrackingSpanLapor from '~/components/Aduan/Dialog/TrackingSpanLapor';
-import DialogViewDocument from '~/components/Aduan/Dialog/ViewDocument';
-import { complaintStatus, typeAduan } from '~/constant/aduan-masuk';
-import popupAduanMasuk from '~/mixins/popup-aduan-masuk';
+import DialogTrackingSpanLapor from '~/components/Aduan/Dialog/TrackingSpanLapor'
+import DialogViewDocument from '~/components/Aduan/Dialog/ViewDocument'
+import { complaintStatus, typeAduan } from '~/constant/aduan-masuk'
+import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
 
 export default {
   name: 'DetailAduanMasuk',
