@@ -261,6 +261,10 @@
             <td>{{ detailComplaint?.user_email || '-' }}</td>
           </tr>
           <tr>
+            <td><strong>Jenis Aduan</strong></td>
+            <td>{{ showComplaintType()}}</td>
+          </tr>
+          <tr>
             <td colspan="2">
               <strong>Titik Lokasi Pelapor</strong>
             </td>
@@ -628,6 +632,18 @@ export default {
         default:
           return false
       }
+    },
+    showComplaintType(){
+      let complaintType = ''
+      if(this.detailComplaint?.type){
+        complaintType = this.detailComplaint?.type==='public' ? 'publik' : 'rahasia'
+      }
+
+      if(this.detailComplaint.is_anonymous && this.detailComplaint?.type==='public'){
+        return `${complaintType} - anomin`
+      }
+
+      return complaintType || '-'
     },
     getDataFile(dataUrl) {
       const file = dataUrl.split('/').pop()
