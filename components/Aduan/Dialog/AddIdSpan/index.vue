@@ -117,7 +117,6 @@ export default {
       const currentDate = new Date()
       const oneMonthAgo = new Date(currentDate)
       oneMonthAgo.setMonth(currentDate.getMonth() - 1) // Kurangi 1 bulan
-      oneMonthAgo.setDate(currentDate.getDate()) // tanggal se
       return date < oneMonthAgo || date > currentDate
     },
     clearDate() {
