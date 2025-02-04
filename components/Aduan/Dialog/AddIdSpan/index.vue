@@ -82,6 +82,8 @@
 
 <script>
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
+import { formatDate } from '~/utils'
+
 export default {
   name: 'DialogInputTextArea',
   components: { ValidationProvider, ValidationObserver },
@@ -115,7 +117,7 @@ export default {
       const currentDate = new Date()
       const oneMonthAgo = new Date(currentDate)
       oneMonthAgo.setMonth(currentDate.getMonth() - 1) // Kurangi 1 bulan
-      oneMonthAgo.setDate(currentDate.getDate() - 1) // Kurangi 1 hari
+      oneMonthAgo.setDate(currentDate.getDate()) // tanggal se
       return date < oneMonthAgo || date > currentDate
     },
     clearDate() {
@@ -137,7 +139,7 @@ export default {
           },
         }
 
-        // dialog confirmation edit i
+        // dialog confirmation edit id span
         if (this.nameModal === 'formEditIdSpan') {
           dataDialog.title = 'Ubah ID SP4N Lapor'
           dataDialog.descriptionText =
@@ -149,10 +151,18 @@ export default {
       }
     },
     submitIdSpan() {
+      const spanCreatedDate = formatDate(
+        this.payload.sp4n_created_at,
+        'yyyy-MM-dd'
+      )
+      const [year, month, day] = spanCreatedDate.split('-')
+      const date = new Date(Date.UTC(year, month - 1, day, 0, 0, 0))
+      this.payload.sp4n_created_at = date
       this.$emit('submit', {
         subDescription: this.dataDialog.subDescription,
         payload: this.payload,
       })
+
       this.clearForm()
     },
     backToForm() {
