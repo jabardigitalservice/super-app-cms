@@ -196,9 +196,12 @@ export default {
           title: 'Ubah ID SP4N Lapor',
           labelButtonSubmit: 'Ubah Data',
         })
+
+        const [date, month, year] = dataComplaint.sp4n_created_at.split('/')
+
         this.$store.commit('id-span/setPayload', {
           sp4n_id: dataComplaint.sp4n_id,
-          sp4n_created_at: new Date(dataComplaint?.deadline_date),
+          sp4n_created_at: new Date(year, month - 1, date),
         })
       }
 
