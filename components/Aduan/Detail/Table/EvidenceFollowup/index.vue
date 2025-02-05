@@ -4,7 +4,7 @@
       Bukti Tindaklanjut
     </h1>
 
-    <BaseLoading v-if="isLoading" />
+    <BaseLoading v-if="isLoad" />
 
     <template v-else>
       <BaseTableDetail header="Keterangan" class="mb-4">
@@ -90,7 +90,7 @@ export default {
       type: Object,
       default: () => ({}),
     },
-    isLoading: {
+    isLoad: {
       type: Boolean,
       default: false,
     },
