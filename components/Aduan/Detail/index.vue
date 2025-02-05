@@ -65,7 +65,7 @@
         <TabBarDetail
           ref="tabBarDetail"
           :list-tab="listTab"
-          :is-loading="loading"
+          :is-load="loading"
           @button-tab="selectedTab"
         />
       </template>
@@ -78,7 +78,8 @@
             :detail-complaint="detailComplaint"
             :list-photo="listPhotoComplaint"
             :type-aduan-page="typeAduanPage.props"
-            :is-loading="loading"
+            :field-detail="fieldDetail"
+            :is-load="loading"
             @button-image="isShowPopupViewImage = true"
           />
           <AduanDaftarIKPTableDetail
@@ -97,7 +98,7 @@
             v-else-if="
               idTab === 'bukti-tindak-lanjut' && detailComplaint?.evidence
             "
-            :is-loading="loading"
+            :is-load="loading"
             :evidence="detailComplaint?.evidence"
           />
         </BaseTabPanel>
@@ -174,6 +175,7 @@ import {
   complaintSource,
   complaintStatus,
   typeAduan,
+  detailField,
 } from '~/constant/aduan-masuk'
 import {
   ENDPOINT_ADUAN,
@@ -262,6 +264,7 @@ export default {
       typeAduan,
       complaintStatus,
       loading: false,
+      fieldDetail: {},
     }
   },
   async fetch() {
@@ -311,10 +314,10 @@ export default {
             'dd/MM/yyyy - HH:mm'
           ),
       }
-
       this.ikpCode = dataDetailComplaint?.ikp_code
 
       this.listPhotoComplaint = dataDetailComplaint?.photos || []
+      this.getFieldDetail()
     } catch {
       this.detailComplaint = {}
       this.listPhotoComplaint = []
@@ -349,8 +352,105 @@ export default {
   },
   mounted() {
     this.selectedTab('all')
+
+    // this.fieldDetail = dataFieldDetail
   },
   methods: {
+    getFieldDetail() {
+      const dataFieldDetail = {}
+      Object.keys(detailField).forEach((keyField) => {
+        const isCheckColumn = this.checkDetailColumn(keyField)
+        if (isCheckColumn) {
+          dataFieldDetail[keyField] = detailField[keyField]
+          dataFieldDetail[keyField] = {
+            ...dataFieldDetail[keyField],
+            field: this.filterDetailField(keyField),
+          }
+        }
+      })
+      this.fieldDetail = dataFieldDetail
+    },
+    filterDetailField(keyField) {
+      return detailField[keyField].field.filter((item) => {
+        if (
+          this.showIdSpanLaporHandle(item.key) ||
+          this.detailComplaint.coverage_of_affairs ===
+            'Pemerintah Kabupaten/Kota' ||
+          this.showDocumentEvidence(item.key)
+        ) {
+          return (
+            this.filteredDetailFieldByMenu(item) &&
+            this.filteredDetailFieldByStatus(item)
+          )
+        }
+        return (
+          this.filteredDetailFieldByMenu(item) &&
+          this.filteredDetailFieldByStatus(item) &&
+          item.key !== 'sp4n_id' &&
+          item.key !== 'opd_pemprov_name' &&
+          item.key !== 'document_evidence'
+        )
+      })
+    },
+    checkDetailColumn(column) {
+      if (this.showTrackingSpan()) {
+        return (
+          this.filteredDetailFieldByMenu(detailField[column]) &&
+          this.filteredDetailFieldByStatus(detailField[column])
+        )
+      }
+      return (
+        this.filteredDetailFieldByMenu(detailField[column]) &&
+        this.filteredDetailFieldByStatus(detailField[column]) &&
+        detailField[column].title !== 'Status SP4N Lapor'
+      )
+    },
+    filteredDetailFieldByMenu(detailField) {
+      // check detail field By complaint feature / menu
+      return (
+        detailField.menu.includes('all') ||
+        detailField.menu.includes(this.typeAduanPage.props)
+      )
+    },
+    filteredDetailFieldByStatus(detailField) {
+      // check detail field By complaint status
+      return (
+        detailField.complaintStatus.includes('all') ||
+        detailField.complaintStatus.includes(
+          this.detailComplaint?.complaint_status_id
+        )
+      )
+    },
+    showDocumentEvidence(keyField) {
+      return (
+        this.detailComplaint.ikp?.evidence && keyField === 'document_evidence'
+      )
+    },
+    showIdSpanLaporHandle(fieldKey) {
+      if (this.typeAduanPage.props === typeAduan.penentuanKewenangan.props) {
+        const complaintSource =
+          this.detailComplaint.complaint_source?.id === 'sp4n'
+        const complaintStatus =
+          this.detailComplaint.complaint_status_id ===
+            this.complaintStatus.coordinated.id ||
+          this.detailComplaint.complaint_status_id ===
+            this.complaintStatus.verified.id
+        return complaintSource && complaintStatus && fieldKey === 'sp4n_id'
+      }
+
+      if (
+        this.typeAduanPage.props === typeAduan.aduanDialihkanSpanLapor.props
+      ) {
+        return fieldKey === 'sp4n_id'
+      }
+      return false
+    },
+    showTrackingSpan() {
+      return (
+        this.typeAduanPage.props === typeAduan.aduanDialihkanSpanLapor.props &&
+        this.detailComplaint?.sp4n_id
+      )
+    },
     getTabDetailByComplaintStatus() {
       switch (this.typeAduanPage.props) {
         case typeAduan.instruksiKewenanganPemprov.props:
