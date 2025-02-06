@@ -645,7 +645,7 @@ export default {
         this.detailComplaint.is_anonymous &&
         this.detailComplaint?.type === 'public'
       ) {
-        return `${complaintType} - anomin`
+        return `${complaintType} - anonim`
       }
 
       return complaintType || '-'
