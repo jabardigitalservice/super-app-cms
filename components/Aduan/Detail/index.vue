@@ -489,6 +489,7 @@ export default {
         case typeAduan.aduanDialihkanHotlineJabar.props:
           return ENDPOINT_ADUAN_HOTLINE_JABAR
         case typeAduan.instruksiKewenanganNonPemprov.props:
+        case typeAduan.instruksiNonPemprov.props:
           return ENDPOINT_ADUAN_NON_PEMPROV
         default:
           return ENDPOINT_ADUAN
