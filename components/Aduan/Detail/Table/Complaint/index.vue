@@ -16,8 +16,9 @@
         <tr v-for="field in fieldDetail[keysField].field" :key="field.name">
           <!-- START LABEL FIELD -->
           <td
-            v-if="checkNotBoldField(field.key)"
+            v-if="checkChildParentField(field.key, 'child')"
             :class="{
+              'align-top': field.key === 'map',
               'w-[180px]':
                 typeAduanPage === typeAduan.aduanDialihkanSpanLapor.props,
             }"
@@ -28,12 +29,10 @@
             v-else
             class="text-lato w-[164px] text-[14px]"
             :class="{
-              'align-top': field.key === 'map',
               'w-[180px]':
                 detailComplaint?.coverage_of_affairs ===
                   'Pemerintah Kabupaten/Kota' ||
-                typeAduanPage === typeAduan.aduanDialihkanSpanLapor.props ||
-                typeAduanPage === typeAduan.instruksiKewenanganPemprov.props,
+                fieldWidth180.includes(typeAduanPage),
               'w-60':
                 typeAduanPage === typeAduan.aduanDialihkanHotlineJabar.props,
             }"
@@ -113,7 +112,7 @@
             />
             <div v-else>-</div>
           </td>
-          <td v-else>{{ detailComplaint[field.key] || '-' }}</td>
+          <td v-else>{{ showDetailField(field.key) }}</td>
         </tr>
       </BaseTableDetail>
       <BaseTableDetail v-if="detailComplaint?.photos" header="Bukti Foto">
@@ -291,6 +290,12 @@ export default {
       listFileImage: [],
       isShowPopupViewDocument: false,
       isShowPopupTrackingSpan: false,
+      fieldWidth180: [
+        // for field detail page want width 180px
+        typeAduan.aduanDialihkanSpanLapor.props,
+        typeAduan.instruksiKewenanganPemprov.props,
+        typeAduan.penentuanKewenangan.props,
+      ],
     }
   },
   computed: {
@@ -312,8 +317,9 @@ export default {
     },
   },
   methods: {
-    checkNotBoldField(fieldKey) {
-      const listKey = [
+    checkChildParentField(fieldKey, levelKey) {
+      // for label not bold
+      const listChildKey = [
         'coordinate',
         'city_name',
         'district_name',
@@ -322,10 +328,25 @@ export default {
         'latitude',
         'longitude',
         'tracking_span',
+        'map',
       ]
-      return listKey.includes(fieldKey)
-    },
 
+      // for label bold, but not field
+      const listParentKey = [
+        'incident_location',
+        'incident_location_point',
+        'report_location_point',
+      ]
+      return levelKey === 'parent'
+        ? listParentKey.includes(fieldKey)
+        : listChildKey.includes(fieldKey)
+    },
+    showDetailField(fieldKey) {
+      if (this.checkChildParentField(fieldKey, 'parent')) {
+        return ''
+      }
+      return this.detailComplaint[fieldKey] || '-'
+    },
     findComplaintStatus(listComplaintStatus) {
       return listComplaintStatus.find(
         (item) => item.id === this.detailComplaint?.complaint_status_id
