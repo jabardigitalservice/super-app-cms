@@ -686,6 +686,12 @@ export const detailField = {
         complaintStatus: ['all'],
       },
       {
+        name: 'Jenis Aduan',
+        key: 'complaint_type',
+        menu: ['all'],
+        complaintStatus: ['all'],
+      },
+      {
         name: 'Titik Lokasi Pelapor',
         key: 'report_location_point',
         menu: ['all'],
