@@ -4,167 +4,74 @@
       Detail Aduan Warga
     </h1>
 
-    <BaseLoading v-if="isLoading" />
+    <BaseLoading v-if="isLoad" />
 
-    <template v-else>
-      <div
-        v-if="typeAduan.aduanDariSpanLapor.props !== typeAduanPage"
-        class="table-content"
+    <template v-else-if="typeAduan.aduanDariSpanLapor.props !== typeAduanPage">
+      <BaseTableDetail
+        v-for="keysField in Object.keys(fieldDetail)"
+        :key="keysField"
+        :header="fieldDetail[keysField].title"
+        class="table-content mb-4"
       >
-        <BaseTableDetail header="Informasi Umum" class="mb-4">
-          <tr>
-            <td class="text-lato w-[164px]">
-              <strong class="text-[10px]">ID Aduan </strong>
-            </td>
-            <td>{{ detailComplaint?.complaint_id || '-' }}</td>
-          </tr>
-          <tr
-            v-if="showIdSpanLaporHandle(detailComplaint?.complaint_status_id)"
+        <tr v-for="field in fieldDetail[keysField].field" :key="field.name">
+          <!-- START LABEL FIELD -->
+          <td
+            v-if="checkChildParentField(field.key, 'child')"
+            :class="{
+              'align-top': field.key === 'map',
+              'w-[180px]':
+                typeAduanPage === typeAduan.aduanDialihkanSpanLapor.props,
+            }"
           >
-            <td class="text-lato">
-              <strong class="text-[10px]">ID SP4N Lapor </strong>
-            </td>
-            <td>
-              <div class="flex items-center">
-                <div
-                  :class="{
-                    ' mr-2 h-2 w-2 rounded-full bg-[#FFB900]':
-                      !detailComplaint?.sp4n_id,
-                  }"
-                />
-                {{ detailComplaint?.sp4n_id || 'Belum ada' }}
-              </div>
-            </td>
-          </tr>
-          <tr v-if="typeAduan.penentuanKewenangan.props === typeAduanPage">
-            <td><strong>Sumber Aduan</strong></td>
-            <td>{{ detailComplaint?.complaint_source?.name || '-' }}</td>
-          </tr>
-          <tr>
-            <td><strong>Tanggal Aduan Masuk</strong></td>
-            <td>{{ detailComplaint?.created_at_format }}</td>
-          </tr>
-          <tr
-            v-if="typeAduan.aduanDialihkanHotlineJabar.props === typeAduanPage"
+            {{ field.name }}
+          </td>
+          <td
+            v-else
+            class="text-lato w-[164px] text-[14px]"
+            :class="{
+              'w-[180px]':
+                detailComplaint?.coverage_of_affairs ===
+                  'Pemerintah Kabupaten/Kota' ||
+                fieldWidth180.includes(typeAduanPage),
+              'w-60':
+                typeAduanPage === typeAduan.aduanDialihkanHotlineJabar.props,
+            }"
           >
-            <td><strong>Tanggal Deadline</strong></td>
-            <td>{{ detailComplaint?.deadline_at_format }}</td>
-          </tr>
-          <tr
-            v-if="
-              typeAduanPage === typeAduan.aduanDialihkanSpanLapor.props ||
-              typeAduanPage === typeAduan.instruksiKewenanganNonPemprov.props
+            <strong>{{ field.name }} </strong>
+          </td>
+          <!-- END LABEL FIELD -->
+          <td v-if="field.key === 'complaint_status_id'">
+            <div class="flex items-center">
+              <div
+                v-if="detailComplaint?.complaint_status_id"
+                :class="[
+                  ' mr-2 h-2 w-2 rounded-full',
+                  getStatusColorHandle(detailComplaint?.complaint_status_id),
+                ]"
+              />
+              {{ getStatusText(detailComplaint?.complaint_status_id) || '-' }}
+            </div>
+          </td>
+          <td v-else-if="field.key === 'complaint_source'">
+            {{ detailComplaint[field.key]?.name }}
+          </td>
+          <td
+            v-else-if="
+              field.key === 'sp4n_id' || field.key === 'sp4n_created_at_format'
             "
           >
-            <td class="w-[175px]">
-              <strong>Tanggal Diinput ke SP4N</strong>
-            </td>
-            <td>
-              <div class="flex items-center">
-                <div
-                  :class="{
-                    ' mr-2 h-2 w-2 rounded-full bg-[#FFB900]':
-                      !detailComplaint?.sp4n_created_at &&
-                      !detailComplaint?.sp4n_added_at,
-                  }"
-                />
-                {{
-                  detailComplaint?.sp4n_created_at_format ||
-                  detailComplaint?.sp4n_added_at_format ||
-                  'Belum ada'
-                }}
-              </div>
-            </td>
-          </tr>
-          <tr v-if="listTypeAduanByStatusAduan.includes(typeAduanPage)">
-            <td><strong>Status</strong></td>
-            <td>
-              <div class="flex items-center">
-                <div
-                  v-if="detailComplaint?.complaint_status_id"
-                  :class="[
-                    ' mr-2 h-2 w-2 rounded-full',
-                    getStatusColorHandle(detailComplaint?.complaint_status_id),
-                  ]"
-                />
-                {{ getStatusText(detailComplaint?.complaint_status_id) || '-' }}
-              </div>
-            </td>
-          </tr>
-          <tr
-            v-if="
-              typeAduanPage === typeAduan.aduanMasuk.props &&
-              detailComplaint?.complaint_status_note
-            "
-          >
-            <td><strong>Alasan</strong></td>
-            <td>{{ detailComplaint?.complaint_status_note }}</td>
-          </tr>
-          <tr
-            v-if="typeAduanPage === typeAduan.aduanDialihkanHotlineJabar.props"
-          >
-            <td width="240px">
-              <strong>Alasan Dialihkan ke Hotline Jabar</strong>
-            </td>
-            <td>
-              {{ detailComplaint?.directed_to_hotline_jabar_note || '-' }}
-            </td>
-          </tr>
-          <tr
-            v-if="
-              showDataByComplaintTypeStatus([
-                complaintStatus.rejected,
-                complaintStatus.verified,
-              ])
-            "
-          >
-            <td><strong>Cakupan Urusan</strong></td>
-            <td>{{ detailComplaint?.coverage_of_affairs || '-' }}</td>
-          </tr>
-          <tr
-            v-if="
-              detailComplaint?.complaint_status_id ===
-                complaintStatus.postponed.id ||
-              detailComplaint?.complaint_status_id === complaintStatus.review.id
-            "
-          >
-            <td><strong>Perubahan Deadline</strong></td>
-            <td>{{ detailComplaint?.ikp_deadline_at_format || '-' }}</td>
-          </tr>
-          <tr
-            v-if="
-              (detailComplaint?.complaint_status_id ===
-                complaintStatus.postponed.id ||
-                detailComplaint?.complaint_status_id ===
-                  complaintStatus.review.id ||
-                detailComplaint?.complaint_status_id ===
-                  complaintStatus.finished.id) &&
-              listEvidenceDocument
-            "
-          >
-            <td><strong>Dokumen Bukti</strong></td>
-            <td>
-              <jds-button
-                variant="secondary"
-                class="!border-green-600 !text-sm !font-medium !text-green-600"
-                @click="showPopupViewDocument()"
-              >
-                Lihat Dokumen Bukti
-              </jds-button>
-            </td>
-          </tr>
-        </BaseTableDetail>
-        <BaseTableDetail
-          v-if="
-            typeAduan.aduanDialihkanSpanLapor.props === typeAduanPage &&
-            detailComplaint?.sp4n_id
-          "
-          header="Status SPAN Lapor"
-          class="mb-4"
-        >
-          <tr>
-            <td class="w-[180px] px-2">Status SP4N Lapor</td>
-            <td class="px-2 py-[6px]">
+            <div class="flex items-center">
+              <div
+                :class="{
+                  ' mr-2 h-2 w-2 rounded-full bg-[#FFB900]':
+                    !detailComplaint[field.key],
+                }"
+              />
+              {{ detailComplaint[field.key] || 'Belum ada' }}
+            </div>
+          </td>
+          <td v-else-if="field.key === 'tracking_span'">
+            <div>
               <jds-button
                 variant="secondary"
                 class="!border-green-600 !text-sm !font-medium !text-green-600"
@@ -172,206 +79,64 @@
               >
                 Lihat Semua Status
               </jds-button>
-            </td>
-          </tr>
-        </BaseTableDetail>
-        <BaseTableDetail
-          v-if="
-            showDataByComplaintTypeStatus([
-              complaintStatus.rejected,
-              complaintStatus.verified,
-            ])
-          "
-          header="Informasi Instansi"
-          class="mb-4"
-        >
-          <tr>
-            <td class="w-[180px]">
-              <strong>Nama Instansi</strong>
-            </td>
-            <td>{{ detailComplaint?.opd_name || '-' }}</td>
-          </tr>
-          <tr
-            v-if="
-              showDataByComplaintTypeStatus([
-                complaintStatus.rejected,
-                complaintStatus.diverted_to_span,
-              ])
-            "
-          >
-            <td><strong>Nama Kepala Perangkat Daerah</strong></td>
-            <td>{{ detailComplaint?.opd_pic || '-' }}</td>
-          </tr>
-        </BaseTableDetail>
-        <BaseTableDetail
-          v-if="showDataByComplaintTypeStatus([complaintStatus.verified])"
-          header="Informasi Lainnya"
-          class="mb-4"
-        >
-          <tr
-            v-if="
-              showDataByComplaintTypeStatus([
-                complaintStatus.rejected,
-                complaintStatus.diverted_to_span,
-              ])
-            "
-          >
-            <td class="w-[180px]">
-              <strong>Tanggal Deadline</strong>
-            </td>
-            <td>{{ detailComplaint?.deadline_at_format || '-' }}</td>
-          </tr>
-          <tr
-            v-if="
-              showDataByComplaintTypeStatus([
-                complaintStatus.rejected,
-                complaintStatus.diverted_to_span,
-              ])
-            "
-          >
-            <td><strong>Tingkat Urgensi</strong></td>
-            <td>{{ detailComplaint?.urgency_level || '-' }}</td>
-          </tr>
-          <tr v-if="showDataByComplaintTypeStatus([complaintStatus.verified])">
-            <td class="w-[180px]">
-              <strong>Keterangan Status</strong>
-            </td>
-            <td>{{ detailComplaint?.status_description || '-' }}</td>
-          </tr>
-        </BaseTableDetail>
-        <BaseTableDetail header="Informasi Pelapor" class="mb-4">
-          <tr>
-            <td
-              :width="
-                typeAduanPage === typeAduan.aduanDialihkanHotlineJabar.props
-                  ? '240px'
-                  : '180px'
-              "
+            </div>
+          </td>
+          <td v-else-if="field.key === 'document_evidence'">
+            <jds-button
+              variant="secondary"
+              class="!border-green-600 !text-sm !font-medium !text-green-600"
+              @click="showPopupViewDocument()"
             >
-              <strong class="text-[10px]">Nama Lengkap </strong>
-            </td>
-            <td>{{ detailComplaint?.user_name || '-' }}</td>
-          </tr>
-          <tr>
-            <td><strong>No. Kontak</strong></td>
-            <td>{{ detailComplaint?.user_phone || '-' }}</td>
-          </tr>
-          <tr>
-            <td><strong>Email</strong></td>
-            <td>{{ detailComplaint?.user_email || '-' }}</td>
-          </tr>
-          <tr>
-            <td><strong>Jenis Aduan</strong></td>
-            <td>{{ showComplaintType() }}</td>
-          </tr>
-          <tr>
-            <td colspan="2">
-              <strong>Titik Lokasi Pelapor</strong>
-            </td>
-          </tr>
-          <tr>
-            <td>Koordinat</td>
-            <td>{{ getCoordinatHandle() }}</td>
-          </tr>
-        </BaseTableDetail>
-        <BaseTableDetail header="Detail Aduan" class="mb-4">
-          <tr>
-            <td
-              :width="
-                typeAduanPage === typeAduan.aduanDialihkanHotlineJabar.props
-                  ? '240px'
-                  : '180px'
-              "
+              Lihat Dokumen Bukti
+            </jds-button>
+          </td>
+          <td v-else-if="field.key === 'coordinate'">
+            {{ getCoordinatHandle() }}
+          </td>
+          <td v-else-if="field.key === 'complaint_category'">
+            {{ getCategoryName() }}
+          </td>
+          <td v-else-if="field.key === 'complaint_sub_category'">
+            {{ getSubCategoryName() }}
+          </td>
+          <td v-else-if="field.key === 'map'">
+            <iframe
+              v-if="detailComplaint?.latitude && detailComplaint?.longitude"
+              class="rounded-lg"
+              width="389"
+              height="245"
+              frameborder="0"
+              style="border: 0"
+              referrerpolicy="no-referrer-when-downgrade"
+              :src="`https://www.google.com/maps/embed/v1/place?key=${$config.googleMapsApiKey}&q=${detailComplaint?.latitude},${detailComplaint?.longitude}`"
+            />
+            <div v-else>-</div>
+          </td>
+          <td v-else>{{ showDetailField(field.key) }}</td>
+        </tr>
+      </BaseTableDetail>
+      <BaseTableDetail v-if="detailComplaint?.photos" header="Bukti Foto">
+        <tr>
+          <td class="w-[180px] px-2">
+            <strong>{{ listPhoto.length }} Foto</strong>
+          </td>
+          <td class="px-2 py-[6px]">
+            <jds-button
+              variant="secondary"
+              class="w-[100px] !border-green-600 !text-sm !font-medium !text-green-600 disabled:cursor-not-allowed disabled:opacity-50"
+              :disabled="listPhoto.length === 0"
+              @click="$emit('button-image')"
             >
-              <strong class="text-[10px]">Kategori Aduan </strong>
-            </td>
-            <td>
-              {{ getCategoryName() }}
-            </td>
-          </tr>
-          <tr>
-            <td><strong>Sub Kategori Aduan</strong></td>
-            <td>
-              {{ getSubCategoryName() }}
-            </td>
-          </tr>
-          <tr>
-            <td><strong>Judul Aduan</strong></td>
-            <td>{{ detailComplaint?.title || '-' }}</td>
-          </tr>
-          <tr>
-            <td><strong>Detail Aduan</strong></td>
-            <td>{{ detailComplaint?.description || '-' }}</td>
-          </tr>
-          <tr>
-            <td colspan="2"><strong>Lokasi Kejadian</strong></td>
-          </tr>
-          <tr>
-            <td>Kabupaten / Kota</td>
-            <td>{{ detailComplaint?.city_name || '-' }}</td>
-          </tr>
-          <tr>
-            <td>Kecamatan</td>
-            <td>{{ detailComplaint?.district_name || '-' }}</td>
-          </tr>
-          <tr>
-            <td>Kelurahan</td>
-            <td>{{ detailComplaint?.subdistrict_name || '-' }}</td>
-          </tr>
-          <tr colspan="2">
-            <td>Detail Lokasi Kejadian</td>
-            <td>{{ detailComplaint?.address_detail || '-' }}</td>
-          </tr>
-          <tr>
-            <td colspan="2">
-              <strong>Titik Lokasi Kejadian</strong>
-            </td>
-          </tr>
-          <tr>
-            <td>Latitude</td>
-            <td>{{ detailComplaint?.latitude || '-' }}</td>
-          </tr>
-          <tr>
-            <td>Longitude</td>
-            <td>{{ detailComplaint?.longitude || '-' }}</td>
-          </tr>
-          <tr>
-            <td class="align-top">Map</td>
-            <td>
-              <iframe
-                v-if="detailComplaint?.latitude && detailComplaint?.longitude"
-                class="rounded-lg"
-                width="389"
-                height="245"
-                frameborder="0"
-                style="border: 0"
-                referrerpolicy="no-referrer-when-downgrade"
-                :src="`https://www.google.com/maps/embed/v1/place?key=${$config.googleMapsApiKey}&q=${detailComplaint?.latitude},${detailComplaint?.longitude}`"
-              />
-              <div v-else>-</div>
-            </td>
-          </tr>
-        </BaseTableDetail>
-        <BaseTableDetail v-if="detailComplaint?.photos" header="Bukti Foto">
-          <tr>
-            <td class="w-[180px] px-2">
-              <strong>{{ listPhoto.length }} Foto</strong>
-            </td>
-            <td class="px-2 py-[6px]">
-              <jds-button
-                variant="secondary"
-                class="w-[100px] !border-green-600 !text-sm !font-medium !text-green-600 disabled:cursor-not-allowed disabled:opacity-50"
-                :disabled="listPhoto.length === 0"
-                @click="$emit('button-image')"
-              >
-                Lihat Foto
-              </jds-button>
-            </td>
-          </tr>
-        </BaseTableDetail>
-      </div>
-      <!-- DETAIL COMPLAINT FROM SPAN LAPOR -->
-      <div v-else class="table-content">
+              Lihat Foto
+            </jds-button>
+          </td>
+        </tr>
+      </BaseTableDetail>
+    </template>
+
+    <!-- DETAIL COMPLAINT FROM SPAN LAPOR -->
+    <template v-else>
+      <div class="table-content">
         <BaseTableDetail header="Informasi Aduan" class="mb-4">
           <tr>
             <td class="w-[205px]">
@@ -491,9 +256,13 @@ export default {
       type: Array,
       default: () => [],
     },
-    isLoading: {
+    isLoad: {
       type: Boolean,
       default: false,
+    },
+    fieldDetail: {
+      type: Object,
+      default: () => ({}),
     },
   },
   data() {
@@ -521,6 +290,12 @@ export default {
       listFileImage: [],
       isShowPopupViewDocument: false,
       isShowPopupTrackingSpan: false,
+      fieldWidth180: [
+        // for field detail page want width 180px
+        typeAduan.aduanDialihkanSpanLapor.props,
+        typeAduan.instruksiKewenanganPemprov.props,
+        typeAduan.penentuanKewenangan.props,
+      ],
     }
   },
   computed: {
@@ -542,6 +317,36 @@ export default {
     },
   },
   methods: {
+    checkChildParentField(fieldKey, levelKey) {
+      // for label not bold
+      const listChildKey = [
+        'coordinate',
+        'city_name',
+        'district_name',
+        'subdistrict_name',
+        'address_detail',
+        'latitude',
+        'longitude',
+        'tracking_span',
+        'map',
+      ]
+
+      // for label bold, but not field
+      const listParentKey = [
+        'incident_location',
+        'incident_location_point',
+        'report_location_point',
+      ]
+      return levelKey === 'parent'
+        ? listParentKey.includes(fieldKey)
+        : listChildKey.includes(fieldKey)
+    },
+    showDetailField(fieldKey) {
+      if (this.checkChildParentField(fieldKey, 'parent')) {
+        return ''
+      }
+      return this.detailComplaint[fieldKey] || '-'
+    },
     findComplaintStatus(listComplaintStatus) {
       return listComplaintStatus.find(
         (item) => item.id === this.detailComplaint?.complaint_status_id
@@ -610,46 +415,6 @@ export default {
         }
       }
     },
-    showIdSpanLaporHandle(statusId) {
-      switch (this.typeAduanPage) {
-        case this.typeAduan.aduanDialihkanSpanLapor.props:
-        case this.typeAduan.instruksiKewenanganNonPemprov.props:
-        case this.typeAduan.instruksiNonPemprov.props:
-          return true
-        case this.typeAduan.penentuanKewenangan.props:
-          {
-            const complaintSource =
-              this.detailComplaint?.complaint_source === 'SP4N Lapor'
-            const complaintStatus =
-              statusId === this.complaintStatus.coordinated.id ||
-              statusId === this.complaintStatus.verified.id
-            if (complaintSource && complaintStatus) {
-              return true
-            }
-          }
-
-          break
-        default:
-          return false
-      }
-    },
-    showComplaintType() {
-      // show complaint type : public, public-anonim or private
-      let complaintType = ''
-      if (this.detailComplaint?.type) {
-        complaintType =
-          this.detailComplaint?.type === 'public' ? 'publik' : 'rahasia'
-      }
-
-      if (
-        this.detailComplaint.is_anonymous &&
-        this.detailComplaint?.type === 'public'
-      ) {
-        return `${complaintType} - anonim`
-      }
-
-      return complaintType || '-'
-    },
     getDataFile(dataUrl) {
       const file = dataUrl.split('/').pop()
       const fileType = file.split('.')[1]
@@ -681,6 +446,8 @@ export default {
       const listComplaintType = [
         typeAduan.penentuanKewenangan.props,
         typeAduan.instruksiKewenanganPemprov.props,
+        typeAduan.aduanDialihkanSpanLapor.props,
+        typeAduan.instruksiKewenanganNonPemprov.props,
       ]
       return (
         listComplaintType.includes(this.typeAduanPage) &&

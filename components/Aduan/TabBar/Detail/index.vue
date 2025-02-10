@@ -44,7 +44,7 @@
           </BaseTab>
         </button>
 
-        <div v-if="isLoading" class="flex flex-row items-center gap-x-2">
+        <div v-if="isLoad" class="flex flex-row items-center gap-x-2">
           <jds-spinner size="10" />
           <p class="font-lato text-[10px] font-bold text-white">Loading....</p>
         </div>
@@ -61,7 +61,7 @@ export default {
       type: Array,
       default: () => [],
     },
-    isLoading: {
+    isLoad: {
       type: Boolean,
       default: false,
     },
