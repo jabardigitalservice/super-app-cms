@@ -52,6 +52,9 @@
               {{ getStatusText(detailComplaint?.complaint_status_id) || '-' }}
             </div>
           </td>
+          <td v-else-if="field.key === 'complaint_type'">
+            {{ showComplaintType() }}
+          </td>
           <td v-else-if="field.key === 'complaint_source'">
             {{ detailComplaint[field.key]?.name }}
           </td>
@@ -459,6 +462,21 @@ export default {
       this.dataDialog = {
         subDescription: detailComplaint.complaint_id,
       }
+    },
+    showComplaintType() {
+      // show complaint type : public, public-anonim or private
+      let complaintType = ''
+      if (this.detailComplaint?.type) {
+        complaintType =
+          this.detailComplaint?.type === 'public' ? 'publik' : 'rahasia'
+      }
+      if (
+        this.detailComplaint.is_anonymous &&
+        this.detailComplaint?.type === 'public'
+      ) {
+        return `${complaintType} - anonim`
+      }
+      return complaintType || '-'
     },
   },
 }
