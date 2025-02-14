@@ -205,6 +205,8 @@ export default {
         })
       }
 
+      this.isShowPopupInputIdSpan = true
+
       this.$store.commit('modals/OPEN', dialogName)
     },
     showPopupProcessComplaintHandle(dataComplaint) {
@@ -362,6 +364,7 @@ export default {
 
       switch (this.typeDialog) {
         case 'verificationComplaint':
+          this.isShowPopupConfirmationVerification = false
           dataDialogInformation = createDialogData('verificationComplaint')
           paramRequest.complaint_status_id =
             this.dialogDataPopupComplaintHandle.verificationComplaint.statusId
@@ -387,7 +390,6 @@ export default {
     submitInputIdSpanHandle(item) {
       this.$store.commit('modals/CLOSEALL')
       let dataDialogInformation = {}
-
       // information add id span
       dataDialogInformation = {
         ...this.setDataDialogInformation('ID SP4N Lapor', item.subDescription),
