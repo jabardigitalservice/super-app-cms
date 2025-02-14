@@ -205,6 +205,8 @@ export default {
         })
       }
 
+      this.isShowPopupInputIdSpan = true
+
       this.$store.commit('modals/OPEN', dialogName)
     },
     showPopupProcessComplaintHandle(dataComplaint) {
@@ -387,7 +389,6 @@ export default {
     submitInputIdSpanHandle(item) {
       this.$store.commit('modals/CLOSEALL')
       let dataDialogInformation = {}
-
       // information add id span
       dataDialogInformation = {
         ...this.setDataDialogInformation('ID SP4N Lapor', item.subDescription),
