@@ -364,6 +364,7 @@ export default {
 
       switch (this.typeDialog) {
         case 'verificationComplaint':
+          this.isShowPopupConfirmationVerification = false
           dataDialogInformation = createDialogData('verificationComplaint')
           paramRequest.complaint_status_id =
             this.dialogDataPopupComplaintHandle.verificationComplaint.statusId
