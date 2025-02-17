@@ -211,6 +211,7 @@
       @close="closePopupAddComplaint()"
     />
     <DialogAddIdSpan
+      v-if="isShowPopupInputIdSpan"
       :data-dialog="dataDialog"
       :name-modal="dataDialog.nameModal"
       @submit="submitInputIdSpanHandle"
