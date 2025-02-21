@@ -64,11 +64,6 @@ export default {
       default: () => ({}),
     },
   },
-  // data() {
-  //   return {
-  //     fieldTextArea: '',
-  //   }
-  // },
   computed: {
     fieldInput: {
       get() {
