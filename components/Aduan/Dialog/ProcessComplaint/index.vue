@@ -419,7 +419,7 @@ export default {
       const selectInput = selectItem.querySelector(`#${selectItem.id} input`)
       selectInput.setAttribute(
         'data-cy',
-        `${this.dataDialog.dataCy.fieldSelect}--${selectItem.id}`
+        `${this.dataDialog.dataCy?.fieldSelect}--${selectItem.id}`
       )
     })
 
