@@ -23,7 +23,7 @@
             >
               <h1>ID SP4N Lapor</h1>
               <p class="text-sm font-bold">
-                {{ dataDialog.dataComplaint?.sp4n_id || '-' }}
+                {{ dataDialog?.sp4n_id || '-' }}
               </p>
             </div>
           </div>
@@ -409,25 +409,21 @@ export default {
       this.isShowPopupIkpNarrative = true
     },
     showPopupCreateIkp() {
-      const {
-        opd_id: opdId,
-        deadline_date: deadlineDate,
-        coverage_of_affairs: coverageOfAffairs,
-      } = this.dataDialog.dataComplaint
+      const dataComplaint = this.$store.state['create-ikp'].dataComplaint
+
       if (
         this.complaintType === typeAduan.instruksiKewenanganNonPemprov.props
       ) {
         this.$store.commit('create-ikp/setPayload', {
-          ...this.payloadCreateIkp,
-          opd_pemprov_id: this.dataDialog.dataComplaint.opd_pemprov_id,
+          opd_pemprov_id: dataComplaint?.opd_pemprov_id,
         })
       }
 
       this.$store.commit('create-ikp/setPayload', {
         ...this.payloadCreateIkp,
-        opd_id: opdId,
-        deadline_at: deadlineDate,
-        coverage_of_affairs: coverageOfAffairs,
+        opd_id: dataComplaint.opd_id,
+        deadline_at: new Date(dataComplaint.deadline_date) || '',
+        coverage_of_affairs: dataComplaint.coverage_of_affairs,
       })
       this.$store.commit('followup-complaint/setIsShowPopup', false)
       this.$store.commit(
