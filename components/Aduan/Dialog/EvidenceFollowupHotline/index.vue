@@ -85,7 +85,17 @@
       :is-success="isSuccess"
       @close-all-modal="closePopup()"
       @retry="backToForm()"
-    />
+    >
+      <template #button-error>
+        <jds-button
+          label="Coba Lagi"
+          type="button"
+          variant="primary"
+          class="!text-[14px] !font-bold"
+          @click="backToForm()"
+        />
+      </template>
+    </DialogInformationNew>
     <DialogLoading :show-popup="isLoading" />
   </div>
 </template>
@@ -218,7 +228,7 @@ export default {
         // SET API
         const dataApi = {
           method: 'patch',
-          url: `${ENDPOINT_ADUAN_HOTLINE_JABAR}/${this.dataComplaint.id}/finished`,
+          url: `${ENDPOINT_ADUAN_HOTLINE_JABAR}/${this.dataComplaint.id}/aaaa`,
         }
 
         // SET PAYLOAD
