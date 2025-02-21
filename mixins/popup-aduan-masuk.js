@@ -1,8 +1,10 @@
 import { complaintStatus, typeAduan } from '~/constant/aduan-masuk'
-import {
-  ENDPOINT_ADUAN,
-  ENDPOINT_ADUAN_NON_PEMPROV,
-} from '~/constant/endpoint-api'
+import { formatDate } from '~/utils'
+// TODO : used when the error information popup is finished testing
+// import {
+//   ENDPOINT_ADUAN,
+//   ENDPOINT_ADUAN_NON_PEMPROV,
+// } from '~/constant/endpoint-api'
 
 export default {
   data() {
@@ -118,6 +120,7 @@ export default {
     showPopupConfirmationVerificationComplaintHandle(dataComplaint) {
       this.idApi = dataComplaint.id
       this.typeDialog = this.listDialogConfirmation.verificationComplaint.id
+      this.dataComplaint = dataComplaint
       this.setDataDialog({
         ...this.setDataDialogConfirmation(
           this.listDialogConfirmation.verificationComplaint.title,
@@ -211,6 +214,7 @@ export default {
     },
     showPopupProcessComplaintHandle(dataComplaint) {
       this.idApi = dataComplaint.id
+      this.dataComplaint = dataComplaint
       this.typeDialog = 'processComplaint'
       const dataCyFormat = 'dialog__form-process-complaint'
       this.isFormatDate = false
@@ -275,66 +279,53 @@ export default {
       this.isShowPopupChangeAuthority = true
       this.$store.commit('modals/OPEN', this.dataDialog.nameModal)
     },
-    showPopupFollowupComplaint(dataComplaint) {
+    showPopupFollowupComplaint(dataComplaint, typeDialog) {
       this.idApi = dataComplaint.id
-      this.typeDialog = 'followupComplaint'
+      this.typeDialog = typeDialog
       this.isPopupFollowupComplaint = true
-      dataComplaint.deadline_date = new Date(dataComplaint.deadline_date) || '-'
+      const {
+        opd_id: opdId,
+        deadline_date: deadlineDate,
+        coverage_of_affairs: coverageOfAffairs,
+        opd_pemprov_id: opdPemprovId,
+      } = dataComplaint
+      this.$store.commit('create-ikp/setDataComplaint', {
+        opd_id: opdId,
+        deadline_date: deadlineDate,
+        coverage_of_affairs: coverageOfAffairs,
+        opd_pemprov_id: opdPemprovId,
+      })
       this.dataComplaint = dataComplaint
       const dialogConfirmation =
         this.$store.state['followup-complaint'].dialogConfirmation
       this.$store.commit('followup-complaint/setDialogConfirmation', {
         ...dialogConfirmation,
-        title: 'Tindaklanjuti Aduan',
-        nameModal: 'followupComplaintConfirmation',
+        title:
+          typeDialog === 'followupComplaint'
+            ? 'Tindaklanjuti Aduan'
+            : 'Buat Instruksi',
+        nameModal:
+          typeDialog === 'followupComplaint'
+            ? 'followupComplaintConfirmation'
+            : 'createInstructionConfirmation',
       })
       this.$store.commit(
-        'create-ikp/setComplaintType',
+        'followup-complaint/setComplaintType',
         typeAduan.instruksiKewenanganPemprov.props
       )
       this.setDataDialog({
-        dataComplaint,
-        ...this.setDataDialogConfirmation(
-          'Tindaklanjuti Aduan',
-          'No.Aduan',
-          dataComplaint.complaint_id,
-          'Tindaklanjuti Aduan'
-        ),
+        title:
+          typeDialog === 'followupComplaint'
+            ? 'Tindaklanjuti Aduan'
+            : 'Buat Instruksi',
+        description: 'No.Aduan',
+        subDescription: dataComplaint.complaint_id,
         proposed_ikp_narrative: dataComplaint.proposed_ikp_narrative || '-',
-      })
-      this.$store.commit('followup-complaint/setIsShowPopup', true)
-    },
-    showPopupCreateInstruction(dataComplaint) {
-      this.idApi = dataComplaint.id
-      this.typeDialog = 'createInstruction'
-      this.isPopupFollowupComplaint = true
-      dataComplaint.deadline_date = new Date(dataComplaint.deadline_date) || '-'
-      this.dataComplaint = dataComplaint
-      const dialogConfirmation =
-        this.$store.state['followup-complaint'].dialogConfirmation
-      this.$store.commit('followup-complaint/setDialogConfirmation', {
-        ...dialogConfirmation,
-        title: 'Buat Instruksi',
-        nameModal: 'createInstructionConfirmation',
-      })
-      this.$store.commit(
-        'create-ikp/setComplaintType',
-        typeAduan.instruksiKewenanganNonPemprov.props
-      )
-      this.setDataDialog({
-        dataComplaint,
-        ...this.setDataDialogConfirmation(
-          'Buat Instruksi',
-          'No.Aduan',
-          dataComplaint.complaint_id,
-          'Buat Instruksi'
-        ),
-        proposed_ikp_narrative: dataComplaint.proposed_ikp_narrative || '-',
-      })
-      this.$store.commit('followup-complaint/setDialogConfirmation', {
-        ...dialogConfirmation,
-        title: 'Buat Instruksi',
-        nameModal: 'followupComplaintConfirmation',
+        sp4n_id: dataComplaint.sp4n_id || '',
+        labelButtonSubmit:
+          typeDialog === 'followupComplaint'
+            ? 'Tindaklanjuti Aduan'
+            : 'Buat Instruksi',
       })
       this.$store.commit('followup-complaint/setIsShowPopup', true)
     },
@@ -374,11 +365,19 @@ export default {
           dataDialogInformation = createDialogData('failedComplaint')
           paramRequest.complaint_status_id =
             this.dialogDataPopupComplaintHandle.failedComplaint.statusId
+          this.dataComplaint = {
+            ...this.dataComplaint,
+            complaint_status_note: item?.note,
+          }
           break
         case 'redirectHotlineComplaint':
           this.$store.commit('modals/CLOSEALL')
           dataDialogInformation = createDialogData('redirectHotlineComplaint')
           paramRequest = { directed_to_hotline_jabar_note: item?.note }
+          this.dataComplaint = {
+            ...this.dataComplaint,
+            directed_to_hotline_jabar_note: item?.note,
+          }
           pathApi =
             this.dialogDataPopupComplaintHandle.redirectHotlineComplaint.pathApi
           break
@@ -402,7 +401,7 @@ export default {
           false
         ),
       }
-
+      this.dataComplaint = item.payload
       // information edit id span
       if (this.typeDialog === 'editIdSpan') {
         dataDialogInformation.success = this.setSucessFailedInformationHandle(
@@ -427,7 +426,7 @@ export default {
 
     submitProcessComplaint(dataComplaint) {
       this.isShowPopupProcessComplaint = false
-      this.dataComplaint = dataComplaint
+      this.dataComplaint.payload = dataComplaint.payload
       let dataDialogInformation = {}
       const dialogTitle =
         this.typeDialog === 'changeAuthority'
@@ -464,7 +463,7 @@ export default {
     submitFollowupComplaint(payload) {
       this.$store.commit('modals/CLOSEALL')
       let dataDialogInformation = {}
-
+      this.dataComplaint = payload
       let successMessage = ''
       let failedMessage = ''
 
@@ -534,15 +533,15 @@ export default {
         this.isLoading = false
       }
       this.isShowPopupInformation = true
-      this.$store.commit('followup-complaint/setComplaintType', '')
     },
     getApiEndpoint(pathApi) {
-      const complaintType =
-        this.$store.state['followup-complaint'].complaintType
-      const endpointApi =
-        complaintType === typeAduan.instruksiKewenanganNonPemprov.props
-          ? ENDPOINT_ADUAN_NON_PEMPROV
-          : ENDPOINT_ADUAN
+      // const complaintType =
+      //   this.$store.state['followup-complaint'].complaintType
+      const endpointApi = 'complaint' // used to test popup error information
+      // TODO : used when the error information popup is finished testing
+      // complaintType === typeAduan.instruksiKewenanganNonPemprov.props
+      //   ? ENDPOINT_ADUAN_NON_PEMPROV
+      //   : ENDPOINT_ADUAN
       return `${endpointApi}/${this.idApi}/${pathApi}`
     },
     handleSuccessResponse(paramDialog) {
@@ -579,19 +578,52 @@ export default {
       this.isShowPopupInformation = false
       switch (this.typeDialog) {
         case 'verificationComplaint':
-          return this.submitPopupComplaintHandle(this.dataDialog)
+          return this.showPopupConfirmationVerificationComplaintHandle(
+            this.dataComplaint
+          )
         case 'failedComplaint':
-          return this.showPopupConfirmationComplaint(
+          this.$store.commit(
+            'popup-complaint/setFieldInput',
+            this.dataComplaint.complaint_status_note
+          )
+          this.showPopupConfirmationComplaint(
             this.dataComplaint,
             'failedComplaint'
           )
+          break
         case 'redirectHotlineComplaint':
-          return this.showPopupConfirmationComplaint(
+          this.$store.commit(
+            'popup-complaint/setFieldInput',
+            this.dataComplaint.directed_to_hotline_jabar_note
+          )
+          this.showPopupConfirmationComplaint(
             this.dataComplaint,
             'redirectHotlineComplaint'
           )
+          break
+        case 'processComplaint':
+        case 'changeAuthority':
+          this.dataComplaint.payload.deadline_date = new Date(
+            this.dataComplaint.payload.deadline_date
+          )
+          this.$store.commit(
+            'process-complaint/setPayload',
+            this.dataComplaint?.payload
+          )
+          this.showPopupProcessComplaintHandle(this.dataComplaint)
+          break
         case 'addIdSpan':
-          return this.showPopupInputIdSpanHandle(this.dataComplaint)
+          this.$store.commit('id-span/setPayload', this.dataComplaint)
+          this.showPopupInputIdSpanHandle(this.dataComplaint, 'formAddIdSpan')
+          break
+        case 'editIdSpan':
+          this.dataComplaint.sp4n_created_at = formatDate(
+            this.dataComplaint.sp4n_created_at,
+            'dd/MM/yyyy'
+          )
+          this.$store.commit('id-span/setPayload', this.dataComplaint)
+          this.showPopupInputIdSpanHandle(this.dataComplaint, 'formEditIdSpan')
+          break
         case 'followupComplaint':
         case 'createInstruction':
           return this.retryFollowupComplaint()
@@ -608,6 +640,7 @@ export default {
           'Tindaklanjuti Aduan'
         ),
       })
+
       if (isCreateIkp) {
         const payload = this.$store.state['create-ikp'].payload
         this.$store.commit('create-ikp/setPayload', {
@@ -630,6 +663,8 @@ export default {
         this.query.page = 1
       }
       this.$store.commit('popup-complaint/setFieldInput', '')
+      this.$store.commit('followup-complaint/setComplaintType', '')
+      this.$store.dispatch('create-ikp/clearPayload')
       this.$store.dispatch('process-complaint/clearPayload')
       this.closePopupHandle()
       this.$fetch()
