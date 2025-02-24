@@ -166,8 +166,12 @@
                 "
                 @process-complaint="showPopupProcessComplaintHandle(item)"
                 @change-authority="showPopupChangeAuthority(item)"
-                @followup-complaint="showPopupFollowupComplaint(item)"
-                @create-instruction="showPopupCreateInstruction(item)"
+                @followup-complaint="
+                  showPopupFollowupComplaint(item, 'followupComplaint')
+                "
+                @create-instruction="
+                  showPopupFollowupComplaint(item, 'createInstruction')
+                "
               />
             </template>
           </BaseTable>

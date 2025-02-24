@@ -101,12 +101,22 @@
       @cancel="backToForm()"
     />
     <DialogInformationNew
-      :name-modal="dialogInformmation.nameModal"
-      :dialog-modal="dialogInformmation.dialogModal"
+      :name-modal="dialogInformation.nameModal"
+      :dialog-modal="dialogInformation.dialogModal"
       :is-success="isSuccess"
       @retry="backToForm()"
       @close-all-modal="$emit('close-all-modal')"
-    />
+    >
+      <template #button-error>
+        <jds-button
+          label="Coba Lagi"
+          type="button"
+          variant="primary"
+          class="!text-[14px] !font-bold"
+          @click="backToForm()"
+        />
+      </template>
+    </DialogInformationNew>
     <DialogLoading :show-popup="isLoading" />
   </div>
 </template>
@@ -129,7 +139,7 @@ export default {
         deadline_date: new Date(),
       },
       dialogConfirmation: {},
-      dialogInformmation: {},
+      dialogInformation: {},
       isLoading: false,
       isSuccess: false,
       nameModal: '',
@@ -176,6 +186,7 @@ export default {
       }
     },
     backToForm() {
+      this.payload.deadline_date = new Date(this.payload.deadline_date)
       this.$store.commit('modals/CLOSEALL')
       this.$store.commit('modals/OPEN', 'followupHotlineJabar')
     },
@@ -220,16 +231,16 @@ export default {
           dataApi,
           payload: this.payload,
         })
-        this.dialogInformmation = dataDialogSuccess
+        this.dialogInformation = dataDialogSuccess
         this.isSuccess = true
       } catch {
-        this.dialogInformmation = dataDialogFailed
+        this.dialogInformation = dataDialogFailed
         this.isSuccess = false
       } finally {
         this.isLoading = false
       }
       if (!this.isLoading) {
-        this.$store.commit('modals/OPEN', this.dialogInformmation?.nameModal)
+        this.$store.commit('modals/OPEN', this.dialogInformation?.nameModal)
       }
     },
   },

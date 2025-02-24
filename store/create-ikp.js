@@ -2,6 +2,7 @@ export const state = () => ({
   isShowPopup: false,
   isTruncate: false,
   ikpNarrative: '',
+  dataComplaint: {},
   payload: {
     narrative: '',
     deadline_at: '',
@@ -38,6 +39,19 @@ export const actions = {
       commit('setIsTruncate', false)
     }
   },
+  clearPayload({ commit }) {
+    commit('setPayload', {
+      narrative: '',
+      deadline_at: '',
+      description: '',
+      indicator_value: '',
+      indicator_unit: '',
+      opd_id: '',
+      opd_name: '',
+      coverage_of_affairs: '',
+      opd_pemprov_id: '',
+    })
+  },
 }
 
 export const mutations = {
@@ -52,5 +66,8 @@ export const mutations = {
   },
   setPayload(state, payload) {
     state.payload = payload
+  },
+  setDataComplaint(state, dataComplaint) {
+    state.dataComplaint = dataComplaint
   },
 }

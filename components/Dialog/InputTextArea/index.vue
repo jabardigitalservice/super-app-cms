@@ -16,7 +16,7 @@
             class="mt-4"
           >
             <BaseTextArea
-              v-model="fieldTextArea"
+              v-model="fieldInput"
               :data-cy="dataDialog.dataCy.fieldTextArea"
               :placeholder="dataDialog.placeholder"
               :label="dataDialog.labelTextArea"
@@ -26,7 +26,7 @@
             />
           </ValidationProvider>
           <p class="mt-1 text-xs text-gray-600">
-            Tersisa {{ 255 - fieldTextArea.length }} Karakter
+            Tersisa {{ 255 - fieldInput.length }} Karakter
           </p>
         </div>
         <BaseDialogFooterNew
@@ -64,22 +64,27 @@ export default {
       default: () => ({}),
     },
   },
-  data() {
-    return {
-      fieldTextArea: '',
-    }
+  computed: {
+    fieldInput: {
+      get() {
+        return this.$store.state['popup-complaint'].fieldInput
+      },
+      set(value) {
+        this.$store.commit('popup-complaint/setFieldInput', value)
+      },
+    },
   },
   methods: {
     async submitConfirmationComplaint() {
       this.isSubmit = true
       const isDataValid = await this.$refs.form.validate()
       if (isDataValid) {
-        this.$emit('submit', { ...this.dataDialog, note: this.fieldTextArea })
+        this.$emit('submit', { ...this.dataDialog, note: this.fieldInput })
         this.closePopup()
       }
     },
     closePopup() {
-      this.fieldTextArea = ''
+      this.$store.commit('popup-complaint/setFieldInput', '')
       this.$refs.form.reset()
       this.$store.commit('modals/CLOSEALL')
     },

@@ -53,7 +53,17 @@
       :is-success="!isError"
       @retry="backToForm()"
       @close-all-modal="closePopup()"
-    />
+    >
+      <template #button-error>
+        <jds-button
+          label="Coba Lagi"
+          type="button"
+          variant="primary"
+          class="!text-[14px] !font-bold"
+          @click="backToForm()"
+        />
+      </template>
+    </DialogInformationNew>
     <DialogLoading :show-popup="isLoading" />
   </div>
 </template>
