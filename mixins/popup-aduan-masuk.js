@@ -1,10 +1,9 @@
 import { complaintStatus, typeAduan } from '~/constant/aduan-masuk'
 import { formatDate } from '~/utils'
-// TODO : used when the error information popup is finished testing
-// import {
-//   ENDPOINT_ADUAN,
-//   ENDPOINT_ADUAN_NON_PEMPROV,
-// } from '~/constant/endpoint-api'
+import {
+  ENDPOINT_ADUAN,
+  ENDPOINT_ADUAN_NON_PEMPROV,
+} from '~/constant/endpoint-api'
 
 export default {
   data() {
@@ -535,13 +534,12 @@ export default {
       this.isShowPopupInformation = true
     },
     getApiEndpoint(pathApi) {
-      // const complaintType =
-      //   this.$store.state['followup-complaint'].complaintType
-      const endpointApi = 'complaint' // used to test popup error information
-      // TODO : used when the error information popup is finished testing
-      // complaintType === typeAduan.instruksiKewenanganNonPemprov.props
-      //   ? ENDPOINT_ADUAN_NON_PEMPROV
-      //   : ENDPOINT_ADUAN
+      const complaintType =
+        this.$store.state['followup-complaint'].complaintType
+      const endpointApi =
+        complaintType === typeAduan.instruksiKewenanganNonPemprov.props
+          ? ENDPOINT_ADUAN_NON_PEMPROV
+          : ENDPOINT_ADUAN
       return `${endpointApi}/${this.idApi}/${pathApi}`
     },
     handleSuccessResponse(paramDialog) {

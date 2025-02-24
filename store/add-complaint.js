@@ -64,17 +64,7 @@ export const actions = {
         ...state.dataOtherComplaint,
         source_id: 'sp4n',
       }
-      // TODO : used when the error information popup is finished testing
-      // await this.$axios.post(ENDPOINT_ADUAN, {
-      //   ...dataAddComplaint,
-      //   user_id: this.$auth?.user?.identifier,
-      //   user_email: this.$auth?.user?.email,
-      //   type: 'private',
-      //   complaint_source: 'sp4n',
-      // })
-
-      // used to test popup error information
-      await this.$axios.post(`${ENDPOINT_ADUAN}/add-complaint`, {
+      await this.$axios.post(ENDPOINT_ADUAN, {
         ...dataAddComplaint,
         user_id: this.$auth?.user?.identifier,
         user_email: this.$auth?.user?.email,

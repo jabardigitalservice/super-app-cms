@@ -196,9 +196,7 @@ export default {
       // SET API
       const dataApi = {
         method: 'patch',
-        // TODO : used when the error information popup is finished testing
-        // url: `${ENDPOINT_ADUAN_HOTLINE_JABAR}/${this.dataComplaint.id}/followup`,
-        url: `${ENDPOINT_ADUAN_HOTLINE_JABAR}/${this.dataComplaint.id}/hotline`, // used to test popup error information
+        url: `${ENDPOINT_ADUAN_HOTLINE_JABAR}/${this.dataComplaint.id}/followup`,
       }
 
       // SET PAYLOAD
