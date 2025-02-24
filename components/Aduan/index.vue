@@ -135,7 +135,7 @@
             <!-- eslint-disable-next-line vue/valid-v-slot -->
             <template #action="{ item }">
               <BaseTableAction
-                :list-menu-pop-over="menuTableActionHandle(item?.status_id)"
+                :list-menu-pop-over="menuTableActionHandle(item)"
                 :data-cy="dataCyButtonAction"
                 @detail="goToPageDetailHandle(item)"
                 @verify="showPopupConfirmationVerificationComplaintHandle(item)"
@@ -725,12 +725,13 @@ export default {
           return 'text-gray-900'
       }
     },
-    menuTableActionHandle(complaintStatus) {
+    menuTableActionHandle(dataComplaint) {
       return this.menuTableAction.filter(
         (item) =>
           item.complaintType.includes('all') ||
           (item.complaintType.includes(this.typeAduanPage.props) &&
-            item.complaintStatus.includes(complaintStatus))
+            item.complaintStatus.includes(dataComplaint?.complaint_status_id) &&
+            !dataComplaint.is_followup)
       )
     },
     getTotalStatistic() {
