@@ -429,7 +429,7 @@ export default {
     selectOptionComplaintStatus.forEach((selectOption, index) => {
       selectOption.setAttribute(
         'data-cy',
-        `${this.dataDialog.dataCy.fieldSelectOptions}-complaint-status--${this.listComplaintStatus[index].value}`
+        `${this.dataDialog.dataCy?.fieldSelectOptions}-complaint-status--${this.listComplaintStatus[index].value}`
       )
     })
   },
