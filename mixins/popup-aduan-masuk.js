@@ -245,6 +245,7 @@ export default {
     showPopupChangeAuthority(dataComplaint) {
       this.idApi = dataComplaint.id
       this.typeDialog = 'changeAuthority'
+      this.dataComplaint = dataComplaint
       this.isFormatDate = false
       this.setDataDialog({
         ...this.dataDialog,
@@ -600,7 +601,6 @@ export default {
           )
           break
         case 'processComplaint':
-        case 'changeAuthority':
           this.dataComplaint.payload.deadline_date = new Date(
             this.dataComplaint.payload.deadline_date
           )
@@ -609,6 +609,14 @@ export default {
             this.dataComplaint?.payload
           )
           this.showPopupProcessComplaintHandle(this.dataComplaint)
+          break
+        case 'changeAuthority':
+          this.dataComplaint = {
+            ...this.dataComplaint,
+            ...this.dataComplaint?.payload,
+          }
+          console.log(this.dataComplaint)
+          this.showPopupChangeAuthority(this.dataComplaint)
           break
         case 'addIdSpan':
           this.$store.commit('id-span/setPayload', this.dataComplaint)
