@@ -615,7 +615,6 @@ export default {
             ...this.dataComplaint,
             ...this.dataComplaint?.payload,
           }
-          console.log(this.dataComplaint)
           this.showPopupChangeAuthority(this.dataComplaint)
           break
         case 'addIdSpan':
