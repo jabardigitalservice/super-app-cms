@@ -198,10 +198,11 @@
                   label="Keterangan Status Aduan"
                   class="text-area"
                   :error-message="errors[0]"
-                  maxlength="255"
+                  maxlength="1000"
                 />
                 <p class="mt-1 text-xs text-gray-600">
-                  Tersisa {{ 255 - payload.status_description.length }} karakter
+                  Tersisa
+                  {{ 1000 - payload.status_description.length }} karakter
                 </p>
               </ValidationProvider>
               <AlertMessage
