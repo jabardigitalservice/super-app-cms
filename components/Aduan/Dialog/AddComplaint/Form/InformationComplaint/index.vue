@@ -85,13 +85,13 @@
             placeholder="Masukkan Isi Laporan"
             label="Isi Laporan"
             name="Isi Laporan"
-            maxlength="255"
+            maxlength="1000"
             :error-message="errors[0]"
           />
         </ValidationProvider>
         <p class="text-sm text-gray-600">
           Tersisa
-          {{ 255 - description.length }} karakter
+          {{ 1000 - description.length }} karakter
         </p>
       </form>
     </ValidationObserver>
