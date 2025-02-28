@@ -539,9 +539,9 @@ export default {
       if (
         this.payload.complaint_status_id === complaintStatus.diverted_to_span.id
       ) {
-        return 'Contoh: Instruksi Pimpinan : PJ Gubernur Bey Triadi Machmudin  S.E., M.T - melakukan koordinasi dan konfirmasi tindaklanjut aduan di SP4N Lapor'
+        return 'Contoh : Instruksi Khusus Pimpinan Gubernur Jawa Barat - Melakukan koordinasi dan konfirmasi tindaklanjut aduan di Span Lapor'
       }
-      return 'Contoh: Melakukan survey dan perbaikan jalan berlubang di jl. Laswi'
+      return 'Instruksi Khusus Pimpinan Gubernur Jawa Barat - Menindak lanjuti aduan …'
     },
     backToForm() {
       this.$store.commit('modals/CLOSEALL')
