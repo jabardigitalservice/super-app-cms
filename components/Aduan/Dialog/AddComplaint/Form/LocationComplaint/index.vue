@@ -124,7 +124,6 @@ export default {
       listDataCity: [],
       listDataDistrict: [],
       listDataVillage: [],
-      addressDetail: '',
       isSubmit: false,
     }
   },
@@ -154,6 +153,18 @@ export default {
       },
       set(value) {
         this.$store.commit('add-complaint/setDataLocationComplaint', value)
+      },
+    },
+    addressDetail: {
+      get() {
+        return this.$store.getters['add-complaint/getDataLocationComplaint']
+          .address_detail
+      },
+      set(value) {
+        this.$store.commit('add-complaint/setDataLocationComplaint', {
+          ...this.dataLocationComplaint,
+          address_detail: value,
+        })
       },
     },
   },
@@ -198,7 +209,6 @@ export default {
         this.dataLocationComplaint.village_name = village.name
         this.$store.commit('add-complaint/setDataLocationComplaint', {
           ...this.dataLocationComplaint,
-          address_detail: this.addressDetail,
         })
         this.isSubmit = false
       }

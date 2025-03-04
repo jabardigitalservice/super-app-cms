@@ -182,13 +182,13 @@
                     v-model="instructionNote"
                     label="Keterangan Instruksi Aduan"
                     placeholder="Masukkan deskripsi"
-                    maxlength="255"
+                    maxlength="1000"
                     class="pt-3"
                     :error-message="errors[0]"
                   />
                 </ValidationProvider>
                 <p class="pt-1 text-xs text-gray-600">
-                  Tersisa {{ 255 - instructionNote.length }} karakter
+                  Tersisa {{ 1000 - instructionNote.length }} karakter
                 </p>
               </form>
             </ValidationObserver>
