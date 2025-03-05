@@ -85,13 +85,13 @@
             placeholder="Masukkan Isi Laporan"
             label="Isi Laporan"
             name="Isi Laporan"
-            maxlength="255"
+            maxlength="1000"
             :error-message="errors[0]"
           />
         </ValidationProvider>
         <p class="text-sm text-gray-600">
           Tersisa
-          {{ 255 - description.length }} karakter
+          {{ 1000 - description.length }} karakter
         </p>
       </form>
     </ValidationObserver>
@@ -111,11 +111,6 @@ export default {
       default: false,
     },
   },
-  data() {
-    return {
-      description: '',
-    }
-  },
   computed: {
     dataInformationComplaint: {
       get() {
@@ -125,6 +120,18 @@ export default {
       },
       set(value) {
         this.$store.commit('add-complaint/setDataInformationComplaint', value)
+      },
+    },
+    description: {
+      get() {
+        return this.$store.getters['add-complaint/getDataInformationComplaint']
+          .description
+      },
+      set(value) {
+        this.$store.commit('add-complaint/setDataInformationComplaint', {
+          ...this.dataInformationComplaint,
+          description: value,
+        })
       },
     },
   },
@@ -143,7 +150,6 @@ export default {
             this.dataInformationComplaint.span_created_at || '',
             'yyyy-MM-dd'
           ),
-          description: this.description,
         })
         this.isSubmit = false
       }

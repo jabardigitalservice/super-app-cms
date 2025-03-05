@@ -40,6 +40,9 @@ export const getters = {
   getDataInformationComplaint: (state) => {
     return state.dataInformationComplaint
   },
+  getDataLocationComplaint: (state) => {
+    return state.dataLocationComplaint
+  },
   getIsValidFormLocationComplaint: (state) => {
     return state.isValidFormLocationComplaint
   },
