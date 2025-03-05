@@ -52,6 +52,11 @@
               {{ getStatusText(detailComplaint?.complaint_status_id) || '-' }}
             </div>
           </td>
+          <td v-else-if="field.key === 'complaint_latest_status_id'">
+            {{
+              getStatusText(detailComplaint?.complaint_latest_status_id) || '-'
+            }}
+          </td>
           <td v-else-if="field.key === 'complaint_type'">
             {{ showComplaintType() }}
           </td>
