@@ -8,7 +8,7 @@
             <div class="px-6 pb-3">
               <BaseDialogDescription
                 :description="dataDialog.description"
-                :sub-description="dataDialog.subDescription"
+                :sub-description="payload.complaint_number"
               />
               <div class="mt-4">
                 <ValidationProvider
