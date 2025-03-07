@@ -631,7 +631,6 @@ export default {
           this.showPopupChangeAuthority(this.dataComplaint)
           break
         case 'addIdSpan':
-          console.log(this.dataComplaint)
           this.$store.commit('id-span/setPayload', this.dataComplaint)
           this.showPopupInputIdSpanHandle(this.dataComplaint, 'formAddIdSpan')
           break
