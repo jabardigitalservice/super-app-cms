@@ -165,6 +165,12 @@
             <td>{{ detailComplaint?.created_at_format }}</td>
           </tr>
           <tr>
+            <td><strong>Status Terakhir</strong></td>
+            <td>
+              {{ getStatusText(detailComplaint?.complaint_latest_status_id) }}
+            </td>
+          </tr>
+          <tr>
             <td><strong>Nama Lengkap</strong></td>
             <td>{{ detailComplaint?.user_name || '-' }}</td>
           </tr>
