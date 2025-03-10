@@ -176,7 +176,7 @@ export default {
       dateRange: [
         // TODO : it will be used when the data migration process is complete
         // new Date(new Date().setFullYear(new Date().getFullYear()-1)),
-        new Date(new Date().setDate(1)),
+        new Date(new Date().getFullYear(), 0, 1),
         new Date(),
       ],
       headerDaftarIkp,
