@@ -457,7 +457,13 @@ export const detailField = {
       {
         name: 'Status Terakhir',
         key: 'complaint_latest_status_id',
-        menu: ['all'],
+        menu: [
+          typeAduan.aduanMasuk.props,
+          typeAduan.penentuanKewenangan.props,
+          typeAduan.aduanDialihkanSpanLapor.props,
+          typeAduan.instruksiAduanWarga.props,
+          typeAduan.instruksiNonPemprov.props,
+        ],
         complaintStatus: ['all'],
       },
       {
