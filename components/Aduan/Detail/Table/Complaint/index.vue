@@ -396,9 +396,9 @@ export default {
     },
     getStatusText(statusId) {
       if (
-        (this.typeAduanPage === typeAduan.instruksiKewenanganNonPemprov.props ||
-          this.typeAduanPage === typeAduan.aduanDialihkanSpanLapor.props) &&
-        statusId === 'coordinated'
+        (this.typeAduanPage === typeAduan.instruksiKewenanganNonPemprov.props &&
+          statusId === 'coordinated') ||
+        statusId === 'coordinated_nonpemprov'
       ) {
         return 'Sudah Dikoordinasikan'
       }
