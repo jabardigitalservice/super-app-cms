@@ -1,6 +1,7 @@
 export const state = () => ({
   dataComplaint: {},
   fieldInput: '',
+  idApi: '',
 })
 
 export const actions = {
@@ -27,5 +28,8 @@ export const mutations = {
   },
   setFieldInput(state, fieldInput) {
     state.fieldInput = fieldInput
+  },
+  setIdApi(state, idApi) {
+    state.idApi = idApi
   },
 }

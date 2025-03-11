@@ -185,10 +185,14 @@ export default {
       this.dataComplaint = dataComplaint
       this.setDataDialog({
         description: 'No. Aduan',
-        subDescription: dataComplaint.complaint_id,
         nameModal: dialogName,
         title: 'Tambahkan ID SP4N Lapor',
         labelButtonSubmit: 'Tambahkan',
+      })
+
+      this.$store.commit('id-span/setPayload', {
+        ...this.$store.state['id-span'].payload,
+        complaint_number: dataComplaint.complaint_id,
       })
 
       // show form edit id span
@@ -204,6 +208,7 @@ export default {
         this.$store.commit('id-span/setPayload', {
           sp4n_id: dataComplaint.sp4n_id,
           sp4n_created_at: new Date(year, month - 1, date),
+          complaint_number: dataComplaint.complaint_id,
         })
       }
 
@@ -401,7 +406,11 @@ export default {
           false
         ),
       }
-      this.dataComplaint = item.payload
+      this.dataComplaint = {
+        sp4n_id: item.payload.sp4n_id,
+        sp4n_created_at: item.payload.sp4n_created_at,
+        complaint_id: item.payload.complaint_number,
+      }
       // information edit id span
       if (this.typeDialog === 'editIdSpan') {
         dataDialogInformation.success = this.setSucessFailedInformationHandle(
@@ -418,7 +427,7 @@ export default {
         {
           sp4n_id: item.payload.sp4n_id,
           sp4n_created_at: item.payload.sp4n_created_at,
-          complaint_number: this.dataComplaint.complaint_id,
+          complaint_number: item.payload.complaint_number,
         },
         'add-sp4n'
       )
@@ -515,8 +524,12 @@ export default {
     },
     async integrationPopupHandle(paramDialog, paramsInputRequest, pathApi) {
       this.dataDialog.title = paramDialog.title
+
       this.dataDialog.subDescription = paramDialog.subDescription
       this.isLoading = true
+      if (this.idApi) {
+        this.$store.commit('popup-complaint/setIdApi', this.idApi)
+      }
 
       const urlApi = this.getApiEndpoint(pathApi)
 
@@ -541,7 +554,7 @@ export default {
         complaintType === typeAduan.instruksiKewenanganNonPemprov.props
           ? ENDPOINT_ADUAN_NON_PEMPROV
           : ENDPOINT_ADUAN
-      return `${endpointApi}/${this.idApi}/${pathApi}`
+      return `${endpointApi}/${this.$store.state['popup-complaint'].idApi}/${pathApi}`
     },
     handleSuccessResponse(paramDialog) {
       this.setDataDialog({ ...paramDialog.success })
