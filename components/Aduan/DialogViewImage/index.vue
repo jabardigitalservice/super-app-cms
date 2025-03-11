@@ -1,11 +1,11 @@
 <template>
   <BaseDialog :show-popup="showPopup">
-    <BaseDialogPanel class="h-[520px] w-[1240px]">
-      <BaseDialogHeader title="Bukti Foto" class="mb-4 flex justify-between">
-        <h1 class="font-roboto text-[21px] font-bold text-green-800">
+    <BaseDialogPanel class="dialog-image max-h-[720px] w-[1240px]">
+      <BaseDialogHeader class="flex justify-between py-2 pl-6 pr-2">
+        <h1 class="h-[34px] font-roboto text-[21px] font-bold text-green-800">
           Bukti Foto
         </h1>
-        <button @click="$emit('close')">
+        <button class="p-2" @click="$emit('close')">
           <BaseIconSvg
             icon="/icon/default/cross.svg"
             class="!h-6 !w-6"
@@ -15,22 +15,22 @@
       </BaseDialogHeader>
       <swiper
         :slides-per-view="3"
-        :space-between="30"
+        :space-between="16"
         :centered-slides="true"
         observer
         observe-parents
-        class="!pt-[50px]"
+        class="ma-h-[584px] !px-[43px] !py-[26px]"
         @swiper="getSwipperRefHandle"
       >
         <swiper-slide
           v-for="(item, index) in listPhoto"
           :key="index"
-          class="!h-[320px]"
+          class="max-h-[532px]"
         >
           <img
             :src="item.url"
             alt="photo"
-            class="h-full w-full rounded-[4px]"
+            class="max-h-[520px] w-full rounded-[4px] object-contain"
             :class="{ 'opacity-20': index !== swiperRef?.activeIndex }"
           />
         </swiper-slide>
@@ -156,3 +156,31 @@ export default {
   },
 }
 </script>
+
+<style>
+.swiper-wrapper {
+  max-height: 532px;
+}
+
+@media (max-height: 720px) {
+  .dialog-image {
+    @apply max-h-full;
+  }
+
+  .swiper-container {
+    @apply !p-4;
+  }
+
+  .swiper-wrapper {
+    @apply max-h-[300px];
+  }
+
+  .swiper-slide {
+    @apply max-h-[300px];
+  }
+
+  img {
+    @apply !max-h-[250px];
+  }
+}
+</style>
