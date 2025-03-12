@@ -52,6 +52,11 @@
               {{ getStatusText(detailComplaint?.complaint_status_id) || '-' }}
             </div>
           </td>
+          <td v-else-if="field.key === 'complaint_latest_status_id'">
+            {{
+              getStatusText(detailComplaint?.complaint_latest_status_id) || '-'
+            }}
+          </td>
           <td v-else-if="field.key === 'complaint_type'">
             {{ showComplaintType() }}
           </td>
@@ -158,6 +163,12 @@
           <tr>
             <td><strong>Tanggal Diinput ke Sapawarga</strong></td>
             <td>{{ detailComplaint?.created_at_format }}</td>
+          </tr>
+          <tr>
+            <td><strong>Status Terakhir</strong></td>
+            <td>
+              {{ getStatusText(detailComplaint?.complaint_latest_status_id) }}
+            </td>
           </tr>
           <tr>
             <td><strong>Nama Lengkap</strong></td>
@@ -385,8 +396,9 @@ export default {
     },
     getStatusText(statusId) {
       if (
-        this.typeAduanPage === typeAduan.instruksiKewenanganNonPemprov.props &&
-        statusId === 'coordinated'
+        (this.typeAduanPage === typeAduan.instruksiKewenanganNonPemprov.props &&
+          statusId === 'coordinated') ||
+        statusId === 'coordinated_nonpemprov'
       ) {
         return 'Sudah Dikoordinasikan'
       }
