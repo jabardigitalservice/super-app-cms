@@ -432,8 +432,9 @@ export default {
     },
     getDataFile(dataUrl) {
       const file = dataUrl.split('/').pop()
-      const fileType = file.split('.')[1]
-      return { name: file, type: fileType, url: dataUrl }
+      const parts = file.split('.')
+      const fileType = parts[parts.length - 1]
+      return { name: file, type: fileType.toLowerCase(), url: dataUrl }
     },
     showPopupViewDocument() {
       this.listAllFile = this.listEvidenceDocument.map((item) =>
