@@ -277,14 +277,15 @@ export default {
         itemsPerPage: '',
         totalPages: '',
       },
-      is_prov_responsibility: false,
+      is_prov_responsibility: 0,
       typeAduan,
       isLoading: false,
     }
   },
   async fetch() {
+    // value 1 : government instruction, 0 : non government instruction
     this.is_prov_responsibility =
-      this.complaintType === typeAduan.instruksiKewenanganPemprov.props
+      this.complaintType === typeAduan.instruksiKewenanganPemprov.props ? 1 : 0
     this.isLoading = true
     try {
       this.setQuery({ sort_by: 'ikp_code', sort_type: 'ASC' })
@@ -441,8 +442,11 @@ export default {
     submitDataFollowupComplaint() {
       this.$store.commit('modals/CLOSEALL')
       let payloadFollowup = {
+        // value 1 : government instruction, 0 : non government instruction
         is_prov_responsibility:
-          this.complaintType === typeAduan.instruksiKewenanganPemprov.props,
+          this.complaintType === typeAduan.instruksiKewenanganPemprov.props
+            ? 1
+            : 0,
       }
       this.$store.commit(
         'followup-complaint/setComplaintType',

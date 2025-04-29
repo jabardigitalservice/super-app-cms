@@ -185,9 +185,13 @@ export default {
     }
   },
   async fetch() {
+    // value 1 : government instruction, 0 : non government instruction
     this.query.is_prov_responsibility =
       this.ikpTypePage === ikpType.instruksiKewenanganPemprov.props ||
       this.ikpTypePage === ikpType.instruksiAduanWarga.props
+        ? 1
+        : 0
+
     try {
       const responseList = await this.$axios.get(ENDPOINT_IKP, {
         params: { ...this.query },
