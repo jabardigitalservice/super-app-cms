@@ -39,7 +39,7 @@
           tag="div"
         >
           <BaseInputText
-            v-model="otherCategory"
+            v-model="otherCategoryText"
             placeholder="Masukkan Kategori"
             :error-message="errors[0]"
             maxlength="50"
@@ -82,7 +82,7 @@
           tag="div"
         >
           <BaseInputText
-            v-model="otherSubcategory"
+            v-model="otherSubcategoryText"
             type="text"
             placeholder="Masukkan Sub Kategori"
             :error-message="errors[0]"
@@ -152,8 +152,8 @@ export default {
       isSubmit: false,
       isOtherCategory: false,
       isOtherSubcategory: false,
-      otherCategory: '',
-      otherSubcategory: '',
+      otherCategoryText: '',
+      otherSubcategoryText: '',
     }
   },
   computed: {
@@ -196,13 +196,13 @@ export default {
   },
   methods: {
     changeSelectForm(value, keyObject) {
-      this.isOtherCategory = false
-      this.isOtherSubcategory = false
       this.dataOtherComplaint[keyObject] = value
       this.$store.commit('add-complaint/setDataOtherComplaint', {
         ...this.dataOtherComplaint,
       })
+
       if (keyObject === 'category_id') {
+        this.isOtherCategory = false
         this.isOtherSubcategory = false
         this.$store.commit('add-complaint/setDataOtherComplaint', {
           ...this.dataOtherComplaint,
@@ -218,7 +218,10 @@ export default {
           this.dataOtherComplaint.sub_category_id?.includes('lainnya-terkait')
       }
 
-      if (!this.isOtherCategory) {
+      if (
+        (keyObject === 'category_id' || keyObject === 'sub_category_id') &&
+        (!this.isOtherCategory || !this.isOtherCategory)
+      ) {
         this.$store.dispatch(
           'utilities-complaint/getDataSubCategory',
           this.dataOtherComplaint.category_id
@@ -234,8 +237,8 @@ export default {
       this.$store.commit('add-complaint/setIsValidFormOtherComplaint', isValid)
       this.$store.commit('add-complaint/setDataOtherComplaint', {
         ...this.dataOtherComplaint,
-        category_child_id: this.otherCategory,
-        subcategory_child_id: this.otherSubcategory,
+        category_child_id: this.otherCategoryText,
+        subcategory_child_id: this.otherSubcategoryText,
       })
       if (isValid) {
         this.$store.commit('add-complaint/setDataOtherComplaint', {
@@ -247,12 +250,14 @@ export default {
     clearFormOtherComplaintHandle() {
       this.$store.dispatch('add-complaint/clearDataOtherComplaint')
       this.isSubmit = false
+      this.isOtherCategory = false
+      this.isOtherSubcategory = false
       this.resetValueChildCategory()
       this.$refs.formOtherComplaint.reset()
     },
     resetValueChildCategory() {
-      this.otherCategory = ''
-      this.otherSubcategory = ''
+      this.otherCategoryText = ''
+      this.otherSubcategoryText = ''
     },
   },
 }
