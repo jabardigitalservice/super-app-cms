@@ -243,6 +243,7 @@ export default {
       this.$emit('close')
     },
     backToForm() {
+      this.$store.commit('add-complaint/setIsError', false)
       this.$store.commit('modals/CLOSEALL')
       this.$store.commit('modals/OPEN', this.nameModal)
     },
