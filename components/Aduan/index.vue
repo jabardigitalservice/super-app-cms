@@ -580,6 +580,8 @@ export default {
     }, 500),
   },
   async created() {
+    this.isFilterStatus = false
+    this.$store.commit('setBackPage', false)
     this.pagination.itemsPerPageOptions = generateItemsPerPageOptions(
       this.pagination.itemsPerPage
     )
