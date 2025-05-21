@@ -518,6 +518,7 @@ export default {
         return {
           description,
           labelButtonSubmit: 'Coba Lagi',
+          showCancelButton: true,
           icon: { name: 'times-circle', fill: '#EF5350' },
         }
       }
