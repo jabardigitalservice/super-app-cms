@@ -382,6 +382,12 @@ export const complaintButtonDetail = {
     variant: 'primary',
     complaintStatus: complaintStatus.coordinated.id,
   },
+  createInstruction: {
+    idButton: 'button-create-instruction',
+    label: 'Buat Instruksi',
+    variant: 'primary',
+    complaintStatus: complaintStatus.not_yet_instructed.id,
+  },
 }
 
 export const detailField = {
