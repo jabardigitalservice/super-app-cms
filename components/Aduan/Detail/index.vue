@@ -546,7 +546,15 @@ export default {
         case complaintButtonDetail.complaintProcess.idButton:
           return this.showPopupProcessComplaintHandle(this.detailComplaint)
         case complaintButtonDetail.followup.idButton:
-          return this.showPopupFollowupComplaint(this.detailComplaint)
+          return this.showPopupFollowupComplaint(
+            this.detailComplaint,
+            'followupComplaint'
+          )
+        case complaintButtonDetail.createInstruction.idButton:
+          return this.showPopupFollowupComplaint(
+            this.detailComplaint,
+            'createInstruction'
+          )
       }
     },
     showButtonDetail(button) {
