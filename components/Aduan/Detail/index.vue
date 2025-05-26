@@ -37,15 +37,17 @@
       </div>
       <div
         v-else-if="
-          idTab === 'all' && typeAduanPage.props !== typeAduan.aduanMasuk.props
+          (idTab === 'all' &&
+            typeAduanPage.props !== typeAduan.aduanMasuk.props) ||
+          !detailComplaint.complaint_latest_status_id ===
+            'not_yet_coordinated' ||
+          !detailComplaint.complaint_latest_status_id === 'coordinated'
         "
         class="flex"
       >
         <div
           v-for="(button, index) in listButton"
-          v-show="
-            button?.complaintStatus === detailComplaint?.complaint_status_id
-          "
+          v-show="showButtonDetail(button)"
           :key="index"
         >
           <div :class="{ 'mr-3': listButton.length > 1 }">
@@ -111,10 +113,10 @@
     />
     <DialogFollowupHotlineJabar @close-all-modal="$fetch()" />
     <DialogEvidenceFollowupHotline @close-all-modal="$fetch()" />
-    <DialogInputText
+    <DialogAddIdSpan
+      v-if="isShowPopupInputIdSpan"
       :data-dialog="dataDialog"
-      :show-popup="isShowPopupInputIdSpan"
-      @close="closePopupHandle()"
+      :name-modal="dataDialog.nameModal"
       @submit="submitInputIdSpanHandle"
     />
     <DialogConfirmation
@@ -169,6 +171,7 @@ import DialogFollowupComplaint from '~/components/Aduan/Dialog/FollowupComplaint
 import DialogFollowupHotlineJabar from '~/components/Aduan/Dialog/FollowupHotlineJabar'
 import DialogProcessComplaint from '~/components/Aduan/Dialog/ProcessComplaint'
 import DialogViewImage from '~/components/Aduan/DialogViewImage'
+import DialogAddIdSpan from '~/components/Aduan/Dialog/AddIdSpan'
 import TabBarDetail from '~/components/Aduan/TabBar/Detail'
 import {
   complaintButtonDetail,
@@ -196,6 +199,7 @@ export default {
     DialogFollowupComplaint,
     DialogFollowupHotlineJabar,
     DialogEvidenceFollowupHotline,
+    DialogAddIdSpan,
   },
   mixins: [popupAduanMasuk],
   props: {
@@ -314,6 +318,15 @@ export default {
             'dd/MM/yyyy - HH:mm'
           ),
       }
+
+      if (
+        !this.detailComplaint.sp4n_id &&
+        this.detailComplaint.complaint_status_id ===
+          complaintStatus.diverted_to_span.id
+      ) {
+        this.detailComplaint.complaint_status_id = 'no-id-span'
+      }
+
       this.ikpCode = dataDetailComplaint?.ikp_code
 
       this.listPhotoComplaint = dataDetailComplaint?.photos || []
@@ -519,12 +532,37 @@ export default {
         case complaintButtonDetail.evidenceFollowupHotlineJabar.idButton:
           return this.showPopupEvidenceFollowupHotlineJabar()
         case complaintButtonDetail.addIdSpan.idButton:
-          return this.showPopupInputIdSpanHandle(this.detailComplaint)
+          return this.showPopupInputIdSpanHandle(
+            this.detailComplaint,
+            'formAddIdSpan'
+          )
+        case complaintButtonDetail.editIdSpan.idButton:
+          this.detailComplaint.sp4n_created_at =
+            this.detailComplaint.sp4n_created_at_format
+          return this.showPopupInputIdSpanHandle(
+            this.detailComplaint,
+            'formEditIdSpan'
+          )
         case complaintButtonDetail.complaintProcess.idButton:
           return this.showPopupProcessComplaintHandle(this.detailComplaint)
         case complaintButtonDetail.followup.idButton:
           return this.showPopupFollowupComplaint(this.detailComplaint)
       }
+    },
+    showButtonDetail(button) {
+      if (button.idButton === 'button-edit-id-span') {
+        return (
+          this.detailComplaint.complaint_latest_status_id !==
+            complaintStatus.not_yet_coordinated.id &&
+          this.detailComplaint.complaint_latest_status_id !==
+            'coordinated_nonpemprov' &&
+          !!this.detailComplaint.sp4n_id
+        )
+      }
+
+      return (
+        button?.complaintStatus === this.detailComplaint?.complaint_status_id
+      )
     },
     showViewPhotoDialogHandle(url) {
       this.photo.showPopup = true

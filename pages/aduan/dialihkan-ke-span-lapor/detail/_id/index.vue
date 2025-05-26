@@ -25,7 +25,10 @@ export default {
       ],
       descriptionPage: 'Berisi detail aduan yang dialihkan ke SP4N Lapor',
       typeAduan,
-      listButtonDetail: [complaintButtonDetail.addIdSpan],
+      listButtonDetail: [
+        complaintButtonDetail.addIdSpan,
+        complaintButtonDetail.editIdSpan,
+      ],
     }
   },
   mounted() {
