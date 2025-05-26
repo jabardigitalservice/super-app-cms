@@ -1,9 +1,12 @@
 <template>
-  <AduanDetail :type-aduan-page="typeAduan.instruksiKewenanganNonPemprov" />
+  <AduanDetail
+    :type-aduan-page="typeAduan.instruksiKewenanganNonPemprov"
+    :list-button="listButtonDetail"
+  />
 </template>
 
 <script>
-import { typeAduan } from '~/constant/aduan-masuk.js'
+import { typeAduan, complaintButtonDetail } from '~/constant/aduan-masuk.js'
 export default {
   name: 'PageDetailInstruksiKewenanganNonPemprov',
   layout: 'Dashboard',
@@ -23,6 +26,7 @@ export default {
       ],
       descriptionPage:
         'Berisi detail aduan dari masyarakat Jabar yang perlu untuk dikoordinasikan.',
+      listButtonDetail: [complaintButtonDetail.createInstruction],
     }
   },
   mounted() {
