@@ -785,8 +785,8 @@ export default {
         start_date: formatDate(this.dateRange[0], 'yyyy-MM-dd'),
         end_date: formatDate(this.dateRange[1], 'yyyy-MM-dd'),
       })
-      this.$fetch()
       this.query.page = 1
+      this.$fetch()
       this.$refs.datepicker.closePopup()
     },
     closePopupDateHandle() {
