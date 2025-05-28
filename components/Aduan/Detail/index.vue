@@ -321,7 +321,8 @@ export default {
 
       if (
         this.detailComplaint.complaint_status_id ===
-        complaintStatus.diverted_to_span.id
+          complaintStatus.diverted_to_span.id &&
+        this.typeAduanPage.props === typeAduan.aduanDialihkanSpanLapor.props
       ) {
         this.detailComplaint.complaint_status_id = !this.detailComplaint.sp4n_id
           ? 'no-id-span'
