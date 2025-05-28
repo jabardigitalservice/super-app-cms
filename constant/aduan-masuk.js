@@ -363,12 +363,17 @@ export const complaintButtonDetail = {
     variant: 'primary',
     complaintStatus: complaintStatus.followup.id,
   },
-
   addIdSpan: {
     idButton: 'button-add-id-span',
     label: 'Tambahkan ID SP4N Lapor',
     variant: 'primary',
     complaintStatus: 'no-id-span',
+  },
+  editIdSpan: {
+    idButton: 'button-edit-id-span',
+    label: 'Ubah ID SP4N Lapor',
+    variant: 'primary',
+    complaintStatus: 'diverted_to_span',
   },
   complaintProcess: {
     idButton: 'button-complaint-process',
