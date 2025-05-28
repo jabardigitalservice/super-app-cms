@@ -320,11 +320,12 @@ export default {
       }
 
       if (
-        !this.detailComplaint.sp4n_id &&
         this.detailComplaint.complaint_status_id ===
-          complaintStatus.diverted_to_span.id
+        complaintStatus.diverted_to_span.id
       ) {
-        this.detailComplaint.complaint_status_id = 'no-id-span'
+        this.detailComplaint.complaint_status_id = !this.detailComplaint.sp4n_id
+          ? 'no-id-span'
+          : this.detailComplaint.complaint_status_id
       }
 
       this.ikpCode = dataDetailComplaint?.ikp_code
