@@ -22,7 +22,7 @@
                     placeholder="Masukkan ID SP4N Lapor"
                     :error-message="errors[0]"
                     label="ID SP4N Lapor"
-                    maxlength="10"
+                    maxlength="15"
                   />
                 </ValidationProvider>
               </div>
