@@ -495,6 +495,7 @@ export const detailField = {
           complaintStatus.finished.id,
           complaintStatus.not_yet_instructed.id,
           complaintStatus.not_yet_coordinated.id,
+          'no-id-span',
         ],
       },
       {
@@ -558,6 +559,7 @@ export const detailField = {
           complaintStatus.finished.id,
           complaintStatus.not_yet_instructed.id,
           complaintStatus.not_yet_coordinated.id,
+          'no-id-span',
         ],
       },
       {
@@ -589,6 +591,7 @@ export const detailField = {
           complaintStatus.not_yet_instructed.id,
           complaintStatus.not_yet_coordinated.id,
           complaintStatus.coordinated.id,
+          'no-id-span',
         ],
       },
     ],
@@ -608,6 +611,7 @@ export const detailField = {
       complaintStatus.finished.id,
       complaintStatus.not_yet_instructed.id,
       complaintStatus.not_yet_coordinated.id,
+      'no-id-span',
     ],
   },
   otherInformation: {
@@ -632,6 +636,7 @@ export const detailField = {
           complaintStatus.followup.id,
           complaintStatus.postponed.id,
           complaintStatus.finished.id,
+          'no-id-span',
         ],
       },
       {
@@ -653,6 +658,7 @@ export const detailField = {
           complaintStatus.followup.id,
           complaintStatus.postponed.id,
           complaintStatus.finished.id,
+          'no-id-span',
         ],
       },
       {
@@ -675,6 +681,7 @@ export const detailField = {
           complaintStatus.followup.id,
           complaintStatus.postponed.id,
           complaintStatus.finished.id,
+          'no-id-span',
         ],
       },
     ],
@@ -695,6 +702,7 @@ export const detailField = {
       complaintStatus.followup.id,
       complaintStatus.postponed.id,
       complaintStatus.finished.id,
+      'no-id-span',
     ],
   },
   trackingSpan: {
