@@ -57,18 +57,26 @@
               small
             />
           </div>
+          <jds-section-message
+            :show="checkDeadlineDate()"
+            variant="error"
+            dismissible
+            message="Aduan ini melewati tanggal jatuh tempo. Harap periksa kembali."
+            class="mb-4"
+          />
           <div
             class="mb-3 flex items-center justify-between rounded-lg border border-gray-300 py-2 px-3"
           >
             <AlertInformation
               message="Jika tidak menemukan instruksi aduan, Anda dapat menambahkan instruksi aduan baru."
             />
-            <jds-button
-              label="Buat Instruksi Baru"
-              variant="secondary"
-              class="!h-[38px] !w-fit flex-shrink-0 !py-0 !text-[14px] font-bold"
+            <button
+              :disabled="checkDeadlineDate()"
+              class="button-secondary !w-fit flex-shrink-0 rounded-lg py-[10px] px-4 !text-[14px] font-bold"
               @click="showPopupCreateIkp()"
-            />
+            >
+              Buat Instruksi Baru
+            </button>
           </div>
 
           <BaseLoading v-if="isLoading" />
@@ -125,12 +133,13 @@
                       width="63"
                       :class="{ 'rounded-br-lg': index === listIkp.length - 1 }"
                     >
-                      <jds-button
-                        label="Pilih"
-                        variant="primary"
-                        class="!h-[30px] !w-[51px] !px-0 !py-0 !text-[14px] font-bold"
+                      <button
+                        class="button-primary !w-[51px] rounded-lg !px-3 py-[6px] !text-[14px] font-bold"
+                        :disabled="checkDeadlineDate()"
                         @click="chooseDataFollowupProcess(itemIkp)"
-                      />
+                      >
+                        Pilih
+                      </button>
                     </td>
                   </tr>
                 </tbody>
@@ -234,8 +243,7 @@ import Pagination from '~/components/Aduan/Dialog/FollowupComplaint/Pagination'
 import DialogIkpNarrative from '~/components/Aduan/Dialog/IkpNarrative'
 import { complaintStatus, typeAduan } from '~/constant/aduan-masuk'
 import { ENDPOINT_IKP } from '~/constant/endpoint-api'
-// TODO : it will be used when the data migration process is complete
-// import { formatDate } from '~/utils'
+import { formatDate } from '~/utils'
 
 export default {
   name: 'DialogFollowupComplaint',
@@ -405,6 +413,18 @@ export default {
         this.$store.commit('followup-complaint/setIsShowPopup', true)
       }
     },
+    checkDeadlineDate() {
+      const deadlineDate = formatDate(
+        this.$store.state['create-ikp'].dataComplaint.deadline_date,
+        'yyyy-MM-dd'
+      )
+      const currentDate = formatDate(new Date(), 'yyyy-MM-dd')
+      if (currentDate > deadlineDate) {
+        return true
+      }
+
+      return false
+    },
     showPopupIkpNarrative(dataIkp) {
       this.$store.commit('followup-complaint/setDataIkp', dataIkp)
       this.isShowPopupIkpNarrative = true
@@ -517,5 +537,13 @@ export default {
 
 .form-followup-ikp::-webkit-scrollbar-thumb {
   @apply rounded-xl border-[6px] border-solid border-transparent bg-gray-300 bg-clip-content;
+}
+
+.form-followup-ikp .button-secondary {
+  @apply !border !border-green-700 !text-[14px] !font-bold !text-green-700 disabled:!cursor-not-allowed disabled:!border-none disabled:!bg-neutral-300 disabled:!text-neutral-500;
+}
+
+.form-followup-ikp .button-primary {
+  @apply !bg-green-700 !text-[14px] !font-medium text-white disabled:!cursor-not-allowed disabled:!bg-neutral-300 disabled:!text-neutral-500;
 }
 </style>
