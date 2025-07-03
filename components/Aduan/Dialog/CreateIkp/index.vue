@@ -130,8 +130,7 @@
                       :class="{
                         'mx-datepicker--error': errors[0],
                       }"
-                      class="mx-datepicker--disabled !w-full"
-                      disabled
+                      class="!w-full"
                     >
                       <template #icon-calendar>
                         <jds-icon
