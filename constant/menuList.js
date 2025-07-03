@@ -1,6 +1,7 @@
 const rwMenu = {
   titleMenu: 'RW',
   showTitleMenuForRoles: ['admin'],
+  unleashVariable: 'SAPAWARGA-CMS__RW',
   menu: [
     {
       name: 'Klaim Akun RW',
@@ -8,6 +9,7 @@ const rwMenu = {
       arrow: false,
       showMenuAndAccessForRoles: ['admin'],
       icon: 'item.svg',
+      unleashVariable: 'SAPAWARGA-CMS__RW--KLAIM-RW',
     },
     {
       name: 'Kegiatan RW',
@@ -15,6 +17,7 @@ const rwMenu = {
       arrow: false,
       showMenuAndAccessForRoles: ['admin'],
       icon: 'item.svg',
+      unleashVariable: 'SAPAWARGA-CMS__RW--KEGIATAN-RW',
     },
   ],
   childRoute: [
@@ -28,6 +31,7 @@ const rwMenu = {
 const messageNotifMenu = {
   titleMenu: 'pesan dan notif',
   showTitleMenuForRoles: ['admin'],
+  unleashVariable: 'SAPAWARGA-CMS__PESAN-NOTIF',
   menu: [
     {
       name: 'Pesan',
@@ -35,6 +39,7 @@ const messageNotifMenu = {
       arrow: false,
       showMenuAndAccessForRoles: ['admin'],
       icon: 'item.svg',
+      unleashVariable: 'SAPAWARGA-CMS__PESAN-NOTIF--PESAN',
     },
   ],
 }
