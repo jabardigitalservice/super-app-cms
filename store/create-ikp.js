@@ -1,3 +1,5 @@
+import { ENDPOINT_IKP } from '~/constant/endpoint-api'
+
 export const state = () => ({
   isShowPopup: false,
   isTruncate: false,
@@ -14,6 +16,8 @@ export const state = () => ({
     coverage_of_affairs: '',
     opd_pemprov_id: '',
   },
+  detailInstruction: {},
+  isLoading: false,
 })
 
 export const getters = {
@@ -29,9 +33,25 @@ export const getters = {
   getPayload: (state) => {
     return state.payload
   },
+  getDetailInstruction: (state) => {
+    return state.detailInstruction
+  },
 }
 
 export const actions = {
+  async getDetailInstruction({ state, commit }, ikpCode) {
+    commit('setIsLoading', true)
+    try {
+      const response = await this.$axios.get(`${ENDPOINT_IKP}/${ikpCode}`, {
+        params: { complaint_id: state.dataComplaint.complaint_id },
+      })
+      commit('setDetailInstructon', response.data.data)
+    } catch (error) {
+      this.dataDetail = {}
+    } finally {
+      commit('setIsLoading', false)
+    }
+  },
   checkTruncate({ state, commit }) {
     if (state.ikpNarrative.length >= 125) {
       commit('setIsTruncate', true)
@@ -69,5 +89,11 @@ export const mutations = {
   },
   setDataComplaint(state, dataComplaint) {
     state.dataComplaint = dataComplaint
+  },
+  setIsLoading(state, isLoading) {
+    state.isLoading = isLoading
+  },
+  setDetailInstructon(state, detailInstruction) {
+    state.detailInstruction = detailInstruction
   },
 }
