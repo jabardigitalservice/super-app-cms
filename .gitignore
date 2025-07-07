@@ -91,10 +91,6 @@ sw.*
 
 
 
-newrelic.js
-newrelic_agent.log
-
-
 # sonar-local
 sonar-project.properties
 .scannerwork/
