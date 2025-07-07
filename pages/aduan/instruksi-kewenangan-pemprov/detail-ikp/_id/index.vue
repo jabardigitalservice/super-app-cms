@@ -11,6 +11,14 @@
           Kembali
         </div>
       </jds-button>
+
+      <jds-button
+        v-if="showButtonChangeDetailInstruction()"
+        variant="primary"
+        class="!text-[14px] !font-bold"
+      >
+        Ubah Detail Instruksi
+      </jds-button>
     </div>
     <BaseTabGroup>
       <template #tab-list>
@@ -23,6 +31,7 @@
           <AduanDaftarIKPTableDetail
             :show-daftar-aduan="true"
             detail-complaint-link="/aduan/instruksi-kewenangan-pemprov/detail"
+            :detail-instruction="detailInstruction"
             :ikp-type-page="ikpType.instruksiKewenanganPemprov.props"
             :ikp-code="$route.params.id"
           />
@@ -35,7 +44,7 @@
 <script>
 import TabBarDetail from '~/components/Aduan/TabBar/Detail'
 import ArrowLeft from '~/assets/icon/arrow-left.svg?inline'
-import { ikpType } from '~/constant/daftar-ikp'
+import { ikpType, ikpStatus } from '~/constant/daftar-ikp'
 
 export default {
   name: 'PageDetailIKP',
@@ -68,20 +77,37 @@ export default {
       ikpType,
     }
   },
+  computed: {
+    detailInstruction() {
+      return this.$store.state['create-ikp'].detailInstruction
+    },
+  },
   mounted() {
     this.$store.commit('setActivePage', 'Daftar Penginputan IKP')
     this.$store.commit('setHeader', {
       navigations: this.navigations,
       descriptionPage: this.descriptionPage,
     })
+    this.$store.dispatch(
+      'create-ikp/getDetailInstruction',
+      this.$route.params.id
+    )
   },
-
   methods: {
     goToBackHandle() {
       this.$router.push({
         path: '/aduan/instruksi-kewenangan-pemprov',
         query: this.$route.query,
       })
+    },
+    showButtonChangeDetailInstruction() {
+      const listComplaint = [
+        ikpStatus.followup.id,
+        ikpStatus.postponed.id,
+        ikpStatus.review.id,
+        ikpStatus.not_yet_coordinated.id,
+      ]
+      return listComplaint.includes(this.detailInstruction.complaint_status_id)
     },
   },
 }

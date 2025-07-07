@@ -146,11 +146,31 @@ export default {
   data() {
     return {
       menuTableAction: [
-        { menu: 'Lihat Detail Instruksi', value: 'detail', ikpType: ['all'] },
+        {
+          menu: 'Lihat Detail Instruksi',
+          value: 'detail',
+          ikpType: ['all'],
+          ikpStatus: ['all'],
+        },
+        {
+          menu: 'Ubah Detail Instruksi',
+          value: 'change-instruction',
+          ikpType: [
+            ikpType.instruksiKewenanganPemprov.props,
+            ikpType.instruksiKewenanganNonPemprov.props,
+          ],
+          ikpStatus: [
+            ikpStatus.followup.id,
+            ikpStatus.postponed.id,
+            ikpStatus.review.id,
+            ikpStatus.not_yet_coordinated.id,
+          ],
+        },
         {
           menu: 'Lihat Instruksi di Aplikasi TRK',
           value: 'app-trk',
           ikpType: [ikpType.instruksiNonPemprov.props],
+          ikpStatus: ['all'],
         },
       ],
       listDataIkp: [],
@@ -310,8 +330,9 @@ export default {
     filterTableAction(status) {
       return this.menuTableAction.filter(
         (item) =>
-          item.ikpType.includes('all') ||
-          item.ikpType.includes(this.ikpTypePage)
+          (item.ikpType.includes('all') ||
+            item.ikpType.includes(this.ikpTypePage)) &&
+          (item?.ikpStatus.includes(status) || item.ikpStatus.includes('all'))
       )
     },
     pageChange(value) {

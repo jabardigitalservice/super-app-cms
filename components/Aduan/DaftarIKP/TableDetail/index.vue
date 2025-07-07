@@ -4,7 +4,7 @@
       Detail Instruksi Aduan
     </h1>
     <div class="table-content">
-      <template v-if="loading">
+      <template v-if="isLoading">
         <BaseLoading />
       </template>
 
@@ -34,14 +34,16 @@
             <td v-else-if="field.key === 'complaint_status_id'">
               <div class="flex items-center">
                 <div
-                  v-if="dataDetail?.complaint_status_id"
+                  v-if="detailInstruction?.complaint_status_id"
                   :class="[
                     ' mr-2 h-2 w-2 rounded-full',
-                    getStatusColorHandle(dataDetail?.complaint_status_id),
+                    getStatusColorHandle(
+                      detailInstruction?.complaint_status_id
+                    ),
                   ]"
                 />
 
-                {{ getStatusText(dataDetail?.complaint_status_id) }}
+                {{ getStatusText(detailInstruction?.complaint_status_id) }}
               </div>
             </td>
             <td
@@ -49,18 +51,18 @@
                 field.key === 'created_at' || field.key === 'deadline_at'
               "
             >
-              {{ formatDate(dataDetail[field.key] || '') || '-' }}
+              {{ formatDate(detailInstruction[field.key] || '') || '-' }}
             </td>
-            <td v-else>{{ dataDetail[field.key] || '' || '-' }}</td>
+            <td v-else>{{ detailInstruction[field.key] || '' || '-' }}</td>
           </tr>
         </BaseTableDetail>
         <div
-          v-if="dataDetail?.complaints?.length > 0 && showDaftarAduan"
+          v-if="detailInstruction?.complaints?.length > 0 && showDaftarAduan"
           class="rounded-lg border border-gray-200"
         >
           <jds-data-table
             :headers="filterHeaderTableComplaint()"
-            :items="dataDetail?.complaints"
+            :items="detailInstruction?.complaints"
             class="default-table"
             :class="{
               'non-government-table':
@@ -86,7 +88,6 @@
 
 <script>
 import { detailField, ikpStatus, ikpType } from '~/constant/daftar-ikp'
-import { ENDPOINT_IKP } from '~/constant/endpoint-api'
 import { formatDate } from '~/utils'
 
 export default {
@@ -100,10 +101,6 @@ export default {
       type: String,
       default: '',
     },
-    complaintId: {
-      type: String,
-      default: '',
-    },
     ikpTypePage: {
       type: String,
       default: '',
@@ -111,6 +108,10 @@ export default {
     detailComplaintLink: {
       type: String,
       default: '',
+    },
+    detailInstruction: {
+      type: Object,
+      default: () => ({}),
     },
   },
   data() {
@@ -127,25 +128,14 @@ export default {
       loading: false,
     }
   },
-  async fetch() {
-    this.loading = true
-    try {
-      const response = await this.$axios.get(
-        `${ENDPOINT_IKP}/${this.ikpCode}`,
-        { params: { complaint_id: this.complaintId } }
-      )
-      this.dataDetail = response.data.data
-    } catch (error) {
-      this.dataDetail = {}
-    } finally {
-      this.loading = false
-    }
-  },
   computed: {
     getDetailOtherField() {
       return detailField.others.field.filter((item) =>
         item.ikpType.includes(this.ikpTypePage)
       )
+    },
+    isLoading() {
+      return this.$store.state['create-ikp'].isLoading
     },
   },
   mounted() {
@@ -187,8 +177,8 @@ export default {
     },
     formatingInstructionalNarrative() {
       let result = '-'
-      if (this.dataDetail?.id) {
-        result = `<strong>(${this.dataDetail?.id})</strong> ${this.dataDetail?.narrative}`
+      if (this.detailInstruction?.id) {
+        result = `<strong>(${this.detailInstruction?.id})</strong> ${this.detailInstruction?.narrative}`
       }
       return result
     },
