@@ -1,13 +1,3 @@
-let newRelic = {}
-if (process.env.NODE_ENV === 'production') {
-  newRelic = {
-    src: '/newrelic-browser-script.js',
-    'data-account-id': `${process.env.ACCOUNT_ID_NEW_RELIC}`,
-    'data-browser-license-key': `${process.env.LICENSE_KEY_NEW_RELIC_ACCOUNT}`,
-    'data-application-id': `${process.env.APPLICATION_ID_NEW_RELIC}`,
-  }
-}
-
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: false,
@@ -32,7 +22,6 @@ export default {
       },
     ],
     script: [
-      newRelic,
       {
         src: '/xlsx-script.js',
         async: true,
