@@ -47,7 +47,7 @@ export const actions = {
       })
       commit('setDetailInstructon', response.data.data)
     } catch (error) {
-      this.dataDetail = {}
+      commit('setDetailInstructon', {})
     } finally {
       commit('setIsLoading', false)
     }
