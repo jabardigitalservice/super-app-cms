@@ -16,7 +16,26 @@ export const state = () => ({
     coverage_of_affairs: '',
     opd_pemprov_id: '',
   },
+  dataDialog: {
+    title: '',
+    nameModal: '',
+    button: {
+      submit: '',
+      cancel: '',
+    },
+  },
+  dialogConfirmation: {
+    title: '',
+    nameModal: '',
+    descriptionText: '',
+    buttonSubmit: {
+      label: '',
+      dataCy: '',
+    },
+  },
   detailInstruction: {},
+  instructionNote: '',
+  indicatorValue: '',
   isLoading: false,
 })
 
@@ -35,6 +54,12 @@ export const getters = {
   },
   getDetailInstruction: (state) => {
     return state.detailInstruction
+  },
+  getDataComplaint: (state) => {
+    return state.dataComplaint
+  },
+  getDataDialog: (state) => {
+    return state.dataDialog
   },
 }
 
@@ -58,6 +83,31 @@ export const actions = {
     } else {
       commit('setIsTruncate', false)
     }
+  },
+  showPopupInstruction({ state, commit }, nameModal) {
+    commit('setDataDialog', {
+      title: 'Buat Instruksi Aduan Baru',
+      nameModal,
+      informationMessage: 'Pembuatan Instruksi Aduan baru.',
+      button: {
+        submit: 'Lanjutkan',
+        cancel: 'Kembali',
+      },
+    })
+
+    if (nameModal === 'update-ikp') {
+      commit('setDataDialog', {
+        title: 'Instruksi Aduan',
+        nameModal,
+        informationMessage: 'Perubahan Instruksi Aduan',
+        button: {
+          submit: 'Ubah Instruksi',
+          cancel: 'Batalkan',
+        },
+      })
+    }
+    commit('setIsShowPopup', true)
+    commit('modals/OPEN', nameModal, { root: true })
   },
   clearPayload({ commit }) {
     commit('setPayload', {
@@ -95,5 +145,17 @@ export const mutations = {
   },
   setDetailInstructon(state, detailInstruction) {
     state.detailInstruction = detailInstruction
+  },
+  setDataDialog(state, dataDialog) {
+    state.dataDialog = dataDialog
+  },
+  setInstructionNote(state, instructionNote) {
+    state.instructionNote = instructionNote
+  },
+  setIndicatorValue(state, indicatorValue) {
+    state.indicatorValue = indicatorValue
+  },
+  setDialogConfirmation(state, dialogConfirmation) {
+    state.dialogConfirmation = dialogConfirmation
   },
 }
