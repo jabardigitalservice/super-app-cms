@@ -340,21 +340,21 @@ export default {
       this.idApi = dataIkp.ikp_code
 
       this.dataIkp = dataIkp
-      this.$store.commit(
-        'create-ikp/setPayload',
-        ...this.$store['create-ikp'].payload,
-        {
-          narrative: dataIkp.narrative,
-          deadline_at: new Date(dataIkp.deadline_at) || '',
-          coverage_of_affairs: '',
-          opd_pemprov_id: '',
-          ikp_code: dataIkp.ikp_code,
-        }
-      )
+
+      const newPayload = {
+        ...this.$store.state['create-ikp'].payload,
+        narrative: dataIkp.narrative,
+        deadline_at: new Date(dataIkp.deadline_at) || '',
+        coverage_of_affairs: '',
+        opd_pemprov_id: '',
+        ikp_code: dataIkp.ikp_code,
+      }
+
+      this.$store.commit('create-ikp/setPayload', newPayload)
       this.typeDialog = 'update-ikp'
 
       const complaintType =
-        dataIkp.is_prov_responsibility === 1
+        newPayload.is_prov_responsibility === 1
           ? typeAduan.instruksiKewenanganPemprov.props
           : typeAduan.instruksiKewenanganNonPemprov.props
 
