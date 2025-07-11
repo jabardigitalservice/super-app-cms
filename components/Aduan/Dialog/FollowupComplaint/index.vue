@@ -226,7 +226,7 @@
       @close="isShowPopupIkpNarrative = false"
     />
     <DialogCreateIkp
-      v-if="$store.state['followup-complaint'].isCreateIkp"
+      v-if="isShowPopupCreateIkp"
       ref="dialogCreateIkp"
       @submit="$store.dispatch('followup-complaint/showPopupConfirmation')"
     />
@@ -339,6 +339,7 @@ export default {
     }),
     ...mapGetters('create-ikp', {
       payloadCreateIkp: 'getPayload',
+      isShowPopupCreateIkp: 'getIsShowPopup',
     }),
     listIkp() {
       return this.listDataIkp.map((dataIkp) => {
@@ -409,6 +410,7 @@ export default {
       this.$store.commit('followup-complaint/setIsFollowup', false)
       if (this.isCreateIkp) {
         this.$store.commit('create-ikp/setIsShowPopup', true)
+        this.$store.commit('modals/OPEN', 'create-ikp')
       } else {
         this.$store.commit('followup-complaint/setIsShowPopup', true)
       }
@@ -446,7 +448,7 @@ export default {
         deadline_at: new Date(dataComplaint.deadline_date) || '',
         coverage_of_affairs: dataComplaint.coverage_of_affairs,
       })
-      this.$store.commit('followup-complaint/setIsShowPopup', false)
+
       this.$store.commit(
         'create-ikp/setIkpNarrative',
         this.dataDialog.proposed_ikp_narrative
@@ -456,8 +458,8 @@ export default {
         this.complaintType
       )
       this.$store.commit('followup-complaint/setIsCreateIkp', true)
-      this.$store.dispatch('create-ikp/checkTruncate')
-      this.$store.commit('create-ikp/setIsShowPopup', true)
+      this.$store.dispatch('create-ikp/showPopupInstruction', 'create-ikp')
+      this.$store.commit('followup-complaint/setIsShowPopup', false)
     },
     submitDataFollowupComplaint() {
       this.$store.commit('modals/CLOSEALL')

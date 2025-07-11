@@ -1,8 +1,8 @@
 <template>
   <div>
-    <BaseDialog :show-popup="isShowPopupCreateIkp">
+    <BaseDialogFrame :name="dataDialog?.nameModal">
       <BaseDialogPanel class="max-h-[720px] w-[600px] sm:h-[calc(100vh-50px)]">
-        <BaseDialogHeader title="Buat Instruksi Aduan Baru" />
+        <BaseDialogHeader :title="dataDialog?.title" />
         <div
           class="form-input-ikp px-6 pt-3 pb-5"
           :class="{ '!pr-0': !isTruncate }"
@@ -10,8 +10,11 @@
           <div
             class="w-full overflow-y-auto rounded-lg border border-gray-300 p-3"
           >
-            <AlertInformation message="Pembuatan Instruksi Aduan baru." />
-            <CardIkpNarrative class="mt-5" />
+            <AlertInformation :message="dataDialog?.informationMessage" />
+            <CardIkpNarrative
+              class="mt-5"
+              :name-modal="dataDialog?.nameModal"
+            />
             <ValidationObserver ref="form">
               <form>
                 <div
@@ -78,7 +81,6 @@
                     complaintType === typeAduan.instruksiKewenanganPemprov.props
                   "
                   v-slot="{ errors }"
-                  rules="requiredSelectForm"
                   name="Perangkat Daerah"
                   class="py-3"
                   tag="div"
@@ -150,12 +152,12 @@
                     name="Indikator Nilai"
                   >
                     <BaseInputText
-                      v-model="payload.indicator_value"
+                      v-model="indicatorValue"
                       type="text"
                       placeholder="Masukkan Indikator Nilai"
                       label="Indikator Nilai"
-                      class="!bg-white"
                       :error-message="errors[0]"
+                      :is-disabled="dataDialog.nameModal === 'update-ikp'"
                     />
                   </ValidationProvider>
                   <ValidationProvider
@@ -169,6 +171,7 @@
                       placeholder="Masukkan Indikator Satuan"
                       label="Indikator Satuan"
                       :error-message="errors[0]"
+                      :is-disabled="dataDialog.nameModal === 'update-ikp'"
                     />
                   </ValidationProvider>
                 </div>
@@ -184,6 +187,7 @@
                     maxlength="1000"
                     class="pt-3"
                     :error-message="errors[0]"
+                    :is-disabled="dataDialog.nameModal === 'update-ikp'"
                   />
                 </ValidationProvider>
                 <p class="pt-1 text-xs text-gray-600">
@@ -196,7 +200,7 @@
         <BaseDialogFooterNew>
           <div class="mr-4">
             <jds-button
-              label="Kembali"
+              :label="dataDialog?.button?.cancel"
               type="button"
               variant="secondary"
               @click="closePopupCreateIkp()"
@@ -204,14 +208,18 @@
           </div>
 
           <jds-button
-            label="Lanjutkan"
+            :label="dataDialog?.button?.submit"
             type="button"
             variant="primary"
             @click="showPopupConfirmation"
           />
         </BaseDialogFooterNew>
       </BaseDialogPanel>
-    </BaseDialog>
+    </BaseDialogFrame>
+    <DialogConfirmationBasic
+      :dialog-modal="dialogConfirmation"
+      @confirmation-button="$emit('submit', payload)"
+    />
   </div>
 </template>
 
@@ -247,18 +255,12 @@ export default {
         id: '',
         narrative: '',
       },
-      dataDialog: {
-        description: '',
-        labelButtonSubmit: '',
-        labelButtonCancel: '',
-      },
       alert: {
         message: '',
         variant: '',
       },
       icon: {},
       typeAduan,
-      instructionNote: '',
     }
   },
 
@@ -291,6 +293,9 @@ export default {
     ...mapGetters('followup-complaint', {
       complaintType: 'getComplaintType',
     }),
+    dataDialog() {
+      return this.$store.state['create-ikp'].dataDialog
+    },
     payload: {
       get() {
         return { ...this.$store.state['create-ikp'].payload }
@@ -298,6 +303,25 @@ export default {
       set(value) {
         this.$store.commit('create-ikp/setPayload', value)
       },
+    },
+    instructionNote: {
+      get() {
+        return this.$store.state['create-ikp'].instructionNote
+      },
+      set(value) {
+        this.$store.commit('create-ikp/setInstructionNote', value)
+      },
+    },
+    indicatorValue: {
+      get() {
+        return this.$store.state['create-ikp'].indicatorValue
+      },
+      set(value) {
+        this.$store.commit('create-ikp/setIndicatorValue', value)
+      },
+    },
+    dialogConfirmation() {
+      return this.$store.state['create-ikp'].dialogConfirmation
     },
   },
   watch: {
@@ -357,7 +381,7 @@ export default {
         indicator_value: '',
         indicator_unit: '',
       }
-      this.instructionNote = ''
+      this.$store.commit('create-ikp/setInstructionNote', '')
       this.$store.commit('create-ikp/setIsTruncate', false)
       this.$refs.form.reset()
     },
@@ -366,23 +390,35 @@ export default {
       if (isValid) {
         this.payload = {
           ...this.payload,
-          indicator_value: parseInt(this.payload.indicator_value),
+          indicator_value: parseInt(this.indicatorValue),
           narrative: this.ikpNarrative,
           deadline_at: formatDate(this.payload.deadline_at, 'yyyy-MM-dd'),
           description: this.instructionNote,
         }
         this.$store.commit('create-ikp/setPayload', this.payload)
-        this.$store.commit('create-ikp/setIsShowPopup', false)
-        this.$store.commit('followup-complaint/setIsCreateIkp', true)
-        this.$emit('submit')
+        this.$store.commit('modals/CLOSEALL')
+        if (this.dataDialog.nameModal === 'create-ikp') {
+          this.$store.commit('followup-complaint/setIsCreateIkp', true)
+          this.$emit('submit')
+        } else {
+          this.$store.commit('create-ikp/setDialogConfirmation', {
+            title: 'Ubah Detail Instruksi',
+            nameModal: 'update-ikp-confirmation',
+            descriptionText:
+              'Apakah ada yakin ingin mengubah detail instruksi berikut?',
+            button: {
+              label: 'Ubah Instruksi',
+              dataCy: '',
+            },
+          })
+          this.$store.commit('modals/OPEN', 'update-ikp-confirmation')
+        }
+
         this.$refs.form.reset()
       }
     },
     setAlert(newAlert) {
       this.alert = { ...this.alert, ...newAlert }
-    },
-    setDataDialog(newDataDialog) {
-      this.dataDialog = { ...this.dataDialog, ...newDataDialog }
     },
     setIconPopup(newIconPopup) {
       this.icon = { ...this.iconPopup, ...newIconPopup }
@@ -411,11 +447,11 @@ export default {
 }
 
 .form-input-ikp .form-text-area .input-wrapper {
-  @apply !h-[92.5px] !bg-white;
+  @apply !h-[92.5px] bg-white;
 }
 
 .form-input-ikp .form-input-text input {
-  @apply !bg-white;
+  @apply bg-white;
 }
 
 .form-input-ikp

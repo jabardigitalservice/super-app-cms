@@ -8,9 +8,13 @@
       <slot name="icon-left" />
       <input
         :value="value"
-        class="h-[38px] w-full rounded-lg border border-gray-500 bg-gray-50 px-2 py-[11px] font-lato text-gray-600 placeholder:text-sm placeholder:text-gray-600 focus:outline-none"
-        :class="{ 'form-input-text--error': errorMessage }"
+        class="h-[38px] w-full rounded-lg border border-gray-500 bg-gray-50 px-2 py-[11px] font-lato text-gray-600 placeholder:text-sm placeholder:text-gray-600 focus:outline-none disabled:cursor-not-allowed"
+        :class="{
+          'form-input-text--error': errorMessage,
+          'form-input-text--disabled': isDisabled,
+        }"
         v-bind="$attrs"
+        :disabled="isDisabled"
         @input="onInput"
       />
       <slot name="icon-right" />
@@ -35,6 +39,10 @@ export default {
       type: String,
       default: '',
     },
+    isDisabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   methods: {
     onInput(e) {
@@ -47,5 +55,9 @@ export default {
 <style scoped>
 .form-input-text--error {
   @apply rounded-lg !border !border-red-600;
+}
+
+.form-input-text--disabled {
+  @apply !bg-gray-200;
 }
 </style>

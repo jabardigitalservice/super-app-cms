@@ -11,12 +11,12 @@ export const headerDaftarIkp = [
     sortable: true,
   },
   {
-    key: 'created_at',
+    key: 'created_at_format',
     text: 'Tanggal Dibuat',
     sortable: true,
   },
   {
-    key: 'deadline_at',
+    key: 'deadline_at_format',
     text: 'Tanggal Deadline',
     sortable: true,
   },

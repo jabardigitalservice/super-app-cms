@@ -21,7 +21,8 @@
         <h1 class="text-[15px] font-bold">Narasi Instruksi</h1>
         <button
           type="button"
-          class="px-2 py-[9px]"
+          class="px-2 py-[9px] disabled:cursor-not-allowed disabled:opacity-40"
+          :disabled="nameModal"
           @click="showPopupEditIkpNarrative()"
         >
           <jds-icon name="pencil" size="xs" fill="#16A75C" class="mr-2" />
@@ -63,6 +64,12 @@ import DialogIkpNarrative from '~/components/Aduan/Dialog/IkpNarrative'
 export default {
   name: 'CardIkpNarrative',
   components: { DialogEditNarrative, DialogIkpNarrative },
+  props: {
+    nameModal: {
+      type: String,
+      default: '',
+    },
+  },
   data() {
     return {
       dataDialog: {

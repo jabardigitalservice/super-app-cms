@@ -93,6 +93,7 @@
                 "
                 @detail="goToPageDetail(item.ikp_code)"
                 @app-trk="goToAppTrk()"
+                @update-instruction="updateInstructionHandle(item)"
               />
             </template>
           </BaseTable>
@@ -109,6 +110,19 @@
         </BaseTabPanel>
       </template>
     </BaseTabGroup>
+    <DialogCreateIkp
+      v-if="$store.state['create-ikp'].isShowPopup"
+      ref="dialogCreateIkp"
+      @submit="submitChangeInstruction"
+    />
+    <DialogInformation
+      :data-dialog="dataDialog"
+      :show-popup="isShowPopupInformation"
+      :icon-popup="iconPopup"
+      @close="closePopupInformationHandle()"
+      @submit="submitRetryHandle"
+    />
+    <DialogLoading :show-popup="isLoading" />
   </div>
 </template>
 
@@ -125,10 +139,13 @@ import {
 import TabBarList from '~/components/Aduan/TabBar/List'
 import { headerDaftarIkp, ikpStatus, ikpType } from '~/constant/daftar-ikp'
 import { ENDPOINT_IKP } from '~/constant/endpoint-api'
+import DialogCreateIkp from '~/components/Aduan/Dialog/CreateIkp'
+import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
 
 export default {
   name: 'DaftarIkpTable',
-  components: { TabBarList },
+  components: { TabBarList, DialogCreateIkp },
+  mixins: [popupAduanMasuk],
   props: {
     tabName: {
       type: String,
@@ -154,7 +171,7 @@ export default {
         },
         {
           menu: 'Ubah Detail Instruksi',
-          value: 'change-instruction',
+          value: 'update-instruction',
           ikpType: [
             ikpType.instruksiKewenanganPemprov.props,
             ikpType.instruksiKewenanganNonPemprov.props,
@@ -237,10 +254,10 @@ export default {
       return this.listDataIkp.map((item) => {
         return {
           ...item,
-          created_at: item?.created_at
+          created_at_format: item?.created_at
             ? formatDate(item?.created_at, 'dd/MM/yyyy HH:mm')
             : '-',
-          deadline_at: item?.deadline_at
+          deadline_at_format: item?.deadline_at
             ? formatDate(item?.deadline_at, 'dd/MM/yyyy')
             : '-',
         }
@@ -529,6 +546,25 @@ export default {
       } catch (error) {
         console.error(error)
       }
+    },
+    updateInstructionHandle(dataIkp) {
+      this.$store.commit('create-ikp/setPayload', {
+        description: dataIkp.fulldata.description,
+        indicator_unit: dataIkp.fulldata.indicator_unit,
+        opd_id: dataIkp.fulldata.opd_id,
+        opd_name: dataIkp.fulldata.opd_name,
+        is_prov_responsibility: dataIkp.fulldata.is_prov_responsibility,
+      })
+      this.$store.commit(
+        'create-ikp/setInstructionNote',
+        dataIkp.fulldata.description
+      )
+
+      this.$store.commit(
+        'create-ikp/setIndicatorValue',
+        String(dataIkp.fulldata.indicator_value)
+      )
+      this.showPopupUpdateInstruction(dataIkp)
     },
   },
 }

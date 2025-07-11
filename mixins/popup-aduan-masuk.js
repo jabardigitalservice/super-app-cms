@@ -32,6 +32,7 @@ export default {
         name: '',
       },
       dataComplaint: {},
+      dataIkp: {},
       complaintNote: '',
       isLoading: false,
       typeDialog: '',
@@ -335,6 +336,39 @@ export default {
       this.$store.commit('followup-complaint/setIsShowPopup', true)
     },
 
+    showPopupUpdateInstruction(dataIkp) {
+      this.idApi = dataIkp.ikp_code
+
+      this.dataIkp = dataIkp
+
+      const newPayload = {
+        ...this.$store.state['create-ikp'].payload,
+        narrative: dataIkp.narrative,
+        deadline_at: new Date(dataIkp.deadline_at) || '',
+        coverage_of_affairs: '',
+        opd_pemprov_id: '',
+        ikp_code: dataIkp.ikp_code,
+      }
+
+      this.$store.commit('create-ikp/setPayload', newPayload)
+      this.typeDialog = 'update-ikp'
+
+      const complaintType =
+        newPayload.is_prov_responsibility === 1
+          ? typeAduan.instruksiKewenanganPemprov.props
+          : typeAduan.instruksiKewenanganNonPemprov.props
+
+      dataIkp.fulldata.indicator_value = parseInt(
+        dataIkp.fulldata.indicator_value
+      )
+
+      this.$store.commit('create-ikp/setIkpNarrative', dataIkp.narrative)
+
+      this.$store.commit('followup-complaint/setComplaintType', complaintType)
+      this.$store.dispatch('create-ikp/checkTruncate')
+      this.$store.dispatch('create-ikp/showPopupInstruction', 'update-ikp')
+    },
+
     submitPopupComplaintHandle(item) {
       let dataDialogInformation = {}
       let paramRequest = { complaint_status_note: item?.note }
@@ -495,6 +529,28 @@ export default {
       this.integrationPopupHandle(dataDialogInformation, payload, 'follow-up')
     },
 
+    submitChangeInstruction(payload) {
+      this.$store.commit('modals/CLOSEALL')
+      let dataDialogInformation = {}
+      this.dataIkp = payload
+
+      dataDialogInformation = {
+        ...this.setDataDialogInformation(
+          'Ubah Detail Instruksi',
+          String(payload.ikp_code)
+        ),
+        success: this.setSucessFailedInformationHandle(
+          'Instruksi Anda berhasil diubah',
+          true
+        ),
+        failed: this.setSucessFailedInformationHandle(
+          'Instruksi Anda gagal diubah',
+          false
+        ),
+      }
+      this.integrationPopupHandle(dataDialogInformation, payload, 'ikp')
+    },
+
     setDataDialogConfirmation(title, description, subDescription, labelButton) {
       return {
         title,
@@ -555,6 +611,10 @@ export default {
         complaintType === typeAduan.instruksiKewenanganNonPemprov.props
           ? ENDPOINT_ADUAN_NON_PEMPROV
           : ENDPOINT_ADUAN
+
+      if (this.typeDialog === 'update-ikp') {
+        return `${endpointApi}/${pathApi}/${this.$store.state['popup-complaint'].idApi}`
+      }
       return `${endpointApi}/${this.$store.state['popup-complaint'].idApi}/${pathApi}`
     },
     handleSuccessResponse(paramDialog) {
@@ -646,6 +706,9 @@ export default {
         case 'followupComplaint':
         case 'createInstruction':
           return this.retryFollowupComplaint()
+        case 'update-ikp':
+          this.dataIkp.deadline_at = new Date(this.dataIkp.deadline_at)
+          return this.showPopupUpdateInstruction(this.dataIkp)
       }
     },
     retryFollowupComplaint() {
