@@ -534,8 +534,6 @@ export default {
       let dataDialogInformation = {}
       this.dataIkp = payload
 
-      console.log(this.dataIkp)
-
       dataDialogInformation = {
         ...this.setDataDialogInformation(
           'Ubah Detail Instruksi',
