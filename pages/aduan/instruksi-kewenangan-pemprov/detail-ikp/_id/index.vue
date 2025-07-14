@@ -16,6 +16,7 @@
         v-if="showButtonChangeDetailInstruction()"
         variant="primary"
         class="!text-[14px] !font-bold"
+        @click="updateInstructionHandle()"
       >
         Ubah Detail Instruksi
       </jds-button>
@@ -38,6 +39,19 @@
         </BaseTabPanel>
       </template>
     </BaseTabGroup>
+    <DialogCreateIkp
+      v-if="$store.state['create-ikp'].isShowPopup"
+      ref="dialogCreateIkp"
+      @submit="submitChangeInstruction"
+    />
+    <DialogInformation
+      :data-dialog="dataDialog"
+      :show-popup="isShowPopupInformation"
+      :icon-popup="iconPopup"
+      @close="closePopupInformationHandle()"
+      @submit="submitRetryHandle"
+    />
+    <DialogLoading :show-popup="isLoading" />
   </div>
 </template>
 
@@ -45,13 +59,17 @@
 import TabBarDetail from '~/components/Aduan/TabBar/Detail'
 import ArrowLeft from '~/assets/icon/arrow-left.svg?inline'
 import { ikpType, ikpStatus } from '~/constant/daftar-ikp'
+import DialogCreateIkp from '~/components/Aduan/Dialog/CreateIkp'
+import popupAduanMasuk from '~/mixins/popup-aduan-masuk'
 
 export default {
   name: 'PageDetailIKP',
   components: {
     TabBarDetail,
     ArrowLeft,
+    DialogCreateIkp,
   },
+  mixins: [popupAduanMasuk],
   layout: 'Dashboard',
   data() {
     return {
@@ -108,6 +126,23 @@ export default {
         ikpStatus.not_yet_coordinated.id,
       ]
       return listComplaint.includes(this.detailInstruction.complaint_status_id)
+    },
+    updateInstructionHandle() {
+      this.$store.commit('create-ikp/setPayload', {
+        description: this.detailInstruction.description,
+        indicator_unit: this.detailInstruction.indicator_unit,
+        opd_id: this.detailInstruction?.opd_id,
+        opd_name: this.detailInstruction?.opd_name,
+        is_prov_responsibility: this.detailInstruction.is_prov_responsibility,
+      })
+      this.$store.commit(
+        'create-ikp/setInstructionNote',
+        this.detailInstruction.description
+      )
+
+      const indicatorValue = parseInt(this.detailInstruction.indicator_value)
+      this.$store.commit('create-ikp/setIndicatorValue', String(indicatorValue))
+      this.showPopupUpdateInstruction(this.detailInstruction)
     },
   },
 }

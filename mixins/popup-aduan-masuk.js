@@ -358,10 +358,6 @@ export default {
           ? typeAduan.instruksiKewenanganPemprov.props
           : typeAduan.instruksiKewenanganNonPemprov.props
 
-      dataIkp.fulldata.indicator_value = parseInt(
-        dataIkp.fulldata.indicator_value
-      )
-
       this.$store.commit('create-ikp/setIkpNarrative', dataIkp.narrative)
 
       this.$store.commit('followup-complaint/setComplaintType', complaintType)
