@@ -560,6 +560,9 @@ export default {
         dataIkp.fulldata.description
       )
 
+      dataIkp.fulldata.indicator_value = parseInt(
+        dataIkp.fulldata.indicator_value
+      )
       this.$store.commit(
         'create-ikp/setIndicatorValue',
         String(dataIkp.fulldata.indicator_value)
