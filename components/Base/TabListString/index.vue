@@ -1,6 +1,10 @@
 <template>
-  <div class="w-full bg-green-600 h-fit flex items-center">
-    <div v-for="(tab,index) in listTab" :key="index" @click="setSelectedTab(tab)">
+  <div class="flex h-fit w-full items-center bg-green-600">
+    <div
+      v-for="(tab, index) in listTab"
+      :key="index"
+      @click="setSelectedTab(tab)"
+    >
       <slot :data-tab="tab" :index-tab="index" />
     </div>
   </div>
@@ -11,20 +15,20 @@ export default {
   name: 'BaseTabList',
   props: {
     listTab: {
-      type: Object,
+      type: Array,
       required: true,
-      default: () => ({})
-    }
+      default: () => [],
+    },
   },
-  data () {
+  data() {
     return {
-      dataTab: {}
+      dataTab: {},
     }
   },
   methods: {
-    setSelectedTab (data) {
+    setSelectedTab(data) {
       this.$emit('selected', data)
-    }
-  }
+    },
+  },
 }
 </script>
