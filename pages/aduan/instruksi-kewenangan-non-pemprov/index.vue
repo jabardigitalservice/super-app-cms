@@ -55,7 +55,7 @@ export default {
       handler(newQuery) {
         if (Object.keys(newQuery).length > 0) {
           const { idTab } = newQuery
-          this.$tore.commit('setIdTab', idTab)
+          this.$store.commit('setIdTab', idTab)
         }
       },
     },
