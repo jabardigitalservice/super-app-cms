@@ -15,7 +15,7 @@
       <jds-button
         v-if="showButtonChangeDetailInstruction()"
         variant="primary"
-        class="!text-[14px] !font-bold"
+        class="!text-sm !font-bold"
         @click="updateInstructionHandle()"
       >
         Ubah Detail Instruksi
@@ -84,7 +84,7 @@ export default {
           disabled: true,
         },
       ],
-      descriptionPage: 'Berisi detail Intruksi Khusus Pimpinan.',
+      descriptionPage: 'Berisi detail Instruksi Khusus Pimpinan.',
       listDataTab: [
         {
           id: 'input-ikp',
