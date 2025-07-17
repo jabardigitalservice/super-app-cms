@@ -275,7 +275,9 @@ export default {
               ? ikpStatus.followup.icon
               : this.ikpStatus[item.id].icon,
           name:
-            this.ikpTypePage === ikpType.instruksiNonPemprov.props &&
+            (this.ikpTypePage === ikpType.instruksiNonPemprov.props ||
+              this.ikpTypePage ===
+                ikpType.instruksiKewenanganNonPemprov.props) &&
             item.id === 'coordinated'
               ? 'Sudah Dikoordinasikan'
               : ikpStatus[item.id].name,
@@ -427,7 +429,8 @@ export default {
     getStatusText(status) {
       switch (status) {
         case ikpStatus.coordinated.id:
-          return this.ikpTypePage === ikpType.instruksiNonPemprov.props
+          return this.ikpTypePage === ikpType.instruksiNonPemprov.props ||
+            this.ikpTypePage === ikpType.instruksiKewenanganNonPemprov.props
             ? 'Sudah Dikoordinasikan'
             : ikpStatus.coordinated.name
         case ikpStatus.followup.id:

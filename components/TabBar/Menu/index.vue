@@ -36,23 +36,23 @@ export default {
   name: 'TabBarMenu',
   props: {
     listTab: {
-      type: Object,
-      default: () => ({})
+      type: Array,
+      default: () => [],
     },
     idTab: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
-  data () {
+  data() {
     return {
-      selectedTabId: this.idTab
+      selectedTabId: this.idTab,
     }
   },
   methods: {
-    selectedTabHandle (dataTab) {
+    selectedTabHandle(dataTab) {
       this.selectedTabId = dataTab.id
-    }
-  }
+    },
+  },
 }
 </script>

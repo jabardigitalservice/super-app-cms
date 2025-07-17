@@ -7,6 +7,12 @@ export const state = () => ({
   dataImage: {},
   responseFile: {},
   backPage: false, // for control old query on page list
+  listTab: [
+    { id: 'complaint', name: 'Semua Aduan' },
+    { id: 'ikp', name: 'Daftar Instruksi Khusus Pimpinan' },
+  ],
+  tabSelect: '',
+  idTab: '',
 })
 
 export const actions = {
@@ -22,6 +28,9 @@ export const actions = {
       descriptionPage: dataHeader.descriptionPage,
     })
     commit('setActivePage', dataHeader.label)
+  },
+  clickTab({ state, commit }, idTab) {
+    commit('setIdTab', idTab)
   },
 }
 
@@ -42,5 +51,8 @@ export const mutations = {
   },
   setBackPage(state, backPage) {
     state.backPage = backPage
+  },
+  setIdTab(state, idTab) {
+    state.idTab = idTab
   },
 }
