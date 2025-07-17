@@ -1,18 +1,18 @@
 <template>
   <div>
     <TabBarMenu
-      :list-tab="listTab"
+      :list-tab="$store.state.listTab"
       class="mb-[18px]"
-      :id-tab="idTab"
+      :id-tab="$store.state.idTab"
       @button-tab="clickTab"
     />
     <Aduan
-      v-if="idTab === listTab[0].id"
+      v-if="$store.state.idTab === $store.state.listTab[0].id"
       :type-aduan-page="typeAduan.instruksiKewenanganNonPemprov"
-      link-page-detail="/aduan/instruksi-kewenangan-pemprov/detail"
+      link-page-detail="/aduan/instruksi-kewenangan-non-pemprov/detail"
     />
     <AduanDaftarIKP
-      v-if="idTab === listTab[1].id"
+      v-if="$store.state.idTab === $store.state.listTab[1].id"
       :ikp-type-page="ikpType.instruksiKewenanganNonPemprov.props"
       detail-page="/aduan/instruksi-kewenangan-non-pemprov/detail-ikp"
     />
@@ -40,14 +40,6 @@ export default {
       ikpType,
     }
   },
-  computed: {
-    listTab() {
-      return this.$store.state.listTab
-    },
-    idTab() {
-      return this.$store.state.idTab
-    },
-  },
   watch: {
     '$route.query': {
       deep: true,
@@ -61,7 +53,9 @@ export default {
     },
   },
   created() {
-    this.$store.commit('setIdTab', this.listTab[0].id)
+    if (Object.keys(this.$route.query).length === 0) {
+      this.$store.commit('setIdTab', this.$store.state.listTab[0].id)
+    }
   },
   mounted() {
     this.$store.commit('setActivePage', 'Instruksi Kewenangan Non Pemprov')
