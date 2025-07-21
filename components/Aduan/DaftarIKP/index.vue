@@ -554,8 +554,6 @@ export default {
       this.$store.commit('create-ikp/setPayload', {
         description: dataIkp.fulldata.description,
         indicator_unit: dataIkp.fulldata.indicator_unit,
-        opd_id: dataIkp.fulldata.opd_id,
-        opd_name: dataIkp.fulldata.opd_name,
         is_prov_responsibility: dataIkp.fulldata.is_prov_responsibility,
       })
       this.$store.commit(

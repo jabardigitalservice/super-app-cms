@@ -345,9 +345,11 @@ export default {
         ...this.$store.state['create-ikp'].payload,
         narrative: dataIkp.narrative,
         deadline_at: new Date(dataIkp.deadline_at) || '',
-        coverage_of_affairs: '',
-        opd_pemprov_id: '',
+        coverage_of_affairs: dataIkp.coverage_of_affairs,
+        opd_pemprov_id: dataIkp.opd_pemprov_id,
         ikp_code: dataIkp.ikp_code,
+        opd_id: dataIkp.opd_id,
+        opd_name: dataIkp.opd_name,
       }
 
       this.$store.commit('create-ikp/setPayload', newPayload)
