@@ -119,7 +119,6 @@
 
 <script>
 import debounce from 'lodash.debounce'
-// import PopupRejectRw from './Popup/RejectConfirmation.vue'
 import PopupInformation from './Popup/Information.vue'
 import popup from '~/mixins/klaim-rw'
 import { headerTableKlaimRW, userStatus } from '~/constant/klaim-rw'
@@ -132,7 +131,6 @@ import {
 export default {
   name: 'ComponentKlaimRW',
   components: {
-    // PopupRejectRw,
     PopupInformation,
   },
   mixins: [popup],
