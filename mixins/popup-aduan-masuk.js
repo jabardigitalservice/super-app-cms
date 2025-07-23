@@ -3,6 +3,7 @@ import { formatDate } from '~/utils'
 import {
   ENDPOINT_ADUAN,
   ENDPOINT_ADUAN_NON_PEMPROV,
+  ENDPOINT_IKP,
 } from '~/constant/endpoint-api'
 
 export default {
@@ -546,7 +547,11 @@ export default {
           false
         ),
       }
-      this.integrationPopupHandle(dataDialogInformation, payload, 'ikp')
+      this.integrationPopupHandle(
+        dataDialogInformation,
+        { deadline_at: payload.deadline_at },
+        'ikp'
+      )
     },
 
     setDataDialogConfirmation(title, description, subDescription, labelButton) {
@@ -589,9 +594,14 @@ export default {
       const urlApi = this.getApiEndpoint(pathApi)
 
       try {
+        if (this.typeDialog !== 'update-ikp') {
+          paramsInputRequest = {
+            ...paramsInputRequest,
+            user_id: this.$auth?.user?.identifier,
+          }
+        }
         await this.$axios.patch(urlApi, {
           ...paramsInputRequest,
-          user_id: this.$auth?.user?.identifier,
         })
 
         this.handleSuccessResponse(paramDialog)
@@ -611,7 +621,7 @@ export default {
           : ENDPOINT_ADUAN
 
       if (this.typeDialog === 'update-ikp') {
-        return `${endpointApi}/${pathApi}/${this.$store.state['popup-complaint'].idApi}`
+        return `${ENDPOINT_IKP}/${this.$store.state['popup-complaint'].idApi}`
       }
       return `${endpointApi}/${this.$store.state['popup-complaint'].idApi}/${pathApi}`
     },
@@ -747,7 +757,12 @@ export default {
       this.$store.dispatch('create-ikp/clearPayload')
       this.$store.dispatch('process-complaint/clearPayload')
       this.closePopupHandle()
-      this.$fetch()
+
+      if (this.typeDialog !== 'update-ikp') {
+        this.$fetch()
+      } else {
+        this.$store.dispatch('create-ikp/getDetailInstruction', this.idApi)
+      }
     },
   },
 }

@@ -74,6 +74,6 @@ export default {
 
 <style scoped>
 .input-wrapper--disabled {
-  @apply !bg-gray-200;
+  @apply !bg-gray-200 !text-gray-600;
 }
 </style>

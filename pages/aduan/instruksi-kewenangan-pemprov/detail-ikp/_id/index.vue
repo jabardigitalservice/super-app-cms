@@ -135,11 +135,13 @@ export default {
         opd_name: this.detailInstruction?.opd_name,
         is_prov_responsibility: this.detailInstruction.is_prov_responsibility,
       })
+
       this.$store.commit(
         'create-ikp/setInstructionNote',
         this.detailInstruction.description
       )
 
+      this.detailInstruction.ikp_code = this.detailInstruction.id
       const indicatorValue = parseInt(this.detailInstruction.indicator_value)
       this.$store.commit('create-ikp/setIndicatorValue', String(indicatorValue))
       this.showPopupUpdateInstruction(this.detailInstruction)
