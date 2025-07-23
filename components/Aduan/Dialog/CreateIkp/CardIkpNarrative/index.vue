@@ -22,7 +22,7 @@
         <button
           type="button"
           class="px-2 py-[9px] disabled:cursor-not-allowed disabled:opacity-40"
-          :disabled="nameModal"
+          :disabled="nameModal === 'update-ikp'"
           @click="showPopupEditIkpNarrative()"
         >
           <jds-icon name="pencil" size="xs" fill="#16A75C" class="mr-2" />

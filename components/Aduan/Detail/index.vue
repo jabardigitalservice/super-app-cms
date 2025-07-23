@@ -335,11 +335,10 @@ export default {
       this.listPhotoComplaint = dataDetailComplaint?.photos || []
       this.getFieldDetail()
 
-      this.$store.commit(
-        'create-instruction/dataComplaint',
-        this.detailComplaint
-      )
-      this.$store.dispatch('create-ikp/getDetailInstruction', this.ikpCode)
+      this.$store.commit('create-ikp/setDataComplaint', this.detailComplaint)
+      if (this.ikpCode) {
+        this.$store.dispatch('create-ikp/getDetailInstruction', this.ikpCode)
+      }
     } catch {
       this.detailComplaint = {}
       this.listPhotoComplaint = []

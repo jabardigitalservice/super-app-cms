@@ -15,7 +15,7 @@
       <jds-button
         v-if="showButtonChangeDetailInstruction()"
         variant="primary"
-        class="!text-[14px] !font-bold"
+        class="!text-sm !font-bold"
         @click="updateInstructionHandle()"
       >
         Ubah Detail Instruksi
@@ -31,9 +31,9 @@
         >
           <AduanDaftarIKPTableDetail
             :show-daftar-aduan="true"
-            detail-complaint-link="/aduan/instruksi-kewenangan-pemprov/detail"
+            detail-complaint-link="/aduan/instruksi-kewenangan-non-pemprov/detail"
             :detail-instruction="detailInstruction"
-            :ikp-type-page="ikpType.instruksiKewenanganPemprov.props"
+            :ikp-type-page="ikpType.instruksiKewenanganNonPemprov.props"
             :ikp-code="$route.params.id"
           />
         </BaseTabPanel>
@@ -75,16 +75,16 @@ export default {
     return {
       navigations: [
         {
-          label: 'Instruksi Kewenangan Pemprov',
-          link: '/aduan/instruksi-kewenangan-pemprov',
+          label: 'Instruksi Kewenangan Non Pemprov',
+          link: '/aduan/instruksi-kewenangan-non-pemprov',
         },
         {
           label: 'Detail Instruksi',
-          link: `/aduan/instruksi-kewenangan-pemprov/detail-ikp/${this.$route.params.id}`,
+          link: `/aduan/instruksi-kewenangan-non-pemprov/detail-ikp/${this.$route.params.id}`,
           disabled: true,
         },
       ],
-      descriptionPage: 'Berisi detail Intruksi Khusus Pimpinan.',
+      descriptionPage: 'Berisi detail Instruksi Khusus Pimpinan.',
       listDataTab: [
         {
           id: 'input-ikp',
@@ -114,9 +114,10 @@ export default {
   methods: {
     goToBackHandle() {
       this.$router.push({
-        path: '/aduan/instruksi-kewenangan-pemprov',
+        path: '/aduan/instruksi-kewenangan-non-pemprov',
         query: this.$route.query,
       })
+      this.$store.commit('setIdTab', this.$route.query.idTab)
     },
     showButtonChangeDetailInstruction() {
       const listComplaint = [
@@ -135,13 +136,11 @@ export default {
         opd_name: this.detailInstruction?.opd_name,
         is_prov_responsibility: this.detailInstruction.is_prov_responsibility,
       })
-
       this.$store.commit(
         'create-ikp/setInstructionNote',
         this.detailInstruction.description
       )
 
-      this.detailInstruction.ikp_code = this.detailInstruction.id
       const indicatorValue = parseInt(this.detailInstruction.indicator_value)
       this.$store.commit('create-ikp/setIndicatorValue', String(indicatorValue))
       this.showPopupUpdateInstruction(this.detailInstruction)

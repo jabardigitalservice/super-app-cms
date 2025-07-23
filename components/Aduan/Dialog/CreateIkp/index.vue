@@ -393,6 +393,7 @@ export default {
           indicator_value: parseInt(this.indicatorValue),
           narrative: this.ikpNarrative,
           deadline_at: formatDate(this.payload.deadline_at, 'yyyy-MM-dd'),
+          ikp_code: this.payload.ikp_code,
           description: this.instructionNote,
         }
         this.$store.commit('create-ikp/setPayload', this.payload)
