@@ -2,11 +2,14 @@
   <BaseDialogFrame :name="dialogModal?.nameModal || ''">
     <BaseDialogPanel class="w-[510px]">
       <BaseDialogHeader :title="dialogModal?.title" />
+
       <BaseDialogDescription
         :description="dialogModal?.descriptionText"
         :sub-description="detailItemModal.title"
         class="p-6"
-      />
+      >
+        <slot />
+      </BaseDialogDescription>
       <BaseDialogFooterNew
         :name="`${dialogModal?.nameModal}`"
         @cancel="$emit('cancel')"

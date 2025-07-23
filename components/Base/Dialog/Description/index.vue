@@ -3,9 +3,11 @@
     <label class="mb-1 text-sm text-gray-800">
       {{ description }}
     </label>
-    <p class="text-sm font-bold">
-      {{ subDescription }}
-    </p>
+    <slot>
+      <p class="text-sm font-bold">
+        {{ subDescription }}
+      </p>
+    </slot>
   </div>
 </template>
 

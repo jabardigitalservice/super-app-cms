@@ -60,8 +60,8 @@
           <KlaimRWTableAction
             :status="item.rwStatus"
             @detail="goToDetail(item.id)"
-            @verify="showVerifyPopupHandle(item)"
-            @reject="rejectUser(item)"
+            @verify="showPopupConfirmationRw(item, 'verify-confirmation-rw')"
+            @reject="showPopupConfirmationRw(item, 'reject-confirmation-rw')"
           />
         </template>
       </JdsDataTable>
@@ -81,18 +81,30 @@
       :show="showDocument"
       @close="showDocument = false"
     />
-    <PopupRejectRw
-      :show-popup="showRejectRw"
-      :account-name="dataUser.name"
-      :account-email="dataUser.email"
-      @close="showRejectRw = false"
-      @submit="actionRejectUser"
+
+    <DialogConfirmationBasic
+      v-if="isPopupConfirmationVerificationRw"
+      :dialog-modal="dataDialog"
+      :detail-item-modal="{ title: user.name }"
+      @confirmation-button="actionVerifyUser"
+      @cancel="onClosePopupConfirmation"
     />
-    <BasePopup
-      :show-popup="showPopupConfirmationInformation"
-      @submit="actionVerifyUser"
-      @close="onClosePopupInfo"
-    />
+    <DialogConfirmationBasic
+      v-if="isPopupConfirmationRejectionRw"
+      :dialog-modal="dataDialog"
+      @confirmation-button="actionRejectUser"
+      @cancel="onClosePopupConfirmation"
+    >
+      <div class="font-lato text-[16px] text-gray-800">
+        <strong>{{ user.name }}</strong>
+      </div>
+      <div class="mt-[22px]">
+        <label class="font-lato text-[14px]">Alamat Email</label>
+        <div class="font-lato text-[16px] text-gray-800">
+          <strong>{{ user.email }}</strong>
+        </div>
+      </div>
+    </DialogConfirmationBasic>
     <PopupInformation
       :show-popup="informationDialog.show"
       :title="informationDialog.title"
@@ -101,12 +113,12 @@
       :message="informationDialog.message"
       @close="onClosePopupInfo"
     />
+    <DialogLoading :show-popup="isLoading" />
   </div>
 </template>
 
 <script>
 import debounce from 'lodash.debounce'
-import PopupRejectRw from './Popup/RejectConfirmation.vue'
 import PopupInformation from './Popup/Information.vue'
 import popup from '~/mixins/klaim-rw'
 import { headerTableKlaimRW, userStatus } from '~/constant/klaim-rw'
@@ -119,7 +131,6 @@ import {
 export default {
   name: 'ComponentKlaimRW',
   components: {
-    PopupRejectRw,
     PopupInformation,
   },
   mixins: [popup],
