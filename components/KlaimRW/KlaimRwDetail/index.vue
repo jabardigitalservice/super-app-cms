@@ -16,17 +16,17 @@
         <BaseButton
           v-show="detail.rwStatus == userStatus.waiting"
           class="mr-[12px] w-fit border border-red-400 text-red-400 hover:bg-red-50"
-          @click="confirmationDialog.showReject = true"
+          @click="showPopupConfirmationRw(detail, 'reject-confirmation-rw')"
         >
           Tolak Akun RW Ini
         </BaseButton>
         <BaseButton
           v-show="
             detail.rwStatus == userStatus.waiting ||
-              detail.rwStatus == userStatus.rejected
+            detail.rwStatus == userStatus.rejected
           "
           class="w-fit bg-green-700 text-white hover:bg-green-600"
-          @click="showVerifyPopupHandle(detail)"
+          @click="showPopupConfirmationRw(detail, 'verify-confirmation-rw')"
         >
           Verifikasi Akun RW Ini
         </BaseButton>
@@ -51,25 +51,25 @@
                   <strong>Nama</strong>
                 </td>
                 <td colspan="2">
-                  {{ detail?.name || "-" }}
+                  {{ detail?.name || '-' }}
                 </td>
               </tr>
               <tr>
                 <td><strong>Email</strong></td>
                 <td colspan="2">
-                  {{ detail?.email || "-" }}
+                  {{ detail?.email || '-' }}
                 </td>
               </tr>
               <tr>
                 <td><strong>No.Tlp</strong></td>
                 <td colspan="2">
-                  {{ detail?.phone || "-" }}
+                  {{ detail?.phone || '-' }}
                 </td>
               </tr>
               <tr>
                 <td><strong>Tanggal Registrasi</strong></td>
                 <td colspan="2">
-                  {{ detail?.date || "-" }}
+                  {{ detail?.date || '-' }}
                 </td>
               </tr>
               <tr>
@@ -87,7 +87,7 @@
                         'bg-red-600': detail.rwStatus == userStatus.rejected,
                       }"
                     />
-                    {{ detail.rwStatus || "-" }}
+                    {{ detail.rwStatus || '-' }}
                   </div>
                 </td>
                 <td>
@@ -106,7 +106,7 @@
             <DetailTableComponent header="Dokumen SK RW">
               <tr>
                 <td class="w-[376px]">
-                  <strong>{{ detail.fileName || "-" }}</strong>
+                  <strong>{{ detail.fileName || '-' }}</strong>
                 </td>
                 <td>
                   <BaseButton
@@ -131,27 +131,27 @@
                 <td class="w-[164px]">
                   <strong>Kota/kabupaten</strong>
                 </td>
-                <td>{{ detail?.dataKtp?.city || "-" }}</td>
+                <td>{{ detail?.dataKtp?.city || '-' }}</td>
               </tr>
               <tr>
                 <td><strong>Kecamatan</strong></td>
-                <td>{{ detail?.dataKtp?.district || "-" }}</td>
+                <td>{{ detail?.dataKtp?.district || '-' }}</td>
               </tr>
               <tr>
                 <td><strong>Kelurahan/Desa</strong></td>
-                <td>{{ detail?.dataKtp?.village || "-" }}</td>
+                <td>{{ detail?.dataKtp?.village || '-' }}</td>
               </tr>
               <tr>
                 <td><strong>Dusun</strong></td>
-                <td>{{ detail?.dataKtp?.subVillage || "-" }}</td>
+                <td>{{ detail?.dataKtp?.subVillage || '-' }}</td>
               </tr>
               <tr>
                 <td><strong>RT/RW</strong></td>
-                <td>{{ detail?.dataKtp?.rtRw || "-" }}</td>
+                <td>{{ detail?.dataKtp?.rtRw || '-' }}</td>
               </tr>
               <tr>
                 <td><strong>Alamat Lengkap</strong></td>
-                <td>{{ detail?.dataKtp?.address || "-" }}</td>
+                <td>{{ detail?.dataKtp?.address || '-' }}</td>
               </tr>
             </DetailTableComponent>
           </div>
@@ -161,27 +161,27 @@
                 <td class="w-[164px]">
                   <strong>Kota/kabupaten</strong>
                 </td>
-                <td>{{ detail?.cty?.name || "-" }}</td>
+                <td>{{ detail?.cty?.name || '-' }}</td>
               </tr>
               <tr>
                 <td><strong>Kecamatan</strong></td>
-                <td>{{ detail?.district?.name || "-" }}</td>
+                <td>{{ detail?.district?.name || '-' }}</td>
               </tr>
               <tr>
                 <td><strong>Kelurahan/Desa</strong></td>
-                <td>{{ detail?.village?.name || "-" }}</td>
+                <td>{{ detail?.village?.name || '-' }}</td>
               </tr>
               <tr>
                 <td><strong>Dusun</strong></td>
-                <td>{{ detail?.subVillage || "-" }}</td>
+                <td>{{ detail?.subVillage || '-' }}</td>
               </tr>
               <tr>
                 <td><strong>RT/RW</strong></td>
-                <td>{{ detail?.rtRw || "-" }}</td>
+                <td>{{ detail?.rtRw || '-' }}</td>
               </tr>
               <tr>
                 <td><strong>Alamat Lengkap</strong></td>
-                <td>{{ detail?.address || "-" }}</td>
+                <td>{{ detail?.address || '-' }}</td>
               </tr>
             </DetailTableComponent>
           </div>
@@ -202,18 +202,29 @@
       @close="confirmationDialog.showEditStatus = false"
       @submit="actionEditStatusHandle"
     />
-    <RejectConfirmation
-      :show-popup="confirmationDialog.showReject"
-      :account-name="detail?.name || '-'"
-      :account-email="detail?.email || '-'"
-      @submit="actionRejectUser"
-      @close="confirmationDialog.showReject = false"
+    <DialogConfirmationBasic
+      v-if="isPopupConfirmationVerificationRw"
+      :dialog-modal="dataDialog"
+      :detail-item-modal="{ title: user.name }"
+      @confirmation-button="actionVerifyUser"
+      @cancel="onClosePopupConfirmation"
     />
-    <BasePopup
-      :show-popup="showPopupConfirmationInformation"
-      @submit="actionVerifyUser"
-      @close="onClosePopupInfo"
-    />
+    <DialogConfirmationBasic
+      v-if="isPopupConfirmationRejectionRw"
+      :dialog-modal="dataDialog"
+      @confirmation-button="actionRejectUser"
+      @cancel="onClosePopupConfirmation"
+    >
+      <div class="font-lato text-[16px] text-gray-800">
+        <strong>{{ user.name }}</strong>
+      </div>
+      <div class="mt-[22px]">
+        <label class="font-lato text-[14px]">Alamat Email</label>
+        <div class="font-lato text-[16px] text-gray-800">
+          <strong>{{ user.email }}</strong>
+        </div>
+      </div>
+    </DialogConfirmationBasic>
     <InformationPopup
       :show-popup="informationDialog.show"
       :account-name="detail?.name || '-'"
@@ -232,28 +243,24 @@
       @preview-file="previewFile"
     >
       <template #header>
-        <p class="font-lato text-[14px] text-gray-800">
-          Nama
-        </p>
+        <p class="font-lato text-[14px] text-gray-800">Nama</p>
         <div class="font-lato text-[16px] text-gray-800">
           <strong>{{ detail?.name }}</strong>
         </div>
 
         <div class="mt-[22px]">
-          <p class="font-lato text-[14px] text-gray-800">
-            Upload Dokumen SK
-          </p>
+          <p class="font-lato text-[14px] text-gray-800">Upload Dokumen SK</p>
           <div class="font-lato text-[13px] text-gray-600">
             Tipe File PDF/JPG/JPEG/PNG dengan maksimal ukuran file 2 MB
           </div>
         </div>
       </template>
     </BaseDialogDragAndDropFile>
+    <DialogLoading :show-popup="isLoading" />
   </div>
 </template>
 
 <script>
-import RejectConfirmation from '~/components/KlaimRW/Popup/RejectConfirmation.vue'
 import InformationPopup from '~/components/KlaimRW/Popup/Information.vue'
 import EditStatusPopup from '~/components/KlaimRW/Popup/EditStatus.vue'
 import ArrowLeft from '~/assets/icon/arrow-left.svg?inline'
@@ -267,24 +274,23 @@ export default {
   components: {
     ArrowLeft,
     DetailTableComponent,
-    RejectConfirmation,
     InformationPopup,
-    EditStatusPopup
+    EditStatusPopup,
   },
   mixins: [popup],
-  data () {
+  data() {
     return {
       confirmationDialog: {
         showReject: false,
-        showEditStatus: false
+        showEditStatus: false,
       },
       documentDialog: {
         showDialog: false,
         fileId: '',
-        mimeType: ''
+        mimeType: '',
       },
       documentEdit: {
-        showDialog: false
+        showDialog: false,
       },
       DragAndDropComponentInformation: {
         titleModal: 'Edit Dokumen SK',
@@ -294,27 +300,27 @@ export default {
           'Hanya file yang berformat PDF/JPG/JPEG/PNG yang dapat diupload.',
         infromationSuccess: {
           info: 'Edit Dokumen SK RW telah berhasil dilakukan.',
-          message: 'Silahkan cek kembali Dokumen SK yang diganti.'
+          message: 'Silahkan cek kembali Dokumen SK yang diganti.',
         },
         informationError: {
           info: 'Gagal Edit Dokumen SK',
-          message: ''
+          message: '',
         },
         formatTypeFile: [
           'image/jpeg',
           'image/png',
           'image/jpg',
-          'application/pdf'
+          'application/pdf',
         ],
         maxSizeFile: 2097152,
-        acceptFile: '.pdf,.jpg,.jpeg,.png'
+        acceptFile: '.pdf,.jpg,.jpeg,.png',
       },
 
       detail: {},
-      userStatus
+      userStatus,
     }
   },
-  async fetch () {
+  async fetch() {
     try {
       const detailAccount = await this.$axios.get(
         `/user/rw/${this.$route.params.id}`
@@ -328,16 +334,16 @@ export default {
     }
   },
   methods: {
-    goBackHandle () {
+    goBackHandle() {
       this.$router.push({
         path: '/',
-        query: this.$route.query
+        query: this.$route.query,
       })
     },
-    rejectConfirmationHandle () {
+    rejectConfirmationHandle() {
       this.confirmationDialog.showReject = true
     },
-    actionEditStatusHandle (value) {
+    actionEditStatusHandle(value) {
       this.confirmationDialog.showEditStatus = false
       this.user.id = this.detail.id
       if (value === userStatus.rejected) {
@@ -346,7 +352,7 @@ export default {
         this.actionVerifyUser()
       }
     },
-    async documentHandle () {
+    async documentHandle() {
       this.documentDialog.showDialog = true
       this.documentDialog.fileId = 'loading'
       try {
@@ -361,7 +367,7 @@ export default {
         this.documentDialog.fileId = ''
       }
     },
-    informationEditSk (information) {
+    informationEditSk(information) {
       this.documentEdit.showDialog = false
       this.informationDialog.title = 'Edit Dokumen SK RW'
       this.informationDialog.showDialog = true
@@ -370,25 +376,25 @@ export default {
       this.informationDialog.message = information.message
       this.$fetch()
     },
-    closeInformationDialogHandle () {
+    closeInformationDialogHandle() {
       this.informationDialog.show = false
       this.documentDialog.fileId = ''
       this.documentDialog.mimeType = ''
       this.$fetch()
     },
-    editDocumentHandle () {
+    editDocumentHandle() {
       this.documentEdit.showDialog = true
     },
-    previewFile () {
+    previewFile() {
       this.documentDialog.showDialog = true
       this.documentDialog.fileId = 'loading'
       this.documentDialog.fileId = this.$store.state.dataImage.data
       this.documentDialog.mimeType = this.$store.state.dataImage.mimeType
     },
-    closeEditDialogHandle () {
+    closeEditDialogHandle() {
       this.documentEdit.showDialog = false
-    }
-  }
+    },
+  },
 }
 </script>
 

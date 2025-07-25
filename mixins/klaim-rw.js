@@ -56,13 +56,6 @@ export default {
       this.user = { id, name, email }
       this.$store.commit('modals/OPEN', this.dataDialog.nameModal)
     },
-    rejectUser(dataRw) {
-      const { id, name, email } = dataRw
-      this.user.id = id || ''
-      this.user.name = name || ''
-      this.user.email = email || ''
-      this.showRejectRw = true
-    },
     async actionRejectUser() {
       this.isPopupConfirmationRejectionRw = false
       this.$store.commit('modals/CLOSEALL')
