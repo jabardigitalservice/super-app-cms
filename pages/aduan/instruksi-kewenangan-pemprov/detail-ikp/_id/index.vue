@@ -48,7 +48,7 @@
       :data-dialog="dataDialog"
       :show-popup="isShowPopupInformation"
       :icon-popup="iconPopup"
-      @close="closePopupInformationHandle()"
+      @close="closePopupInformationPageDetailInstruction()"
       @submit="submitRetryHandle"
     />
     <DialogLoading :show-popup="isLoading" />

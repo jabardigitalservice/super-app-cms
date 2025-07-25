@@ -757,12 +757,12 @@ export default {
       this.$store.dispatch('create-ikp/clearPayload')
       this.$store.dispatch('process-complaint/clearPayload')
       this.closePopupHandle()
-
-      if (this.typeDialog !== 'update-ikp') {
-        this.$fetch()
-      } else {
-        this.$store.dispatch('create-ikp/getDetailInstruction', this.idApi)
-      }
+      this.$fetch()
+    },
+    closePopupInformationPageDetailInstruction() {
+      // close popup information from page detail instruction
+      this.closePopupHandle()
+      this.$store.dispatch('create-ikp/getDetailInstruction', this.idApi)
     },
   },
 }

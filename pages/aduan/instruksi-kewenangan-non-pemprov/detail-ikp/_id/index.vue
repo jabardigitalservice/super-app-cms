@@ -48,7 +48,7 @@
       :data-dialog="dataDialog"
       :show-popup="isShowPopupInformation"
       :icon-popup="iconPopup"
-      @close="closePopupInformationHandle()"
+      @close="closePopupInformationPageDetailInstruction()"
       @submit="submitRetryHandle"
     />
     <DialogLoading :show-popup="isLoading" />
@@ -136,11 +136,12 @@ export default {
         opd_name: this.detailInstruction?.opd_name,
         is_prov_responsibility: this.detailInstruction.is_prov_responsibility,
       })
+
+      this.detailInstruction.ikp_code = this.detailInstruction.id
       this.$store.commit(
         'create-ikp/setInstructionNote',
         this.detailInstruction.description
       )
-
       const indicatorValue = parseInt(this.detailInstruction.indicator_value)
       this.$store.commit('create-ikp/setIndicatorValue', String(indicatorValue))
       this.showPopupUpdateInstruction(this.detailInstruction)
