@@ -121,6 +121,8 @@ export const actions = {
       coverage_of_affairs: '',
       opd_pemprov_id: '',
     })
+    commit('setInstructionNote', '')
+    commit('setIndicatorValue', '')
   },
 }
 
