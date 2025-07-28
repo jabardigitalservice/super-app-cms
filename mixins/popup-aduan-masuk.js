@@ -762,6 +762,7 @@ export default {
     closePopupInformationPageDetailInstruction() {
       // close popup information from page detail instruction
       this.closePopupHandle()
+      this.$store.dispatch('create-ikp/clearPayload')
       this.$store.dispatch('create-ikp/getDetailInstruction', this.idApi)
     },
   },
