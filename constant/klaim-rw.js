@@ -31,9 +31,47 @@ export const headerTableKlaimRW = [
   },
 ]
 
+export const headerTableKlaimLurah = [...headerTableKlaimRW]
+headerTableKlaimLurah.splice(
+  1,
+  2,
+  { key: 'address', text: 'Alamat Lurah', sortable: false },
+  {
+    key: 'document',
+    text: 'Dokumen SK Lurah',
+    sortable: false,
+  }
+)
+
 export const verifyConfirmationPopup = {
-  title: 'Verifikasi Akun RW',
-  descriptionText: 'Apakah Anda yakin ingin memverifikasi akun RW ini?',
+  klaimRw: {
+    title: 'Verifikasi Akun RW',
+    descriptionText: 'Apakah Anda yakin ingin memverifikasi akun RW ini?',
+  },
+  klaimLurah: {
+    title: 'Verifikasi Akun Lurah',
+    descriptionText: 'Apakah Anda yakin ingin memverifikasi akun Lurah ini?',
+  },
+  dialogType: 'confirmation',
+  buttonCancel: {
+    label: 'Batal',
+    variant: 'secondary',
+  },
+  buttonSubmit: {
+    label: 'Ya, verifikasi akun RW ini',
+    variant: 'primary',
+  },
+}
+
+export const rejectionConfirmationPopup = {
+  klaimRw: {
+    title: 'Verifikasi Akun RW',
+    descriptionText: 'Apakah Anda yakin ingin memverifikasi akun RW ini?',
+  },
+  klaimLurah: {
+    title: 'Verifikasi Akun Lurah',
+    descriptionText: 'Apakah Anda yakin ingin memverifikasi akun Lurah ini?',
+  },
   dialogType: 'confirmation',
   buttonCancel: {
     label: 'Batal',
@@ -46,28 +84,66 @@ export const verifyConfirmationPopup = {
 }
 
 export const verificationInformationPopup = {
-  title: 'Verifikasi Akun RW',
-  successInformation: {
-    info: 'Verifikasi akun RW telah berhasil dilakukan.',
-    message:
-      'Email terkait informasi verifikasi telah dikirimkan ke email akun RW bersangkutan.',
+  klaimRw: {
+    title: 'Verifikasi Akun RW',
+    successInformation: {
+      info: 'Verifikasi akun RW telah berhasil dilakukan.',
+      message:
+        'Email terkait informasi verifikasi telah dikirimkan ke email akun RW bersangkutan.',
+    },
+    failedInformation: {
+      info: 'Verifikasi akun RW gagal dilakukan.',
+      message: '',
+    },
   },
-  failedInformation: {
-    info: 'Verifikasi akun RW gagal dilakukan.',
-    message: '',
+  klaimLurah: {
+    title: 'Verifikasi Akun Lurah',
+    successInformation: {
+      info: 'Verifikasi akun Lurah telah berhasil dilakukan.',
+      message:
+        'Email terkait informasi verifikasi telah dikirimkan ke email akun Lurah bersangkutan.',
+    },
+    failedInformation: {
+      info: 'Verifikasi akun Lurah gagal dilakukan.',
+      message: '',
+    },
   },
+  // title: 'Verifikasi Akun RW',
+  // successInformation: {
+  //   info: 'Verifikasi akun RW telah berhasil dilakukan.',
+  //   message:
+  //     'Email terkait informasi verifikasi telah dikirimkan ke email akun RW bersangkutan.',
+  // },
+  // failedInformation: {
+  //   info: 'Verifikasi akun RW gagal dilakukan.',
+  //   message: '',
+  // },
 }
 
 export const rejectInformationPopup = {
-  title: 'Penolakan Akun RW',
-  successInformation: {
-    info: 'Penolakan akun RW telah berhasil dilakukan.',
-    message:
-      'Email terkait informasi penolakan telah dikirimkan ke email akun RW bersangkutan',
+  klaimRw: {
+    title: 'Penolakan Akun RW',
+    successInformation: {
+      info: 'Penolakan akun RW telah berhasil dilakukan.',
+      message:
+        'Email terkait informasi penolakan telah dikirimkan ke email akun RW bersangkutan',
+    },
+    failedInformation: {
+      info: 'Penolakan akun RW gagal dilakukan',
+      message: '',
+    },
   },
-  failedInformation: {
-    info: 'Penolakan akun RW gagal dilakukan',
-    message: '',
+  klaimLurah: {
+    title: 'Penolakan Akun Lurah',
+    successInformation: {
+      info: 'Penolakan akun Lurah telah berhasil dilakukan.',
+      message:
+        'Email terkait informasi penolakan telah dikirimkan ke email akun Lurah bersangkutan',
+    },
+    failedInformation: {
+      info: 'Penolakan akun Lurah gagal dilakukan',
+      message: '',
+    },
   },
 }
 
@@ -75,4 +151,25 @@ export const userStatus = {
   waiting: 'Menunggu Verifikasi',
   verified: 'Terverifikasi',
   rejected: 'Ditolak',
+}
+
+export const typeClaim = {
+  klaimRw: {
+    props: 'klaim-rw',
+    label: 'Klaim Akun RW',
+    link: '/',
+    id: 'klaimRw',
+  },
+  klaimLurah: {
+    props: 'klaim-lurah',
+    label: 'Klaim Akun Lurah',
+    link: '/klaim/lurah',
+    id: 'klaimLurah',
+  },
+  klaimKepalaDesa: {
+    props: 'klaim-kepala-desa',
+    label: 'Klaim Akun Kepala Lurah',
+    link: '/klaim/kepala-desa',
+    id: 'klaimKepalaDesa',
+  },
 }

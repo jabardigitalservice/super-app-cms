@@ -28,6 +28,28 @@ const rwMenu = {
   ],
 }
 
+const lurahMenu = {
+  titleMenu: 'Lurah',
+  showTitleMenuForRoles: ['admin'],
+  unleashVariable: 'SAPAWARGA-CMS__LURAH',
+  menu: [
+    {
+      name: 'Klaim Akun Lurah',
+      path: '/klaim/lurah',
+      arrow: false,
+      showMenuAndAccessForRoles: ['admin'],
+      icon: 'item.svg',
+      unleashVariable: 'SAPAWARGA-CMS__LURAH--KLAIM-LURAH',
+    },
+  ],
+  childRoute: [
+    {
+      path: '/detail',
+      accessChildRouteForRoles: ['admin'],
+    },
+  ],
+}
+
 const messageNotifMenu = {
   titleMenu: 'pesan dan notif',
   showTitleMenuForRoles: ['admin'],
@@ -256,6 +278,7 @@ const sriBadugaMenu = {
 
 export const menu = [
   rwMenu,
+  lurahMenu,
   messageNotifMenu,
   tiketMuseumMenu,
   masterDataMenu,

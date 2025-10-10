@@ -26,6 +26,7 @@ export default {
   },
   mixins: [dialog],
   methods: {
+    checkTypeClaimPopupConfirmation(typeClaim) {},
     showPopupConfirmationRw(dataRw, typeDialog) {
       const { id, name, email } = dataRw
       this.dataDialog = {
