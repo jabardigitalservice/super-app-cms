@@ -13,8 +13,8 @@
     </div>
     <div class="overflow-x-auto rounded-lg font-roboto">
       <JdsDataTable
-        :headers="headerTableKlaimRW"
-        :items="dataRW"
+        :headers="checkTypeHeaderClaim(typeClaimPage.props)"
+        :items="dataClaim"
         :pagination="pagination"
         :loading="$fetchState.pending"
         @next-page="pageChange"
@@ -121,7 +121,17 @@
 import debounce from 'lodash.debounce'
 import PopupInformation from './Popup/Information.vue'
 import popup from '~/mixins/klaim-rw'
-import { headerTableKlaimRW, userStatus } from '~/constant/klaim-rw'
+import {
+  headerTableKlaimRW,
+  headerTableKlaimLurah,
+  userStatus,
+  typeClaim,
+} from '~/constant/klaim-rw'
+import {
+  ENDPOINT_RW,
+  ENDPOINT_LURAH,
+  ENDPOINT_KEPALA_DESA,
+} from '~/constant/endpoint-api'
 import {
   generateItemsPerPageOptions,
   formatDate,
@@ -134,6 +144,12 @@ export default {
     PopupInformation,
   },
   mixins: [popup],
+  props: {
+    typeClaimPage: {
+      type: Object,
+      default: () => ({}),
+    },
+  },
   data() {
     return {
       search: '',
@@ -155,6 +171,7 @@ export default {
         sortBy: 'date',
       },
       headerTableKlaimRW,
+      headerTableKlaimLurah,
       userStatus,
       showDetailAddress: false,
       showDocument: false,
@@ -168,12 +185,14 @@ export default {
   },
   async fetch() {
     try {
-      const response = await this.$axios.get('/user/rw', {
+      const urlApi = this.checkUrlApi()
+      const response = await this.$axios.get(urlApi, {
         params: this.query,
       })
 
       const { data } = response.data
       this.data = data?.data || []
+
       if (this.data.length) {
         this.pagination.disabled = false
       } else {
@@ -183,11 +202,37 @@ export default {
       this.pagination.totalRows = data?.totalData || 0
       this.pagination.itemsPerPage = data?.pageSize || this.query.pageSize
     } catch (error) {
+      this.data = [
+        {
+          id: '53eec3fc-f5ae-4c00-8ac7-8fe6ba623c96',
+          email: 'kmkranchbandung@gmail.com',
+          name: 'CHIVAS ',
+          rwStatus: 'Ditolak',
+          rwDecree: '41418e5b-61f4-438a-b64e-7183d3ad0def',
+          createdAt: '2025-07-08T11:06:57Z',
+        },
+        {
+          id: 'e888b236-0013-435d-983b-0a425cf55f79',
+          email: 'tromolmio@yopmail.com',
+          name: 'Tromol MIO ',
+          rwStatus: 'Terverifikasi',
+          rwDecree: '25db2128-941d-489f-a533-b5b45d1ff52a',
+          createdAt: '2023-05-24T10:06:15Z',
+        },
+        {
+          id: 'eb8f7e85-9e05-44db-bee2-c2e0e4ce0971',
+          email: 'rungkad002@yopmail.com',
+          name: 'Eman si pasi',
+          rwStatus: 'Terverifikasi',
+          rwDecree: '6a937780-866f-4525-9317-56589e681acb',
+          createdAt: '2023-03-30T07:33:06Z',
+        },
+      ]
       this.pagination.disabled = true
     }
   },
   computed: {
-    dataRW() {
+    dataClaim() {
       return this.data.map((item) => {
         return {
           ...item,
@@ -223,6 +268,28 @@ export default {
     )
   },
   methods: {
+    checkUrlApi() {
+      switch (this.typeClaimPage.props) {
+        case typeClaim.klaimLurah.props:
+          return ENDPOINT_LURAH
+        case typeClaim.klaimKepalaDesa.props:
+          return ENDPOINT_KEPALA_DESA
+        default:
+          return ENDPOINT_RW
+      }
+    },
+    checkTypeHeaderClaim(props) {
+      switch (props) {
+        case typeClaim.klaimRw.props:
+          console.log(this.headerTableKlaimRW)
+          return this.headerTableKlaimRW
+        case typeClaim.klaimLurah.props:
+          console.log(this.headerTableKlaimLurah)
+          return this.headerTableKlaimLurah
+        default:
+          return {}
+      }
+    },
     searchTitle: debounce(function (value) {
       if (value.length > 2) {
         this.query.page = 1
