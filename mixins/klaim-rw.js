@@ -5,7 +5,6 @@ import {
   rejectInformationPopup,
   typeClaim,
 } from '~/constant/klaim-rw'
-// import { verificationConfirmationPopup } from '~/constant/manajemen-release'
 import dialog from '~/mixins/dialog'
 
 export default {
