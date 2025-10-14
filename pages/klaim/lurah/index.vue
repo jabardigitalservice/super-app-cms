@@ -9,7 +9,7 @@
 import { typeClaim } from '~/constant/klaim-rw'
 
 export default {
-  name: 'PageAduanMasuk',
+  name: 'PageKlaimLurah',
   layout: 'Dashboard',
   data() {
     return {
