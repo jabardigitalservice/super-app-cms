@@ -47,39 +47,47 @@ export const verifyConfirmationPopup = {
   klaimRw: {
     title: 'Verifikasi Akun RW',
     descriptionText: 'Apakah Anda yakin ingin memverifikasi akun RW ini?',
+    buttonSubmit: {
+      label: 'Ya, verifikasi akun RW ini',
+      variant: 'primary',
+    },
   },
   klaimLurah: {
     title: 'Verifikasi Akun Lurah',
     descriptionText: 'Apakah Anda yakin ingin memverifikasi akun Lurah ini?',
+    buttonSubmit: {
+      label: 'Ya, verifikasi akun Lurah ini',
+      variant: 'primary',
+    },
   },
   dialogType: 'confirmation',
   buttonCancel: {
     label: 'Batal',
     variant: 'secondary',
-  },
-  buttonSubmit: {
-    label: 'Ya, verifikasi akun RW ini',
-    variant: 'primary',
   },
 }
 
 export const rejectionConfirmationPopup = {
   klaimRw: {
-    title: 'Verifikasi Akun RW',
-    descriptionText: 'Apakah Anda yakin ingin memverifikasi akun RW ini?',
+    title: 'Tolak Akun RW',
+    descriptionText: 'Apakah Anda yakin ingin menolak akun RW ini?',
+    buttonSubmit: {
+      label: 'Tolak akun RW ini',
+      variant: 'danger',
+    },
   },
   klaimLurah: {
-    title: 'Verifikasi Akun Lurah',
-    descriptionText: 'Apakah Anda yakin ingin memverifikasi akun Lurah ini?',
+    title: 'Tolak Akun Lurah',
+    descriptionText: 'Apakah Anda yakin ingin menolak akun Lurah ini?',
+    buttonSubmit: {
+      label: 'Tolak akun Lurah ini',
+      variant: 'dsnger',
+    },
   },
   dialogType: 'confirmation',
   buttonCancel: {
     label: 'Batal',
     variant: 'secondary',
-  },
-  buttonSubmit: {
-    label: 'Ya, verifikasi akun RW ini',
-    variant: 'primary',
   },
 }
 

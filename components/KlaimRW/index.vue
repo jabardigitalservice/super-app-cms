@@ -60,8 +60,12 @@
           <KlaimRWTableAction
             :status="item.rwStatus"
             @detail="goToDetail(item.id)"
-            @verify="showPopupConfirmationRw(item, 'verify-confirmation-rw')"
-            @reject="showPopupConfirmationRw(item, 'reject-confirmation-rw')"
+            @verify="
+              showPopupConfirmation(item, 'verify-confirmation', typeClaimPage)
+            "
+            @reject="
+              showPopupConfirmation(item, 'reject-confirmation', typeClaimPage)
+            "
           />
         </template>
       </JdsDataTable>
@@ -148,6 +152,10 @@ export default {
     typeClaimPage: {
       type: Object,
       default: () => ({}),
+    },
+    linkPageDetail: {
+      type: String,
+      default: '',
     },
   },
   data() {
@@ -367,7 +375,7 @@ export default {
     },
     goToDetail(id) {
       this.$router.push({
-        path: `/detail/${id}`,
+        path: `${this.linkPageDetail}/${id}`,
         query: this.query,
       })
     },

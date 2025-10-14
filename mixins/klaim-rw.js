@@ -1,8 +1,11 @@
 import {
   verifyConfirmationPopup,
+  rejectionConfirmationPopup,
   verificationInformationPopup,
   rejectInformationPopup,
+  typeClaim,
 } from '~/constant/klaim-rw'
+// import { verificationConfirmationPopup } from '~/constant/manajemen-release'
 import dialog from '~/mixins/dialog'
 
 export default {
@@ -26,32 +29,52 @@ export default {
   },
   mixins: [dialog],
   methods: {
-    checkTypeClaimPopupConfirmation(typeClaim) {},
-    showPopupConfirmationRw(dataRw, typeDialog) {
-      const { id, name, email } = dataRw
+    checkTypeClaimPopupConfirmation(typeClaimPage, typeDialog) {
+      const dataPopup = {
+        verifyConfirmationPopup,
+        rejectionConfirmationPopup,
+      }
+
+      const keyObject =
+        typeDialog === 'reject-confirmation'
+          ? 'rejectionConfirmationPopup'
+          : 'verifyConfirmationPopup'
+      const dataDialog = {
+        dialogType: dataPopup[keyObject].dialogType,
+        buttonCancel: dataPopup[keyObject].buttonCancel,
+        buttonSubmit: dataPopup[keyObject].klaimRw.buttonSubmit,
+        title: dataPopup[keyObject].klaimRw.title,
+        descriptionText: dataPopup[keyObject].klaimRw.descriptionText,
+      }
+
+      switch (typeClaimPage.props) {
+        case typeClaim.klaimLurah.props:
+          return {
+            ...dataDialog,
+            title: dataPopup[keyObject].klaimLurah.title,
+            descriptionText: dataPopup[keyObject].klaimLurah.descriptionText,
+            buttonSubmit: dataPopup[keyObject].klaimLurah.buttonSubmit,
+          }
+        default:
+          return dataDialog
+      }
+    },
+    showPopupConfirmation(dataUser, typeDialog, props) {
+      const { id, name, email } = dataUser
+      this.dataDialog = this.checkTypeClaimPopupConfirmation(props, typeDialog)
       this.dataDialog = {
+        ...this.dataDialog,
         nameModal: typeDialog,
-        title: 'Tolak Akun RW',
-        descriptionText: 'Apakah Anda yakin ingin menolak akun RW ini?',
         button: {
-          label: 'Tolak Akun RW ini',
-          variant: 'danger',
+          label: this.dataDialog.buttonSubmit.label,
+          variant: this.dataDialog.buttonSubmit.variant,
         },
       }
 
-      if (typeDialog === 'verify-confirmation-rw') {
-        this.dataDialog = {
-          ...this.dataDialog,
-          title: verifyConfirmationPopup.title,
-          descriptionText: verifyConfirmationPopup.descriptionText,
-          button: {
-            label: verifyConfirmationPopup.buttonSubmit.label,
-            variant: verifyConfirmationPopup.buttonSubmit.variant,
-          },
-        }
-        this.isPopupConfirmationVerificationRw = true
-      } else {
+      if (typeDialog === 'reject-confirmation') {
         this.isPopupConfirmationRejectionRw = true
+      } else {
+        this.isPopupConfirmationVerificationRw = true
       }
 
       this.user = { id, name, email }
