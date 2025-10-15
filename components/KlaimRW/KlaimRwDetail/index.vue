@@ -12,24 +12,23 @@
           </div>
         </template>
       </BaseButton>
+
       <div class="flex">
-        <BaseButton
-          v-show="detail.rwStatus == userStatus.waiting"
-          class="mr-[12px] w-fit border border-red-400 text-red-400 hover:bg-red-50"
-          @click="showPopupConfirmationRw(detail, 'reject-confirmation-rw')"
+        <div
+          v-for="(button, index) in listButton"
+          v-show="showButtonDetail(button)"
+          :key="index"
         >
-          Tolak Akun RW Ini
-        </BaseButton>
-        <BaseButton
-          v-show="
-            detail.rwStatus == userStatus.waiting ||
-            detail.rwStatus == userStatus.rejected
-          "
-          class="w-fit bg-green-700 text-white hover:bg-green-600"
-          @click="showPopupConfirmationRw(detail, 'verify-confirmation-rw')"
-        >
-          Verifikasi Akun RW Ini
-        </BaseButton>
+          <div :class="{ 'mr-3': listButton.length > 1 }">
+            <jds-button
+              :label="button?.label"
+              :variant="button?.variant"
+              class="!text-[14px] !font-bold"
+              :class="button?.classButton"
+              @click="clickButtonConfirmationHandle(button.idButton)"
+            />
+          </div>
+        </div>
       </div>
     </div>
     <div
@@ -41,7 +40,7 @@
         <h1
           class="mb-[16px] font-roboto text-[16px] font-bold text-blue-gray-800"
         >
-          Detail Akun RW
+          {{ `Detail Akun ${getHeadeTitleByTypeClaim()}` }}
         </h1>
         <div class="table-content">
           <div class="mb-[16px] font-lato">
@@ -103,7 +102,9 @@
             </DetailTableComponent>
           </div>
           <div class="mb-[16px]">
-            <DetailTableComponent header="Dokumen SK RW">
+            <DetailTableComponent
+              :header="`Dokumen SK ${getHeadeTitleByTypeClaim()}`"
+            >
               <tr>
                 <td class="w-[376px]">
                   <strong>{{ detail.fileName || '-' }}</strong>
@@ -266,7 +267,7 @@ import EditStatusPopup from '~/components/KlaimRW/Popup/EditStatus.vue'
 import ArrowLeft from '~/assets/icon/arrow-left.svg?inline'
 import DetailTableComponent from '~/components/KlaimRW/KlaimRwDetail/DetailTableComponent'
 import { formatDate } from '~/utils'
-import { userStatus } from '~/constant/klaim-rw'
+import { userStatus, typeClaim } from '~/constant/klaim-rw'
 import popup from '~/mixins/klaim-rw'
 
 export default {
@@ -278,6 +279,16 @@ export default {
     EditStatusPopup,
   },
   mixins: [popup],
+  props: {
+    typeClaimPage: {
+      type: Object,
+      default: () => ({}),
+    },
+    listButton: {
+      type: Array,
+      default: () => [],
+    },
+  },
   data() {
     return {
       confirmationDialog: {
@@ -315,9 +326,9 @@ export default {
         maxSizeFile: 2097152,
         acceptFile: '.pdf,.jpg,.jpeg,.png',
       },
-
       detail: {},
       userStatus,
+      typeClaim,
     }
   },
   async fetch() {
@@ -342,6 +353,33 @@ export default {
     },
     rejectConfirmationHandle() {
       this.confirmationDialog.showReject = true
+    },
+    showButtonDetail(button) {
+      return button.claimStatus.includes(this.detail.rwStatus)
+    },
+    getHeadeTitleByTypeClaim() {
+      switch (this.typeClaimPage.props) {
+        case this.typeClaim.klaimLurah.props:
+          return 'Lurah'
+        case this.typeClaim.klaimKepalaDesa.props:
+          return 'Kepala Desa'
+        default:
+          return 'RW'
+      }
+    },
+    clickButtonConfirmationHandle(idButton) {
+      if (idButton === 'button-claim-reject') {
+        return this.showPopupConfirmation(
+          this.detail,
+          'reject-confirmation',
+          this.typeClaimPage
+        )
+      }
+      return this.showPopupConfirmation(
+        this.detail,
+        'verify-confirmation',
+        this.typeClaimPage
+      )
     },
     actionEditStatusHandle(value) {
       this.confirmationDialog.showEditStatus = false
