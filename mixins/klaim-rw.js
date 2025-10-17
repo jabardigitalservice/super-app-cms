@@ -3,7 +3,6 @@ import {
   rejectionConfirmationPopup,
   verificationInformationPopup,
   rejectInformationPopup,
-  typeClaim,
 } from '~/constant/klaim-rw'
 import dialog from '~/mixins/dialog'
 
@@ -29,6 +28,7 @@ export default {
   mixins: [dialog],
   methods: {
     checkTypeClaimPopupConfirmation(typeClaimPage, typeDialog) {
+      console.log(typeClaimPage)
       const dataPopup = {
         verifyConfirmationPopup,
         rejectionConfirmationPopup,
@@ -41,22 +41,11 @@ export default {
       const dataDialog = {
         dialogType: dataPopup[keyObject].dialogType,
         buttonCancel: dataPopup[keyObject].buttonCancel,
-        buttonSubmit: dataPopup[keyObject].klaimRw.buttonSubmit,
-        title: dataPopup[keyObject].klaimRw.title,
-        descriptionText: dataPopup[keyObject].klaimRw.descriptionText,
+        buttonSubmit: dataPopup[keyObject][typeClaimPage.id].buttonSubmit,
+        title: dataPopup[keyObject][typeClaimPage.id].title,
+        descriptionText: dataPopup[keyObject][typeClaimPage.id].descriptionText,
       }
-
-      switch (typeClaimPage.props) {
-        case typeClaim.klaimLurah.props:
-          return {
-            ...dataDialog,
-            title: dataPopup[keyObject].klaimLurah.title,
-            descriptionText: dataPopup[keyObject].klaimLurah.descriptionText,
-            buttonSubmit: dataPopup[keyObject].klaimLurah.buttonSubmit,
-          }
-        default:
-          return dataDialog
-      }
+      return dataDialog
     },
     showPopupConfirmation(dataUser, typeDialog, props) {
       const { id, name, email } = dataUser
