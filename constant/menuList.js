@@ -50,6 +50,28 @@ const lurahMenu = {
   ],
 }
 
+const kepalaDesaMenu = {
+  titleMenu: 'Kepala Desa',
+  showTitleMenuForRoles: ['admin'],
+  unleashVariable: 'SAPAWARGA-CMS__KEPALA-DESA',
+  menu: [
+    {
+      name: 'Klaim Akun Kepala Desa',
+      path: '/klaim/kepala-desa',
+      arrow: false,
+      showMenuAndAccessForRoles: ['admin'],
+      icon: 'item.svg',
+      unleashVariable: 'SAPAWARGA-CMS__KEPALA-DESA--KLAIM-KEPALA-DESA',
+    },
+  ],
+  childRoute: [
+    {
+      path: '/detail',
+      accessChildRouteForRoles: ['admin'],
+    },
+  ],
+}
+
 const messageNotifMenu = {
   titleMenu: 'pesan dan notif',
   showTitleMenuForRoles: ['admin'],
@@ -279,6 +301,7 @@ const sriBadugaMenu = {
 export const menu = [
   rwMenu,
   lurahMenu,
+  kepalaDesaMenu,
   messageNotifMenu,
   tiketMuseumMenu,
   masterDataMenu,
