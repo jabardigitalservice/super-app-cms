@@ -71,7 +71,7 @@
       </JdsDataTable>
     </div>
     <KlaimRWDetailAddress
-      title="Alamat RW"
+      :title="`Alamat ${this.getHeadeTitleByTypeClaim()}`"
       :loading="isLoadingDetailData"
       :detail-data="detailData"
       :data-user="dataUser"
@@ -79,7 +79,7 @@
       @close="showDetailAddress = false"
     />
     <BaseViewFile
-      title="Dokumen SK RW"
+      :title="`Dokumen SK ${this.getHeadeTitleByTypeClaim()}`"
       :file="informationDialog.file"
       :mime-type="informationDialog.mimeType"
       :show="showDocument"
@@ -128,6 +128,7 @@ import popup from '~/mixins/klaim-rw'
 import {
   headerTableKlaimRW,
   headerTableKlaimLurah,
+  headerTableKlaimKepalaDesa,
   userStatus,
   typeClaim,
 } from '~/constant/klaim-rw'
@@ -180,6 +181,7 @@ export default {
       },
       headerTableKlaimRW,
       headerTableKlaimLurah,
+      headerTableKlaimKepalaDesa,
       userStatus,
       showDetailAddress: false,
       showDocument: false,
@@ -289,13 +291,23 @@ export default {
     checkTypeHeaderClaim(props) {
       switch (props) {
         case typeClaim.klaimRw.props:
-          console.log(this.headerTableKlaimRW)
           return this.headerTableKlaimRW
         case typeClaim.klaimLurah.props:
-          console.log(this.headerTableKlaimLurah)
           return this.headerTableKlaimLurah
+        case typeClaim.klaimKepalaDesa.props:
+          return this.headerTableKlaimKepalaDesa
         default:
           return {}
+      }
+    },
+    getHeadeTitleByTypeClaim() {
+      switch (this.typeClaimPage.props) {
+        case typeClaim.klaimLurah?.props:
+          return 'Lurah'
+        case typeClaim.klaimKepalaDesa?.props:
+          return 'Kepala Desa'
+        default:
+          return 'RW'
       }
     },
     searchTitle: debounce(function (value) {
