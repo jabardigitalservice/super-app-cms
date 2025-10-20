@@ -55,6 +55,18 @@ headerTableKlaimKepalaDesa.splice(
   }
 )
 
+export const headerTableKlaimCamat = [...headerTableKlaimRW]
+headerTableKlaimCamat.splice(
+  1,
+  2,
+  { key: 'address', text: 'Alamat Camat', sortable: false },
+  {
+    key: 'document',
+    text: 'Dokumen SK Camat',
+    sortable: false,
+  }
+)
+
 export const verifyConfirmationPopup = {
   klaimRw: {
     title: 'Verifikasi Akun RW',
@@ -210,5 +222,11 @@ export const typeClaim = {
     label: 'Klaim Akun Kepala Desa',
     link: '/klaim/kepala-desa',
     id: 'klaimKepalaDesa',
+  },
+  klaimCamat: {
+    props: 'klaim-camat',
+    label: 'Klaim Akun Camat',
+    link: '/klaim/camat',
+    id: 'klaimCamat',
   },
 }

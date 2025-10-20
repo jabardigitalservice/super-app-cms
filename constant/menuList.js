@@ -72,6 +72,28 @@ const kepalaDesaMenu = {
   ],
 }
 
+const camatMenu = {
+  titleMenu: 'Camat',
+  showTitleMenuForRoles: ['admin'],
+  unleashVariable: 'SAPAWARGA-CMS__CAMAT',
+  menu: [
+    {
+      name: 'Klaim Akun Camat',
+      path: '/klaim/camat',
+      arrow: false,
+      showMenuAndAccessForRoles: ['admin'],
+      icon: 'item.svg',
+      unleashVariable: 'SAPAWARGA-CMS__CAMAT--KLAIM-CAMAT',
+    },
+  ],
+  childRoute: [
+    {
+      path: '/detail',
+      accessChildRouteForRoles: ['admin'],
+    },
+  ],
+}
+
 const messageNotifMenu = {
   titleMenu: 'pesan dan notif',
   showTitleMenuForRoles: ['admin'],
@@ -302,6 +324,7 @@ export const menu = [
   rwMenu,
   lurahMenu,
   kepalaDesaMenu,
+  camatMenu,
   messageNotifMenu,
   tiketMuseumMenu,
   masterDataMenu,

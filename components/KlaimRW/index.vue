@@ -129,6 +129,7 @@ import {
   headerTableKlaimRW,
   headerTableKlaimLurah,
   headerTableKlaimKepalaDesa,
+  headerTableKlaimCamat,
   userStatus,
   typeClaim,
 } from '~/constant/klaim-rw'
@@ -136,6 +137,7 @@ import {
   ENDPOINT_RW,
   ENDPOINT_LURAH,
   ENDPOINT_KEPALA_DESA,
+  ENDPOINT_CAMAT,
 } from '~/constant/endpoint-api'
 import {
   generateItemsPerPageOptions,
@@ -182,6 +184,7 @@ export default {
       headerTableKlaimRW,
       headerTableKlaimLurah,
       headerTableKlaimKepalaDesa,
+      headerTableKlaimCamat,
       userStatus,
       showDetailAddress: false,
       showDocument: false,
@@ -257,7 +260,6 @@ export default {
       deep: true,
       handler() {
         resetQueryParamsUrl(this)
-
         this.$fetch()
       },
     },
@@ -284,6 +286,8 @@ export default {
           return ENDPOINT_LURAH
         case typeClaim.klaimKepalaDesa.props:
           return ENDPOINT_KEPALA_DESA
+        case typeClaim.klaimCamat.props:
+          return ENDPOINT_CAMAT
         default:
           return ENDPOINT_RW
       }
@@ -296,6 +300,8 @@ export default {
           return this.headerTableKlaimLurah
         case typeClaim.klaimKepalaDesa.props:
           return this.headerTableKlaimKepalaDesa
+        case typeClaim.klaimCamat.props:
+          return this.headerTableKlaimCamat
         default:
           return {}
       }
@@ -306,6 +312,8 @@ export default {
           return 'Lurah'
         case typeClaim.klaimKepalaDesa?.props:
           return 'Kepala Desa'
+        case typeClaim.klaimCamat?.props:
+          return 'Camat'
         default:
           return 'RW'
       }
