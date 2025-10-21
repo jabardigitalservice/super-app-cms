@@ -363,6 +363,8 @@ export default {
           return 'Lurah'
         case this.typeClaim.klaimKepalaDesa.props:
           return 'Kepala Desa'
+        case this.typeClaim.klaimCamat.props:
+          return 'Camat'
         default:
           return 'RW'
       }
