@@ -93,6 +93,14 @@ export const verifyConfirmationPopup = {
       variant: 'primary',
     },
   },
+  klaimCamat: {
+    title: 'Verifikasi Akun Camat',
+    descriptionText: 'Apakah Anda yakin ingin memverifikasi akun Camat ini?',
+    buttonSubmit: {
+      label: 'Ya, verifikasi akun Camat ini',
+      variant: 'primary',
+    },
+  },
   dialogType: 'confirmation',
   buttonCancel: {
     label: 'Batal',
@@ -122,6 +130,14 @@ export const rejectionConfirmationPopup = {
     descriptionText: 'Apakah Anda yakin ingin menolak akun Kepala Desa ini?',
     buttonSubmit: {
       label: 'Tolak akun Kepala Desa ini',
+      variant: 'dsnger',
+    },
+  },
+  klaimCamat: {
+    title: 'Tolak Akun Camat',
+    descriptionText: 'Apakah Anda yakin ingin menolak akun Camat ini?',
+    buttonSubmit: {
+      label: 'Tolak akun Camat ini',
       variant: 'dsnger',
     },
   },
