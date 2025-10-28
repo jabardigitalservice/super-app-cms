@@ -289,10 +289,8 @@ export default {
     checkTypeHeaderClaim(props) {
       switch (props) {
         case typeClaim.klaimRw.props:
-          console.log(this.headerTableKlaimRW)
           return this.headerTableKlaimRW
         case typeClaim.klaimLurah.props:
-          console.log(this.headerTableKlaimLurah)
           return this.headerTableKlaimLurah
         default:
           return {}
