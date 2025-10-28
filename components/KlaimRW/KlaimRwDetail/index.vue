@@ -40,7 +40,7 @@
         <h1
           class="mb-[16px] font-roboto text-[16px] font-bold text-blue-gray-800"
         >
-          {{ `Detail Akun ${getHeadeTitleByTypeClaim()}` }}
+          {{ `Detail Akun ${typeClaimPage.name}` }}
         </h1>
         <div class="table-content">
           <div class="mb-[16px] font-lato">
@@ -102,9 +102,7 @@
             </DetailTableComponent>
           </div>
           <div class="mb-[16px]">
-            <DetailTableComponent
-              :header="`Dokumen SK ${getHeadeTitleByTypeClaim()}`"
-            >
+            <DetailTableComponent :header="`Dokumen SK ${typeClaimPage.name}`">
               <tr>
                 <td class="w-[376px]">
                   <strong>{{ detail.fileName || '-' }}</strong>
@@ -190,7 +188,7 @@
       </div>
     </div>
     <BaseViewFile
-      title="Dokumen SK RW"
+      :title="`Dokumen SK ${this.typeClaimPage.name}`"
       :show="documentDialog.showDialog"
       :file="documentDialog.fileId"
       :mime-type="documentDialog.mimeType"
@@ -198,6 +196,8 @@
     />
     <EditStatusPopup
       :show-popup="confirmationDialog.showEditStatus"
+      :title="`Edit Status Akun ${this.typeClaimPage.name}`"
+      :type-claim-page="typeClaimPage"
       :account-name="detail?.name || '-'"
       :account-status="detail?.rwStatus || '-'"
       @close="confirmationDialog.showEditStatus = false"
@@ -347,7 +347,7 @@ export default {
   methods: {
     goBackHandle() {
       this.$router.push({
-        path: '/',
+        path: this.typeClaimPage.link,
         query: this.$route.query,
       })
     },
@@ -357,16 +357,16 @@ export default {
     showButtonDetail(button) {
       return button.claimStatus.includes(this.detail.rwStatus)
     },
-    getHeadeTitleByTypeClaim() {
-      switch (this.typeClaimPage.props) {
-        case this.typeClaim.klaimLurah.props:
-          return 'Lurah'
-        case this.typeClaim.klaimKepalaDesa.props:
-          return 'Kepala Desa'
-        default:
-          return 'RW'
-      }
-    },
+    // getHeadeTitleByTypeClaim() {
+    //   switch (this.typeClaimPage.props) {
+    //     case this.typeClaim.klaimLurah.props:
+    //       return 'Lurah'
+    //     case this.typeClaim.klaimKepalaDesa.props:
+    //       return 'Kepala Desa'
+    //     default:
+    //       return 'RW'
+    //   }
+    // },
     clickButtonConfirmationHandle(idButton) {
       if (idButton === 'button-claim-reject') {
         return this.showPopupConfirmation(
@@ -407,9 +407,8 @@ export default {
     },
     informationEditSk(information) {
       this.documentEdit.showDialog = false
-      this.informationDialog.title = 'Edit Dokumen SK RW'
+      this.informationDialog.title = `Edit Dokumen SK ${this.typeClaimPage.name}`
       this.informationDialog.showDialog = true
-
       this.informationDialog.info = information.info
       this.informationDialog.message = information.message
       this.$fetch()
