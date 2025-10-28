@@ -1,4 +1,8 @@
 import {
+  ENDPOINT_KLAIM_PENOLAKAN,
+  ENDPOINT_KLAIM_VERIFIKASI,
+} from '~/constant/endpoint-api'
+import {
   verifyConfirmationPopup,
   rejectionConfirmationPopup,
   verificationInformationPopup,
@@ -21,6 +25,7 @@ export default {
       },
       user: {},
       dataDialog: {},
+      currentClaimType: {},
       isPopupConfirmationVerificationRw: false,
       isPopupConfirmationRejectionRw: false,
       isLoading: false,
@@ -41,25 +46,15 @@ export default {
       const dataDialog = {
         dialogType: dataPopup[keyObject].dialogType,
         buttonCancel: dataPopup[keyObject].buttonCancel,
-        buttonSubmit: dataPopup[keyObject].klaimRw.buttonSubmit,
-        title: dataPopup[keyObject].klaimRw.title,
-        descriptionText: dataPopup[keyObject].klaimRw.descriptionText,
+        buttonSubmit: dataPopup[keyObject][typeClaimPage.id].buttonSubmit,
+        title: dataPopup[keyObject][typeClaimPage.id].title,
+        descriptionText: dataPopup[keyObject][typeClaimPage.id].descriptionText,
       }
-
-      switch (typeClaimPage.props) {
-        case typeClaim.klaimLurah.props:
-          return {
-            ...dataDialog,
-            title: dataPopup[keyObject].klaimLurah.title,
-            descriptionText: dataPopup[keyObject].klaimLurah.descriptionText,
-            buttonSubmit: dataPopup[keyObject].klaimLurah.buttonSubmit,
-          }
-        default:
-          return dataDialog
-      }
+      return dataDialog
     },
     showPopupConfirmation(dataUser, typeDialog, props) {
       const { id, name, email } = dataUser
+      this.currentClaimType = props
       this.dataDialog = this.checkTypeClaimPopupConfirmation(props, typeDialog)
       this.dataDialog = {
         ...this.dataDialog,
@@ -84,8 +79,13 @@ export default {
       this.$store.commit('modals/CLOSEALL')
       this.isLoading = true
       this.informationDialog.title = 'Penolakan Akun RW'
+      const endpointClaimType = `${ENDPOINT_KLAIM_PENOLAKAN}-${
+        this.currentClaimType.pros === typeClaim.klaimKepalaDesa.props
+          ? 'kades'
+          : this.currentClaimType.name.toLowerCase()
+      }`
       try {
-        await this.$axios.post('/user/role/reject-rw', {
+        await this.$axios.post(endpointClaimType, {
           userId: this.user.id,
         })
         this.informationDialog.show = true
@@ -107,8 +107,13 @@ export default {
       this.$store.commit('modals/CLOSEALL')
       this.isLoading = true
       this.informationDialog.title = verificationInformationPopup.title
+      const endpointClaimType = `${ENDPOINT_KLAIM_VERIFIKASI}-${
+        this.currentClaimType.pros === typeClaim.klaimKepalaDesa.props
+          ? 'kades'
+          : this.currentClaimType.name.toLowerCase()
+      }`
       try {
-        await this.$axios.post('/user/role/verify-rw', { userId: this.user.id })
+        await this.$axios.post(endpointClaimType, { userId: this.user.id })
         this.informationDialog.show = true
         this.informationDialog.info =
           verificationInformationPopup.successInformation.info
