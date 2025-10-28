@@ -17,11 +17,11 @@ export default {
       navigations: [
         {
           label: 'Klaim Akun Lurah',
-          link: '/',
+          link: '/klaim/lurah',
         },
         {
           label: 'Detail Akun Lurah',
-          link: `/detail/${this.$route.params.id}`,
+          link: `/klaim/lurah/detail/${this.$route.params.id}`,
         },
       ],
       typeClaim,
