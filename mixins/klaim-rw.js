@@ -78,7 +78,8 @@ export default {
       this.isPopupConfirmationRejectionRw = false
       this.$store.commit('modals/CLOSEALL')
       this.isLoading = true
-      this.informationDialog.title = 'Penolakan Akun RW'
+      this.informationDialog.title =
+        rejectInformationPopup[this.currentClaimType.id].title
       const endpointClaimType = `${ENDPOINT_KLAIM_PENOLAKAN}-${
         this.currentClaimType.pros === typeClaim.klaimKepalaDesa.props
           ? 'kades'
@@ -90,13 +91,19 @@ export default {
         })
         this.informationDialog.show = true
         this.informationDialog.info =
-          rejectInformationPopup.successInformation.info
+          rejectInformationPopup[
+            this.currentClaimType.id
+          ].successInformation.info
         this.informationDialog.message =
-          rejectInformationPopup.successInformation.message
+          rejectInformationPopup[
+            this.currentClaimType.id
+          ].successInformation.message
       } catch (error) {
         this.informationDialog.show = true
         this.informationDialog.info =
-          rejectInformationPopup.failedInformation.info
+          rejectInformationPopup[
+            this.currentClaimType.id
+          ].failedInformation.info
         this.informationDialog.message = ''
       } finally {
         this.isLoading = false
@@ -106,7 +113,8 @@ export default {
       this.isPopupConfirmationVerificationRw = false
       this.$store.commit('modals/CLOSEALL')
       this.isLoading = true
-      this.informationDialog.title = verificationInformationPopup.title
+      this.informationDialog.title =
+        verificationInformationPopup[this.currentClaimType.id].title
       const endpointClaimType = `${ENDPOINT_KLAIM_VERIFIKASI}-${
         this.currentClaimType.pros === typeClaim.klaimKepalaDesa.props
           ? 'kades'
@@ -116,13 +124,19 @@ export default {
         await this.$axios.post(endpointClaimType, { userId: this.user.id })
         this.informationDialog.show = true
         this.informationDialog.info =
-          verificationInformationPopup.successInformation.info
+          verificationInformationPopup[
+            this.currentClaimType.id
+          ].successInformation.info
         this.informationDialog.message =
-          verificationInformationPopup.successInformation.message
+          verificationInformationPopup[
+            this.currentClaimType.id
+          ].successInformation.message
       } catch (error) {
         this.informationDialog.show = true
         this.informationDialog.info =
-          verificationInformationPopup.failedInformation.info
+          verificationInformationPopup[
+            this.currentClaimType.id
+          ].failedInformation.info
         this.informationDialog.message = ''
       } finally {
         this.isLoading = false
