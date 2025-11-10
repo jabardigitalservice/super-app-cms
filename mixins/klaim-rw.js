@@ -29,6 +29,7 @@ export default {
       isPopupConfirmationVerificationRw: false,
       isPopupConfirmationRejectionRw: false,
       isLoading: false,
+      typeDialog: '',
     }
   },
   mixins: [dialog],
@@ -64,6 +65,7 @@ export default {
           variant: this.dataDialog.buttonSubmit.variant,
         },
       }
+      this.typeDialog = typeDialog
 
       if (typeDialog === 'reject-confirmation') {
         this.isPopupConfirmationRejectionRw = true
@@ -77,8 +79,10 @@ export default {
     async actionRejectUser() {
       this.isPopupConfirmationRejectionRw = false
       this.$store.commit('modals/CLOSEALL')
+      this.informationDialog.show = true
       this.isLoading = true
-      this.informationDialog.title = 'Penolakan Akun RW'
+      this.informationDialog.title =
+        rejectInformationPopup[this.currentClaimType.id].title
       const endpointClaimType = `${ENDPOINT_KLAIM_PENOLAKAN}-${
         this.currentClaimType.pros === typeClaim.klaimKepalaDesa.props
           ? 'kades'
@@ -90,18 +94,21 @@ export default {
         })
         this.informationDialog.show = true
         this.informationDialog.info =
-          rejectInformationPopup.successInformation.info
+          rejectInformationPopup[
+            this.currentClaimType.id
+          ].successInformation.info
         this.informationDialog.message =
           rejectInformationPopup[
             this.currentClaimType.id
           ].successInformation.message
+        this.informationDialog.isSuccess = true
       } catch (error) {
-        this.informationDialog.show = true
         this.informationDialog.info =
           rejectInformationPopup[
             this.currentClaimType.id
           ].failedInformation.info
         this.informationDialog.message = ''
+        this.informationDialog.isSuccess = false
       } finally {
         this.isLoading = false
       }
@@ -110,6 +117,7 @@ export default {
       this.isPopupConfirmationVerificationRw = false
       this.$store.commit('modals/CLOSEALL')
       this.isLoading = true
+      this.informationDialog.show = true
       this.informationDialog.title =
         verificationInformationPopup[this.currentClaimType.id].title
       const endpointClaimType = `${ENDPOINT_KLAIM_VERIFIKASI}-${
@@ -128,13 +136,14 @@ export default {
           verificationInformationPopup[
             this.currentClaimType.id
           ].successInformation.message
+        this.informationDialog.isSuccess = true
       } catch (error) {
-        this.informationDialog.show = true
         this.informationDialog.info =
           verificationInformationPopup[
             this.currentClaimType.id
           ].failedInformation.info
         this.informationDialog.message = ''
+        this.informationDialog.isSuccess = false
       } finally {
         this.isLoading = false
       }
@@ -148,6 +157,22 @@ export default {
       this.isPopupConfirmationRejectionRw = false
       this.isPopupConfirmationVerificationRw = false
       this.$store.commit('modals/CLOSEALL')
+    },
+    onRetryAction() {
+      this.informationDialog.show = false
+      this.dataDialog = {
+        ...this.dataDialog,
+        nameModal: this.typeDialog,
+        button: {
+          label: this.dataDialog.buttonSubmit.label,
+          variant: this.dataDialog.buttonSubmit.variant,
+        },
+      }
+      this.showPopupConfirmation(
+        this.user,
+        this.typeDialog,
+        this.currentClaimType
+      )
     },
   },
 }
