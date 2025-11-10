@@ -81,7 +81,7 @@ export const rejectionConfirmationPopup = {
     descriptionText: 'Apakah Anda yakin ingin menolak akun Lurah ini?',
     buttonSubmit: {
       label: 'Tolak akun Lurah ini',
-      variant: 'dsnger',
+      variant: 'danger',
     },
   },
   dialogType: 'confirmation',
@@ -116,16 +116,6 @@ export const verificationInformationPopup = {
       message: '',
     },
   },
-  // title: 'Verifikasi Akun RW',
-  // successInformation: {
-  //   info: 'Verifikasi akun RW telah berhasil dilakukan.',
-  //   message:
-  //     'Email terkait informasi verifikasi telah dikirimkan ke email akun RW bersangkutan.',
-  // },
-  // failedInformation: {
-  //   info: 'Verifikasi akun RW gagal dilakukan.',
-  //   message: '',
-  // },
 }
 
 export const rejectInformationPopup = {
