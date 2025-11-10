@@ -71,7 +71,7 @@
       </JdsDataTable>
     </div>
     <KlaimRWDetailAddress
-      title="Alamat RW"
+      :title="`Alamat ${getHeadeTitleByTypeClaim()}`"
       :loading="isLoadingDetailData"
       :detail-data="detailData"
       :data-user="dataUser"
@@ -79,7 +79,7 @@
       @close="showDetailAddress = false"
     />
     <BaseViewFile
-      title="Dokumen SK RW"
+      :title="`Dokumen SK ${getHeadeTitleByTypeClaim()}`"
       :file="informationDialog.file"
       :mime-type="informationDialog.mimeType"
       :show="showDocument"
@@ -115,7 +115,9 @@
       :description-text="informationDialog.info"
       :account-name="dataUser.name"
       :message="informationDialog.message"
+      :is-success="informationDialog.isSuccess"
       @close="onClosePopupInfo"
+      @retry="onRetryAction"
     />
     <DialogLoading :show-popup="isLoading" />
   </div>
@@ -128,6 +130,8 @@ import popup from '~/mixins/klaim-rw'
 import {
   headerTableKlaimRW,
   headerTableKlaimLurah,
+  headerTableKlaimKepalaDesa,
+  headerTableKlaimCamat,
   userStatus,
   typeClaim,
 } from '~/constant/klaim-rw'
@@ -180,6 +184,8 @@ export default {
       },
       headerTableKlaimRW,
       headerTableKlaimLurah,
+      headerTableKlaimKepalaDesa,
+      headerTableKlaimCamat,
       userStatus,
       showDetailAddress: false,
       showDocument: false,
@@ -229,7 +235,6 @@ export default {
       deep: true,
       handler() {
         resetQueryParamsUrl(this)
-
         this.$fetch()
       },
     },
@@ -266,8 +271,24 @@ export default {
           return this.headerTableKlaimRW
         case typeClaim.klaimLurah.props:
           return this.headerTableKlaimLurah
+        case typeClaim.klaimKepalaDesa.props:
+          return this.headerTableKlaimKepalaDesa
+        case typeClaim.klaimCamat.props:
+          return this.headerTableKlaimCamat
         default:
           return {}
+      }
+    },
+    getHeadeTitleByTypeClaim() {
+      switch (this.typeClaimPage.props) {
+        case typeClaim.klaimLurah?.props:
+          return 'Lurah'
+        case typeClaim.klaimKepalaDesa?.props:
+          return 'Kepala Desa'
+        case typeClaim.klaimCamat?.props:
+          return 'Camat'
+        default:
+          return 'RW'
       }
     },
     searchTitle: debounce(function (value) {
@@ -309,7 +330,8 @@ export default {
       this.showDetailAddress = true
       this.isLoadingDetailData = true
       try {
-        const response = await this.$axios.get(`/user/rw/${item.id}`)
+        const urlApi = this.checkUrlApi()
+        const response = await this.$axios.get(`${urlApi}/${item.id}`)
         const { data } = response.data
         this.detailData = {
           dataKtp: data?.dataKtp,
