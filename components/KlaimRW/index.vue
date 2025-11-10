@@ -87,14 +87,14 @@
     />
 
     <DialogConfirmationBasic
-      v-if="isPopupConfirmationVerificationRw"
+      v-if="isPopupConfirmationVerification"
       :dialog-modal="dataDialog"
       :detail-item-modal="{ title: user.name }"
       @confirmation-button="actionVerifyUser"
       @cancel="onClosePopupConfirmation"
     />
     <DialogConfirmationBasic
-      v-if="isPopupConfirmationRejectionRw"
+      v-if="isPopupConfirmationRejection"
       :dialog-modal="dataDialog"
       @confirmation-button="actionRejectUser"
       @cancel="onClosePopupConfirmation"

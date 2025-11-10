@@ -26,10 +26,10 @@ export default {
       user: {},
       dataDialog: {},
       currentClaimType: {},
-      isPopupConfirmationVerificationRw: false,
-      isPopupConfirmationRejectionRw: false,
+      isPopupConfirmationVerification: false,
+      isPopupConfirmationRejection: false,
       isLoading: false,
-      typeDialog: '',
+      typeDialog: '', // verify-confirmation / rejection-confirmation
     }
   },
   mixins: [dialog],
@@ -68,16 +68,16 @@ export default {
       this.typeDialog = typeDialog
 
       if (typeDialog === 'reject-confirmation') {
-        this.isPopupConfirmationRejectionRw = true
+        this.isPopupConfirmationRejection = true
       } else {
-        this.isPopupConfirmationVerificationRw = true
+        this.isPopupConfirmationVerification = true
       }
 
       this.user = { id, name, email }
       this.$store.commit('modals/OPEN', this.dataDialog.nameModal)
     },
     async actionRejectUser() {
-      this.isPopupConfirmationRejectionRw = false
+      this.isPopupConfirmationRejection = false
       this.$store.commit('modals/CLOSEALL')
       this.informationDialog.show = true
       this.isLoading = true
@@ -114,7 +114,7 @@ export default {
       }
     },
     async actionVerifyUser() {
-      this.isPopupConfirmationVerificationRw = false
+      this.isPopupConfirmationVerification = false
       this.$store.commit('modals/CLOSEALL')
       this.isLoading = true
       this.informationDialog.show = true
@@ -154,8 +154,8 @@ export default {
       this.$fetch()
     },
     onClosePopupConfirmation() {
-      this.isPopupConfirmationRejectionRw = false
-      this.isPopupConfirmationVerificationRw = false
+      this.isPopupConfirmationRejection = false
+      this.isPopupConfirmationVerification = false
       this.$store.commit('modals/CLOSEALL')
     },
     onRetryAction() {
