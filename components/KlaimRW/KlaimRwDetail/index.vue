@@ -276,6 +276,7 @@ import {
   ENDPOINT_KEPALA_DESA,
   ENDPOINT_LURAH,
   ENDPOINT_RW,
+  ENDPOINT_CAMAT,
 } from '~/constant/endpoint-api'
 
 export default {
@@ -360,6 +361,8 @@ export default {
           return ENDPOINT_LURAH
         case typeClaim.klaimKepalaDesa.props:
           return ENDPOINT_KEPALA_DESA
+        case typeClaim.klaimCamat.props:
+          return ENDPOINT_CAMAT
         default:
           return ENDPOINT_RW
       }
@@ -374,7 +377,7 @@ export default {
       this.confirmationDialog.showReject = true
     },
     showButtonDetail(button) {
-      return button.claimStatus.includes(this.detail.rwStatus)
+      return button.claimStatus.includes(this.detail.roleStatus)
     },
     clickButtonConfirmationHandle(idButton) {
       if (idButton === 'button-claim-reject') {
@@ -392,7 +395,6 @@ export default {
     },
     actionEditStatusHandle(value) {
       this.isPopupEditStatus = false
-      // this.currentClaimType = this.typeClaimPage
       if (value === userStatus.rejected) {
         this.actionRejectUser()
       } else if (value === userStatus.verified) {
