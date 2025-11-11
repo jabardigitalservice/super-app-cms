@@ -43,6 +43,18 @@ headerTableKlaimLurah.splice(
   }
 )
 
+export const headerTableKlaimKepalaDesa = [...headerTableKlaimRW]
+headerTableKlaimKepalaDesa.splice(
+  1,
+  2,
+  { key: 'address', text: 'Alamat Kepala Desa', sortable: false },
+  {
+    key: 'document',
+    text: 'Dokumen SK Kelapa Desa',
+    sortable: false,
+  }
+)
+
 export const verifyConfirmationPopup = {
   klaimRw: {
     title: 'Verifikasi Akun RW',
@@ -57,6 +69,15 @@ export const verifyConfirmationPopup = {
     descriptionText: 'Apakah Anda yakin ingin memverifikasi akun Lurah ini?',
     buttonSubmit: {
       label: 'Ya, verifikasi akun Lurah ini',
+      variant: 'primary',
+    },
+  },
+  klaimKepalaDesa: {
+    title: 'Verifikasi Akun Kepala Desa',
+    descriptionText:
+      'Apakah Anda yakin ingin memverifikasi akun Kepala Desa ini?',
+    buttonSubmit: {
+      label: 'Ya, verifikasi akun Kepala Desa ini',
       variant: 'primary',
     },
   },
@@ -81,6 +102,14 @@ export const rejectionConfirmationPopup = {
     descriptionText: 'Apakah Anda yakin ingin menolak akun Lurah ini?',
     buttonSubmit: {
       label: 'Tolak akun Lurah ini',
+      variant: 'danger',
+    },
+  },
+  klaimKepalaDesa: {
+    title: 'Tolak Akun Kepala Desa',
+    descriptionText: 'Apakah Anda yakin ingin menolak akun Kepala Desa ini?',
+    buttonSubmit: {
+      label: 'Tolak akun Kepala Desa ini',
       variant: 'danger',
     },
   },
@@ -116,6 +145,18 @@ export const verificationInformationPopup = {
       message: '',
     },
   },
+  klaimKepalaDesa: {
+    title: 'Verifikasi Akun Kepala Desa',
+    successInformation: {
+      info: 'Verifikasi akun Kepala Desa telah berhasil dilakukan.',
+      message:
+        'Email terkait informasi verifikasi telah dikirimkan ke email akun Kepala Desa bersangkutan.',
+    },
+    failedInformation: {
+      info: 'Verifikasi akun Kepala Desa gagal dilakukan.',
+      message: '',
+    },
+  },
 }
 
 export const rejectInformationPopup = {
@@ -140,6 +181,18 @@ export const rejectInformationPopup = {
     },
     failedInformation: {
       info: 'Penolakan akun Lurah gagal dilakukan',
+      message: '',
+    },
+  },
+  klaimKepalaDesa: {
+    title: 'Penolakan Akun Kepala Desa',
+    successInformation: {
+      info: 'Penolakan akun Kepala Desa telah berhasil dilakukan.',
+      message:
+        'Email terkait informasi penolakan telah dikirimkan ke email akun Kepala Desa bersangkutan',
+    },
+    failedInformation: {
+      info: 'Penolakan akun Kepala Desa gagal dilakukan',
       message: '',
     },
   },
@@ -168,7 +221,7 @@ export const typeClaim = {
   },
   klaimKepalaDesa: {
     props: 'klaim-kepala-desa',
-    label: 'Klaim Akun Kepala Lurah',
+    label: 'Klaim Akun Kepala Desa',
     link: '/klaim/kepala-desa',
     name: 'Kepala Desa',
     id: 'klaimKepalaDesa',
