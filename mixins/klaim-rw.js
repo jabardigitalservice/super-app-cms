@@ -26,9 +26,15 @@ export default {
       user: {},
       dataDialog: {},
       currentClaimType: {},
+<<<<<<< HEAD
       isPopupConfirmationVerificationRw: false,
       isPopupConfirmationRejectionRw: false,
+=======
+      isPopupConfirmationVerification: false,
+      isPopupConfirmationRejection: false,
+>>>>>>> 3a32dc2f62995e8b8afa456d439072f07dafbdb9
       isLoading: false,
+      typeDialog: '', // verify-confirmation / rejection-confirmation
     }
   },
   mixins: [dialog],
@@ -64,19 +70,21 @@ export default {
           variant: this.dataDialog.buttonSubmit.variant,
         },
       }
+      this.typeDialog = typeDialog
 
       if (typeDialog === 'reject-confirmation') {
-        this.isPopupConfirmationRejectionRw = true
+        this.isPopupConfirmationRejection = true
       } else {
-        this.isPopupConfirmationVerificationRw = true
+        this.isPopupConfirmationVerification = true
       }
 
       this.user = { id, name, email }
       this.$store.commit('modals/OPEN', this.dataDialog.nameModal)
     },
     async actionRejectUser() {
-      this.isPopupConfirmationRejectionRw = false
+      this.isPopupConfirmationRejection = false
       this.$store.commit('modals/CLOSEALL')
+      this.informationDialog.show = true
       this.isLoading = true
       this.informationDialog.title =
         rejectInformationPopup[this.currentClaimType.id].title
@@ -98,21 +106,29 @@ export default {
           rejectInformationPopup[
             this.currentClaimType.id
           ].successInformation.message
+<<<<<<< HEAD
+=======
+        this.informationDialog.isSuccess = true
+>>>>>>> 3a32dc2f62995e8b8afa456d439072f07dafbdb9
       } catch (error) {
-        this.informationDialog.show = true
         this.informationDialog.info =
           rejectInformationPopup[
             this.currentClaimType.id
           ].failedInformation.info
         this.informationDialog.message = ''
+        this.informationDialog.isSuccess = false
       } finally {
         this.isLoading = false
       }
     },
     async actionVerifyUser() {
-      this.isPopupConfirmationVerificationRw = false
+      this.isPopupConfirmationVerification = false
       this.$store.commit('modals/CLOSEALL')
       this.isLoading = true
+<<<<<<< HEAD
+=======
+      this.informationDialog.show = true
+>>>>>>> 3a32dc2f62995e8b8afa456d439072f07dafbdb9
       this.informationDialog.title =
         verificationInformationPopup[this.currentClaimType.id].title
       const endpointClaimType = `${ENDPOINT_KLAIM_VERIFIKASI}-${
@@ -131,13 +147,17 @@ export default {
           verificationInformationPopup[
             this.currentClaimType.id
           ].successInformation.message
+<<<<<<< HEAD
+=======
+        this.informationDialog.isSuccess = true
+>>>>>>> 3a32dc2f62995e8b8afa456d439072f07dafbdb9
       } catch (error) {
-        this.informationDialog.show = true
         this.informationDialog.info =
           verificationInformationPopup[
             this.currentClaimType.id
           ].failedInformation.info
         this.informationDialog.message = ''
+        this.informationDialog.isSuccess = false
       } finally {
         this.isLoading = false
       }
@@ -148,9 +168,25 @@ export default {
       this.$fetch()
     },
     onClosePopupConfirmation() {
-      this.isPopupConfirmationRejectionRw = false
-      this.isPopupConfirmationVerificationRw = false
+      this.isPopupConfirmationRejection = false
+      this.isPopupConfirmationVerification = false
       this.$store.commit('modals/CLOSEALL')
+    },
+    onRetryAction() {
+      this.informationDialog.show = false
+      this.dataDialog = {
+        ...this.dataDialog,
+        nameModal: this.typeDialog,
+        button: {
+          label: this.dataDialog.buttonSubmit.label,
+          variant: this.dataDialog.buttonSubmit.variant,
+        },
+      }
+      this.showPopupConfirmation(
+        this.user,
+        this.typeDialog,
+        this.currentClaimType
+      )
     },
   },
 }
