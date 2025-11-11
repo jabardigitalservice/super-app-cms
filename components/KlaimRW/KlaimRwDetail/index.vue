@@ -78,22 +78,24 @@
                 <td class="w-[214px]">
                   <div class="flex items-center">
                     <div
-                      v-show="detail?.rwStatus"
+                      v-show="detail?.roleStatus"
                       :class="{
                         'mr-2 h-2 w-2 rounded-full': true,
-                        'bg-green-600': detail.rwStatus == userStatus.verified,
-                        'bg-yellow-600': detail.rwStatus == userStatus.waiting,
-                        'bg-red-600': detail.rwStatus == userStatus.rejected,
+                        'bg-green-600':
+                          detail.roleStatus == userStatus.verified,
+                        'bg-yellow-600':
+                          detail.roleStatus == userStatus.waiting,
+                        'bg-red-600': detail.roleStatus == userStatus.rejected,
                       }"
                     />
-                    {{ detail.rwStatus || '-' }}
+                    {{ detail.roleStatus || '-' }}
                   </div>
                 </td>
                 <td>
                   <BaseButton
-                    v-show="detail.rwStatus !== userStatus.verified"
+                    v-show="detail.roleStatus !== userStatus.verified"
                     class="w-fit border border-green-600 py-[6px] font-medium text-green-600"
-                    @click="confirmationDialog.showEditStatus = true"
+                    @click="showPopupEditStatusClaim(typeClaimPage, detail)"
                   >
                     Edit Status
                   </BaseButton>
@@ -188,30 +190,30 @@
       </div>
     </div>
     <BaseViewFile
-      :title="`Dokumen SK ${this.typeClaimPage.name}`"
+      :title="`Dokumen SK ${typeClaimPage.name}`"
       :show="documentDialog.showDialog"
       :file="documentDialog.fileId"
       :mime-type="documentDialog.mimeType"
       @close="documentDialog.showDialog = false"
     />
     <EditStatusPopup
-      :show-popup="confirmationDialog.showEditStatus"
-      :title="`Edit Status Akun ${this.typeClaimPage.name}`"
+      :show-popup="isPopupEditStatus"
+      :title="`Edit Status Akun ${typeClaimPage.name}`"
       :type-claim-page="typeClaimPage"
       :account-name="detail?.name || '-'"
-      :account-status="detail?.rwStatus || '-'"
-      @close="confirmationDialog.showEditStatus = false"
+      :account-status="detail?.roleStatus || '-'"
+      @close="isPopupEditStatus = false"
       @submit="actionEditStatusHandle"
     />
     <DialogConfirmationBasic
-      v-if="isPopupConfirmationVerificationRw"
+      v-if="isPopupConfirmationVerification"
       :dialog-modal="dataDialog"
       :detail-item-modal="{ title: user.name }"
       @confirmation-button="actionVerifyUser"
       @cancel="onClosePopupConfirmation"
     />
     <DialogConfirmationBasic
-      v-if="isPopupConfirmationRejectionRw"
+      v-if="isPopupConfirmationRejection"
       :dialog-modal="dataDialog"
       @confirmation-button="actionRejectUser"
       @cancel="onClosePopupConfirmation"
@@ -226,15 +228,16 @@
         </div>
       </div>
     </DialogConfirmationBasic>
-    <InformationPopup
+    <PopupInformation
       :show-popup="informationDialog.show"
-      :account-name="detail?.name || '-'"
       :title="informationDialog.title"
       :description-text="informationDialog.info"
+      :account-name="detail?.name || '-'"
       :message="informationDialog.message"
-      @close="closeInformationDialogHandle"
+      :is-success="informationDialog.isSuccess"
+      @close="onClosePopupInfo"
+      @retry="onRetryAction"
     />
-
     <BaseDialogDragAndDropFile
       :api-update-file="`/user/rw/${detail?.id}`"
       :show-popup="documentEdit.showDialog"
@@ -262,20 +265,25 @@
 </template>
 
 <script>
-import InformationPopup from '~/components/KlaimRW/Popup/Information.vue'
+import PopupInformation from '~/components/KlaimRW/Popup/Information.vue'
 import EditStatusPopup from '~/components/KlaimRW/Popup/EditStatus.vue'
 import ArrowLeft from '~/assets/icon/arrow-left.svg?inline'
 import DetailTableComponent from '~/components/KlaimRW/KlaimRwDetail/DetailTableComponent'
 import { formatDate } from '~/utils'
 import { userStatus, typeClaim } from '~/constant/klaim-rw'
 import popup from '~/mixins/klaim-rw'
+import {
+  ENDPOINT_KEPALA_DESA,
+  ENDPOINT_LURAH,
+  ENDPOINT_RW,
+} from '~/constant/endpoint-api'
 
 export default {
   name: 'KlaimRwDetail',
   components: {
     ArrowLeft,
     DetailTableComponent,
-    InformationPopup,
+    PopupInformation,
     EditStatusPopup,
   },
   mixins: [popup],
@@ -333,8 +341,9 @@ export default {
   },
   async fetch() {
     try {
+      const urlApi = this.checkUrlApi()
       const detailAccount = await this.$axios.get(
-        `/user/rw/${this.$route.params.id}`
+        `${urlApi}/${this.$route.params.id}`
       )
       this.detail = detailAccount.data.data
       this.detail.date = detailAccount.data.data
@@ -345,6 +354,16 @@ export default {
     }
   },
   methods: {
+    checkUrlApi() {
+      switch (this.typeClaimPage.props) {
+        case typeClaim.klaimLurah.props:
+          return ENDPOINT_LURAH
+        case typeClaim.klaimKepalaDesa.props:
+          return ENDPOINT_KEPALA_DESA
+        default:
+          return ENDPOINT_RW
+      }
+    },
     goBackHandle() {
       this.$router.push({
         path: this.typeClaimPage.link,
@@ -355,7 +374,7 @@ export default {
       this.confirmationDialog.showReject = true
     },
     showButtonDetail(button) {
-      return button.claimStatus.includes(this.detail.rwStatus)
+      return button.claimStatus.includes(this.detail.roleStatus)
     },
     // getHeadeTitleByTypeClaim() {
     //   switch (this.typeClaimPage.props) {
@@ -382,8 +401,8 @@ export default {
       )
     },
     actionEditStatusHandle(value) {
-      this.confirmationDialog.showEditStatus = false
-      this.user.id = this.detail.id
+      this.isPopupEditStatus = false
+      // this.currentClaimType = this.typeClaimPage
       if (value === userStatus.rejected) {
         this.actionRejectUser()
       } else if (value === userStatus.verified) {
@@ -395,8 +414,8 @@ export default {
       this.documentDialog.fileId = 'loading'
       try {
         const dataFile = await this.$axios.get(
-          `/file/view/${this.detail?.rwDecree}`,
-          { headers: { 'x-file-id': this.detail.rwDecree } }
+          `/file/view/${this.detail?.roleDecree}`,
+          { headers: { 'x-file-id': this.detail.roleDecree } }
         )
 
         this.documentDialog.fileId = dataFile.data.data
