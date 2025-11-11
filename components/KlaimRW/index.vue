@@ -13,8 +13,8 @@
     </div>
     <div class="overflow-x-auto rounded-lg font-roboto">
       <JdsDataTable
-        :headers="headerTableKlaimRW"
-        :items="dataRW"
+        :headers="checkTypeHeaderClaim(typeClaimPage.props)"
+        :items="dataClaim"
         :pagination="pagination"
         :loading="$fetchState.pending"
         @next-page="pageChange"
@@ -47,27 +47,31 @@
             <span
               :class="{
                 'mr-2 h-2 w-2 rounded-full': true,
-                'bg-green-600': item.rwStatus === userStatus.verified,
-                'bg-yellow-600': item.rwStatus === userStatus.waiting,
-                'bg-red-600': item.rwStatus === userStatus.rejected,
+                'bg-green-600': item.roleStatus === userStatus.verified,
+                'bg-yellow-600': item.roleStatus === userStatus.waiting,
+                'bg-red-600': item.roleStatus === userStatus.rejected,
               }"
             />
-            {{ item.rwStatus }}
+            {{ item.roleStatus }}
           </div>
         </template>
         <!-- eslint-disable-next-line vue/valid-v-slot -->
         <template #item.action="{ item }">
           <KlaimRWTableAction
-            :status="item.rwStatus"
+            :status="item.roleStatus"
             @detail="goToDetail(item.id)"
-            @verify="showPopupConfirmationRw(item, 'verify-confirmation-rw')"
-            @reject="showPopupConfirmationRw(item, 'reject-confirmation-rw')"
+            @verify="
+              showPopupConfirmation(item, 'verify-confirmation', typeClaimPage)
+            "
+            @reject="
+              showPopupConfirmation(item, 'reject-confirmation', typeClaimPage)
+            "
           />
         </template>
       </JdsDataTable>
     </div>
     <KlaimRWDetailAddress
-      title="Alamat RW"
+      :title="`Alamat ${getHeadeTitleByTypeClaim()}`"
       :loading="isLoadingDetailData"
       :detail-data="detailData"
       :data-user="dataUser"
@@ -75,7 +79,7 @@
       @close="showDetailAddress = false"
     />
     <BaseViewFile
-      title="Dokumen SK RW"
+      :title="`Dokumen SK ${getHeadeTitleByTypeClaim()}`"
       :file="informationDialog.file"
       :mime-type="informationDialog.mimeType"
       :show="showDocument"
@@ -83,14 +87,14 @@
     />
 
     <DialogConfirmationBasic
-      v-if="isPopupConfirmationVerificationRw"
+      v-if="isPopupConfirmationVerification"
       :dialog-modal="dataDialog"
       :detail-item-modal="{ title: user.name }"
       @confirmation-button="actionVerifyUser"
       @cancel="onClosePopupConfirmation"
     />
     <DialogConfirmationBasic
-      v-if="isPopupConfirmationRejectionRw"
+      v-if="isPopupConfirmationRejection"
       :dialog-modal="dataDialog"
       @confirmation-button="actionRejectUser"
       @cancel="onClosePopupConfirmation"
@@ -111,7 +115,9 @@
       :description-text="informationDialog.info"
       :account-name="dataUser.name"
       :message="informationDialog.message"
+      :is-success="informationDialog.isSuccess"
       @close="onClosePopupInfo"
+      @retry="onRetryAction"
     />
     <DialogLoading :show-popup="isLoading" />
   </div>
@@ -121,7 +127,19 @@
 import debounce from 'lodash.debounce'
 import PopupInformation from './Popup/Information.vue'
 import popup from '~/mixins/klaim-rw'
-import { headerTableKlaimRW, userStatus } from '~/constant/klaim-rw'
+import {
+  headerTableKlaimRW,
+  headerTableKlaimLurah,
+  headerTableKlaimKepalaDesa,
+  headerTableKlaimCamat,
+  userStatus,
+  typeClaim,
+} from '~/constant/klaim-rw'
+import {
+  ENDPOINT_RW,
+  ENDPOINT_LURAH,
+  ENDPOINT_KEPALA_DESA,
+} from '~/constant/endpoint-api'
 import {
   generateItemsPerPageOptions,
   formatDate,
@@ -134,6 +152,16 @@ export default {
     PopupInformation,
   },
   mixins: [popup],
+  props: {
+    typeClaimPage: {
+      type: Object,
+      default: () => ({}),
+    },
+    linkPageDetail: {
+      type: String,
+      default: '',
+    },
+  },
   data() {
     return {
       search: '',
@@ -155,6 +183,9 @@ export default {
         sortBy: 'date',
       },
       headerTableKlaimRW,
+      headerTableKlaimLurah,
+      headerTableKlaimKepalaDesa,
+      headerTableKlaimCamat,
       userStatus,
       showDetailAddress: false,
       showDocument: false,
@@ -168,12 +199,14 @@ export default {
   },
   async fetch() {
     try {
-      const response = await this.$axios.get('/user/rw', {
+      const urlApi = this.checkUrlApi()
+      const response = await this.$axios.get(urlApi, {
         params: this.query,
       })
 
       const { data } = response.data
       this.data = data?.data || []
+
       if (this.data.length) {
         this.pagination.disabled = false
       } else {
@@ -187,7 +220,7 @@ export default {
     }
   },
   computed: {
-    dataRW() {
+    dataClaim() {
       return this.data.map((item) => {
         return {
           ...item,
@@ -202,7 +235,6 @@ export default {
       deep: true,
       handler() {
         resetQueryParamsUrl(this)
-
         this.$fetch()
       },
     },
@@ -223,6 +255,42 @@ export default {
     )
   },
   methods: {
+    checkUrlApi() {
+      switch (this.typeClaimPage.props) {
+        case typeClaim.klaimLurah.props:
+          return ENDPOINT_LURAH
+        case typeClaim.klaimKepalaDesa.props:
+          return ENDPOINT_KEPALA_DESA
+        default:
+          return ENDPOINT_RW
+      }
+    },
+    checkTypeHeaderClaim(props) {
+      switch (props) {
+        case typeClaim.klaimRw.props:
+          return this.headerTableKlaimRW
+        case typeClaim.klaimLurah.props:
+          return this.headerTableKlaimLurah
+        case typeClaim.klaimKepalaDesa.props:
+          return this.headerTableKlaimKepalaDesa
+        case typeClaim.klaimCamat.props:
+          return this.headerTableKlaimCamat
+        default:
+          return {}
+      }
+    },
+    getHeadeTitleByTypeClaim() {
+      switch (this.typeClaimPage.props) {
+        case typeClaim.klaimLurah?.props:
+          return 'Lurah'
+        case typeClaim.klaimKepalaDesa?.props:
+          return 'Kepala Desa'
+        case typeClaim.klaimCamat?.props:
+          return 'Camat'
+        default:
+          return 'RW'
+      }
+    },
     searchTitle: debounce(function (value) {
       if (value.length > 2) {
         this.query.page = 1
@@ -249,7 +317,7 @@ export default {
       const key = Object.keys(value)[0]
       if (key && value[key] !== 'no-sort') {
         this.query.sortType = value[key]
-        this.query.sortBy = key === 'status' ? 'rwStatus' : key
+        this.query.sortBy = key === 'status' ? 'roleStatus' : key
       } else {
         this.query.sortType = 'desc'
         this.query.sortBy = 'date'
@@ -262,7 +330,8 @@ export default {
       this.showDetailAddress = true
       this.isLoadingDetailData = true
       try {
-        const response = await this.$axios.get(`/user/rw/${item.id}`)
+        const urlApi = this.checkUrlApi()
+        const response = await this.$axios.get(`${urlApi}/${item.id}`)
         const { data } = response.data
         this.detailData = {
           dataKtp: data?.dataKtp,
@@ -300,7 +369,7 @@ export default {
     },
     goToDetail(id) {
       this.$router.push({
-        path: `/detail/${id}`,
+        path: `${this.linkPageDetail}/${id}`,
         query: this.query,
       })
     },
