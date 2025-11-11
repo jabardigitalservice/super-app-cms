@@ -139,6 +139,7 @@ import {
   ENDPOINT_RW,
   ENDPOINT_LURAH,
   ENDPOINT_KEPALA_DESA,
+  ENDPOINT_CAMAT,
 } from '~/constant/endpoint-api'
 import {
   generateItemsPerPageOptions,
@@ -261,6 +262,8 @@ export default {
           return ENDPOINT_LURAH
         case typeClaim.klaimKepalaDesa.props:
           return ENDPOINT_KEPALA_DESA
+        case typeClaim.klaimCamat.props:
+          return ENDPOINT_CAMAT
         default:
           return ENDPOINT_RW
       }

@@ -55,6 +55,18 @@ headerTableKlaimKepalaDesa.splice(
   }
 )
 
+export const headerTableKlaimCamat = [...headerTableKlaimRW]
+headerTableKlaimCamat.splice(
+  1,
+  2,
+  { key: 'address', text: 'Alamat Camat', sortable: false },
+  {
+    key: 'document',
+    text: 'Dokumen SK Camat',
+    sortable: false,
+  }
+)
+
 export const verifyConfirmationPopup = {
   klaimRw: {
     title: 'Verifikasi Akun RW',
@@ -78,6 +90,14 @@ export const verifyConfirmationPopup = {
       'Apakah Anda yakin ingin memverifikasi akun Kepala Desa ini?',
     buttonSubmit: {
       label: 'Ya, verifikasi akun Kepala Desa ini',
+      variant: 'primary',
+    },
+  },
+  klaimCamat: {
+    title: 'Verifikasi Akun Camat',
+    descriptionText: 'Apakah Anda yakin ingin memverifikasi akun Camat ini?',
+    buttonSubmit: {
+      label: 'Ya, verifikasi akun Camat ini',
       variant: 'primary',
     },
   },
@@ -110,6 +130,14 @@ export const rejectionConfirmationPopup = {
     descriptionText: 'Apakah Anda yakin ingin menolak akun Kepala Desa ini?',
     buttonSubmit: {
       label: 'Tolak akun Kepala Desa ini',
+      variant: 'danger',
+    },
+  },
+  klaimCamat: {
+    title: 'Tolak Akun Camat',
+    descriptionText: 'Apakah Anda yakin ingin menolak akun Camat ini?',
+    buttonSubmit: {
+      label: 'Tolak akun Camat ini',
       variant: 'danger',
     },
   },
@@ -157,6 +185,18 @@ export const verificationInformationPopup = {
       message: '',
     },
   },
+  klaimCamat: {
+    title: 'Verifikasi Akun Camat',
+    successInformation: {
+      info: 'Verifikasi akun Camat telah berhasil dilakukan.',
+      message:
+        'Email terkait informasi verifikasi telah dikirimkan ke email akun Camat bersangkutan.',
+    },
+    failedInformation: {
+      info: 'Verifikasi akun Camat gagal dilakukan.',
+      message: '',
+    },
+  },
 }
 
 export const rejectInformationPopup = {
@@ -196,6 +236,18 @@ export const rejectInformationPopup = {
       message: '',
     },
   },
+  klaimCamat: {
+    title: 'Penolakan Akun Camat',
+    successInformation: {
+      info: 'Penolakan akun Camat telah berhasil dilakukan.',
+      message:
+        'Email terkait informasi penolakan telah dikirimkan ke email akun Camat bersangkutan',
+    },
+    failedInformation: {
+      info: 'Penolakan akun Camat gagal dilakukan',
+      message: '',
+    },
+  },
 }
 
 export const userStatus = {
@@ -225,5 +277,12 @@ export const typeClaim = {
     link: '/klaim/kepala-desa',
     name: 'Kepala Desa',
     id: 'klaimKepalaDesa',
+  },
+  klaimCamat: {
+    props: 'klaim-camat',
+    label: 'Klaim Akun Camat',
+    link: '/klaim/camat',
+    name: 'Camat',
+    id: 'klaimCamat',
   },
 }
