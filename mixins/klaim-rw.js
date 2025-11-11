@@ -28,8 +28,9 @@ export default {
       currentClaimType: {},
       isPopupConfirmationVerification: false,
       isPopupConfirmationRejection: false,
+      isPopupEditStatus: false,
       isLoading: false,
-      typeDialog: '', // verify-confirmation / rejection-confirmation
+      typeDialog: '', // verify-confirmation / reject-confirmation / edit-status-claim
     }
   },
   mixins: [dialog],
@@ -76,6 +77,13 @@ export default {
       this.user = { id, name, email }
       this.$store.commit('modals/OPEN', this.dataDialog.nameModal)
     },
+    showPopupEditStatusClaim(props, data) {
+      this.currentClaimType = props
+      const { id, name, roleStatus } = data
+      this.user = { id, name, roleStatus }
+      this.isPopupEditStatus = true
+      this.typeDialog = 'edit-status-claim'
+    },
     async actionRejectUser() {
       this.isPopupConfirmationRejection = false
       this.$store.commit('modals/CLOSEALL')
@@ -117,7 +125,6 @@ export default {
       this.isPopupConfirmationVerification = false
       this.$store.commit('modals/CLOSEALL')
       this.isLoading = true
-      this.informationDialog.show = true
       this.informationDialog.title =
         verificationInformationPopup[this.currentClaimType.id].title
       const endpointClaimType = `${ENDPOINT_KLAIM_VERIFIKASI}-${
@@ -147,6 +154,7 @@ export default {
       } finally {
         this.isLoading = false
       }
+      this.informationDialog.show = true
     },
     onClosePopupInfo() {
       this.showPopupConfirmationInformation = false
@@ -156,23 +164,31 @@ export default {
     onClosePopupConfirmation() {
       this.isPopupConfirmationRejection = false
       this.isPopupConfirmationVerification = false
+
       this.$store.commit('modals/CLOSEALL')
     },
     onRetryAction() {
       this.informationDialog.show = false
-      this.dataDialog = {
-        ...this.dataDialog,
-        nameModal: this.typeDialog,
-        button: {
-          label: this.dataDialog.buttonSubmit.label,
-          variant: this.dataDialog.buttonSubmit.variant,
-        },
+      if (
+        this.typeDialog === 'verify-confirmation' ||
+        this.typeDialog === 'reject-confirmation'
+      ) {
+        this.dataDialog = {
+          ...this.dataDialog,
+          nameModal: this.typeDialog,
+          button: {
+            label: this.dataDialog.buttonSubmit.label,
+            variant: this.dataDialog.buttonSubmit.variant,
+          },
+        }
+        this.showPopupConfirmation(
+          this.user,
+          this.typeDialog,
+          this.currentClaimType
+        )
+      } else {
+        this.showPopupEditStatusClaim(this.currentClaimType, this.user)
       }
-      this.showPopupConfirmation(
-        this.user,
-        this.typeDialog,
-        this.currentClaimType
-      )
     },
   },
 }
