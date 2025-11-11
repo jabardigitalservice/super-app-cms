@@ -87,7 +87,6 @@ export default {
     async actionRejectUser() {
       this.isPopupConfirmationRejection = false
       this.$store.commit('modals/CLOSEALL')
-      this.informationDialog.show = true
       this.isLoading = true
       this.informationDialog.title =
         rejectInformationPopup[this.currentClaimType.id].title
@@ -100,7 +99,6 @@ export default {
         await this.$axios.post(endpointClaimType, {
           userId: this.user.id,
         })
-        this.informationDialog.show = true
         this.informationDialog.info =
           rejectInformationPopup[
             this.currentClaimType.id
@@ -120,6 +118,7 @@ export default {
       } finally {
         this.isLoading = false
       }
+      this.informationDialog.show = true
     },
     async actionVerifyUser() {
       this.isPopupConfirmationVerification = false
