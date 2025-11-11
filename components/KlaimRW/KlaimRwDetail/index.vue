@@ -162,7 +162,7 @@
                 <td class="w-[164px]">
                   <strong>Kota/kabupaten</strong>
                 </td>
-                <td>{{ detail?.cty?.name || '-' }}</td>
+                <td>{{ detail?.city?.name || '-' }}</td>
               </tr>
               <tr>
                 <td><strong>Kecamatan</strong></td>
