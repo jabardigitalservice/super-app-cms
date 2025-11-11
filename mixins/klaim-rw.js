@@ -1,4 +1,8 @@
 import {
+  ENDPOINT_KLAIM_PENOLAKAN,
+  ENDPOINT_KLAIM_VERIFIKASI,
+} from '~/constant/endpoint-api'
+import {
   verifyConfirmationPopup,
   rejectionConfirmationPopup,
   verificationInformationPopup,
@@ -20,9 +24,12 @@ export default {
       },
       user: {},
       dataDialog: {},
-      isPopupConfirmationVerificationRw: false,
-      isPopupConfirmationRejectionRw: false,
+      currentClaimType: {},
+      isPopupConfirmationVerification: false,
+      isPopupConfirmationRejection: false,
+      isPopupEditStatus: false,
       isLoading: false,
+      typeDialog: '', // verify-confirmation / reject-confirmation / edit-status-claim
     }
   },
   mixins: [dialog],
@@ -49,6 +56,7 @@ export default {
     },
     showPopupConfirmation(dataUser, typeDialog, props) {
       const { id, name, email } = dataUser
+      this.currentClaimType = props
       this.dataDialog = this.checkTypeClaimPopupConfirmation(props, typeDialog)
       this.dataDialog = {
         ...this.dataDialog,
@@ -58,59 +66,95 @@ export default {
           variant: this.dataDialog.buttonSubmit.variant,
         },
       }
+      this.typeDialog = typeDialog
 
       if (typeDialog === 'reject-confirmation') {
-        this.isPopupConfirmationRejectionRw = true
+        this.isPopupConfirmationRejection = true
       } else {
-        this.isPopupConfirmationVerificationRw = true
+        this.isPopupConfirmationVerification = true
       }
 
       this.user = { id, name, email }
       this.$store.commit('modals/OPEN', this.dataDialog.nameModal)
     },
+    showPopupEditStatusClaim(props, data) {
+      this.currentClaimType = props
+      const { id, name, roleStatus } = data
+      this.user = { id, name, roleStatus }
+      this.isPopupEditStatus = true
+      this.typeDialog = 'edit-status-claim'
+    },
     async actionRejectUser() {
-      this.isPopupConfirmationRejectionRw = false
+      this.isPopupConfirmationRejection = false
       this.$store.commit('modals/CLOSEALL')
+      this.informationDialog.show = true
       this.isLoading = true
-      this.informationDialog.title = 'Penolakan Akun RW'
+      this.informationDialog.title =
+        rejectInformationPopup[this.currentClaimType.id].title
+      const endpointClaimType = `${ENDPOINT_KLAIM_PENOLAKAN}-${
+        this.currentClaimType.pros === typeClaim.klaimKepalaDesa.props
+          ? 'kades'
+          : this.currentClaimType.name.toLowerCase()
+      }`
       try {
-        await this.$axios.post('/user/role/reject-rw', {
+        await this.$axios.post(endpointClaimType, {
           userId: this.user.id,
         })
         this.informationDialog.show = true
         this.informationDialog.info =
-          rejectInformationPopup.successInformation.info
+          rejectInformationPopup[
+            this.currentClaimType.id
+          ].successInformation.info
         this.informationDialog.message =
-          rejectInformationPopup.successInformation.message
+          rejectInformationPopup[
+            this.currentClaimType.id
+          ].successInformation.message
+        this.informationDialog.isSuccess = true
       } catch (error) {
-        this.informationDialog.show = true
         this.informationDialog.info =
-          rejectInformationPopup.failedInformation.info
+          rejectInformationPopup[
+            this.currentClaimType.id
+          ].failedInformation.info
         this.informationDialog.message = ''
+        this.informationDialog.isSuccess = false
       } finally {
         this.isLoading = false
       }
     },
     async actionVerifyUser() {
-      this.isPopupConfirmationVerificationRw = false
+      this.isPopupConfirmationVerification = false
       this.$store.commit('modals/CLOSEALL')
       this.isLoading = true
-      this.informationDialog.title = verificationInformationPopup.title
+      this.informationDialog.title =
+        verificationInformationPopup[this.currentClaimType.id].title
+      const endpointClaimType = `${ENDPOINT_KLAIM_VERIFIKASI}-${
+        this.currentClaimType.pros === typeClaim.klaimKepalaDesa.props
+          ? 'kades'
+          : this.currentClaimType.name.toLowerCase()
+      }`
       try {
-        await this.$axios.post('/user/role/verify-rw', { userId: this.user.id })
+        await this.$axios.post(endpointClaimType, { userId: this.user.id })
         this.informationDialog.show = true
         this.informationDialog.info =
-          verificationInformationPopup.successInformation.info
+          verificationInformationPopup[
+            this.currentClaimType.id
+          ].successInformation.info
         this.informationDialog.message =
-          verificationInformationPopup.successInformation.message
+          verificationInformationPopup[
+            this.currentClaimType.id
+          ].successInformation.message
+        this.informationDialog.isSuccess = true
       } catch (error) {
-        this.informationDialog.show = true
         this.informationDialog.info =
-          verificationInformationPopup.failedInformation.info
+          verificationInformationPopup[
+            this.currentClaimType.id
+          ].failedInformation.info
         this.informationDialog.message = ''
+        this.informationDialog.isSuccess = false
       } finally {
         this.isLoading = false
       }
+      this.informationDialog.show = true
     },
     onClosePopupInfo() {
       this.showPopupConfirmationInformation = false
@@ -118,9 +162,33 @@ export default {
       this.$fetch()
     },
     onClosePopupConfirmation() {
-      this.isPopupConfirmationRejectionRw = false
-      this.isPopupConfirmationVerificationRw = false
+      this.isPopupConfirmationRejection = false
+      this.isPopupConfirmationVerification = false
+
       this.$store.commit('modals/CLOSEALL')
+    },
+    onRetryAction() {
+      this.informationDialog.show = false
+      if (
+        this.typeDialog === 'verify-confirmation' ||
+        this.typeDialog === 'reject-confirmation'
+      ) {
+        this.dataDialog = {
+          ...this.dataDialog,
+          nameModal: this.typeDialog,
+          button: {
+            label: this.dataDialog.buttonSubmit.label,
+            variant: this.dataDialog.buttonSubmit.variant,
+          },
+        }
+        this.showPopupConfirmation(
+          this.user,
+          this.typeDialog,
+          this.currentClaimType
+        )
+      } else {
+        this.showPopupEditStatusClaim(this.currentClaimType, this.user)
+      }
     },
   },
 }
