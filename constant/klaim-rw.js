@@ -122,7 +122,7 @@ export const rejectionConfirmationPopup = {
     descriptionText: 'Apakah Anda yakin ingin menolak akun Lurah ini?',
     buttonSubmit: {
       label: 'Tolak akun Lurah ini',
-      variant: 'dsnger',
+      variant: 'danger',
     },
   },
   klaimKepalaDesa: {
@@ -130,7 +130,7 @@ export const rejectionConfirmationPopup = {
     descriptionText: 'Apakah Anda yakin ingin menolak akun Kepala Desa ini?',
     buttonSubmit: {
       label: 'Tolak akun Kepala Desa ini',
-      variant: 'dsnger',
+      variant: 'danger',
     },
   },
   klaimCamat: {
@@ -138,7 +138,7 @@ export const rejectionConfirmationPopup = {
     descriptionText: 'Apakah Anda yakin ingin menolak akun Camat ini?',
     buttonSubmit: {
       label: 'Tolak akun Camat ini',
-      variant: 'dsnger',
+      variant: 'danger',
     },
   },
   dialogType: 'confirmation',
@@ -185,6 +185,18 @@ export const verificationInformationPopup = {
       message: '',
     },
   },
+  klaimCamat: {
+    title: 'Verifikasi Akun Camat',
+    successInformation: {
+      info: 'Verifikasi akun Camat telah berhasil dilakukan.',
+      message:
+        'Email terkait informasi verifikasi telah dikirimkan ke email akun Camat bersangkutan.',
+    },
+    failedInformation: {
+      info: 'Verifikasi akun Camat gagal dilakukan.',
+      message: '',
+    },
+  },
 }
 
 export const rejectInformationPopup = {
@@ -212,6 +224,30 @@ export const rejectInformationPopup = {
       message: '',
     },
   },
+  klaimKepalaDesa: {
+    title: 'Penolakan Akun Kepala Desa',
+    successInformation: {
+      info: 'Penolakan akun Kepala Desa telah berhasil dilakukan.',
+      message:
+        'Email terkait informasi penolakan telah dikirimkan ke email akun Kepala Desa bersangkutan',
+    },
+    failedInformation: {
+      info: 'Penolakan akun Kepala Desa gagal dilakukan',
+      message: '',
+    },
+  },
+  klaimCamat: {
+    title: 'Penolakan Akun Camat',
+    successInformation: {
+      info: 'Penolakan akun Camat telah berhasil dilakukan.',
+      message:
+        'Email terkait informasi penolakan telah dikirimkan ke email akun Camat bersangkutan',
+    },
+    failedInformation: {
+      info: 'Penolakan akun Camat gagal dilakukan',
+      message: '',
+    },
+  },
 }
 
 export const userStatus = {
@@ -225,24 +261,28 @@ export const typeClaim = {
     props: 'klaim-rw',
     label: 'Klaim Akun RW',
     link: '/',
+    name: 'RW',
     id: 'klaimRw',
   },
   klaimLurah: {
     props: 'klaim-lurah',
     label: 'Klaim Akun Lurah',
     link: '/klaim/lurah',
+    name: 'Lurah',
     id: 'klaimLurah',
   },
   klaimKepalaDesa: {
     props: 'klaim-kepala-desa',
     label: 'Klaim Akun Kepala Desa',
     link: '/klaim/kepala-desa',
+    name: 'Kepala Desa',
     id: 'klaimKepalaDesa',
   },
   klaimCamat: {
     props: 'klaim-camat',
     label: 'Klaim Akun Camat',
     link: '/klaim/camat',
+    name: 'Camat',
     id: 'klaimCamat',
   },
 }
