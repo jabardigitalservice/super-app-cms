@@ -113,7 +113,7 @@
       :show-popup="informationDialog.show"
       :title="informationDialog.title"
       :description-text="informationDialog.info"
-      :account-name="dataUser.name"
+      :account-name="user.name"
       :message="informationDialog.message"
       :is-success="informationDialog.isSuccess"
       @close="onClosePopupInfo"
