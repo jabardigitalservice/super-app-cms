@@ -7,6 +7,7 @@ import {
   rejectionConfirmationPopup,
   verificationInformationPopup,
   rejectInformationPopup,
+  typeClaim,
 } from '~/constant/klaim-rw'
 import dialog from '~/mixins/dialog'
 
@@ -35,7 +36,6 @@ export default {
   mixins: [dialog],
   methods: {
     checkTypeClaimPopupConfirmation(typeClaimPage, typeDialog) {
-      console.log(typeClaimPage)
       const dataPopup = {
         verifyConfirmationPopup,
         rejectionConfirmationPopup,
@@ -92,7 +92,7 @@ export default {
       this.informationDialog.title =
         rejectInformationPopup[this.currentClaimType.id].title
       const endpointClaimType = `${ENDPOINT_KLAIM_PENOLAKAN}-${
-        this.currentClaimType.pros === typeClaim.klaimKepalaDesa.props
+        this.currentClaimType.props === typeClaim.klaimKepalaDesa.props
           ? 'kades'
           : this.currentClaimType.name.toLowerCase()
       }`
@@ -128,7 +128,7 @@ export default {
       this.informationDialog.title =
         verificationInformationPopup[this.currentClaimType.id].title
       const endpointClaimType = `${ENDPOINT_KLAIM_VERIFIKASI}-${
-        this.currentClaimType.pros === typeClaim.klaimKepalaDesa.props
+        this.currentClaimType.props === typeClaim.klaimKepalaDesa.props
           ? 'kades'
           : this.currentClaimType.name.toLowerCase()
       }`
