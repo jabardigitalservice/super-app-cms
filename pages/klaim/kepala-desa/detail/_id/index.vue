@@ -1,6 +1,6 @@
 <template>
   <KlaimRwDetail
-    :typeClaimPage="typeClaim.klaimKepalaDesa"
+    :type-claim-page="typeClaim.klaimKepalaDesa"
     :list-button="listButtonDetail"
   />
 </template>
@@ -17,11 +17,11 @@ export default {
       navigations: [
         {
           label: 'Klaim Akun Kepala Desa',
-          link: '/',
+          link: '/klaim/kepala-desa',
         },
         {
           label: 'Detail Akun Kepala Desa',
-          link: `/detail/${this.$route.params.id}`,
+          link: `/klaim/kepala-desa/detail/${this.$route.params.id}`,
         },
       ],
       typeClaim,

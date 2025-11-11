@@ -122,7 +122,7 @@ export const rejectionConfirmationPopup = {
     descriptionText: 'Apakah Anda yakin ingin menolak akun Lurah ini?',
     buttonSubmit: {
       label: 'Tolak akun Lurah ini',
-      variant: 'dsnger',
+      variant: 'danger',
     },
   },
   klaimKepalaDesa: {
@@ -130,7 +130,7 @@ export const rejectionConfirmationPopup = {
     descriptionText: 'Apakah Anda yakin ingin menolak akun Kepala Desa ini?',
     buttonSubmit: {
       label: 'Tolak akun Kepala Desa ini',
-      variant: 'dsnger',
+      variant: 'danger',
     },
   },
   klaimCamat: {
@@ -212,6 +212,18 @@ export const rejectInformationPopup = {
       message: '',
     },
   },
+  klaimKepalaDesa: {
+    title: 'Penolakan Akun Kepala Desa',
+    successInformation: {
+      info: 'Penolakan akun Kepala Desa telah berhasil dilakukan.',
+      message:
+        'Email terkait informasi penolakan telah dikirimkan ke email akun Kepala Desa bersangkutan',
+    },
+    failedInformation: {
+      info: 'Penolakan akun Kepala Desa gagal dilakukan',
+      message: '',
+    },
+  },
 }
 
 export const userStatus = {
@@ -225,18 +237,21 @@ export const typeClaim = {
     props: 'klaim-rw',
     label: 'Klaim Akun RW',
     link: '/',
+    name: 'RW',
     id: 'klaimRw',
   },
   klaimLurah: {
     props: 'klaim-lurah',
     label: 'Klaim Akun Lurah',
     link: '/klaim/lurah',
+    name: 'Lurah',
     id: 'klaimLurah',
   },
   klaimKepalaDesa: {
     props: 'klaim-kepala-desa',
     label: 'Klaim Akun Kepala Desa',
     link: '/klaim/kepala-desa',
+    name: 'Kepala Desa',
     id: 'klaimKepalaDesa',
   },
   klaimCamat: {
