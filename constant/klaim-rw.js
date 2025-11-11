@@ -110,7 +110,7 @@ export const rejectionConfirmationPopup = {
     descriptionText: 'Apakah Anda yakin ingin menolak akun Kepala Desa ini?',
     buttonSubmit: {
       label: 'Tolak akun Kepala Desa ini',
-      variant: 'dsnger',
+      variant: 'danger',
     },
   },
   dialogType: 'confirmation',
@@ -181,6 +181,18 @@ export const rejectInformationPopup = {
     },
     failedInformation: {
       info: 'Penolakan akun Lurah gagal dilakukan',
+      message: '',
+    },
+  },
+  klaimKepalaDesa: {
+    title: 'Penolakan Akun Kepala Desa',
+    successInformation: {
+      info: 'Penolakan akun Kepala Desa telah berhasil dilakukan.',
+      message:
+        'Email terkait informasi penolakan telah dikirimkan ke email akun Kepala Desa bersangkutan',
+    },
+    failedInformation: {
+      info: 'Penolakan akun Kepala Desa gagal dilakukan',
       message: '',
     },
   },
