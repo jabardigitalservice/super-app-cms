@@ -138,7 +138,7 @@ export const rejectionConfirmationPopup = {
     descriptionText: 'Apakah Anda yakin ingin menolak akun Camat ini?',
     buttonSubmit: {
       label: 'Tolak akun Camat ini',
-      variant: 'dsnger',
+      variant: 'danger',
     },
   },
   dialogType: 'confirmation',
@@ -185,6 +185,18 @@ export const verificationInformationPopup = {
       message: '',
     },
   },
+  klaimCamat: {
+    title: 'Verifikasi Akun Camat',
+    successInformation: {
+      info: 'Verifikasi akun Camat telah berhasil dilakukan.',
+      message:
+        'Email terkait informasi verifikasi telah dikirimkan ke email akun Camat bersangkutan.',
+    },
+    failedInformation: {
+      info: 'Verifikasi akun Camat gagal dilakukan.',
+      message: '',
+    },
+  },
 }
 
 export const rejectInformationPopup = {
@@ -224,6 +236,18 @@ export const rejectInformationPopup = {
       message: '',
     },
   },
+  klaimCamat: {
+    title: 'Penolakan Akun Camat',
+    successInformation: {
+      info: 'Penolakan akun Camat telah berhasil dilakukan.',
+      message:
+        'Email terkait informasi penolakan telah dikirimkan ke email akun Camat bersangkutan',
+    },
+    failedInformation: {
+      info: 'Penolakan akun Camat gagal dilakukan',
+      message: '',
+    },
+  },
 }
 
 export const userStatus = {
@@ -258,6 +282,7 @@ export const typeClaim = {
     props: 'klaim-camat',
     label: 'Klaim Akun Camat',
     link: '/klaim/camat',
+    name: 'Camat',
     id: 'klaimCamat',
   },
 }
