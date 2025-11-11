@@ -47,18 +47,18 @@
             <span
               :class="{
                 'mr-2 h-2 w-2 rounded-full': true,
-                'bg-green-600': item.rwStatus === userStatus.verified,
-                'bg-yellow-600': item.rwStatus === userStatus.waiting,
-                'bg-red-600': item.rwStatus === userStatus.rejected,
+                'bg-green-600': item.roleStatus === userStatus.verified,
+                'bg-yellow-600': item.roleStatus === userStatus.waiting,
+                'bg-red-600': item.roleStatus === userStatus.rejected,
               }"
             />
-            {{ item.rwStatus }}
+            {{ item.roleStatus }}
           </div>
         </template>
         <!-- eslint-disable-next-line vue/valid-v-slot -->
         <template #item.action="{ item }">
           <KlaimRWTableAction
-            :status="item.rwStatus"
+            :status="item.roleStatus"
             @detail="goToDetail(item.id)"
             @verify="
               showPopupConfirmation(item, 'verify-confirmation', typeClaimPage)
@@ -71,7 +71,7 @@
       </JdsDataTable>
     </div>
     <KlaimRWDetailAddress
-      :title="`Alamat ${this.getHeadeTitleByTypeClaim()}`"
+      :title="`Alamat ${getHeadeTitleByTypeClaim()}`"
       :loading="isLoadingDetailData"
       :detail-data="detailData"
       :data-user="dataUser"
@@ -79,7 +79,7 @@
       @close="showDetailAddress = false"
     />
     <BaseViewFile
-      :title="`Dokumen SK ${this.getHeadeTitleByTypeClaim()}`"
+      :title="`Dokumen SK ${getHeadeTitleByTypeClaim()}`"
       :file="informationDialog.file"
       :mime-type="informationDialog.mimeType"
       :show="showDocument"
@@ -87,14 +87,14 @@
     />
 
     <DialogConfirmationBasic
-      v-if="isPopupConfirmationVerificationRw"
+      v-if="isPopupConfirmationVerification"
       :dialog-modal="dataDialog"
       :detail-item-modal="{ title: user.name }"
       @confirmation-button="actionVerifyUser"
       @cancel="onClosePopupConfirmation"
     />
     <DialogConfirmationBasic
-      v-if="isPopupConfirmationRejectionRw"
+      v-if="isPopupConfirmationRejection"
       :dialog-modal="dataDialog"
       @confirmation-button="actionRejectUser"
       @cancel="onClosePopupConfirmation"
@@ -113,9 +113,11 @@
       :show-popup="informationDialog.show"
       :title="informationDialog.title"
       :description-text="informationDialog.info"
-      :account-name="dataUser.name"
+      :account-name="user.name"
       :message="informationDialog.message"
+      :is-success="informationDialog.isSuccess"
       @close="onClosePopupInfo"
+      @retry="onRetryAction"
     />
     <DialogLoading :show-popup="isLoading" />
   </div>
@@ -129,6 +131,7 @@ import {
   headerTableKlaimRW,
   headerTableKlaimLurah,
   headerTableKlaimKepalaDesa,
+  headerTableKlaimCamat,
   userStatus,
   typeClaim,
 } from '~/constant/klaim-rw'
@@ -182,6 +185,7 @@ export default {
       headerTableKlaimRW,
       headerTableKlaimLurah,
       headerTableKlaimKepalaDesa,
+      headerTableKlaimCamat,
       userStatus,
       showDetailAddress: false,
       showDocument: false,
@@ -212,32 +216,6 @@ export default {
       this.pagination.totalRows = data?.totalData || 0
       this.pagination.itemsPerPage = data?.pageSize || this.query.pageSize
     } catch (error) {
-      this.data = [
-        {
-          id: '53eec3fc-f5ae-4c00-8ac7-8fe6ba623c96',
-          email: 'kmkranchbandung@gmail.com',
-          name: 'CHIVAS ',
-          rwStatus: 'Ditolak',
-          rwDecree: '41418e5b-61f4-438a-b64e-7183d3ad0def',
-          createdAt: '2025-07-08T11:06:57Z',
-        },
-        {
-          id: 'e888b236-0013-435d-983b-0a425cf55f79',
-          email: 'tromolmio@yopmail.com',
-          name: 'Tromol MIO ',
-          rwStatus: 'Terverifikasi',
-          rwDecree: '25db2128-941d-489f-a533-b5b45d1ff52a',
-          createdAt: '2023-05-24T10:06:15Z',
-        },
-        {
-          id: 'eb8f7e85-9e05-44db-bee2-c2e0e4ce0971',
-          email: 'rungkad002@yopmail.com',
-          name: 'Eman si pasi',
-          rwStatus: 'Terverifikasi',
-          rwDecree: '6a937780-866f-4525-9317-56589e681acb',
-          createdAt: '2023-03-30T07:33:06Z',
-        },
-      ]
       this.pagination.disabled = true
     }
   },
@@ -257,7 +235,6 @@ export default {
       deep: true,
       handler() {
         resetQueryParamsUrl(this)
-
         this.$fetch()
       },
     },
@@ -296,6 +273,8 @@ export default {
           return this.headerTableKlaimLurah
         case typeClaim.klaimKepalaDesa.props:
           return this.headerTableKlaimKepalaDesa
+        case typeClaim.klaimCamat.props:
+          return this.headerTableKlaimCamat
         default:
           return {}
       }
@@ -306,6 +285,8 @@ export default {
           return 'Lurah'
         case typeClaim.klaimKepalaDesa?.props:
           return 'Kepala Desa'
+        case typeClaim.klaimCamat?.props:
+          return 'Camat'
         default:
           return 'RW'
       }
@@ -336,7 +317,7 @@ export default {
       const key = Object.keys(value)[0]
       if (key && value[key] !== 'no-sort') {
         this.query.sortType = value[key]
-        this.query.sortBy = key === 'status' ? 'rwStatus' : key
+        this.query.sortBy = key === 'status' ? 'roleStatus' : key
       } else {
         this.query.sortType = 'desc'
         this.query.sortBy = 'date'
@@ -349,7 +330,8 @@ export default {
       this.showDetailAddress = true
       this.isLoadingDetailData = true
       try {
-        const response = await this.$axios.get(`/user/rw/${item.id}`)
+        const urlApi = this.checkUrlApi()
+        const response = await this.$axios.get(`${urlApi}/${item.id}`)
         const { data } = response.data
         this.detailData = {
           dataKtp: data?.dataKtp,
