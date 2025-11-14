@@ -41,6 +41,14 @@ const lurahMenu = {
       icon: 'item.svg',
       unleashVariable: 'SAPAWARGA-CMS__LURAH--KLAIM-LURAH',
     },
+    {
+      name: 'Kegiatan Lurah',
+      path: '/kegiatan/lurah',
+      arrow: false,
+      showMenuAndAccessForRoles: ['admin'],
+      icon: 'item.svg',
+      unleashVariable: 'SAPAWARGA-CMS__LURAH--KEGIATAN-LURAH',
+    },
   ],
   childRoute: [
     {
@@ -63,6 +71,14 @@ const kepalaDesaMenu = {
       icon: 'item.svg',
       unleashVariable: 'SAPAWARGA-CMS__KEPALA-DESA--KLAIM-KEPALA-DESA',
     },
+    {
+      name: 'Kegiatan Kepala Desa',
+      path: '/kegiatan/kepala-desa',
+      arrow: false,
+      showMenuAndAccessForRoles: ['admin'],
+      icon: 'item.svg',
+      unleashVariable: 'SAPAWARGA-CMS__KEPALA-DESA--KEGIATAN-KEPALA-DESA',
+    },
   ],
   childRoute: [
     {
@@ -84,6 +100,14 @@ const camatMenu = {
       showMenuAndAccessForRoles: ['admin'],
       icon: 'item.svg',
       unleashVariable: 'SAPAWARGA-CMS__CAMAT--KLAIM-CAMAT',
+    },
+    {
+      name: 'Kegiatan Camat',
+      path: '/kegiatan/camat',
+      arrow: false,
+      showMenuAndAccessForRoles: ['admin'],
+      icon: 'item.svg',
+      unleashVariable: 'SAPAWARGA-CMS__CAMAT--KEGIATAN-CAMAT',
     },
   ],
   childRoute: [
