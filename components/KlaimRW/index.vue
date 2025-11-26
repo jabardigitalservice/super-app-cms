@@ -220,68 +220,6 @@ export default {
       this.pagination.totalRows = data?.totalData || 0
       this.pagination.itemsPerPage = data?.pageSize || this.query.pageSize
     } catch (error) {
-      this.data = [
-        {
-          id: '0ba73384-c9f6-44f6-82eb-66f07003555b',
-          email: 'sapawargalurah001@yopmail.com',
-          name: 'sapawarga posyandu',
-          rwStatus: 'Menunggu Verifikasi',
-          rwDecree: '6ada86e2-1ed8-44fd-98e4-50c311356083',
-          roleID: 'lurah',
-          roleClaimID: 'lurah',
-          roleStatus: 'Terverifikasi',
-          roleDecree: '6ada86e2-1ed8-44fd-98e4-50c311356083',
-          createdAt: '2025-11-11T12:43:20Z',
-        },
-        {
-          id: '119fc089-3d6b-48df-a881-45edc336f425',
-          email: 'testnov3@yopmail.com',
-          name: 'testnovtiga',
-          rwStatus: '',
-          rwDecree: '2f220f77-e484-47a3-ad3b-ad6e9e2cb170',
-          roleID: 'lurah',
-          roleClaimID: 'lurah',
-          roleStatus: 'Terverifikasi',
-          roleDecree: '2f220f77-e484-47a3-ad3b-ad6e9e2cb170',
-          createdAt: '2025-11-07T03:01:19Z',
-        },
-        {
-          id: 'd4ea5dd2-6b2b-40fe-a64a-546615a525a0',
-          email: 'gasiy99409@adrais.com',
-          name: 'gasiy99409',
-          rwStatus: '',
-          rwDecree: '',
-          roleID: 'warga',
-          roleClaimID: 'lurah',
-          roleStatus: 'Menunggu Verifikasi',
-          roleDecree: '5e8707b9-aaef-4998-bc42-526211df1d4c',
-          createdAt: '2024-06-05T07:55:04Z',
-        },
-        {
-          id: '144affb6-1426-4bfb-bb4b-4eb832f4cd59',
-          email: 'jsastaging126@yopmail.com',
-          name: 'JSA Staging 126',
-          rwStatus: 'Ditolak',
-          rwDecree: '5e8707b9-aaef-4998-bc42-526211df1d4c',
-          roleID: 'warga',
-          roleClaimID: 'lurah',
-          roleStatus: 'Ditolak',
-          roleDecree: '5e8707b9-aaef-4998-bc42-526211df1d4c',
-          createdAt: '2023-05-23T09:47:05Z',
-        },
-        {
-          id: '6b2330f9-cc8e-42e6-923c-a3e4defd65fd',
-          email: 'jsawarga@yopmail.com',
-          name: 'Jsa Warga',
-          rwStatus: '',
-          rwDecree: '',
-          roleID: 'lurah',
-          roleClaimID: 'lurah',
-          roleStatus: 'Terverifikasi',
-          roleDecree: '5e8707b9-aaef-4998-bc42-526211df1d4c',
-          createdAt: '2022-12-14T05:34:39Z',
-        },
-      ]
       this.pagination.disabled = true
     }
   },
