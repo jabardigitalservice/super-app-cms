@@ -72,6 +72,7 @@
     </div>
     <KlaimRWDetailAddress
       :title="`Alamat ${typeClaimPage.name}`"
+      :type-claim-page="typeClaimPage"
       :loading="isLoadingDetailData"
       :detail-data="detailData"
       :data-user="dataUser"
