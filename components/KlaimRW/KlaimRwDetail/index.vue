@@ -93,7 +93,10 @@
                 </td>
                 <td>
                   <BaseButton
-                    v-show="detail.roleStatus !== userStatus.verified"
+                    v-show="
+                      detail.roleStatus !== userStatus.verified &&
+                      detail.roleStatus
+                    "
                     class="w-fit border border-green-600 py-[6px] font-medium text-green-600"
                     @click="showPopupEditStatusClaim(typeClaimPage, detail)"
                   >
@@ -111,12 +114,14 @@
                 </td>
                 <td>
                   <BaseButton
+                    v-show="detail.fileName"
                     class="mr-2 w-fit border border-green-600 py-[6px] font-medium text-green-600"
                     @click="editDocumentHandle"
                   >
                     Edit Dokumen
                   </BaseButton>
                   <BaseButton
+                    v-show="detail.fileName"
                     class="w-fit border border-green-600 bg-green-600 py-[6px] font-medium text-white"
                     @click="documentHandle"
                   >
@@ -277,6 +282,7 @@ import {
   ENDPOINT_LURAH,
   ENDPOINT_RW,
   ENDPOINT_CAMAT,
+  ENDPOINT_POSYANDU,
 } from '~/constant/endpoint-api'
 
 export default {
@@ -363,6 +369,8 @@ export default {
           return ENDPOINT_KEPALA_DESA
         case typeClaim.klaimCamat.props:
           return ENDPOINT_CAMAT
+        case typeClaim.klaimPosyandu.props:
+          return ENDPOINT_POSYANDU
         default:
           return ENDPOINT_RW
       }

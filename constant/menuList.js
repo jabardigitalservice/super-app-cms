@@ -118,6 +118,36 @@ const camatMenu = {
   ],
 }
 
+const posyanduMenu = {
+  titleMenu: 'Posyandu',
+  showTitleMenuForRoles: ['admin'],
+  unleashVariable: 'SAPAWARGA-CMS__POSYANDU',
+  menu: [
+    {
+      name: 'Klaim Akun Posyandu',
+      path: '/klaim/posyandu',
+      arrow: false,
+      showMenuAndAccessForRoles: ['admin'],
+      icon: 'item.svg',
+      unleashVariable: 'SAPAWARGA-CMS__POSYANDU--KLAIM-POSYANDU',
+    },
+    {
+      name: 'Kegiatan Posyandu',
+      path: '/kegiatan/posyandu',
+      arrow: false,
+      showMenuAndAccessForRoles: ['admin'],
+      icon: 'item.svg',
+      unleashVariable: 'SAPAWARGA-CMS__POSYANDU--KEGIATAN-POSYANDU',
+    },
+  ],
+  childRoute: [
+    {
+      path: '/detail',
+      accessChildRouteForRoles: ['admin'],
+    },
+  ],
+}
+
 const messageNotifMenu = {
   titleMenu: 'pesan dan notif',
   showTitleMenuForRoles: ['admin'],
@@ -349,6 +379,7 @@ export const menu = [
   lurahMenu,
   kepalaDesaMenu,
   camatMenu,
+  posyanduMenu,
   messageNotifMenu,
   tiketMuseumMenu,
   masterDataMenu,

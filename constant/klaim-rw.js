@@ -67,6 +67,18 @@ headerTableKlaimCamat.splice(
   }
 )
 
+export const headerTableKlaimPosyandu = [...headerTableKlaimRW]
+headerTableKlaimPosyandu.splice(
+  1,
+  2,
+  { key: 'address', text: 'Alamat Posyandu', sortable: false },
+  {
+    key: 'document',
+    text: 'Dokumen SK Posyandu',
+    sortable: false,
+  }
+)
+
 export const verifyConfirmationPopup = {
   klaimRw: {
     title: 'Verifikasi Akun RW',
@@ -98,6 +110,14 @@ export const verifyConfirmationPopup = {
     descriptionText: 'Apakah Anda yakin ingin memverifikasi akun Camat ini?',
     buttonSubmit: {
       label: 'Ya, verifikasi akun Camat ini',
+      variant: 'primary',
+    },
+  },
+  klaimPosyandu: {
+    title: 'Verifikasi Akun Posyandu',
+    descriptionText: 'Apakah Anda yakin ingin memverifikasi akun Posyandu ini?',
+    buttonSubmit: {
+      label: 'Ya, verifikasi akun Posyandu ini',
       variant: 'primary',
     },
   },
@@ -138,6 +158,14 @@ export const rejectionConfirmationPopup = {
     descriptionText: 'Apakah Anda yakin ingin menolak akun Camat ini?',
     buttonSubmit: {
       label: 'Tolak akun Camat ini',
+      variant: 'danger',
+    },
+  },
+  klaimPosyandu: {
+    title: 'Tolak Akun Posyandu',
+    descriptionText: 'Apakah Anda yakin ingin menolak akun Posyandu ini?',
+    buttonSubmit: {
+      label: 'Tolak akun Posyandu ini',
       variant: 'danger',
     },
   },
@@ -197,6 +225,18 @@ export const verificationInformationPopup = {
       message: '',
     },
   },
+  klaimPosyandu: {
+    title: 'Verifikasi Akun Posyandu',
+    successInformation: {
+      info: 'Verifikasi akun Posyandu telah berhasil dilakukan.',
+      message:
+        'Email terkait informasi verifikasi telah dikirimkan ke email akun Posyandu bersangkutan.',
+    },
+    failedInformation: {
+      info: 'Verifikasi akun Posyandu gagal dilakukan.',
+      message: '',
+    },
+  },
 }
 
 export const rejectInformationPopup = {
@@ -248,6 +288,18 @@ export const rejectInformationPopup = {
       message: '',
     },
   },
+  klaimPosyandu: {
+    title: 'Penolakan Akun Posyandu',
+    successInformation: {
+      info: 'Penolakan akun Posyandu telah berhasil dilakukan.',
+      message:
+        'Email terkait informasi penolakan telah dikirimkan ke email akun Posyandu bersangkutan',
+    },
+    failedInformation: {
+      info: 'Penolakan akun Posyandu gagal dilakukan',
+      message: '',
+    },
+  },
 }
 
 export const userStatus = {
@@ -284,5 +336,12 @@ export const typeClaim = {
     link: '/klaim/camat',
     name: 'Camat',
     id: 'klaimCamat',
+  },
+  klaimPosyandu: {
+    props: 'klaim-posyandu',
+    label: 'Klaim Akun Posyandu',
+    link: '/klaim/posyandu',
+    name: 'Posyandu',
+    id: 'klaimPosyandu',
   },
 }

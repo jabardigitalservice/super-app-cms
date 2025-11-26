@@ -71,7 +71,8 @@
       </JdsDataTable>
     </div>
     <KlaimRWDetailAddress
-      :title="`Alamat ${getHeadeTitleByTypeClaim()}`"
+      :title="`Alamat ${typeClaimPage.name}`"
+      :type-claim-page="typeClaimPage"
       :loading="isLoadingDetailData"
       :detail-data="detailData"
       :data-user="dataUser"
@@ -79,7 +80,7 @@
       @close="showDetailAddress = false"
     />
     <BaseViewFile
-      :title="`Dokumen SK ${getHeadeTitleByTypeClaim()}`"
+      :title="`Dokumen SK ${typeClaimPage.name}`"
       :file="informationDialog.file"
       :mime-type="informationDialog.mimeType"
       :show="showDocument"
@@ -132,6 +133,7 @@ import {
   headerTableKlaimLurah,
   headerTableKlaimKepalaDesa,
   headerTableKlaimCamat,
+  headerTableKlaimPosyandu,
   userStatus,
   typeClaim,
 } from '~/constant/klaim-rw'
@@ -140,6 +142,7 @@ import {
   ENDPOINT_LURAH,
   ENDPOINT_KEPALA_DESA,
   ENDPOINT_CAMAT,
+  ENDPOINT_POSYANDU,
 } from '~/constant/endpoint-api'
 import {
   generateItemsPerPageOptions,
@@ -187,6 +190,7 @@ export default {
       headerTableKlaimLurah,
       headerTableKlaimKepalaDesa,
       headerTableKlaimCamat,
+      headerTableKlaimPosyandu,
       userStatus,
       showDetailAddress: false,
       showDocument: false,
@@ -264,6 +268,8 @@ export default {
           return ENDPOINT_KEPALA_DESA
         case typeClaim.klaimCamat.props:
           return ENDPOINT_CAMAT
+        case typeClaim.klaimPosyandu.props:
+          return ENDPOINT_POSYANDU
         default:
           return ENDPOINT_RW
       }
@@ -278,22 +284,26 @@ export default {
           return this.headerTableKlaimKepalaDesa
         case typeClaim.klaimCamat.props:
           return this.headerTableKlaimCamat
+        case typeClaim.klaimPosyandu.props:
+          return this.headerTableKlaimPosyandu
         default:
           return {}
       }
     },
-    getHeadeTitleByTypeClaim() {
-      switch (this.typeClaimPage.props) {
-        case typeClaim.klaimLurah?.props:
-          return 'Lurah'
-        case typeClaim.klaimKepalaDesa?.props:
-          return 'Kepala Desa'
-        case typeClaim.klaimCamat?.props:
-          return 'Camat'
-        default:
-          return 'RW'
-      }
-    },
+    // getHeadeTitleByTypeClaim() {
+    //   switch (this.typeClaimPage.props) {
+    //     case typeClaim.klaimLurah?.props:
+    //       return 'Lurah'
+    //     case typeClaim.klaimKepalaDesa?.props:
+    //       return 'Kepala Desa'
+    //     case typeClaim.klaimCamat?.props:
+    //       return 'Camat'
+    //     case typeClaim.klaimPosyandu?.props:
+    //       return 'Posyandu'
+    //     default:
+    //       return 'RW'
+    //   }
+    // },
     searchTitle: debounce(function (value) {
       if (value.length > 2) {
         this.query.page = 1

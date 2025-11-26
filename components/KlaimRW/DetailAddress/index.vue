@@ -1,55 +1,58 @@
 <template>
   <transition name="fade">
-    <div v-if="show" class="fixed h-screen w-screen bg-black bg-opacity-75 z-50 inset-0 flex justify-center items-center">
-      <div class="w-[600px] min-h-min rounded-lg bg-white flex flex-col gap-4">
-        <h1 class="text-green-700 font-roboto font-medium text-[21px] px-4 pt-4">
+    <div
+      v-if="show"
+      class="fixed inset-0 z-50 flex h-screen w-screen items-center justify-center bg-black bg-opacity-75"
+    >
+      <div class="flex min-h-min w-[600px] flex-col gap-4 rounded-lg bg-white">
+        <h1
+          class="px-4 pt-4 font-roboto text-[21px] font-medium text-green-700"
+        >
           {{ title }}
         </h1>
-        <div class="max-h-[calc(100vh-64px-120px)] overflow-scroll flex flex-col gap-4 px-4 text-sm">
+        <div
+          class="flex max-h-[calc(100vh-64px-120px)] flex-col gap-4 overflow-scroll px-4 text-sm"
+        >
           <div>
             <table>
               <tr class="text-gray-600">
-                <td>Nama RW</td>
+                <td>{{ checkLabelName() }}</td>
                 <td><span class="ml-4">Email</span></td>
               </tr>
               <tr class="text-gray-800">
                 <td>{{ dataUser.name }}</td>
-                <td><span class="ml-4">{{ dataUser.email }}</span></td>
+                <td>
+                  <span class="ml-4">{{ dataUser.email }}</span>
+                </td>
               </tr>
             </table>
           </div>
           <div>
-            <div class="mb-2 text-gray-800 font-bold">
-              Alamat Sesuai KTP
-            </div>
-            <div v-if="loading" class="p-4 flex justify-center items-center">
+            <div class="mb-2 font-bold text-gray-800">Alamat Sesuai KTP</div>
+            <div v-if="loading" class="flex items-center justify-center p-4">
               <jds-spinner size="24px" />
             </div>
             <KlaimRWAddressTable
               v-else-if="detailData.dataKtp"
               :data-table="detailData.dataKtp"
             />
-            <div v-else>
-              Tidak ada data
-            </div>
+            <div v-else>Tidak ada data</div>
           </div>
           <div>
-            <div class="mb-2 text-gray-800 font-bold">
+            <div class="mb-2 font-bold text-gray-800">
               Alamat Sesuai Domisili
             </div>
-            <div v-if="loading" class="p-4 flex justify-center items-center">
+            <div v-if="loading" class="flex items-center justify-center p-4">
               <jds-spinner size="24px" />
             </div>
             <KlaimRWAddressTable
               v-else-if="detailData.dataDomicile"
               :data-table="detailData.dataDomicile"
             />
-            <div v-else>
-              Tidak ada data
-            </div>
+            <div v-else>Tidak ada data</div>
           </div>
         </div>
-        <div class="flex justify-center p-4 bg-gray-50 px-6 rounded-lg">
+        <div class="flex justify-center rounded-lg bg-gray-50 p-4 px-6">
           <jds-button label="Oke" variant="primary" @click="onClose" />
         </div>
       </div>
@@ -58,6 +61,8 @@
 </template>
 
 <script>
+import { typeClaim } from '~/constant/klaim-rw'
+
 export default {
   name: 'DetailAddress',
   props: {
@@ -66,21 +71,25 @@ export default {
      */
     show: {
       type: Boolean,
-      default: false
+      default: false,
     },
     /**
      * title modal
      */
     title: {
       type: String,
-      default: ''
+      default: '',
+    },
+    typeClaimPage: {
+      type: Object,
+      default: () => ({}),
     },
     /**
      * loading data
      */
     loading: {
       type: Boolean,
-      default: false
+      default: false,
     },
     /**
      * data rw
@@ -89,21 +98,26 @@ export default {
       type: Object,
       default: () => ({
         dataKtp: {},
-        dataDomicile: {}
-      })
+        dataDomicile: {},
+      }),
     },
     dataUser: {
       type: Object,
       default: () => ({
         name: '',
-        email: ''
-      })
-    }
+        email: '',
+      }),
+    },
   },
   methods: {
-    onClose () {
+    onClose() {
       this.$emit('close')
-    }
-  }
+    },
+    checkLabelName() {
+      return this.typeClaimPage.name === typeClaim.klaimPosyandu.name
+        ? 'Nama'
+        : `Nama ${this.typeClaimPage.name}`
+    },
+  },
 }
 </script>
