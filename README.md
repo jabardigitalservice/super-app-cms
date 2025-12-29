@@ -1,69 +1,125 @@
 # Sapawarga CMS
+Sapawarga CMS is a web admin used to manage all features in the Sapawarga application.
+<br><br>
 
-## Build Setup
+## About
+Repository Frontend - Sapawarga CMS
+<br><br>
 
-```bash
-# install dependencies
-$ npm install
+## How To Install
 
-# serve with hot reload at localhost:3000
-$ npm run dev
+- Clone This Repo
 
-# build for production and launch server
-$ npm run build
-$ npm run start
-
-# generate static project
-$ npm run generate
+```[
+https://github.com/jabardigitalservice/super-app-cms.git
 ```
 
-For detailed explanation on how things work, check out the [documentation](https://nuxtjs.org).
+- Go To Folder Repo
 
-## Special Directories
+```
+cd superapps-cms
+```
 
-You can create the following extra directories, some of which have special behaviors. Only `pages` is required; you can delete them if you don't want to use their functionality.
+- Install Module
 
-### `assets`
+```
+npm install
+```
 
-The assets directory contains your uncompiled assets such as Stylus or Sass files, images, or fonts.
+- Copy ```.env.example``` and rename to ```.env``` then fill the data
+<table>
+  <tr>
+      <th>CONFIG</th>
+      <th>DESCRPTION</th>
+   </tr>
+   <tr>
+      <td>BASE_URL</td>
+      <td>filled with api domain</td>
+      <td>example : https://tv-show-admin-service-staging.up.railway.app/ (my api domain) </td>
+   </tr>
+    <tr>
+      <td>BROWSER_BASE_URL</td>
+      <td>filled with api domain</td>
+      <td>example : https://tv-show-admin-service-staging.up.railway.app/ (my api domain) </td>
+   </tr>
+  <tr>
+    <td>KEYCLOCK_CLIENT_ID</td>
+    <td>filled with client id in keycloak</td>
+    <td>example: wb-admin</td>
+  </tr>
+  <tr>
+    <td>KEYCLOCK_ENDPOINT</td>
+    <td>filled with endpoint configuration keycloak</td>
+  </tr>
+   <tr>
+    <td>KEYCLOCK_BASE_URL</td>
+    <td>filled with url keycloak</td>
+  </tr>
+  <tr>
+    <td>VERSION_ENDPOINT</td>
+    <td>filled with version endpoint API</td>
+    <td>example: v1</td>
+  </tr>
+  <tr>
+    <td>API_KEY</td>
+    <td>filled with API Key from backend</td>
+  </tr>
+  <tr>
+    <td>GOOGLE_ANALYTICS_ID</td>
+    <td>filled with id from google analytic</td>
+  </tr>
+  <tr>
+    <td>TINYMCE_API_KEY</td>
+    <td>filled with qpi key that will be obtained from tinymce</td>
+  </tr>
+  <tr>
+    <td>GOOGLE_MAPS_API_KEY</td>
+    <td>filled with apy key from google maps</td>
+  </tr>
+  <tr>
+    <td>UNLEASH_URL</td>
+    <td>filled with url unleash</td>
+  </tr>
+  <tr>
+    <td>UNLEASH_TOKEN</td>
+    <td>filled with tokens that will be obtained from unleash</td>
+    <td>example: *=development.xxxxx</td>
+  </tr>
+  <tr>
+    <td>EXPIRY_FORGOT_PASSWORD_LINK</td>
+    <td>contains information about how long the forgot password link will expire in hours</td>
+    <td>example : 12</td>
+  </tr>
+  <tr>
+    <td>EXPIRY_INVITATION_LINK</td>
+    <td>contains information about how long the invitation link will expire in hours</td>
+    <td>example : 12</td>
+  </tr>
+</table>
 
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/assets).
+- Type ``` npm run dev ``` To Start The Project
+<br><br>
 
-### `components`
+## Feature
 
-The components directory contains your Vue.js components. Components make up the different parts of your page and can be reused and imported into your pages, layouts and even other components.
+- Klaim RW: claim & reject user for role RW
+- Klaim Camat : claim & reject user for role camat.
+- Klaim Lurah : claim & reject user for role lurah.
+- Klaim Kepala Desa : claim & reject user for role kepala desa.
+- Klaim Posyandu : claim & reject user for role posyandu.
+- Message Notification : send message notifications to the Sapawarga application
+- Aduan : carry out complaint processing from various complaint sources, especially from the Sapawarga application 
+<br><br>
 
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/components).
+## Build Using
 
-### `layouts`
+- [CSS Tailwind](https://tailwindcss.com/docs/installation/using-vite)
+- [Nuxt JS v.2](https://v2.nuxt.com/)
+- jds design system
+- [VueX](https://vuex.vuejs.org/)
+- [Nuxt Auth](https://auth.nuxtjs.org/)
+<br><br>
 
-Layouts are a great help when you want to change the look and feel of your Nuxt app, whether you want to include a sidebar or have distinct layouts for mobile and desktop.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/layouts).
-
-
-### `pages`
-
-This directory contains your application views and routes. Nuxt will read all the `*.vue` files inside this directory and setup Vue Router automatically.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/get-started/routing).
-
-### `plugins`
-
-The plugins directory contains JavaScript plugins that you want to run before instantiating the root Vue.js Application. This is the place to add Vue plugins and to inject functions or constants. Every time you need to use `Vue.use()`, you should create a file in `plugins/` and add its path to plugins in `nuxt.config.js`.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/plugins).
-
-### `static`
-
-This directory contains your static files. Each file inside this directory is mapped to `/`.
-
-Example: `/static/robots.txt` is mapped as `/robots.txt`.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/static).
-
-### `store`
-
-This directory contains your Vuex store files. Creating a file in this directory automatically activates Vuex.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/store). 
+## Sapawarga CMS - Staging 
+<https://superapp-cms.staging.digitalservice.id/>
+<br><br>
