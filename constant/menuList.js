@@ -25,6 +25,26 @@ const rwMenu = {
   ],
 }
 
+const rtMenu = {
+  titleMenu: 'RT',
+  showTitleMenuForRoles: ['admin'],
+  menu: [
+    {
+      name: 'Klaim Akun RT',
+      path: '/klaim-rt',
+      arrow: false,
+      showMenuAndAccessForRoles: ['admin'],
+      icon: 'item.svg',
+    },
+  ],
+  childRoute: [
+    {
+      path: '/klaim-rt/detail',
+      accessChildRouteForRoles: ['admin'],
+    },
+  ],
+}
+
 const messageNotifMenu = {
   titleMenu: 'pesan dan notif',
   showTitleMenuForRoles: ['admin'],
@@ -251,6 +271,7 @@ const sriBadugaMenu = {
 
 export const menu = [
   rwMenu,
+  rtMenu,
   messageNotifMenu,
   tiketMuseumMenu,
   masterDataMenu,
