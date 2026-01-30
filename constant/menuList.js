@@ -151,18 +151,20 @@ const posyanduMenu = {
 const rtMenu = {
   titleMenu: 'RT',
   showTitleMenuForRoles: ['admin'],
+  // unleashVariable: 'SAPAWARGA-CMS__RT',
   menu: [
     {
       name: 'Klaim Akun RT',
-      path: '/klaim-rt',
+      path: '/klaim/rt',
       arrow: false,
       showMenuAndAccessForRoles: ['admin'],
       icon: 'item.svg',
+      // unleashVariable: 'SAPAWARGA-CMS__RT--KLAIM-RT',
     },
   ],
   childRoute: [
     {
-      path: '/klaim-rt/detail',
+      path: '/detail',
       accessChildRouteForRoles: ['admin'],
     },
   ],
@@ -396,11 +398,11 @@ const sriBadugaMenu = {
 
 export const menu = [
   rwMenu,
+  rtMenu,
   lurahMenu,
   kepalaDesaMenu,
   camatMenu,
   posyanduMenu,
-  rtMenu,
   messageNotifMenu,
   tiketMuseumMenu,
   masterDataMenu,

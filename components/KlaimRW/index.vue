@@ -130,6 +130,7 @@ import PopupInformation from './Popup/Information.vue'
 import popup from '~/mixins/klaim-rw'
 import {
   headerTableKlaimRW,
+  headerTableKlaimRT,
   headerTableKlaimLurah,
   headerTableKlaimKepalaDesa,
   headerTableKlaimCamat,
@@ -139,6 +140,7 @@ import {
 } from '~/constant/klaim-rw'
 import {
   ENDPOINT_RW,
+  ENDPOINT_RT,
   ENDPOINT_LURAH,
   ENDPOINT_KEPALA_DESA,
   ENDPOINT_CAMAT,
@@ -187,6 +189,7 @@ export default {
         sortBy: 'date',
       },
       headerTableKlaimRW,
+      headerTableKlaimRT,
       headerTableKlaimLurah,
       headerTableKlaimKepalaDesa,
       headerTableKlaimCamat,
@@ -262,6 +265,8 @@ export default {
   methods: {
     checkUrlApi() {
       switch (this.typeClaimPage.props) {
+        case typeClaim.klaimRT.props:
+          return ENDPOINT_RT
         case typeClaim.klaimLurah.props:
           return ENDPOINT_LURAH
         case typeClaim.klaimKepalaDesa.props:
@@ -278,6 +283,8 @@ export default {
       switch (props) {
         case typeClaim.klaimRw.props:
           return this.headerTableKlaimRW
+        case typeClaim.klaimRT.props:
+          return this.headerTableKlaimRT
         case typeClaim.klaimLurah.props:
           return this.headerTableKlaimLurah
         case typeClaim.klaimKepalaDesa.props:
