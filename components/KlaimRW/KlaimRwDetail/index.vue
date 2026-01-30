@@ -244,7 +244,7 @@
       @retry="onRetryAction"
     />
     <BaseDialogDragAndDropFile
-      :api-update-file="`/user/rw/${detail?.id}`"
+      :api-update-file="apiUpdateFileUrl"
       :show-popup="documentEdit.showDialog"
       :detail-drag-and-drop="DragAndDropComponentInformation"
       @close="closeEditDialogHandle"
@@ -281,6 +281,7 @@ import {
   ENDPOINT_KEPALA_DESA,
   ENDPOINT_LURAH,
   ENDPOINT_RW,
+  ENDPOINT_RT,
   ENDPOINT_CAMAT,
   ENDPOINT_POSYANDU,
 } from '~/constant/endpoint-api'
@@ -318,14 +319,25 @@ export default {
       documentEdit: {
         showDialog: false,
       },
-      DragAndDropComponentInformation: {
+      detail: {},
+      userStatus,
+      typeClaim,
+    }
+  },
+  computed: {
+    apiUpdateFileUrl() {
+      const urlApi = this.checkUrlApi()
+      return `${urlApi}/${this.detail?.id}`
+    },
+    DragAndDropComponentInformation() {
+      return {
         titleModal: 'Edit Dokumen SK',
         informationSizeCompatible:
           'Ukuran file dokumen SK tidak boleh melebihi 2 MB.',
         informationFormatCompatible:
           'Hanya file yang berformat PDF/JPG/JPEG/PNG yang dapat diupload.',
         infromationSuccess: {
-          info: 'Edit Dokumen SK RW telah berhasil dilakukan.',
+          info: `Edit Dokumen SK ${this.typeClaimPage.name} telah berhasil dilakukan.`,
           message: 'Silahkan cek kembali Dokumen SK yang diganti.',
         },
         informationError: {
@@ -340,11 +352,8 @@ export default {
         ],
         maxSizeFile: 2097152,
         acceptFile: '.pdf,.jpg,.jpeg,.png',
-      },
-      detail: {},
-      userStatus,
-      typeClaim,
-    }
+      }
+    },
   },
   async fetch() {
     try {
@@ -363,6 +372,8 @@ export default {
   methods: {
     checkUrlApi() {
       switch (this.typeClaimPage.props) {
+        case typeClaim.klaimRT.props:
+          return ENDPOINT_RT
         case typeClaim.klaimLurah.props:
           return ENDPOINT_LURAH
         case typeClaim.klaimKepalaDesa.props:

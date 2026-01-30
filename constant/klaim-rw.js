@@ -79,6 +79,18 @@ headerTableKlaimPosyandu.splice(
   }
 )
 
+export const headerTableKlaimRT = [...headerTableKlaimRW]
+headerTableKlaimRT.splice(
+  1,
+  2,
+  { key: 'address', text: 'Alamat RT', sortable: false },
+  {
+    key: 'document',
+    text: 'Dokumen SK RT',
+    sortable: false,
+  }
+)
+
 export const verifyConfirmationPopup = {
   klaimRw: {
     title: 'Verifikasi Akun RW',
@@ -118,6 +130,14 @@ export const verifyConfirmationPopup = {
     descriptionText: 'Apakah Anda yakin ingin memverifikasi akun Posyandu ini?',
     buttonSubmit: {
       label: 'Ya, verifikasi akun Posyandu ini',
+      variant: 'primary',
+    },
+  },
+  klaimRT: {
+    title: 'Verifikasi Akun RT',
+    descriptionText: 'Apakah Anda yakin ingin memverifikasi akun RT ini?',
+    buttonSubmit: {
+      label: 'Ya, verifikasi akun RT ini',
       variant: 'primary',
     },
   },
@@ -166,6 +186,14 @@ export const rejectionConfirmationPopup = {
     descriptionText: 'Apakah Anda yakin ingin menolak akun Posyandu ini?',
     buttonSubmit: {
       label: 'Tolak akun Posyandu ini',
+      variant: 'danger',
+    },
+  },
+  klaimRT: {
+    title: 'Tolak Akun RT',
+    descriptionText: 'Apakah Anda yakin ingin menolak akun RT ini?',
+    buttonSubmit: {
+      label: 'Tolak akun RT ini',
       variant: 'danger',
     },
   },
@@ -237,6 +265,18 @@ export const verificationInformationPopup = {
       message: '',
     },
   },
+  klaimRT: {
+    title: 'Verifikasi Akun RT',
+    successInformation: {
+      info: 'Verifikasi akun RT telah berhasil dilakukan.',
+      message:
+        'Email terkait informasi verifikasi telah dikirimkan ke email akun RT bersangkutan.',
+    },
+    failedInformation: {
+      info: 'Verifikasi akun RT gagal dilakukan.',
+      message: '',
+    },
+  },
 }
 
 export const rejectInformationPopup = {
@@ -300,6 +340,18 @@ export const rejectInformationPopup = {
       message: '',
     },
   },
+  klaimRT: {
+    title: 'Penolakan Akun RT',
+    successInformation: {
+      info: 'Penolakan akun RT telah berhasil dilakukan.',
+      message:
+        'Email terkait informasi penolakan telah dikirimkan ke email akun RT bersangkutan',
+    },
+    failedInformation: {
+      info: 'Penolakan akun RT gagal dilakukan',
+      message: '',
+    },
+  },
 }
 
 export const userStatus = {
@@ -343,5 +395,12 @@ export const typeClaim = {
     link: '/klaim/posyandu',
     name: 'Posyandu',
     id: 'klaimPosyandu',
+  },
+  klaimRT: {
+    props: 'klaim-rt',
+    label: 'Klaim Akun RT',
+    link: '/klaim/rt',
+    name: 'RT',
+    id: 'klaimRT',
   },
 }
